@@ -12,7 +12,6 @@ namespace LibraryCore.Tests.Core.DiskIO
         [InlineData("ab", false)]
         [InlineData("c", false)]
         [InlineData("ef", false)]
-        [InlineData("sdfasdfasd", true)]
         [Theory]
         public void IsExecutablePositiveTest1(string FirstTwoBytesToTest, bool expectResultIsExe)
         {
