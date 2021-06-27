@@ -4,8 +4,8 @@ coverage:
       default:
       # basic
       target: auto
-      threshold: 75%
+      threshold: 0%
       base: auto 
     patch:
       default:
-        target: 75%
+        target: 0%
