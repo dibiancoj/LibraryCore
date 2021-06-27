@@ -1,4 +1,4 @@
-name: .NET
+name: LibraryCore.Workflow
 
 on:
   push:
