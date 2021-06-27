@@ -26,6 +26,5 @@ namespace LibraryCore.Core.DateTimeUtilities
             //return the age
             return age;
         }
-
     }
 }
