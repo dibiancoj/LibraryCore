@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core
+﻿namespace LibraryCore.Core
 {
     public class Class1
     {
