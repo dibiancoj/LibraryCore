@@ -36,7 +36,7 @@ namespace LibraryCore.Core.UrlUtilities
         /// <returns>True if it's an asbolute uri</returns>
         public static bool IsAbsoluteUri(string uriToInspect)
         {
-            return uriToInspect.StartsWith("www", StringComparison.OrdinalIgnoreCase) || Uri.TryCreate(uriToInspect, UriKind.Absolute, out _);
+            return Uri.TryCreate(uriToInspect, UriKind.Absolute, out _) || uriToInspect.StartsWith("www", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
