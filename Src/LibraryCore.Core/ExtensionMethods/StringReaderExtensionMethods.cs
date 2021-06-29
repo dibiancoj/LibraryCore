@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace LibraryCore.Tests.Core.ExtensionMethods
+namespace LibraryCore.Core.ExtensionMethods
 {
     public static class StringReaderExtensionMethods
     {
