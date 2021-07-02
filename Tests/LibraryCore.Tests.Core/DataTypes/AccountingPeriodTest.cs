@@ -14,7 +14,7 @@ namespace LibraryCore.Tests.Core.DataTypes
 
             Assert.Equal(2020, temp.Year);
             Assert.Equal(5, temp.Month);
-            Assert.Equal(202005, temp.ToFullAccountingPeriod());
+            Assert.Equal(202005, temp.FullAccountingPeriod);
             Assert.Equal(new DateTime(2020, 5, 1), temp.ToDateTime());
         }
 
@@ -25,7 +25,7 @@ namespace LibraryCore.Tests.Core.DataTypes
 
             Assert.Equal(2020, temp.Year);
             Assert.Equal(5, temp.Month);
-            Assert.Equal(202005, temp.ToFullAccountingPeriod());
+            Assert.Equal(202005, temp.FullAccountingPeriod);
             Assert.Equal(new DateTime(2020, 5, 1), temp.ToDateTime());
         }
 
@@ -42,26 +42,26 @@ namespace LibraryCore.Tests.Core.DataTypes
         }
 
         [Fact]
-        public void BuildPeriodFromFullAccountingPeriod()
+        public void TryParseFullAccountingPeriod()
         {
-            var temp = new AccountingPeriod(202005);
-
-            Assert.Equal(2020, temp.Year);
-            Assert.Equal(5, temp.Month);
-            Assert.Equal(202005, temp.ToFullAccountingPeriod());
-            Assert.Equal(new DateTime(2020, 5, 1), temp.ToDateTime());
+            Assert.True(AccountingPeriod.TryParseAccountingPeriod(202005, out var tryToParseValue));
+                
+            Assert.Equal(2020, tryToParseValue.Year);
+            Assert.Equal(5, tryToParseValue.Month);
+            Assert.Equal(202005, tryToParseValue.FullAccountingPeriod);
+            Assert.Equal(new DateTime(2020, 5, 1), tryToParseValue.ToDateTime());
         }
 
         [Fact]
-        public void BuildPeriodFromFullAccountingPeriodWithInvalidMonth()
+        public void TryParseFullAccountingPeriodWithInvalidMonth()
         {
-            Assert.Throws<Exception>(() => new AccountingPeriod(202015));
+            Assert.False(AccountingPeriod.TryParseAccountingPeriod(202015, out var _));
         }
 
         [Fact]
         public void BuildPeriodFromFullAccountingPeriodWithInvalidYear()
         {
-            Assert.Throws<Exception>(() => new AccountingPeriod(05012));
+            Assert.False(AccountingPeriod.TryParseAccountingPeriod(05012, out var _));
         }
 
         [InlineData(202001, 1, 202002)] //1 month
@@ -70,7 +70,7 @@ namespace LibraryCore.Tests.Core.DataTypes
         [Theory]
         public void IncrementPeriods(int accountPeriod, int periodsToIncrement, int expectedResult)
         {
-            Assert.Equal(expectedResult, (new AccountingPeriod(accountPeriod) + periodsToIncrement).ToFullAccountingPeriod());
+            Assert.Equal(expectedResult, (AccountingPeriod.ParseAccountingPeriod(accountPeriod) + periodsToIncrement).FullAccountingPeriod);
         }
 
         [InlineData(202002, 1, 202001)] //-1 month
@@ -79,7 +79,7 @@ namespace LibraryCore.Tests.Core.DataTypes
         [Theory]
         public void SubtractPeriods(int accountPeriod, int periodsToIncrement, int expectedResult)
         {
-            Assert.Equal(expectedResult, (new AccountingPeriod(accountPeriod) - periodsToIncrement).ToFullAccountingPeriod());
+            Assert.Equal(expectedResult, (AccountingPeriod.ParseAccountingPeriod(accountPeriod) - periodsToIncrement).FullAccountingPeriod);
         }
 
     }
