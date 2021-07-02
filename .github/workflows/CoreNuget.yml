@@ -1,4 +1,4 @@
-name: CoreNuget
+name: UpdateNugetPackages
 
 on:
   workflow_dispatch:
