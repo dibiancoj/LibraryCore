@@ -5,6 +5,8 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Authors>Jason DiBianco</Authors>
+    <Description>.NetCore Common Library</Description>
   </PropertyGroup>
 
   <ItemGroup>
