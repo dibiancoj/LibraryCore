@@ -1,0 +1,23 @@
+Create: NuGet.Config
+
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+     <add key="github" value="https://nuget.pkg.github.com/dibiancoj/index.json" />
+  </packageSources>
+  <packageSourceCredentials>
+<github>
+   <add key="Username" value="dibiancoj" />
+<add key="ClearTextPassword" value="{{personal access key}}" />
+</github>
+  </packageSourceCredentials>
+</configuration>
+
+
+
+
+*{{personal access key}}
+1. Profile picture, settings
+2. Developer Settings
+3. Personal Access Token
+4. Create token to read

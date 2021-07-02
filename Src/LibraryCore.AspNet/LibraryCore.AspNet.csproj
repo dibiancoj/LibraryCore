@@ -8,6 +8,8 @@
     <Authors>Jason DiBianco</Authors>
     <Company>Jason DiBianco</Company>
     <Description>AspNet Core Common Library</Description>
+    <RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

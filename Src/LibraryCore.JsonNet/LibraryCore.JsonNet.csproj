@@ -8,6 +8,8 @@
     <Authors>Jason DiBianco</Authors>
     <Company>Jason DiBianco</Company>
     <Description>.NetCore Common Utilities For Json.Net</Description>
+    <RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

@@ -13,9 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.JsonNet", "Src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.JsonNet", "Tests\LibraryCore.Tests.JsonNet\LibraryCore.Tests.JsonNet.csproj", "{7F466EE2-3BD4-4AB9-8081-3ED1B78C0FB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.AspNet", "Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj", "{6AC7E247-CBF4-4494-9A55-FF1AFFF151E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.AspNet", "Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj", "{6AC7E247-CBF4-4494-9A55-FF1AFFF151E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.Tests.AspNet", "Tests\LibraryCore.Tests.AspNet\LibraryCore.Tests.AspNet.csproj", "{4D41A3CB-FE8F-4BDF-84A5-F5C28B3B4B86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.AspNet", "Tests\LibraryCore.Tests.AspNet\LibraryCore.Tests.AspNet.csproj", "{4D41A3CB-FE8F-4BDF-84A5-F5C28B3B4B86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{C393C54D-0367-417D-BAAA-2B8323D44D10}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\ConsumingFeedFromGitHub.txt = Documentation\ConsumingFeedFromGitHub.txt
+		Documentation\ProducingVersionOutsideOfCiCd.txt = Documentation\ProducingVersionOutsideOfCiCd.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
