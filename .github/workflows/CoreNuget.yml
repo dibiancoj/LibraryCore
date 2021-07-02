@@ -1,0 +1,23 @@
+name: CoreNuget
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  corenuget:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Package The Build
+      run:  dotnet pack --configuration Release
+    - name: Push The Nuget Build
+      run:  dotnet nuget push "bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/dibiancoj/index.json" --api-key {{personal access token}}
