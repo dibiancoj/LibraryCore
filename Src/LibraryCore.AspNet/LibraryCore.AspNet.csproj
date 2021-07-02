@@ -5,6 +5,9 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Authors>Jason DiBianco</Authors>
+    <Company>Jason DiBianco</Company>
+    <Description>AspNet Core Common Library</Description>
   </PropertyGroup>
 
   <ItemGroup>
