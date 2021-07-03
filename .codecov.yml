@@ -9,3 +9,6 @@ coverage:
     patch:
       default:
         target: 0%
+ignore:
+  - */Properties/.*
+  - Src/**/*
