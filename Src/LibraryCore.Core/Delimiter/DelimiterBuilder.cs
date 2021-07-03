@@ -121,7 +121,7 @@ namespace LibraryCore.Core.Delimiter
         private void WriteOutRowOfData(DelimiterRow columnsOfDataToOutput)
         {
             //we don't have any columns, just return an empty string
-            if (!columnsOfDataToOutput.ColumnData.AnyWithNullCheck())
+            if (columnsOfDataToOutput.ColumnData.HasNoneWithNullCheck())
             {
                 //have nothing, return out of the method
                 return;
