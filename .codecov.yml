@@ -1,8 +1,4 @@
 coverage:
-  ignore:
-   - "Src/LibraryCore.Core/Properties/**"
-   - "LibraryCore.Core/Properties/**"
-   - "LibraryCore.Core/Properties/**"
   status:
     project:
       default:
@@ -13,7 +9,3 @@ coverage:
     patch:
       default:
         target: 0%
-ignore:
-  - "Src/LibraryCore.Core/Properties/**"
-  - "LibraryCore.Core/Properties/**"
-  - "LibraryCore.Core/Properties/**"
