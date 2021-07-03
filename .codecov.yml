@@ -9,5 +9,5 @@ coverage:
     patch:
       default:
         target: 0%
-    ignore:
-      - "src/master/Src/LibraryCore.Core/Properties/Resources.Designer.cs"
+ignore:
+  - "src/master/Src/LibraryCore.Core/Properties/Resources.Designer.cs"
