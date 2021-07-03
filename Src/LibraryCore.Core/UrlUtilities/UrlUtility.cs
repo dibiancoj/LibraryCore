@@ -37,12 +37,7 @@ namespace LibraryCore.Core.UrlUtilities
         public static bool IsAbsoluteUri(string uriToInspect)
         {
             //"/test/doctor" //this code in linux is failing. So we need a special clause for it in the code
-            if (uriToInspect.StartsWith("/", StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            return Uri.TryCreate(uriToInspect, UriKind.Absolute, out _) || uriToInspect.StartsWith("www", StringComparison.OrdinalIgnoreCase);
+            return !uriToInspect.StartsWith("/", StringComparison.Ordinal) && (Uri.TryCreate(uriToInspect, UriKind.Absolute, out _) || uriToInspect.StartsWith("www", StringComparison.OrdinalIgnoreCase));
         }
     }
 }
