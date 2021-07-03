@@ -11,4 +11,5 @@ coverage:
         target: 0%
 ignore:
   - */Properties/.*
-  - Src/**/*
+  - Src/**/*.cs
+  - **/*.cs
