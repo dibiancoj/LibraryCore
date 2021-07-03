@@ -59,5 +59,19 @@ namespace LibraryCore.Tests.Core.RegularExpressionUtilities
 
         #endregion
 
+        #region NumberParser
+
+        [InlineData("jason123", "jason", "")]
+        [InlineData("123jason123", "jason", "")]
+        [InlineData("123jas123on123", "jason", "")]
+        [InlineData("123jas1on123", "zzzjaszonzzz", "z")]
+        [Theory]
+        public void NumberParserTest2(string testValueToParse, string shouldBeValue, string replaceWithValue)
+        {
+            Assert.Equal(shouldBeValue, RegularExpressionUtility.ParseStringAndLeaveOnlyNumbers(testValueToParse, replaceWithValue));
+        }
+
+        #endregion
+
     }
 }

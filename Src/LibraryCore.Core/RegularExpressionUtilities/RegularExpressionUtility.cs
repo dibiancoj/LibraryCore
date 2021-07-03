@@ -66,5 +66,20 @@ namespace LibraryCore.Core.RegularExpressionUtilities
 
         #endregion
 
+        #region Only Number Parser
+
+        /// <summary>
+        /// Take a string and replace only the text (any non numeric text) in that string. ie 123jason945 will return 123ReplaceValue945
+        /// </summary>
+        /// <param name="stringToParse">String To Parse</param>
+        /// <param name="replaceValue">Text You Want To Replace The Non Numeric Data Found</param>
+        /// <returns>string with only numbers found in the original string</returns>
+        public static string ParseStringAndLeaveOnlyNumbers(string stringToParse, string replaceValue)
+        {
+            return new Regex(@"[\d-]", RegexOptions.Compiled, DefaultTimeOut()).Replace(stringToParse, replaceValue);
+        }
+
+        #endregion
+
     }
 }
