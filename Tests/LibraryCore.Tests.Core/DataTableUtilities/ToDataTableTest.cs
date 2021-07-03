@@ -11,12 +11,12 @@ namespace LibraryCore.Tests.Core.DataTableUtilities
 
         #region Framework
 
-        private record DataTableTestClass(int Id, string Txt, IEnumerable<DataTableTestClass> TestCollection)
+        private record DataTableTestClass(int Id, string Txt, int? NullableId, IEnumerable<DataTableTestClass> TestCollection)
         {
             public static IEnumerable<DataTableTestClass> BuildListOfTLazy(int howManyRecords)
             {
                 return Enumerable.Range(0, howManyRecords)
-                          .Select(x => new DataTableTestClass(x, x.ToString(), new List<DataTableTestClass> { new DataTableTestClass(x, x.ToString(), Enumerable.Empty<DataTableTestClass>()) }));
+                          .Select(x => new DataTableTestClass(x, x.ToString(), x == 0 ? null : x, new List<DataTableTestClass> { new DataTableTestClass(x, x.ToString(), null, Enumerable.Empty<DataTableTestClass>()) }));
             }
         }
 
@@ -46,13 +46,16 @@ namespace LibraryCore.Tests.Core.DataTableUtilities
             Assert.Equal(1, dataTableResult.Rows.Count);
 
             //check the column count 
-            Assert.Equal(2, dataTableResult.Columns.Count);
+            Assert.Equal(3, dataTableResult.Columns.Count);
 
             //check the id field value
-            Assert.Equal(0, dataTableResult.Rows[0]["Id"]);
+            Assert.Equal(0, dataTableResult.Rows[0][nameof(DataTableTestClass.Id)]);
 
             //check the txt field value
-            Assert.Equal("0", dataTableResult.Rows[0]["Txt"]);
+            Assert.Equal("0", dataTableResult.Rows[0][nameof(DataTableTestClass.Txt)]);
+
+            //check nullable field
+            Assert.Equal(DBNull.Value, dataTableResult.Rows[0][nameof(DataTableTestClass.NullableId)]);
         }
 
         /// <summary>
@@ -77,19 +80,22 @@ namespace LibraryCore.Tests.Core.DataTableUtilities
             Assert.Equal(rowsToTest.Length, dataTableResult.Rows.Count);
 
             //check the column count
-            Assert.Equal(2, dataTableResult.Columns.Count);
+            Assert.Equal(3, dataTableResult.Columns.Count);
 
             //check row 1
-            Assert.Equal(rowsToTest[0].Id, dataTableResult.Rows[0]["Id"]);
-            Assert.Equal(rowsToTest[0].Txt, dataTableResult.Rows[0]["Txt"]);
+            Assert.Equal(rowsToTest[0].Id, dataTableResult.Rows[0][nameof(DataTableTestClass.Id)]);
+            Assert.Equal(rowsToTest[0].Txt, dataTableResult.Rows[0][nameof(DataTableTestClass.Txt)]);
+            Assert.Equal(DBNull.Value, dataTableResult.Rows[0][nameof(DataTableTestClass.NullableId)]);
 
             //check row 2
-            Assert.Equal(rowsToTest[1].Id, dataTableResult.Rows[1]["Id"]);
-            Assert.Equal(rowsToTest[1].Txt, dataTableResult.Rows[1]["Txt"]);
+            Assert.Equal(rowsToTest[1].Id, dataTableResult.Rows[1][nameof(DataTableTestClass.Id)]);
+            Assert.Equal(rowsToTest[1].Txt, dataTableResult.Rows[1][nameof(DataTableTestClass.Txt)]);
+            Assert.Equal(rowsToTest[1].Id, dataTableResult.Rows[1][nameof(DataTableTestClass.NullableId)]);
 
             //check row 3
-            Assert.Equal(rowsToTest[2].Id, dataTableResult.Rows[2]["Id"]);
-            Assert.Equal(rowsToTest[2].Txt, dataTableResult.Rows[2]["Txt"]);
+            Assert.Equal(rowsToTest[2].Id, dataTableResult.Rows[2][nameof(DataTableTestClass.Id)]);
+            Assert.Equal(rowsToTest[2].Txt, dataTableResult.Rows[2][nameof(DataTableTestClass.Txt)]);
+            Assert.Equal(rowsToTest[2].Id, dataTableResult.Rows[2][nameof(DataTableTestClass.NullableId)]);
         }
 
         /// <summary>
