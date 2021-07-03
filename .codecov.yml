@@ -10,4 +10,4 @@ coverage:
       default:
         target: 0%
 ignore:
-  - "src/master/Src/LibraryCore.Core/Properties/Resources.Designer.cs"
+  - "**/*.Designer.cs"
