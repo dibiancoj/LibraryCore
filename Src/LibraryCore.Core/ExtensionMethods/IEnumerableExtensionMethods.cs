@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <typeparam name="T">Type Of The IEnumerable</typeparam>
         /// <param name="collection">Collection To Check Against</param>
         /// <returns>If The Item Has Any Records</returns>
-        public static bool AnyWithNullCheck<T>(this IEnumerable<T>? collection) => collection.AnyWithNullCheck(null);
+        public static bool AnyWithNullCheck<T>([NotNullWhen(true)] this IEnumerable<T>? collection) => collection.AnyWithNullCheck(null);
 
         /// <summary>
         /// Checks To See If The Collection Has Any Items (Same Idea As The Any Extension Method Of Off IEnumerable). Only Difference Is, If The Collection Is Null It Returns False Instead Of Throwing An Error
@@ -28,7 +29,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <param name="collection">Collection To Check Against</param>
         /// <param name="predicate">Predicate To Query The Collection With A Where Before We Determine If Any Exist</param>
         /// <returns>If The Item Has Any Records</returns>
-        public static bool AnyWithNullCheck<T>(this IEnumerable<T>? collection, Func<T, bool>? predicate)
+        public static bool AnyWithNullCheck<T>([NotNullWhen(true)] this IEnumerable<T>? collection, Func<T, bool>? predicate)
         {
             //if it's null then return false
             if (collection == null)
@@ -50,7 +51,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// Does the array have no items. 
         /// </summary>
         /// <returns>If the enumerable has no items</returns>
-        public static bool HasNoneWithNullCheck<T>(this IEnumerable<T>? collection) => !collection.AnyWithNullCheck();
+        public static bool HasNoneWithNullCheck<T>([NotNullWhen(false)] this IEnumerable<T>? collection) => !collection.AnyWithNullCheck();
 
         #endregion
 
