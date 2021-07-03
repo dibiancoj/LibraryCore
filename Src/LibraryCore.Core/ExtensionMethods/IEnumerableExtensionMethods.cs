@@ -113,7 +113,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <typeparam name="T">Type Of The IEnumerable</typeparam>
         /// <param name="collection">Collection To Check Against</param>
         /// <param name="predicate">Predicate To Search For The Element In The Collection</param>
-        /// <returns>Last Index. Returns Null If Nothing Is Found</returns>
+        /// <returns>First Index. Returns Null If Nothing Is Found</returns>
         public static int? FirstIndexOfElement<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
         {
             //holds the tally so we can keep track of what index we are up to
