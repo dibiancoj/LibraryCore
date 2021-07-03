@@ -20,7 +20,7 @@ namespace LibraryCore.Tests.Core.UrlUtilities
         [InlineData(true, "http://www.google.com")]
         [InlineData(true, "https://www.google.com")]
         [InlineData(true, "www.google.com")]
-        //[InlineData(false, "/test/doctor")] //this code in linux is failing. Can change the build machine to be windows or just comment this out.
+        [InlineData(false, "/test/doctor")] //this code in linux is failing. So we need a special clause for it in the code
         [InlineData(false, "test/doctor")]
         [InlineData(false, "test/doctor?id=5")]
         [InlineData(false, "#Id=5")]
