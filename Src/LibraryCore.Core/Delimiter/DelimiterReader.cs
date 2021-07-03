@@ -23,12 +23,12 @@ namespace LibraryCore.Core.Delimiter
         {
             //i profiled this and its faster and more memory efficient to use a string reader for each row. To do this for every column had to allocate to much.
             //the current implementation is best for reducing memory
-            using (var Reader = new StringReader(contentToParse))
+            using (var reader = new StringReader(contentToParse))
             {
                 //loop until we are done
-                while (Reader.Peek() != -1)
+                while (reader.Peek() != -1)
                 {
-                    var lineToRead = Reader.ReadLine();
+                    var lineToRead = reader.ReadLine();
 
                     if (lineToRead.HasValue())
                     {
