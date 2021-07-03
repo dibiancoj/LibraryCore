@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		Documentation\ProducingVersionOutsideOfCiCd.txt = Documentation\ProducingVersionOutsideOfCiCd.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{44736F91-EA46-467A-8C68-1B7B712F8B92}"
+	ProjectSection(SolutionItems) = preProject
+		Commands\PushNugetBackpages.bat = Commands\PushNugetBackpages.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

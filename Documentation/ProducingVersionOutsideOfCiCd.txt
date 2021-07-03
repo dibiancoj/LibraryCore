@@ -1,3 +1,13 @@
 1. Increment the version in the assembly
 2. dotnet pack --configuration Release <-- (at the solution level which will do it for all 3. Or you can do it at the project level)
-3. dotnet nuget push "**/*.nupkg" --source "https://nuget.pkg.github.com/dibiancoj/index.json" --api-key {{personal access token}} 
+3. dotnet nuget push "**/*.nupkg" --source "https://nuget.pkg.github.com/dibiancoj/index.json" --api-key {{personal access token}} --skip-duplicate
+
+
+
+
+
+*{{personal access key}}...in github web ui
+1. Profile picture, settings
+2. Developer Settings
+3. Personal Access Token
+4. Create token to read
