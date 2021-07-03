@@ -13,7 +13,7 @@ namespace LibraryCore.Core.DataTypes
             //this is the base constructor
             Month = IsValidMonthAndRaiseError(month);
             Year = IsValidYearAndRaiseError(year);
-            FullAccountingPeriod = Convert.ToInt32($"{Year}{Month.ToString("D2")}");
+            FullAccountingPeriod = Convert.ToInt32($"{Year}{Month:D2}");
         }
 
         public AccountingPeriod(DateTime accountingPeriodToParse)
