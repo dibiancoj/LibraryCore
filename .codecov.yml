@@ -3,13 +3,10 @@
 
 # Check if this file is valid by running in bash:
 # curl -X POST --data-binary @.codecov.yml https://codecov.io/validate
+# Jason - use ubuntu terminal. While in current directory where teh .codecov.yml exists run "curl -X POST --data-binary @.codecov.yml https://codecov.io/validate"
 
 # Coverage configuration
 # ----------------------
-
-
-
-#jason - use ubuntu terminal. While in current directory where teh .codecov.yml exists run "curl -X POST --data-binary @.codecov.yml https://codecov.io/validate"
 
 coverage:
   status:
@@ -24,5 +21,6 @@ coverage:
 # --------------
 # which folders/files to ignore
 ignore:
-  - "Src/LibraryCore.Core/Properties/*"
-  - "**/Resources.Designer.cs"
+   - "**/Resources.Designer.cs"
+#  - "Src/LibraryCore.Core/Properties/*"
+
