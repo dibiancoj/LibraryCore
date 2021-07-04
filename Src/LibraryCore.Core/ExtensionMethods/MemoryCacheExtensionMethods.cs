@@ -38,13 +38,7 @@ namespace LibraryCore.Core.ExtensionMethods
                 await asyncLockToUse.WaitAsync();
 
                 //if we were waiting for a lock to be released by another thread then most likely its in the cache now. We will try to grab the item again.
-                if (cache.TryGetValue<TItem>(key, out var tryToGetItemPessimistic))
-                {
-                    //we have it in our cache...return it
-                    return tryToGetItemPessimistic;
-                }
-
-                //try to grab it from the cache first
+                //that is why we are doing a GetOrCreate. this way we try to fetch it on more time before we create it and put it in the cache.
                 return await cache.GetOrCreateAsync(key, factory);
             }
             finally
