@@ -3,7 +3,6 @@ using LibraryCore.Tests.Core.GlobalMocks;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,19 +16,47 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
         [InlineData(true)]
         [InlineData(false)]
         [Theory]
-        public async Task GetOrCreateCantFindInCache(bool addOptions)
+        public async Task GetOrCreateInCache(bool addOptions)
         {
             var key = Guid.NewGuid().ToString();
             var distributedCacheToTestWith = new FullMockIDistributedCache();
+            int callToCreateObject = 0;
 
-            var result = addOptions ?
-                            await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, () => new List<int> { 1, 2, 3 }, new DistributedCacheEntryOptions()) :
-                            await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, () => new List<int> { 1, 2, 3 });
+            async Task<List<int>> factoryCall()
+            {
+                callToCreateObject += 1;
+
+                return await Task.FromResult(new List<int> { 1, 2, 3 });
+            }
+
+            async Task<List<int>> goToCacheToTestAsync()
+            {
+                if (addOptions)
+                {
+                    return await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, factoryCall, new DistributedCacheEntryOptions());
+                }
+
+                return await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, factoryCall);
+            }
+
+            var result = await goToCacheToTestAsync();
 
             Assert.Equal(3, result.Count);
             Assert.Contains(result, x => x == 1);
             Assert.Contains(result, x => x == 2);
             Assert.Contains(result, x => x == 3);
+            Assert.Equal(1, callToCreateObject);
+
+            //go try again to make sure it pulls from the cache
+            var result2 = await goToCacheToTestAsync();
+
+            Assert.Equal(3, result2.Count);
+            Assert.Contains(result2, x => x == 1);
+            Assert.Contains(result2, x => x == 2);
+            Assert.Contains(result2, x => x == 3);
+
+            //shouldn't go back to the source on the 2nd call. Should be pulled from the cache
+            Assert.Equal(1, callToCreateObject);
         }
 
         [InlineData(true)]

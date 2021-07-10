@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -16,12 +13,12 @@ namespace LibraryCore.Core.ExtensionMethods
 
         #region Public Methods
 
-        public static async ValueTask<TItem> GetOrCreateWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, Func<TItem> factory)
+        public static async ValueTask<TItem> GetOrCreateWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, Func<Task<TItem>> factory)
         {
             return await distributedCache.GetOrCreateWithJsonSerializerAsync(key, factory, null);
         }
 
-        public static async ValueTask<TItem> GetOrCreateWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, Func<TItem> factory, DistributedCacheEntryOptions? distributedCacheEntryOptions)
+        public static async ValueTask<TItem> GetOrCreateWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions? distributedCacheEntryOptions)
         {
             var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
 
@@ -32,7 +29,7 @@ namespace LibraryCore.Core.ExtensionMethods
             }
 
             //we don't have it...lets go add it
-            var itemToAdd = factory();
+            var itemToAdd = await factory();
 
             //didn't find it...go get it
             await distributedCache.SetWithJsonSerializerAsync(key, itemToAdd, distributedCacheEntryOptions);
