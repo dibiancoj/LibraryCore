@@ -12,8 +12,6 @@
 name: "CodeQL-SecurityScanner"
 
 on:
-  push:
-    branches: [ master ]
   schedule:
     - cron: '0 9 * * 1'
 
