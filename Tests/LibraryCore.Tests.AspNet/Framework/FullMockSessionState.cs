@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace LibraryCore.Tests.AspNet.Framework
 {
+    public record MockWithSessionResult(Mock<IHttpContextAccessor> MockContextAccessor, Mock<HttpContext> MockContext, Mock<ISession> FullSessionStateMock);
+
     public class FullMockSessionState : ISession
     {
         private Dictionary<string, byte[]> InternalSessionStateStorage { get; } = new Dictionary<string, byte[]>();
@@ -29,7 +31,7 @@ namespace LibraryCore.Tests.AspNet.Framework
 
         public virtual bool TryGetValue(string key, out byte[] value) => InternalSessionStateStorage.TryGetValue(key, out value);
 
-        public static (Mock<IHttpContextAccessor> MockContextAccessor, Mock<HttpContext> MockContext, Mock<ISession> FullSessionStateMock) BuildContextWithSession()
+        public static MockWithSessionResult BuildContextWithSession()
         {
             var mockHttpContext = new Mock<HttpContext>();
             var mockIHttpContextAccessor = new Mock<IHttpContextAccessor>();
@@ -41,7 +43,7 @@ namespace LibraryCore.Tests.AspNet.Framework
             mockHttpContext.Setup(x => x.Session)
                 .Returns(fullSessionStateMock.Object);
 
-            return (mockIHttpContextAccessor, mockHttpContext, fullSessionStateMock);
+            return new(mockIHttpContextAccessor, mockHttpContext, fullSessionStateMock);
         }
     }
 }
