@@ -1,7 +1,5 @@
 ﻿using LibraryCore.AspNet.SessionState;
 using LibraryCore.Tests.AspNet.Framework;
-using Microsoft.AspNetCore.Http;
-using Moq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,20 +12,9 @@ namespace LibraryCore.Tests.AspNet.SessionState
 
         public DistributedSessionStateServiceTest()
         {
-            MockHttpContext = new Mock<HttpContext>();
-            MockIHttpContextAccessor = new Mock<IHttpContextAccessor>();
-
-            MockIHttpContextAccessor.Setup(x => x.HttpContext)
-                .Returns(MockHttpContext.Object);
-
-            MockHttpContext.Setup(x => x.Session)
-                .Returns(new FullMockSessionState());
-
-            SessionStateServiceToUse = new DistributedSessionStateService(MockIHttpContextAccessor.Object, Array.Empty<System.Text.Json.Serialization.JsonConverter>());
+            SessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, Array.Empty<System.Text.Json.Serialization.JsonConverter>());
         }
 
-        private Mock<HttpContext> MockHttpContext { get; }
-        private Mock<IHttpContextAccessor> MockIHttpContextAccessor { get; }
         private DistributedSessionStateService SessionStateServiceToUse { get; }
 
         [Fact]
