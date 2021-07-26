@@ -1,37 +1,16 @@
 ﻿using System;
 
-namespace LibraryCore.Core.DataTypes
+namespace LibraryCore.Core.DataTypes.Unions
 {
-
     /// <summary>
     /// Union type between 2 different data types
     /// </summary>
     /// <typeparam name="T1"></typeparam>
     /// <typeparam name="T2"></typeparam>
-    public class Union<T1, T2>
+    public abstract class UnionBase
     {
-        /// <summary>
-        /// Create a union with the first type
-        /// </summary>
-        /// <param name="t1Value">Value of the T1 value</param>
-        public Union(T1 t1Value)
-        {
-            UnionType = typeof(T1);
-            TValue = t1Value;
-        }
-
-        /// <summary>
-        /// Create a union with the second type
-        /// </summary>
-        /// <param name="t2Value"></param>
-        public Union(T2 t2Value)
-        {
-            UnionType = typeof(T2);
-            TValue = t2Value;
-        }
-
-        private Type UnionType { get; init; }
-        private dynamic? TValue { get; init; }
+        protected Type? UnionType { get; init; }
+        protected dynamic? TValue { get; init; }
 
         /// <summary>
         /// Returns true if the union contains a value of type T
@@ -47,7 +26,7 @@ namespace LibraryCore.Core.DataTypes
         {
             return Is<T>() ?
                      TValue as dynamic :
-                     default;
+                     default(T);
         }
 
     }
