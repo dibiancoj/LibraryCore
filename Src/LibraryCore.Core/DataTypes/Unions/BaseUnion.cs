@@ -3,14 +3,18 @@
 namespace LibraryCore.Core.DataTypes.Unions
 {
     /// <summary>
-    /// Union type between 2 different data types
+    /// Base Union type
     /// </summary>
-    /// <typeparam name="T1"></typeparam>
-    /// <typeparam name="T2"></typeparam>
     public abstract class UnionBase
     {
-        protected Type? UnionType { get; init; }
-        protected dynamic? TValue { get; init; }
+        public UnionBase(Type unionType, dynamic? currentValue)
+        {
+            UnionType = unionType;
+            CurrentValue = currentValue;
+        }
+
+        protected Type UnionType { get; init; }
+        protected dynamic? CurrentValue { get; init; }
 
         /// <summary>
         /// Returns true if the union contains a value of type T
@@ -25,7 +29,7 @@ namespace LibraryCore.Core.DataTypes.Unions
         public T? As<T>()
         {
             return Is<T>() ?
-                     TValue as dynamic :
+                     CurrentValue :
                      default(T);
         }
 
