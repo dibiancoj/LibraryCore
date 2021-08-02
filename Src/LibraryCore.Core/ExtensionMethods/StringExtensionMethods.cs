@@ -188,7 +188,7 @@ namespace LibraryCore.Core.ExtensionMethods
             //we have 9 characters, create the instance of the string builder becauase we need it (init the capacity to reduce memory just a tag)
             return new StringBuilder()
                     .Append(justDigitsInSpan.Slice(0, 5))
-                    .Append("-")
+                    .Append('-')
                     .Append(justDigitsInSpan.Slice(5, 4))
                     .ToString();
         }
@@ -224,7 +224,7 @@ namespace LibraryCore.Core.ExtensionMethods
             //we need the string builder...so create the object (init the capacity in the sb to reduce memory a tad)
             return new StringBuilder()
                 //set the area code
-                .Append("(")
+                .Append('(')
                 .Append(phoneNumberJustDigits.Slice(0, 3))
                 .Append(") ")
 
@@ -232,7 +232,7 @@ namespace LibraryCore.Core.ExtensionMethods
                 .Append(phoneNumberJustDigits.Slice(3, 3))
 
                 //add the dash
-                .Append("-")
+                .Append('-')
 
                 //add the last 4
                 .Append(phoneNumberJustDigits.Slice(6, 4))
