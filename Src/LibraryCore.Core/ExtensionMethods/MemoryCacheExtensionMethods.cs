@@ -52,7 +52,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <summary>
         /// Create a cache item where you can remove that 'group' from the cache using a cancellation token
         /// </summary>
-        public static async Task<TItem> GetOrCreateExclusiveWithEvictionAsync<TItem>(this IMemoryCache cache, object key, CancellationTokenSource cancellationToken, Func<ICacheEntry, Task<TItem>> factory)
+        public static async Task<TItem> GetOrCreateExclusiveWithEvictionAsync<TItem>(this IMemoryCache cache, object key, Func<ICacheEntry, Task<TItem>> factory, CancellationTokenSource cancellationToken)
         {
             return await cache.GetOrCreateExclusiveAsync(key, async x =>
             {

@@ -88,15 +88,15 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
             async Task<int> factory2(ICacheEntry x) => await Task.FromResult(key2);
 
             //pull from the cache
-            Assert.Equal(1, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", cancelToken, factory1));
-            Assert.Equal(2, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", cancelToken, factory2));
+            Assert.Equal(1, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", factory1, cancelToken));
+            Assert.Equal(2, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", factory2, cancelToken));
 
             key1 = 101;
             key2 = 102;
 
             //should get 1 since it's pulling from the cache
-            Assert.Equal(1, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", cancelToken, factory1));
-            Assert.Equal(2, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", cancelToken, factory2));
+            Assert.Equal(1, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", factory1, cancelToken));
+            Assert.Equal(2, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", factory2, cancelToken));
 
             //remove the cache
             cancelToken.Cancel();
@@ -105,14 +105,14 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
             cancelToken = new CancellationTokenSource();
 
             //both entries should be removed...so both should be the new field
-            Assert.Equal(101, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", cancelToken, factory1));
-            Assert.Equal(102, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", cancelToken, factory2));
+            Assert.Equal(101, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key1", factory1, cancelToken));
+            Assert.Equal(102, await memoryCache.GetOrCreateExclusiveWithEvictionAsync("key2", factory2, cancelToken));
 
             //clear it
             cancelToken.Cancel();
 
             //make sure it's not there now
-            Assert.Equal("FromSource", await memoryCache.GetOrCreateExclusiveWithEvictionAsync(999, cancelToken, x => Task.FromResult("FromSource")));
+            Assert.Equal("FromSource", await memoryCache.GetOrCreateExclusiveWithEvictionAsync(999, x => Task.FromResult("FromSource"), cancelToken));
         }
 
         #endregion
