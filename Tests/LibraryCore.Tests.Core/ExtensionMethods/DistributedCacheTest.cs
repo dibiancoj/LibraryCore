@@ -8,7 +8,7 @@ using Xunit;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods
 {
-    public class DistributedMemoryCacheTest
+    public class DistributedCacheTest
     {
 
         #region Get Or Create

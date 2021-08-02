@@ -10,7 +10,7 @@ namespace LibraryCore.Core.ExtensionMethods
     /// <summary>
     /// Extension methods to help with serialization with a distributed cache. This handles all the serialization using the new json serializer.
     /// </summary>
-    public static class DistributedMemoryCacheExtensionMethods
+    public static class DistributedCacheExtensionMethods
     {
 
         /// <summary>
