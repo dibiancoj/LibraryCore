@@ -41,7 +41,7 @@ namespace LibraryCore.Core.DateTimeUtilities
                 4 or 5 or 6 => 2,
                 7 or 8 or 9 => 3,
                 10 or 11 or 12 => 4,
-                _ => throw new ArgumentOutOfRangeException(nameof(whichQuarterIsDateTimeIn), "Month Of WhichQuarterIsDateTimeIn Can't Be Found In Quarter Lookup"),
+                _ => throw new ArgumentOutOfRangeException(nameof(whichQuarterIsDateTimeIn), $"Invalid Month Of ${whichQuarterIsDateTimeIn.Month}"),
             };
         }
     }
