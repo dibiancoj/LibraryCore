@@ -13,8 +13,8 @@ namespace LibraryCore.Core.DataTypes.Unions
             CurrentValue = currentValue;
         }
 
-        protected Type UnionType { get; init; }
-        protected dynamic? CurrentValue { get; init; }
+        protected Type UnionType { get; }
+        protected dynamic? CurrentValue { get; }
 
         /// <summary>
         /// Returns true if the union contains a value of type T
