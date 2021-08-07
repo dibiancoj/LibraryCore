@@ -18,17 +18,16 @@ namespace LibraryCore.Core.Paging
         public static int CalculateTotalPages(int howManyTotalRecordsInDataSet, int howManyRecordsPerPage)
         {
             //calculate how many pages we have
-            double Conversion = ((double)howManyTotalRecordsInDataSet / (double)howManyRecordsPerPage);
+            double conversion = (double)howManyTotalRecordsInDataSet / howManyRecordsPerPage;
 
             //do we have an even amount
-            if ((Conversion % 1) == 0)
-            {
+            return ((conversion % 1) == 0) ?
+              
                 //we have an even amount
-                return Convert.ToInt32(Conversion);
-            }
+              Convert.ToInt32(conversion) :
 
-            //we have an uneven amount...so grab the floor then add 1
-            return Convert.ToInt32(Math.Floor(Conversion)) + 1;
+              //we have an uneven amount...so grab the floor then add 1
+              Convert.ToInt32(Math.Floor(conversion)) + 1;
         }
 
     }
