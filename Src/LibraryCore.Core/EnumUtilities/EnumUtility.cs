@@ -83,9 +83,7 @@ namespace LibraryCore.Core.EnumUtilities
         /// <returns>True if the attribute is present. False is not</returns>
         public static bool AttributeIsDefined<T>(Enum enumValueToTest) where T : Attribute
         {
-            var fieldInfo = EnumFieldValueGet(enumValueToTest);
-
-            return fieldInfo?.IsDefined(typeof(T), false) ?? false;
+            return EnumFieldValueGet(enumValueToTest).IsDefined(typeof(T), false);
         }
 
         /// <summary>
