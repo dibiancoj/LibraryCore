@@ -5,6 +5,7 @@ namespace LibraryCore.Tests.Core.ExcelUtilities
 {
     public class ExcelUtilityTest
     {
+
         #region Column Name To Int
 
         /// <summary>
@@ -26,12 +27,14 @@ namespace LibraryCore.Tests.Core.ExcelUtilities
         /// <summary>
         /// Test column number to letter (for excel)
         /// </summary>
-        [Fact]
-        public void ExcelToolsColumnNumberToLetterTest1()
+        [InlineData("AZ", 52)]
+        [InlineData("AA", 27)]
+        [InlineData("A", 1)]
+        [InlineData("D", 4)]
+        [Theory]
+        public void ExcelToolsColumnNumberToLetterTest1(string expectedColumn, int columnIndex)
         {
-            Assert.Equal("AA", ExcelUtility.ColumnIndexToColumnLetter(27));
-            Assert.Equal("A", ExcelUtility.ColumnIndexToColumnLetter(1));
-            Assert.Equal("D", ExcelUtility.ColumnIndexToColumnLetter(4));
+            Assert.Equal(expectedColumn, ExcelUtility.ColumnIndexToColumnLetter(columnIndex));
         }
 
         #endregion
