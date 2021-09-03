@@ -54,7 +54,7 @@ namespace LibraryCore.Core.EnumUtilities
             //Equals = 1
 
             //grab the custom attributes now 
-            return (EnumFieldValueGet(enumValueToRetrieve) ?? throw new NullReferenceException("Enum Value Is Null")).GetCustomAttribute<T>();
+            return EnumFieldValueGet(enumValueToRetrieve).GetCustomAttribute<T>();
         }
 
         /// <summary>
@@ -93,10 +93,11 @@ namespace LibraryCore.Core.EnumUtilities
         /// </summary>
         /// <param name="enumValueToFetchFieldInfoFor">Enum value to get the field info for</param>
         /// <returns>FieldInfo for the enum passed in</returns>
-        private static FieldInfo? EnumFieldValueGet(Enum enumValueToFetchFieldInfoFor)
+        private static FieldInfo EnumFieldValueGet(Enum enumValueToFetchFieldInfoFor)
         {
             //grab the type of the enum passed in, then grab the field info object from the enum value passed in
-            return enumValueToFetchFieldInfoFor.GetType().GetField(enumValueToFetchFieldInfoFor.ToString());
+            //this should never really return a null value because we passed in an enum. Can't think of a valid scenario here to retur null (ignoring nulls)
+            return enumValueToFetchFieldInfoFor.GetType().GetField(enumValueToFetchFieldInfoFor.ToString())!;
         }
 
         #endregion
