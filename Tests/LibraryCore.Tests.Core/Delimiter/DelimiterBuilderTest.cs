@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Delimiter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -37,6 +38,9 @@ namespace LibraryCore.Tests.Core.Delimiter
 
             //add a row of data
             delimiterBuilder.AddRow(new string[] { "1", "2", "", null });
+
+            //add a row to test the none row
+            delimiterBuilder.AddRow(Array.Empty<string>());
 
             //what is the final output of creator
             var result = delimiterBuilder.WriteData();
