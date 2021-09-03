@@ -36,6 +36,22 @@ namespace LibraryCore.Tests.Core.DataTypes
         }
 
         [Fact]
+        public void ParseAccountingPeriodThrows()
+        {
+            Assert.Throws<Exception>(() => AccountingPeriod.ParseAccountingPeriod(202114));
+        }
+
+        [Fact]
+        public void ParseAccountingPeriodReturnsCorrectly()
+        {
+            var result = AccountingPeriod.ParseAccountingPeriod(202112);
+
+            Assert.Equal(2021, result.Year);
+            Assert.Equal(12, result.Month);
+            Assert.Equal(202112, result.FullAccountingPeriod);
+        }
+
+        [Fact]
         public void BuildPeriodFromNumbersWithInvalidYear()
         {
             Assert.Throws<Exception>(() => new AccountingPeriod(05, 1));
