@@ -62,14 +62,8 @@ namespace LibraryCore.Core.ExtensionMethods
                     }
                 }
 
-                //we don't have it...lets go add it
-                var itemToAdd = await factory();
-
-                //didn't find it...go get it
-                await distributedCache.SetWithJsonSerializerAsync(key, itemToAdd, distributedCacheEntryOptions);
-
-                //return the item
-                return itemToAdd;
+                //didn't find it...go create it, set it in the cache, and return it
+                return await distributedCache.SetWithJsonSerializerAsync(key, await factory(), distributedCacheEntryOptions);
             }
             finally
             {
@@ -79,15 +73,17 @@ namespace LibraryCore.Core.ExtensionMethods
             }
         }
 
-        public static async Task SetWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, TItem itemToAdd)
+        public static async Task<TItem> SetWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, TItem itemToAdd)
         {
-            await distributedCache.SetWithJsonSerializerAsync(key, itemToAdd, new DistributedCacheEntryOptions());
+            return await distributedCache.SetWithJsonSerializerAsync(key, itemToAdd, new DistributedCacheEntryOptions());
         }
 
-        public static async Task SetWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions)
+        public static async Task<TItem> SetWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions)
         {
             //can't pass null for the distributed options
             await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions);
+
+            return itemToAdd;
         }
 
         #endregion
