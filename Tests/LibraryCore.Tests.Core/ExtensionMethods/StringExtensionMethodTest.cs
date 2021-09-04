@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods
@@ -126,6 +127,20 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
         public void IsNullOrWhiteSpaceTest1(string valueToTest, bool expectedResult)
         {
             Assert.Equal(expectedResult, valueToTest.IsNullOrWhiteSpace());
+        }
+
+        #endregion
+
+        #region To Stream
+
+        [Fact]
+        public void ToMemoryStream()
+        {
+            var valueToStartWith = "Test abc";
+
+            using var stream = valueToStartWith.ToMemoryStream();
+
+            var backToString = Encoding.ASCII.GetString(stream.ToArray());
         }
 
         #endregion
