@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,12 +28,12 @@ namespace LibraryCore.Core.ExtensionMethods
 
         public static async Task<TItem> GetOrCreateWithJsonSerializerAsync<TItem>(this IDistributedCache distributedCache, string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions distributedCacheEntryOptions)
         {
-            var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
+            var tryToGrabFromCacheResult = await TryToGetValueFromCache<TItem>(distributedCache, key);
 
             //we have it just return it
-            if (tryToFindInDistributedCache != null)
+            if (tryToGrabFromCacheResult.TryGetItemFromResult(out var tryToGetItemFromCacheResult))
             {
-                return DeserializeFromBytes<TItem>(tryToFindInDistributedCache);
+                return tryToGetItemFromCacheResult;
             }
 
             //so we couldn't find it on our first shot. we need to take a lock now
@@ -41,8 +42,25 @@ namespace LibraryCore.Core.ExtensionMethods
 
             try
             {
+                //grab the count in a variable. If = 1...then you are the thread that is causing the blocking
+                int i = asyncLockToUse.CurrentCount;
+
                 //take the lock and wait for it
                 await asyncLockToUse.WaitAsync();
+
+                //if we are the thread that is blocking then don't try to fetch it again. If we were waiting because of a another thread...
+                //then the value should be in the cache and go fetch it (still verify its in the cache and don't assume because of contention)
+                if (i == 0)
+                {
+                    //since we took a lock the value might be there from another thread. so try to get 1 1 more time. 
+                    var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache<TItem>(distributedCache, key);
+
+                    //check if we have it
+                    if (tryToGrabFromCacheAfterLockResult.TryGetItemFromResult(out var tryToGetItemFromCacheResultAfterLock))
+                    {
+                        return tryToGetItemFromCacheResultAfterLock;
+                    }
+                }
 
                 //we don't have it...lets go add it
                 var itemToAdd = await factory();
@@ -76,6 +94,18 @@ namespace LibraryCore.Core.ExtensionMethods
 
         #region Private Helper Methods
 
+        private static async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(IDistributedCache distributedCache, string key)
+        {
+            var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
+
+            if (tryToFindInDistributedCache == null)
+            {
+                return TryToGetInCacheResult<TItem>.IsNotFoundInCache();
+            }
+
+            return TryToGetInCacheResult<TItem>.IsFoundInCache(DeserializeFromBytes<TItem>(tryToFindInDistributedCache));
+        }
+
         /// <summary>
         /// In a method incase we need to change the default serialization
         /// </summary>
@@ -103,6 +133,30 @@ namespace LibraryCore.Core.ExtensionMethods
 
             //return the lock
             return lockAttempt;
+        }
+
+        #endregion
+
+        #region Models
+
+        /// <summary>
+        /// Splitting this out into it's own class for nullability checks a real value if T is populated since we can't use out parameters in async methods
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        private class TryToGetInCacheResult<T>
+        {
+            private bool FoundInCache { get; init; }
+            private T? ItemFoundInCache { get; init; }
+
+            internal static TryToGetInCacheResult<T> IsNotFoundInCache() => new() { FoundInCache = false };
+            internal static TryToGetInCacheResult<T> IsFoundInCache(T itemFoundInCache) => new() { FoundInCache = true, ItemFoundInCache = itemFoundInCache };
+
+            internal bool TryGetItemFromResult([NotNullWhen(true)] out T? tryToRetrieveItemFoundInCache)
+            {
+                tryToRetrieveItemFoundInCache = FoundInCache ? ItemFoundInCache : default;
+
+                return FoundInCache;
+            }
         }
 
         #endregion

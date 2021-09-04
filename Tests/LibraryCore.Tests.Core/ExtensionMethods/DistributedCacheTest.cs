@@ -112,5 +112,32 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
 
         #endregion
 
+        #region 2 Threads With One Grabbing a Lock
+
+        [Fact]
+        public async Task LockContention()
+        {
+            var key = Guid.NewGuid().ToString();
+            var distributedCacheToTestWith = new FullMockIDistributedCache();
+
+            //start thread 1 without awaiting it
+            var startThread1 = distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, async () =>
+            {
+                await Task.Delay(3000);
+
+                return 9999;
+            });
+
+            //kick off thread 2 which goes right away and should pick up the lock within 3 seconds
+            var startThread2 = distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, () => Task.FromResult(1111));
+
+            //at this point thread 1 should block thread 2. Thread 1 will return it's factory and block thread 2.
+            //thread 2 will be blocked until thread 1 completes...because of the check we get after the lock. Thread 1 should win the race and return 9999
+            Assert.Equal(9999, await startThread1);
+            Assert.Equal(9999, await startThread2);
+        }
+
+        #endregion
+
     }
 }
