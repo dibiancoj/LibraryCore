@@ -138,7 +138,6 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <summary>
         /// Splitting this out into it's own class for nullability checks a real value if T is populated since we can't use out parameters in async methods
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         private class TryToGetInCacheResult<T>
         {
             private bool FoundInCache { get; init; }
