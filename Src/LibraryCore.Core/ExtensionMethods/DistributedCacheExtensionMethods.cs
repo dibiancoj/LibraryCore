@@ -94,12 +94,9 @@ namespace LibraryCore.Core.ExtensionMethods
         {
             var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
 
-            if (tryToFindInDistributedCache == null)
-            {
-                return TryToGetInCacheResult<TItem>.IsNotFoundInCache();
-            }
-
-            return TryToGetInCacheResult<TItem>.IsFoundInCache(DeserializeFromBytes<TItem>(tryToFindInDistributedCache));
+            return tryToFindInDistributedCache == null ?
+                                TryToGetInCacheResult<TItem>.IsNotFoundInCache():
+                                TryToGetInCacheResult<TItem>.IsFoundInCache(DeserializeFromBytes<TItem>(tryToFindInDistributedCache));
         }
 
         /// <summary>
