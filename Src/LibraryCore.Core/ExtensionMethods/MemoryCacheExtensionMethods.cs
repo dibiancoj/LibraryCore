@@ -62,24 +62,7 @@ namespace LibraryCore.Core.ExtensionMethods
             }).ConfigureAwait(false);
         }
 
-        private static SemaphoreSlim AcquireLock(object key)
-        {
-            //try to grab the lock
-            if (CacheLocksLookup.TryGetValue(key, out var lockAttempt))
-            {
-                //found it in the dictionary
-                return lockAttempt;
-            }
-
-            //create the new lock
-            lockAttempt = new SemaphoreSlim(1, 1);
-
-            //add it to the dictionary
-            CacheLocksLookup.TryAdd(key, lockAttempt);
-
-            //return the lock
-            return lockAttempt;
-        }
+        private static SemaphoreSlim AcquireLock(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 
     }
 }
