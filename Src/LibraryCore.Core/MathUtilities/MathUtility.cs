@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace LibraryCore.Core.MathUtilities
+﻿namespace LibraryCore.Core.MathUtilities
 {
     public static class MathUtility
     {
