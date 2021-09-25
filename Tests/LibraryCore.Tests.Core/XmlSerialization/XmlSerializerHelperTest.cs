@@ -37,18 +37,17 @@ namespace LibraryCore.Tests.Core.XmlSerialization
         {
             var xmlData = XMLSerializationHelper.SerializeObjectToXElement(new TestObject { Id = 9999, Text = "Test 9999" });
 
-            using (var streamToUse = new MemoryStream())
-            {
-                xmlData.Save(streamToUse);
+            using var streamToUse = new MemoryStream();
 
-                //rewind the stream to the beg.
-                streamToUse.Seek(0, SeekOrigin.Begin);
+            xmlData.Save(streamToUse);
 
-                var result = XMLSerializationHelper.DeserializeObject<TestObject>(streamToUse);
+            //rewind the stream to the beg.
+            streamToUse.Seek(0, SeekOrigin.Begin);
 
-                Assert.Equal(9999, result.Id);
-                Assert.Equal("Test 9999", result.Text);
-            }
+            var result = XMLSerializationHelper.DeserializeObject<TestObject>(streamToUse);
+
+            Assert.Equal(9999, result.Id);
+            Assert.Equal("Test 9999", result.Text);
         }
 
     }

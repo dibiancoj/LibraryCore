@@ -1,4 +1,5 @@
-﻿using LibraryCore.JsonNet;
+﻿using LibraryCore.Core.ExtensionMethods;
+using LibraryCore.JsonNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
@@ -11,36 +12,9 @@ namespace LibraryCore.Tests.JsonNet
     public class JsonNetTest
     {
 
-        #region Framework
-
-        private MemoryStream ToStream(string stringToWriteIntoAStream)
-        {
-            //can't dispose of anything otherwise you won't be able to read it...The calling method needs to make sure they dispose of the stream
-
-            //create the memory stream
-            var memoryStreamToUse = new MemoryStream();
-
-            //create the writer
-            var writerToUse = new StreamWriter(memoryStreamToUse);
-
-            //write the string data
-            writerToUse.Write(stringToWriteIntoAStream);
-
-            //flush it out
-            writerToUse.Flush();
-
-            //set the position to the beg of the stream
-            memoryStreamToUse.Position = 0;
-
-            //go run the test method
-            return memoryStreamToUse;
-        }
-
-        #endregion
-
         #region Test Object
 
-        public record TestObject(int Id = 9999, string Text="Test");
+        public record TestObject(int Id = 9999, string Text = "Test");
 
         #endregion
 
@@ -71,7 +45,7 @@ namespace LibraryCore.Tests.JsonNet
             var recordToTest = new TestObject();
 
             //let's serialize it into a json string
-            var jsonInStream = ToStream(JsonConvert.SerializeObject(recordToTest));
+            using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
             //let's de-serialize it back from the stream
             var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream);
@@ -93,7 +67,7 @@ namespace LibraryCore.Tests.JsonNet
             var recordToTest = new TestObject();
 
             //let's serialize it into a json string
-            var jsonInStream = ToStream(JsonConvert.SerializeObject(recordToTest));
+            using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
             //let's de-serialize it back from the stream
             var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream, JsonSerializer.CreateDefault());
@@ -115,7 +89,7 @@ namespace LibraryCore.Tests.JsonNet
             var recordToTest = new TestObject();
 
             //let's serialize it into a json string
-            using var jsonInStream = ToStream(JsonConvert.SerializeObject(recordToTest));
+            using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
             //let's de-serialize it back from the stream
             var deserializedStringObject = JsonNetUtilities.DeserializeFromStream(typeof(TestObject), jsonInStream, JsonSerializer.CreateDefault(new JsonSerializerSettings())) as TestObject;
@@ -157,7 +131,7 @@ namespace LibraryCore.Tests.JsonNet
             var recordToTest = new TestObject();
 
             //let's serialize it into a json string
-            var jsonInStream = ToStream(JsonConvert.SerializeObject(recordToTest));
+            using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
             //let's de-serialize it back from the stream
             JObject jObject = await JsonNetUtilities.JObjectFromStreamAsync(jsonInStream);
