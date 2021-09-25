@@ -77,7 +77,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// Write a string into a stream
         /// </summary>
         /// <param name="stringToWriteIntoAStream">String to write into a stream</param>
-        /// <returns>Stream. Be Sure to Dispose of it</returns>
+        /// <returns>The memory stream with the string written into it. Be Sure to Dispose of it!</returns>
         public static MemoryStream ToMemoryStream(this string stringToWriteIntoAStream)
         {
             //can't dispose of anything otherwise you won't be able to read it...The calling method needs to make sure they dispose of the stream

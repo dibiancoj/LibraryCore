@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
     <ProjectReference Include="..\..\Src\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
   </ItemGroup>
 
