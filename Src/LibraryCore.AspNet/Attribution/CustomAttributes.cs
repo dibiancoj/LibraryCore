@@ -9,9 +9,7 @@ namespace LibraryCore.AspNet.Attribution
         public static bool CustomAttributeIsDefined<TAttribute>(ActionDescriptor actionDescriptor)
             where TAttribute : Attribute
         {
-            var castedAction = actionDescriptor as ControllerActionDescriptor;
-
-            return castedAction == null ?
+            return actionDescriptor is not ControllerActionDescriptor castedAction ?
                     false :
                     castedAction.MethodInfo.IsDefined(typeof(TAttribute), true);
         }
