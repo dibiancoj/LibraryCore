@@ -52,7 +52,7 @@ namespace LibraryCore.AspNet.Validation
                 return ValidationResult.Success;
             }
 
-            var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(RequiredIfPropertyName) ?? throw new Exception("Property Name = " + RequiredIfPropertyName + " not found in object");
+            var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(RequiredIfPropertyName) ?? throw new MissingFieldException("Property Name = " + RequiredIfPropertyName + " not found in object");
 
             var triggerPropertyValue = triggerPropertyInfo.GetValue(validationContext.ObjectInstance, null);
 
