@@ -57,6 +57,17 @@ namespace LibraryCore.Tests.AspNet.Validation
             }
         }
 
+        [Fact]
+        public void TriggerPropertyIsNull()
+        {
+            var target = new RequiredIfModel { Value = null };
+            //don't use default <-- for automated builds
+            var context = new ValidationContext(target);
+            var results = new List<ValidationResult>();
+
+            Assert.True(Validator.TryValidateObject(target, context, results, true));
+        }
+
         #endregion
 
         #region Required If When Looking For Multiple Values - ie contains | or statement
