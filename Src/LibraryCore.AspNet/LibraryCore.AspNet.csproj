@@ -10,7 +10,7 @@
     <Description>AspNet Core Common Library</Description>
     <RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
     <ProjectReference Include="..\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
   </ItemGroup>
 
