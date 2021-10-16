@@ -28,15 +28,8 @@ namespace LibraryCore.AspNet.SessionState
 
             var foundInSession = HttpContextAccessor.HttpContext.Session.TryGetValue(key, out var foundBytes);
 
-            T? DeserializeItem(byte[] bytes)
-            {
-                return useJsonNetSerializer ?
-                        JsonNetUtilities.DeserializeFromByteArray<T>(bytes, JsonNetSerializerOptions) :
-                        System.Text.Json.JsonSerializer.Deserialize<T>(bytes, CachedJsonSerializerOptions);
-            }
-
             var objectFound = foundInSession ?
-                                DeserializeItem(foundBytes) :
+                                DeserializeItem<T>(foundBytes, useJsonNetSerializer) :
                                 default;
 
             return (foundInSession, objectFound!); //with new vs throws nullability (as this differs from contract). Leaving for now since the boolean should be checked first.
@@ -52,11 +45,7 @@ namespace LibraryCore.AspNet.SessionState
         {
             await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
 
-            byte[] serializedBytes = useJsonNetSerializer ?
-                                        JsonNetUtilities.SerializeToUtf8Bytes(objectToPutInSession, JsonNetSerializerOptions) :
-                                        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession);
-
-            HttpContextAccessor.HttpContext.Session.Set(key, serializedBytes);
+            HttpContextAccessor.HttpContext.Session.Set(key, SerializeObject(objectToPutInSession, useJsonNetSerializer));
             await HttpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
         }
 
@@ -102,6 +91,20 @@ namespace LibraryCore.AspNet.SessionState
             await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
 
             return HttpContextAccessor.HttpContext.Session.Keys;
+        }
+
+        private byte[] SerializeObject<T>(T objectToPutInSession, bool useJsonNetSerializer)
+        {
+            return useJsonNetSerializer ?
+                       JsonNetUtilities.SerializeToUtf8Bytes(objectToPutInSession, JsonNetSerializerOptions) :
+                       System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: CachedJsonSerializerOptions);
+        }
+
+        private T? DeserializeItem<T>(byte[] bytesToDeserialize, bool useJsonNetSerializer)
+        {
+            return useJsonNetSerializer ?
+                        JsonNetUtilities.DeserializeFromByteArray<T>(bytesToDeserialize, JsonNetSerializerOptions) :
+                        System.Text.Json.JsonSerializer.Deserialize<T>(bytesToDeserialize, CachedJsonSerializerOptions);
         }
 
         private static JsonSerializerOptions CreateSystemTextJsonSerializationOptions(IEnumerable<System.Text.Json.Serialization.JsonConverter> jsonTextConverters)
