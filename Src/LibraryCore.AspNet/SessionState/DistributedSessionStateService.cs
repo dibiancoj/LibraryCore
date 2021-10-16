@@ -54,7 +54,7 @@ namespace LibraryCore.AspNet.SessionState
 
             byte[] serializedBytes = useJsonNetSerializer ?
                                         JsonNetUtilities.SerializeToUtf8Bytes(objectToPutInSession, JsonNetSerializerOptions) :
-                                        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession);
+                                        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: CachedJsonSerializerOptions);
 
             HttpContextAccessor.HttpContext.Session.Set(key, serializedBytes);
             await HttpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
