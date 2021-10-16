@@ -107,7 +107,7 @@ namespace LibraryCore.Core.ExtensionMethods
         /// <summary>
         /// In a method incase we need to change the default serialization
         /// </summary>
-        private static T DeserializeFromBytes<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes) ?? throw new Exception("Not Able To Deserialize Bytes");
+        private static T DeserializeFromBytes<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes)!; //! = there will be most likely a json exception instead of returning null. Visible in unit tests
 
         private static SemaphoreSlim AcquireLock(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 
