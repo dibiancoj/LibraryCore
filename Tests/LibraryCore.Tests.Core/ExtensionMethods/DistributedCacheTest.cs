@@ -3,6 +3,7 @@ using LibraryCore.Tests.Core.GlobalMocks;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -135,6 +136,27 @@ namespace LibraryCore.Tests.Core.ExtensionMethods
             //thread 2 will be blocked until thread 1 completes...because of the check we get after the lock. Thread 1 should win the race and return 9999
             Assert.Equal(9999, await startThread1);
             Assert.Equal(9999, await startThread2);
+        }
+
+        #endregion
+
+        #region Cant Deserialize Bytes Exception Check
+
+        public class CantDeserializeBytesModel
+        {
+            public int Id { get; set; }
+        }
+
+        [Fact]
+        public async Task CantDeserializeBytes()
+        {
+            var distributedCacheToTestWith = new FullMockIDistributedCache();
+
+            //set the first value
+            await distributedCacheToTestWith.SetWithJsonSerializerAsync("CantDeserializeBytes", "test 123");
+
+            //try to deserialize it to a random class
+            await Assert.ThrowsAsync<JsonException>(() => distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync<CantDeserializeBytesModel>("CantDeserializeBytes", () => throw new NotImplementedException()));
         }
 
         #endregion
