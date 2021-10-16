@@ -6,16 +6,16 @@ using System.Net.Http;
 namespace LibraryCore.AspNet.Attributes
 {
     /// <summary>
-    /// Allow either an http get or an http option (for the load balancer)
+    /// Allow either an httpet, head, or options is allowed. Useful with load balanced env's.
     /// </summary>
     public class HttpGetOptionHeadAttribute : HttpMethodAttribute
     {
-        private static IImmutableList<string> SupportedMethodTypes { get; } = new[]
+        private static IImmutableList<string> SupportedMethodTypes { get; } = ImmutableList.CreateRange(new string[]
         {
             HttpMethod.Get.Method.ToUpper(),
             HttpMethod.Options.Method.ToUpper(),
             HttpMethod.Head.Method.ToUpper()
-        }.ToImmutableList();
+        });
 
         public HttpGetOptionHeadAttribute()
             : base(SupportedMethodTypes)

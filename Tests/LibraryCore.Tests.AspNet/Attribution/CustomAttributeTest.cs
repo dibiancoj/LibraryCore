@@ -11,6 +11,7 @@ namespace LibraryCore.Tests.AspNet.Attribution
 
         #region Framework
 
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
         private class MyTestAttribute : Attribute
         {
         }
