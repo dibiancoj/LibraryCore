@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.JsonNet;
+﻿using LibraryCore.JsonNet;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -15,9 +14,8 @@ namespace LibraryCore.AspNet.SessionState
         public DistributedSessionStateService(IHttpContextAccessor httpContextAccessor, IEnumerable<System.Text.Json.Serialization.JsonConverter> jsonTextConverters)
         {
             HttpContextAccessor = httpContextAccessor;
-            CachedJsonSerializerOptions = new JsonSerializerOptions();
+            CachedJsonSerializerOptions = CreateSystemTextJsonSerializationOptions(jsonTextConverters);
             JsonNetSerializerOptions = new Newtonsoft.Json.JsonSerializer { TypeNameHandling = TypeNameHandling.All };
-            jsonTextConverters.ForEach(x => CachedJsonSerializerOptions.Converters.Add(x));
         }
 
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -104,6 +102,23 @@ namespace LibraryCore.AspNet.SessionState
             await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
 
             return HttpContextAccessor.HttpContext.Session.Keys;
+        }
+
+        private static JsonSerializerOptions CreateSystemTextJsonSerializationOptions(IEnumerable<System.Text.Json.Serialization.JsonConverter> jsonTextConverters)
+        {
+            var options = new JsonSerializerOptions();
+
+            //don't want to add a dependency on LibraryCore. Will just write this out. This should only get loaded once per app.
+            //i wanted to get this verbose code out of the constructor method
+            if (jsonTextConverters != null && jsonTextConverters.Any())
+            {
+                foreach (var textConverter in jsonTextConverters)
+                {
+                    options.Converters.Add(textConverter);
+                }
+            }
+
+            return options;
         }
 
     }
