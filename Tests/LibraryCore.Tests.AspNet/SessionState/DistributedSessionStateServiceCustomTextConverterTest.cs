@@ -63,5 +63,15 @@ namespace LibraryCore.Tests.AspNet.SessionState
             Assert.Equal("Test123", valueInSession.Id);
         }
 
+        [Fact]
+        public async Task JsonConverterCheckIfNullConvertersIsHandled()
+        {
+            var sessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, null);
+
+            await sessionStateServiceToUse.SetObjectAsync("test", "test123");
+
+            Assert.Equal("test123", await sessionStateServiceToUse.GetObjectAsync<string>("test"));
+        }
+
     }
 }

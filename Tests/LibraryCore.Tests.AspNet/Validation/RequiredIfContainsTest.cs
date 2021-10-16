@@ -27,6 +27,12 @@ namespace LibraryCore.Tests.AspNet.Validation
             public string ValueIfYes { get; set; }
         }
 
+        public class RequiredIfModelMissingProperty
+        {
+            [RequiredIfContains("MissingProperty", TestEnum.Two, ErrorMessage = "My_Error_Resource")]
+            public string RequiredIfMissingPropertyCheck { get; set; }
+        }
+
         public class RequiredNotArrayTestModel
         {
             public string Value { get; set; }
@@ -35,7 +41,7 @@ namespace LibraryCore.Tests.AspNet.Validation
             public string ValueIfYes { get; set; }
         }
 
-        private IList<TestEnum> MockList(bool includeTwo)
+        private static IList<TestEnum> MockList(bool includeTwo)
         {
             var data = new List<TestEnum> { TestEnum.One, TestEnum.Three };
 
@@ -96,6 +102,21 @@ namespace LibraryCore.Tests.AspNet.Validation
                 Assert.Single(results);
                 Assert.Single(results, x => x.ErrorMessage == "My_Error_Resource");
             }
+        }
+
+        #endregion
+
+        #region Required If Property Is Missing
+
+        [Fact]
+        public void PropertyNotFound()
+        {
+            var target = new RequiredIfModelMissingProperty();
+            //don't use default <-- for automated builds
+            var context = new ValidationContext(target);
+            var results = new List<ValidationResult>();
+
+            Assert.Throws<MissingFieldException>(() => Validator.TryValidateObject(target, context, results, true));
         }
 
         #endregion

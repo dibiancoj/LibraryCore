@@ -1,4 +1,5 @@
 ﻿using LibraryCore.AspNet.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xunit;
@@ -18,6 +19,12 @@ namespace LibraryCore.Tests.AspNet.Validation
 
             [RequiredIf(nameof(Value), "Yes1", "Yes2", ErrorMessage = "My Error Message")]
             public string ValueIfYes1OrYes2 { get; set; }
+        }
+
+        public class RequiredIfModelMissingProperty
+        {
+            [RequiredIf("MissingPropertyName", "SomeValue", ErrorMessage = "My Error Message")]
+            public string RequiredIfMissingPropertyCheck { get; set; }
         }
 
         #endregion
@@ -48,6 +55,17 @@ namespace LibraryCore.Tests.AspNet.Validation
                 Assert.Single(results);
                 Assert.Single(results, x => x.ErrorMessage == "My Error Message");
             }
+        }
+
+        [Fact]
+        public void TriggerPropertyIsNull()
+        {
+            var target = new RequiredIfModel { Value = null };
+            //don't use default <-- for automated builds
+            var context = new ValidationContext(target);
+            var results = new List<ValidationResult>();
+
+            Assert.True(Validator.TryValidateObject(target, context, results, true));
         }
 
         #endregion
@@ -82,5 +100,21 @@ namespace LibraryCore.Tests.AspNet.Validation
         #endregion
 
         #endregion
+
+        #region Required If Property Is Missing
+
+        [Fact]
+        public void PropertyNotFound()
+        {
+            var target = new RequiredIfModelMissingProperty();
+            //don't use default <-- for automated builds
+            var context = new ValidationContext(target);
+            var results = new List<ValidationResult>();
+
+            Assert.Throws<MissingFieldException>(() => Validator.TryValidateObject(target, context, results, true));
+        }
+
+        #endregion
+
     }
 }

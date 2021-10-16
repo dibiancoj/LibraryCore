@@ -26,11 +26,11 @@ namespace LibraryCore.AspNet.Validation
                 return ValidationResult.Success;
             }
 
-            var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(RequiredIfPropertyName) ?? throw new Exception("Property Name = " + RequiredIfPropertyName + " not found in object");
+            var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(RequiredIfPropertyName) ?? throw new MissingFieldException($"Property Name = {RequiredIfPropertyName} not found in object");
 
             var triggerPropertyValue = triggerPropertyInfo.GetValue(validationContext.ObjectInstance, null);
 
-            if (triggerPropertyValue is string || !(triggerPropertyValue is IEnumerable castToIEnumerable))
+            if (triggerPropertyValue is string || triggerPropertyValue is not IEnumerable castToIEnumerable)
             {
                 throw new Exception("Trigger Property Value Is Not A List. Property Name = " + RequiredIfPropertyName);
             }
@@ -39,7 +39,7 @@ namespace LibraryCore.AspNet.Validation
 
             while (enumerator.MoveNext())
             {
-                if (enumerator.Current?.Equals(RequiredIfValue) ?? false)
+                if (enumerator.Current.Equals(RequiredIfValue))
                 {
                     return new ValidationResult(ErrorMessage);
                 }

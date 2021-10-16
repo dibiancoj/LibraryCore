@@ -80,7 +80,7 @@ namespace LibraryCore.Core.Parsers
             foreach (var propertyLevel in nodePropertiesToParse.Slice(1))
             {
                 //grab the property and the value
-                tempObject = tempObject?.GetType().GetProperty(propertyLevel)?.GetValue(tempObject, null);
+                tempObject = tempObject!.GetType().GetProperty(propertyLevel)?.GetValue(tempObject, null);
             }
 
             return tempObject;
