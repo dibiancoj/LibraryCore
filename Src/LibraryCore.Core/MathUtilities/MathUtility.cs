@@ -1,34 +1,33 @@
-﻿namespace LibraryCore.Core.MathUtilities
+﻿namespace LibraryCore.Core.MathUtilities;
+
+public static class MathUtility
 {
-    public static class MathUtility
+
+    /// <summary>
+    /// This this a prime number
+    /// </summary>
+    /// <param name="numberToCheck">number to check</param>
+    /// <returns>True if a prime number</returns>
+    public static bool IsPrimeNumber(int numberToCheck)
     {
+        var goToNumber = numberToCheck / 2;
 
-        /// <summary>
-        /// This this a prime number
-        /// </summary>
-        /// <param name="numberToCheck">number to check</param>
-        /// <returns>True if a prime number</returns>
-        public static bool IsPrimeNumber(int numberToCheck)
+        for (var i = 2; i <= goToNumber; i++)
         {
-            var goToNumber = numberToCheck / 2;
-
-            for (var i = 2; i <= goToNumber; i++)
+            if (numberToCheck % i == 0)
             {
-                if (numberToCheck % i == 0)
-                {
-                    return false;
-                }
+                return false;
             }
-
-            return true;
         }
 
-        /// <summary>
-        /// Is it a composite number ie: not a prime number
-        /// </summary>
-        /// <param name="numberToCheck">number to check</param>
-        /// <returns>True if a composite number</returns>
-        public static bool IsCompositeNumber(int numberToCheck) => !IsPrimeNumber(numberToCheck);
-
+        return true;
     }
+
+    /// <summary>
+    /// Is it a composite number ie: not a prime number
+    /// </summary>
+    /// <param name="numberToCheck">number to check</param>
+    /// <returns>True if a composite number</returns>
+    public static bool IsCompositeNumber(int numberToCheck) => !IsPrimeNumber(numberToCheck);
+
 }

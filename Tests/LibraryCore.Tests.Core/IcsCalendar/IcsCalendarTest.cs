@@ -2,26 +2,26 @@
 using System;
 using Xunit;
 
-namespace LibraryCore.Tests.Core.IcsCalendar
+namespace LibraryCore.Tests.Core.IcsCalendar;
+
+public class IcsCalendarTest
 {
-    public class IcsCalendarTest
+
+    #region Unit Test Methods
+
+    [Fact]
+    public void MimeTypeTest()
     {
+        Assert.Equal("text/calendar", IcsCalendarCreator.ICSMimeType);
+    }
 
-        #region Unit Test Methods
-
-        [Fact]
-        public void MimeTypeTest()
-        {
-            Assert.Equal("text/calendar", IcsCalendarCreator.ICSMimeType);
-        }
-
-        /// <summary>
-        /// Test the creation of the appointment with specific date times
-        /// </summary>
-        [Fact]
-        public void ICSCreationWithSpecificDateTimesTest1()
-        {
-            const string expectedResult = @"BEGIN:VCALENDAR
+    /// <summary>
+    /// Test the creation of the appointment with specific date times
+    /// </summary>
+    [Fact]
+    public void ICSCreationWithSpecificDateTimesTest1()
+    {
+        const string expectedResult = @"BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VTIMEZONE
@@ -52,24 +52,24 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-            var result = IcsCalendarCreator.CreateICSAppointment(IcsCalendarCreator.IcsTimeZoneEnum.NewYork,
-                                                                                 new DateTime(2015, 3, 5, 3, 55, 0),
-                                                                                 new DateTime(2015, 3, 10, 4, 58, 0),
-                                                                                 "Test Summary 123",
-                                                                                 "Location Text 123",
-                                                                                 "BodyOfReminder 123",
-                                                                                 false);
+        var result = IcsCalendarCreator.CreateICSAppointment(IcsCalendarCreator.IcsTimeZoneEnum.NewYork,
+                                                                             new DateTime(2015, 3, 5, 3, 55, 0),
+                                                                             new DateTime(2015, 3, 10, 4, 58, 0),
+                                                                             "Test Summary 123",
+                                                                             "Location Text 123",
+                                                                             "BodyOfReminder 123",
+                                                                             false);
 
-            Assert.Equal(expectedResult, result);
-        }
+        Assert.Equal(expectedResult, result);
+    }
 
-        /// <summary>
-        /// Test the creation of the appointment with a full day appt
-        /// </summary>
-        [Fact]
-        public void ICSCreationWithFullDayAppointmentTest1()
-        {
-            const string expectedResult = @"BEGIN:VCALENDAR
+    /// <summary>
+    /// Test the creation of the appointment with a full day appt
+    /// </summary>
+    [Fact]
+    public void ICSCreationWithFullDayAppointmentTest1()
+    {
+        const string expectedResult = @"BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VTIMEZONE
@@ -100,18 +100,17 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-            var result = IcsCalendarCreator.CreateICSAppointment(IcsCalendarCreator.IcsTimeZoneEnum.NewYork,
-                                                                                 new DateTime(2015, 3, 5),
-                                                                                 new DateTime(2015, 3, 6),
-                                                                                 "Test Summary 123",
-                                                                                 "Location Text 123",
-                                                                                 "BodyOfReminder 123",
-                                                                                 true);
+        var result = IcsCalendarCreator.CreateICSAppointment(IcsCalendarCreator.IcsTimeZoneEnum.NewYork,
+                                                                             new DateTime(2015, 3, 5),
+                                                                             new DateTime(2015, 3, 6),
+                                                                             "Test Summary 123",
+                                                                             "Location Text 123",
+                                                                             "BodyOfReminder 123",
+                                                                             true);
 
-            Assert.Equal(expectedResult, result);
-        }
-
-        #endregion
-
+        Assert.Equal(expectedResult, result);
     }
+
+    #endregion
+
 }
