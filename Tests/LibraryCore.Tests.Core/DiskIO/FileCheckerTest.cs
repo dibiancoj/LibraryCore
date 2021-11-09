@@ -2,20 +2,19 @@
 using System.Text;
 using Xunit;
 
-namespace LibraryCore.Tests.Core.DiskIO
+namespace LibraryCore.Tests.Core.DiskIO;
+
+public class FileCheckerTest
 {
-    public class FileCheckerTest
+    [InlineData("MZ", true)]
+    [InlineData("M", false)] //only 1 character
+    [InlineData("123", false)]
+    [InlineData("ab", false)]
+    [InlineData("c", false)]
+    [InlineData("ef", false)]
+    [Theory]
+    public void IsExecutablePositiveTest1(string FirstTwoBytesToTest, bool expectResultIsExe)
     {
-        [InlineData("MZ", true)]
-        [InlineData("M", false)] //only 1 character
-        [InlineData("123", false)]
-        [InlineData("ab", false)]
-        [InlineData("c", false)]
-        [InlineData("ef", false)]
-        [Theory]
-        public void IsExecutablePositiveTest1(string FirstTwoBytesToTest, bool expectResultIsExe)
-        {
-            Assert.Equal(expectResultIsExe, FileChecker.IsExecutableInWindows(Encoding.ASCII.GetBytes(FirstTwoBytesToTest)));
-        }
+        Assert.Equal(expectResultIsExe, FileChecker.IsExecutableInWindows(Encoding.ASCII.GetBytes(FirstTwoBytesToTest)));
     }
 }
