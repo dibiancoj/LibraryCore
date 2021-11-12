@@ -57,7 +57,7 @@ public static class AttributeFormatParser
         }
 
         //start but no end bracket. throw here
-        if (currentCharacterRead != default && currentCharacterRead != '}')
+        if (currentCharacterRead != '}')
         {
             throw new Exception("No End Bracket Found In Format");
         }
