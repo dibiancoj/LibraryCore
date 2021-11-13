@@ -48,7 +48,7 @@ public static class PermutationBuilder
     /// <param name="itemsAreExclusive">Are items exclusive? Meaning once they are used in the combo, they can't be used in the next items. Example: "abc". Can it be "aaa"? Or once a is used, it can't be used again.</param>
     /// <returns>An array with all the combinations inside</returns>
     /// <returns></returns>
-    public static Int64 TotalNumberOfPermutationCombinations<T>(IEnumerable<T> listToPermute, int lengthToPermutate, bool itemsAreExclusive)
+    public static long TotalNumberOfPermutationCombinations<T>(IEnumerable<T> listToPermute, int lengthToPermutate, bool itemsAreExclusive)
     {
         //use the overload (count() does a cast to icollection for optimizations, we don't need to run the same logic)
         return TotalNumberOfPermutationCombinations(listToPermute.Count(), lengthToPermutate, itemsAreExclusive);
@@ -63,10 +63,10 @@ public static class PermutationBuilder
     /// <param name="itemsAreExclusive">Are items exclusive? Meaning once they are used in the combo, they can't be used in the next items. Example: "abc". Can it be "aaa"? Or once a is used, it can't be used again.</param>
     /// <returns>An array with all the combinations inside</returns>
     /// <returns></returns>
-    public static Int64 TotalNumberOfPermutationCombinations(int numberOfCharactersToPermutate, int lengthToPermutate, bool itemsAreExclusive)
+    public static long TotalNumberOfPermutationCombinations(int numberOfCharactersToPermutate, int lengthToPermutate, bool itemsAreExclusive)
     {
         //Running tally
-        Int64 runningTally = 1;
+        long runningTally = 1;
 
         //running characters to permutate
         int characterCountToPermutate = numberOfCharactersToPermutate;
@@ -145,12 +145,12 @@ public static class PermutationBuilder
             foreach (T startingElement in listToPermute)
             {
                 //grab the remaining items. Are the items exclusive?
-                var RemainingItems = itemsAreExclusive ?
-                                 ExcludeAtIndexLazy(listToPermute, startingElementIndex) :
+                var remainingItems = itemsAreExclusive ?
+                                 listToPermute.Where((x, i) => i != startingElementIndex): //this includes every item but the one at this index
                                  listToPermute;
 
                 //loop through the next set recursively
-                foreach (var permutationOfRemainder in PermuteLazy(RemainingItems, lengthMinus1, itemsAreExclusive))
+                foreach (var permutationOfRemainder in PermuteLazy(remainingItems, lengthMinus1, itemsAreExclusive))
                 {
                     //go start from the previous call and keep looping (use the iterator so we don't have to allocate a dummy array with 1 element)
                     yield return new PermutationBuilderResult<T>(permutationOfRemainder.PermutationItems.Prepend(startingElement));
@@ -159,36 +159,6 @@ public static class PermutationBuilder
                 //increase the tally
                 startingElementIndex++;
             }
-        }
-    }
-
-    /// <summary>
-    /// Return all items except the item at the IndexToExclude. Used for perfomance reasons instead of ListToPermute.Where((x, i) => i != StartingElementIndex); This is better on memory
-    /// </summary>
-    /// <typeparam name="T">Type of the collection</typeparam>
-    /// <param name="collection">Collection to iterate</param>
-    /// <param name="indexToExclude">index of the item to exclude</param>
-    /// <returns>ienumerable of T except for the item at the specified index</returns>
-    /// <remarks>Used BenchmarkDotNet for performance diag. This is better on memory then linq where</remarks>
-    private static IEnumerable<T> ExcludeAtIndexLazy<T>(IEnumerable<T> collection, int indexToExclude)
-    {
-        //this method is essentially ListToPermute.Where((x, i) => i != StartingElementIndex) but uses less memory
-
-        //holds the index that we are up to
-        int currentIndex = 0;
-
-        //loop through the collection
-        foreach (var item in collection)
-        {
-            //make sure its the index we don't want
-            if (currentIndex != indexToExclude)
-            {
-                //it's not the item...so return this item
-                yield return item;
-            }
-
-            //increment the counter
-            currentIndex++;
         }
     }
 
