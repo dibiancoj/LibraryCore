@@ -82,8 +82,8 @@ public static class IcsCalendarCreator
         //grab the time zone factory
         var timeZoneFactoryToUse = CreateTimeZone(icsTimeZone);
 
-        //we will use a string builder to write everything
-        var icsWriter = new StringBuilder();
+        //we will use a string builder to write everything. use a default capacity. All the static text below is 166-ish plus the dates.
+        var icsWriter = new StringBuilder(185);
 
         //there are basically 5 fields tht we need to fill in...start date, end date, summary, location, and the body.
 
@@ -149,13 +149,12 @@ public static class IcsCalendarCreator
     /// Return the formatted time that an ics file expects
     /// </summary>
     /// <param name="dateToBuild">Date to build up</param>
-    /// <param name="isFullDateAppointment">Is a full day appointment</param>
     /// <returns>the formatted time in a string</returns>
     private static string GetFormattedDateTime(DateTime dateToBuild)
     {
         //just make sure if number is 1 digit, then we make it ie 09.
 
-        //return it in the format they want. Don't use z at the end because we want it local time
+        //return it in the format they want. Make sure this is in local time
         return dateToBuild.ToString(FormatSpecificDateTime);
     }
 

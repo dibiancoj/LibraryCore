@@ -10,12 +10,12 @@ public class AccountingPeriodTest
     [Fact]
     public void BuildPeriodFromDate()
     {
-        var temp = new AccountingPeriod(new DateTime(2020, 5, 1));
+        var temp = new AccountingPeriod(new DateOnly(2020, 5, 1));
 
         Assert.Equal(2020, temp.Year);
         Assert.Equal(5, temp.Month);
         Assert.Equal(202005, temp.FullAccountingPeriod);
-        Assert.Equal(new DateTime(2020, 5, 1), temp.ToDateTime());
+        Assert.Equal(new DateOnly(2020, 5, 1), temp.ToDate());
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class AccountingPeriodTest
         Assert.Equal(2020, temp.Year);
         Assert.Equal(5, temp.Month);
         Assert.Equal(202005, temp.FullAccountingPeriod);
-        Assert.Equal(new DateTime(2020, 5, 1), temp.ToDateTime());
+        Assert.Equal(new DateOnly(2020, 5, 1), temp.ToDate());
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class AccountingPeriodTest
         Assert.Equal(2020, tryToParseValue.Year);
         Assert.Equal(5, tryToParseValue.Month);
         Assert.Equal(202005, tryToParseValue.FullAccountingPeriod);
-        Assert.Equal(new DateTime(2020, 5, 1), tryToParseValue.ToDateTime());
+        Assert.Equal(new DateOnly(2020, 5, 1), tryToParseValue.ToDate());
     }
 
     [Fact]
