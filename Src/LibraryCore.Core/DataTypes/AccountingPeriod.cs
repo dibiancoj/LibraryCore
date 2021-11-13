@@ -16,7 +16,7 @@ public class AccountingPeriod
         FullAccountingPeriod = Convert.ToInt32($"{Year}{Month:D2}");
     }
 
-    public AccountingPeriod(DateTime accountingPeriodToParse)
+    public AccountingPeriod(DateOnly accountingPeriodToParse)
         : this(IsValidMonthAndRaiseError(accountingPeriodToParse.Month), IsValidYearAndRaiseError(accountingPeriodToParse.Year))
     {
     }
@@ -35,19 +35,19 @@ public class AccountingPeriod
 
     public static AccountingPeriod operator +(AccountingPeriod a, int b)
     {
-        return new AccountingPeriod(a.ToDateTime().AddMonths(b));
+        return new AccountingPeriod(a.ToDate().AddMonths(b));
     }
 
     public static AccountingPeriod operator -(AccountingPeriod a, int b)
     {
-        return new AccountingPeriod(a.ToDateTime().AddMonths(-b));
+        return new AccountingPeriod(a.ToDate().AddMonths(-b));
     }
 
     #endregion
 
     #region Public Methods
 
-    public DateTime ToDateTime() => new(Year, Month, 1);
+    public DateOnly ToDate() => new(Year, Month, 1);
 
     public static bool TryParseAccountingPeriod(int fullAccountingPeriod, [NotNullWhen(true)] out AccountingPeriod? tryParseAccountingPeriod)
     {
