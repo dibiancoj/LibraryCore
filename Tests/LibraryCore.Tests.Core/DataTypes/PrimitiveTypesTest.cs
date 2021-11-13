@@ -32,11 +32,7 @@ public class PrimitiveTypesTest
     [InlineData(typeof(decimal))]
     [InlineData(typeof(decimal?))]
     [Theory]
-    public void PrimitiveTypesTest1(Type TypeToTest)
-    {
-        //make sure this is in the list
-        Assert.True(PrimitiveTypes.PrimitiveTypesSelect().Contains(TypeToTest));
-    }
+    public void PrimitiveTypesTest1(Type TypeToTest) => Assert.True(PrimitiveTypes.PrimitiveTypesSelect().Contains(TypeToTest));
 
     /// <summary>
     /// Test Primitive types. All these items should NOT be found in the list
@@ -45,9 +41,6 @@ public class PrimitiveTypesTest
     [InlineData(typeof(object))]
     [InlineData(typeof(List<double>))]
     [Theory]
-    public void PrimitiveTypesTest2(Type TypeToTest)
-    {
-        //make sure this item is NOT in the list
-        Assert.False(PrimitiveTypes.PrimitiveTypesSelect().Contains(TypeToTest));
-    }
+    public void PrimitiveTypesTest2(Type TypeToTest) => Assert.False(PrimitiveTypes.PrimitiveTypesSelect().Contains(TypeToTest));
+
 }
