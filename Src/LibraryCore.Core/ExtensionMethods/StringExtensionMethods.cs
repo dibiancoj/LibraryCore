@@ -160,7 +160,7 @@ public static class StringExtensionMethods
     public static string? ToUSAZipCode(this string? zipCode)
     {
         //if the zip code is null then just return it right away
-        if (string.IsNullOrEmpty(zipCode))
+        if (zipCode.IsNullOrEmpty())
         {
             //zip code is null / blank...just return the string that was passed in
             return zipCode;
@@ -169,24 +169,15 @@ public static class StringExtensionMethods
         //grab just the digits
         var justDigitsInSpan = zipCode.PullDigitsFromString().AsSpan();
 
-        if (justDigitsInSpan.Length == 5)
+        //we check for 9 which is the 2 segment zip
+        if (justDigitsInSpan.Length == 5 || justDigitsInSpan.Length != 9)
         {
             //if its just the 5 character version, then return just the item passed in
             return zipCode;
         }
 
-        if (justDigitsInSpan.Length != 9)
-        {
-            //if the length is not 9 then return it...we need 9 characters
-            return zipCode;
-        }
-
         //we have 9 characters, create the instance of the string builder becauase we need it (init the capacity to reduce memory just a tag)
-        return new StringBuilder()
-                .Append(justDigitsInSpan[..5])
-                .Append('-')
-                .Append(justDigitsInSpan.Slice(5, 4))
-                .ToString();
+        return $"{justDigitsInSpan[..5]}-{justDigitsInSpan.Slice(5, 4)}";
     }
 
     #endregion
@@ -202,7 +193,7 @@ public static class StringExtensionMethods
     public static string? ToUSAPhoneNumber(this string? phoneNumber)
     {
         //make sure the phone is not null Or the length is 10 characters
-        if (string.IsNullOrEmpty(phoneNumber))
+        if (phoneNumber.IsNullOrEmpty())
         {
             //not 10 digits, just return whatever was passed in
             return phoneNumber;
@@ -217,23 +208,7 @@ public static class StringExtensionMethods
             return phoneNumber;
         }
 
-        //we need the string builder...so create the object (init the capacity in the sb to reduce memory a tad)
-        return new StringBuilder()
-            //set the area code
-            .Append('(')
-            .Append(phoneNumberJustDigits[..3])
-            .Append(") ")
-
-            //now lets set the first 3 digits of the regular #
-            .Append(phoneNumberJustDigits.Slice(3, 3))
-
-            //add the dash
-            .Append('-')
-
-            //add the last 4
-            .Append(phoneNumberJustDigits.Slice(6, 4))
-
-            .ToString();
+        return $"({phoneNumberJustDigits[..3]}) {phoneNumberJustDigits.Slice(3, 3)}-{phoneNumberJustDigits.Slice(6, 4)}";
     }
 
     #endregion
