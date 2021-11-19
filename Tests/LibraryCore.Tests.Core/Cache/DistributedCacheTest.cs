@@ -1,13 +1,20 @@
-﻿using LibraryCore.Core.ExtensionMethods;
+﻿using LibraryCore.Core.Cache;
 using LibraryCore.Tests.Core.GlobalMocks;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using Xunit;
 
-namespace LibraryCore.Tests.Core.ExtensionMethods;
+namespace LibraryCore.Tests.Core.Cache;
 
 public class DistributedCacheTest
 {
+
+    public DistributedCacheTest()
+    {
+        DistributedCacheServiceToTestWith = new DistributedCacheService(new FullMockIDistributedCache());
+    }
+
+    private DistributedCacheService DistributedCacheServiceToTestWith { get; }
 
     #region Get Or Create
 
@@ -17,7 +24,6 @@ public class DistributedCacheTest
     public async Task GetOrCreateInCache(bool addOptions)
     {
         var key = Guid.NewGuid().ToString();
-        var distributedCacheToTestWith = new FullMockIDistributedCache();
         int callToCreateObject = 0;
 
         async Task<List<int>> factoryCall()
@@ -31,10 +37,10 @@ public class DistributedCacheTest
         {
             if (addOptions)
             {
-                return await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, factoryCall, new DistributedCacheEntryOptions());
+                return await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, factoryCall, new DistributedCacheEntryOptions());
             }
 
-            return await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, factoryCall);
+            return await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, factoryCall);
         }
 
         var result = await goToCacheToTestAsync();
@@ -63,13 +69,12 @@ public class DistributedCacheTest
     public async Task GetOrCreateIsInCache(bool addOptions)
     {
         var key = Guid.NewGuid().ToString();
-        var distributedCacheToTestWith = new FullMockIDistributedCache();
 
-        await distributedCacheToTestWith.SetWithJsonSerializerAsync(key, new List<int> { 1, 2, 3 });
+        await DistributedCacheServiceToTestWith.SetAsync(key, new List<int> { 1, 2, 3 });
 
         var result = addOptions ?
-                            await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), new DistributedCacheEntryOptions()) :
-                            await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), null);
+                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), new DistributedCacheEntryOptions()) :
+                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), null);
 
         Assert.Equal(3, result.Count);
         Assert.Contains(result, x => x == 1);
@@ -87,20 +92,19 @@ public class DistributedCacheTest
     public async Task SetWithCantFindInCache(bool addOptions)
     {
         var key = Guid.NewGuid().ToString();
-        var distributedCacheToTestWith = new FullMockIDistributedCache();
 
         var data = new List<int> { 1, 2, 3 };
 
         if (addOptions)
         {
-            await distributedCacheToTestWith.SetWithJsonSerializerAsync(key, data, new DistributedCacheEntryOptions());
+            await DistributedCacheServiceToTestWith.SetAsync(key, data, new DistributedCacheEntryOptions());
         }
         else
         {
-            await distributedCacheToTestWith.SetWithJsonSerializerAsync(key, data);
+            await DistributedCacheServiceToTestWith.SetAsync(key, data);
         }
 
-        var grabItemFromCache = await distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"));
+        var grabItemFromCache = await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"));
 
         Assert.Equal(3, grabItemFromCache.Count);
         Assert.Contains(grabItemFromCache, x => x == 1);
@@ -116,10 +120,9 @@ public class DistributedCacheTest
     public async Task LockContention()
     {
         var key = Guid.NewGuid().ToString();
-        var distributedCacheToTestWith = new FullMockIDistributedCache();
 
         //start thread 1 without awaiting it
-        var startThread1 = distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, async () =>
+        var startThread1 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async () =>
         {
             await Task.Delay(3000);
 
@@ -127,7 +130,7 @@ public class DistributedCacheTest
         });
 
         //kick off thread 2 which goes right away and should pick up the lock within 3 seconds
-        var startThread2 = distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync(key, () => Task.FromResult(1111));
+        var startThread2 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => Task.FromResult(1111));
 
         //at this point thread 1 should block thread 2. Thread 1 will return it's factory and block thread 2.
         //thread 2 will be blocked until thread 1 completes...because of the check we get after the lock. Thread 1 should win the race and return 9999
@@ -147,13 +150,30 @@ public class DistributedCacheTest
     [Fact]
     public async Task CantDeserializeBytes()
     {
-        var distributedCacheToTestWith = new FullMockIDistributedCache();
-
         //set the first value
-        await distributedCacheToTestWith.SetWithJsonSerializerAsync("CantDeserializeBytes", "test 123");
+        await DistributedCacheServiceToTestWith.SetAsync("CantDeserializeBytes", "test 123");
 
         //try to deserialize it to a random class
-        await Assert.ThrowsAsync<JsonException>(() => distributedCacheToTestWith.GetOrCreateWithJsonSerializerAsync<CantDeserializeBytesModel>("CantDeserializeBytes", () => throw new NotImplementedException()));
+        await Assert.ThrowsAsync<JsonException>(() => DistributedCacheServiceToTestWith.GetOrCreateAsync<CantDeserializeBytesModel>("CantDeserializeBytes", () => throw new NotImplementedException()));
+    }
+
+    #endregion
+
+    #region Remove
+
+    [Fact]
+    public async Task RemoveCacheItem()
+    {
+        string key = Guid.NewGuid().ToString();
+
+        await DistributedCacheServiceToTestWith.SetAsync(key, "Test 123");
+
+        Assert.Equal("Test 123", await DistributedCacheServiceToTestWith.GetOrCreateAsync<string>(key, () => throw new Exception()));
+
+        await DistributedCacheServiceToTestWith.RemoveAsync(key);
+
+        //should be changed now
+        Assert.Equal("ABC", await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async () => await Task.FromResult("ABC")));
     }
 
     #endregion
