@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace LibraryCore.Core.ExtensionMethods;
+﻿namespace LibraryCore.Core.ExtensionMethods;
 
 public static class StringReaderExtensionMethods
 {

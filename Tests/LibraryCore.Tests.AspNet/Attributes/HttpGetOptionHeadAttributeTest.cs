@@ -1,6 +1,4 @@
 ﻿using LibraryCore.AspNet.Attributes;
-using System;
-using System.Linq;
 using Xunit;
 
 namespace LibraryCore.Tests.AspNet.Attributes;

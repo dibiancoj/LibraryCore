@@ -1,6 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace LibraryCore.Core.RegularExpressionUtilities;

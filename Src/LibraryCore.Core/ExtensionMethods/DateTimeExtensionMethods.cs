@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.ExtensionMethods;
+﻿namespace LibraryCore.Core.ExtensionMethods;
 
 public static class DateTimeExtensionMethods
 {

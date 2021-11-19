@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace LibraryCore.Core.Permutations;
 
@@ -146,7 +143,7 @@ public static class PermutationBuilder
             {
                 //grab the remaining items. Are the items exclusive?
                 var remainingItems = itemsAreExclusive ?
-                                 listToPermute.Where((x, i) => i != startingElementIndex): //this includes every item but the one at this index
+                                 listToPermute.Where((x, i) => i != startingElementIndex) : //this includes every item but the one at this index
                                  listToPermute;
 
                 //loop through the next set recursively

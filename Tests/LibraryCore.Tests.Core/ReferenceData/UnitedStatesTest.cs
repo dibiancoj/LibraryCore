@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.ReferenceData;
-using System.Linq;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.ReferenceData;

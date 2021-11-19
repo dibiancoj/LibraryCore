@@ -1,7 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace LibraryCore.Core.Parsers;

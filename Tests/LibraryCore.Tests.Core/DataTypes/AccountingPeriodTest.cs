@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.DataTypes;
-using System;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.DataTypes;

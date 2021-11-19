@@ -1,5 +1,4 @@
 ﻿using LibraryCore.AspNet.Validation;
-using System;
 using Xunit;
 
 namespace LibraryCore.Tests.AspNet.Validation;

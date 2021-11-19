@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace LibraryCore.Core.RunAndSuppress;
+﻿namespace LibraryCore.Core.RunAndSuppress;
 
 /// <summary>
 /// Please only use this when you really need this! This is generally a bad idea but atleast in this method we log the errors and move on. There are times where we need to disregard errors by 3rd party systems.

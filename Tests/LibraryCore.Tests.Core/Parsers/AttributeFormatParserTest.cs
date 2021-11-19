@@ -1,6 +1,4 @@
 ﻿using LibraryCore.Core.Parsers;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.Parsers;

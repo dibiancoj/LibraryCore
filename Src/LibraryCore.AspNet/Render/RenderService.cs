@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace LibraryCore.AspNet.Render;
 

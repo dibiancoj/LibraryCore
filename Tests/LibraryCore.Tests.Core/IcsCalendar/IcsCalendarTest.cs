@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.IcsCalendar;
-using System;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.IcsCalendar;

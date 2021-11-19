@@ -1,10 +1,7 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Tests.Core.GlobalMocks;
 using Microsoft.Extensions.Caching.Distributed;
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System;
 
 namespace LibraryCore.AspNet.Attribution;
 

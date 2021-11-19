@@ -1,7 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using System;
-using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Routing;
-using System;
 using System.Collections.Immutable;
-using System.Net.Http;
 
 namespace LibraryCore.AspNet.Attributes;
 
