@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LibraryCore.Core.DataTypes;
+﻿namespace LibraryCore.Core.DataTypes;
 
 /// <summary>
 /// Gives you the base types. The PropertyInfo.PropertyType.IsPrimitive doesnt give you string and the nullable types. This class will give you all the primitive types include nullable values

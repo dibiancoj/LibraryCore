@@ -1,7 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using System;
-using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods;

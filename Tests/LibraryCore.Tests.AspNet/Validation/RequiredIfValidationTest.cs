@@ -1,6 +1,4 @@
 ﻿using LibraryCore.AspNet.Validation;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xunit;
 

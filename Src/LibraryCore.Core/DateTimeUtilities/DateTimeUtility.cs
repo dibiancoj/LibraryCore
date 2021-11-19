@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.DateTimeUtilities;
+﻿namespace LibraryCore.Core.DateTimeUtilities;
 
 public static class DateTimeUtility
 {

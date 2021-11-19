@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.Paging;
+﻿namespace LibraryCore.Core.Paging;
 
 /// <summary>
 /// Helps page data for a data set

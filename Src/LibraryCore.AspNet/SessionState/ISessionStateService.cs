@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace LibraryCore.AspNet.SessionState;
+﻿namespace LibraryCore.AspNet.SessionState;
 
 public interface ISessionStateService
 {

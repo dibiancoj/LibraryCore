@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace LibraryCore.AspNet.Validation;
 

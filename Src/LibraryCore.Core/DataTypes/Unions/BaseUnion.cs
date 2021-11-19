@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.DataTypes.Unions;
+﻿namespace LibraryCore.Core.DataTypes.Unions;
 
 /// <summary>
 /// Base Union type

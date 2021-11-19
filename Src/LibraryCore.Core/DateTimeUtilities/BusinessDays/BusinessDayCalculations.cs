@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace LibraryCore.Core.DateTimeUtilities.BusinessDays;
+﻿namespace LibraryCore.Core.DateTimeUtilities.BusinessDays;
 
 public static class BusinessDayCalculations
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using static LibraryCore.Core.IcsCalendar.IcsCalendarCreator;
+﻿using static LibraryCore.Core.IcsCalendar.IcsCalendarCreator;
 
 namespace LibraryCore.Core.IcsCalendar.TimeZones;
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.Units;
+﻿namespace LibraryCore.Core.Units;
 
 /// <summary>
 /// Helps convert computer units from one to another. For example convert 2 bytes to kilobytes

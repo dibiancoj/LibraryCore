@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace LibraryCore.Core.ExtensionMethods;
+﻿namespace LibraryCore.Core.ExtensionMethods;
 
 public static class DictionaryExtensionMethods
 {

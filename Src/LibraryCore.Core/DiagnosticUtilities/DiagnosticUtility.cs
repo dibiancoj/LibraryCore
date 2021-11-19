@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace LibraryCore.Core.DiagnosticUtilities;
+﻿namespace LibraryCore.Core.DiagnosticUtilities;
 
 public static class DiagnosticUtility
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LibraryCore.Core.ExtensionMethods;
+﻿namespace LibraryCore.Core.ExtensionMethods;
 
 public static class ObjectExtensionMethods
 {

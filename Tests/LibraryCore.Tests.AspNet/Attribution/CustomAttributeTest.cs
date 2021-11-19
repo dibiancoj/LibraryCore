@@ -1,7 +1,6 @@
 ﻿using LibraryCore.AspNet.Attribution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System;
 using Xunit;
 
 namespace LibraryCore.Tests.AspNet.Attribution;

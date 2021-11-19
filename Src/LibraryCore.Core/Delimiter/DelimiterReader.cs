@@ -1,8 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using static LibraryCore.Core.Delimiter.DelimiterBuilder;
 
 namespace LibraryCore.Core.Delimiter;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryCore.Core.UrlUtilities;
+﻿namespace LibraryCore.Core.UrlUtilities;
 
 public static class UrlUtility
 {
