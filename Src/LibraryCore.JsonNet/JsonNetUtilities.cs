@@ -31,7 +31,7 @@ public static class JsonNetUtilities
     /// </summary>
     /// <param name="type">Type to deserialize</param>
     /// <param name="streamToReadFrom">Stream to read from</param>
-    /// <param name="jsonSerializerSettings">Json serializer settings</param>
+    /// <param name="jsonSerializer">Json serializer settings</param>
     /// <returns>the deserialized object</returns>
     public static object DeserializeFromStream(Type type, Stream streamToReadFrom, JsonSerializer jsonSerializer)
     {
