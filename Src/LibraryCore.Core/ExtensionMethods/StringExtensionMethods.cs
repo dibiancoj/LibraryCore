@@ -270,12 +270,9 @@ public static class StringExtensionMethods
         //this is here for performance reasons. Much faster and uses less memory then new string(phoneNumber.Where(char.IsDigit).ToArray()).AsSpan(); --> StringNumberToStringTest.cs in the perf project
         var builder = new StringBuilder();
 
-        foreach (var characterToTest in stringToLookThrough)
+        foreach (var characterToTest in stringToLookThrough.Where(x => char.IsDigit(x)))
         {
-            if (char.IsDigit(characterToTest))
-            {
-                builder.Append(characterToTest);
-            }
+            builder.Append(characterToTest);
         }
 
         return builder.ToString();
