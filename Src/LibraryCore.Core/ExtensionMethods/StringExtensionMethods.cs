@@ -258,18 +258,7 @@ public static class StringExtensionMethods
 
     public static int NumberOfDigitsInTheString(this string stringToLookThrough)
     {
-        //faster then regex, string reader, etc. Leaving this for speed and lean memory usage(HowManyDigitsTest.cs in perf project)
-        int i = 0;
-
-        foreach (var characterToTest in stringToLookThrough)
-        {
-            if (char.IsDigit(characterToTest))
-            {
-                i++;
-            }
-        }
-
-        return i;
+        return stringToLookThrough.Count(x => char.IsDigit(x));
     }
 
     /// <summary>
