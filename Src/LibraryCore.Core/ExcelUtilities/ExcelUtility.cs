@@ -50,7 +50,7 @@ public static class ExcelUtility
         if (columnNumber < 27)
         {
             //return the character associated with the key...Add the base because alpha characters start at 64
-            return Convert.ToString(Convert.ToChar((columnNumber + alphaBase)));
+            return Convert.ToString(Convert.ToChar(columnNumber + alphaBase));
         }
 
         //Now we have to account for AA-ZZ
@@ -72,7 +72,7 @@ public static class ExcelUtility
         }
 
         //return the value...first letter then second letter. Conver the values to a string before returning it...Need to convert both of the letter
-        return Convert.ToString(Convert.ToChar((firstLetter + alphaBase))) +
-               Convert.ToString(Convert.ToChar((secondLetter + alphaBase)));
+        return Convert.ToString(Convert.ToChar(firstLetter + alphaBase)) +
+               Convert.ToString(Convert.ToChar(secondLetter + alphaBase));
     }
 }
