@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.Permutations;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.Permutations;
 

@@ -2,7 +2,6 @@
 using LibraryCore.Tests.Core.GlobalMocks;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.Cache;
 

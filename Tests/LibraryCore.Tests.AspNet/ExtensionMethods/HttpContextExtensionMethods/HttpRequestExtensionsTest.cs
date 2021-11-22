@@ -1,7 +1,6 @@
 ﻿using LibraryCore.AspNet.ExtensionMethods.HttpContextExtensionMethods;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace LibraryCore.Tests.AspNet.ExtensionMethods.HttpContextExtensionMethods;
 

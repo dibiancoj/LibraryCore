@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.MathUtilities;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.MathUtilities;
 

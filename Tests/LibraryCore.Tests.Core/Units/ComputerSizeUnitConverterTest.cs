@@ -1,5 +1,4 @@
-﻿using Xunit;
-using static LibraryCore.Core.Units.ComputerSizeUnitConverter;
+﻿using static LibraryCore.Core.Units.ComputerSizeUnitConverter;
 
 namespace LibraryCore.Tests.Core.Units;
 

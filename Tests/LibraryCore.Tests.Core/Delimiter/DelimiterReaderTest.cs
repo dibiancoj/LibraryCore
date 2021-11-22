@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.Delimiter;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.Delimiter;
 

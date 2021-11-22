@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.DiagnosticUtilities;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.DiagnosticUtilities;
 

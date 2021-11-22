@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using Xunit;
 
 namespace LibraryCore.Tests.AspNet.Render;
 

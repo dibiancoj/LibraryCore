@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.DateTimeUtilities.BusinessDays;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.DateTimeUtilities;
 

@@ -1,7 +1,6 @@
 ﻿using LibraryCore.Core.Cache;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.Cache;
 

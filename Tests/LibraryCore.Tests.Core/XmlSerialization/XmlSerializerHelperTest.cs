@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.XmlSerialization;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.XmlSerialization;
 

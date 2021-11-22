@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.ContentType;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.ContentType;
 

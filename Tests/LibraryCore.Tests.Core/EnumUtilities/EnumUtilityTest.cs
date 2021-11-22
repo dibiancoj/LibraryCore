@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.EnumUtilities;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.EnumUtilities;
 

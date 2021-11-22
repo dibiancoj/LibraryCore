@@ -1,6 +1,5 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using System.Text;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods;
 
