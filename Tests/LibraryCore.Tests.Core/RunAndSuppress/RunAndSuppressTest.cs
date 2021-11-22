@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.RunAndSuppress;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.RunAndSuppress;
 

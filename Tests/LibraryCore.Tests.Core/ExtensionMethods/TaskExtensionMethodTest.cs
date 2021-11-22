@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace LibraryCore.Tests.Core.ExtensionMethods;
+﻿namespace LibraryCore.Tests.Core.ExtensionMethods;
 
 public class TaskExtensionMethodTest
 {

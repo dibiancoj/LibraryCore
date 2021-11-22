@@ -1,9 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.JsonNet;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Text;
-using Xunit;
 
 namespace LibraryCore.Tests.JsonNet;
 

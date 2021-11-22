@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.UrlUtilities;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.UrlUtilities;
 

@@ -1,6 +1,5 @@
 ﻿using LibraryCore.AspNet.SessionState;
 using LibraryCore.Tests.AspNet.Framework;
-using Xunit;
 
 namespace LibraryCore.Tests.AspNet.SessionState;
 

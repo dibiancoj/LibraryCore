@@ -1,6 +1,5 @@
 ﻿using LibraryCore.AspNet.Validation;
 using System.ComponentModel.DataAnnotations;
-using Xunit;
 
 namespace LibraryCore.Tests.AspNet.Validation;
 

@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.Paging;
-using Xunit;
 
 namespace LibraryCore.Tests.Core.Paging;
 
