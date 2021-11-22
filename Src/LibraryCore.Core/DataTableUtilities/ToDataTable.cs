@@ -21,7 +21,8 @@ public static class ToDataTable
     /// <param name="objectToBuildDataTableOffOf">object to build</param>
     /// <param name="tableName">Table Name. Property Off Of The Data Table</param>
     /// <returns>Data Table</returns>
-    public static DataTable BuildDataTableFromObject<T>(T objectToBuildDataTableOffOf, string tableName) where T : class
+    public static DataTable BuildDataTableFromObject<T>(T objectToBuildDataTableOffOf, string tableName)
+        where T : class
     {
         //*** we need to have different method names because if we pass in a list<T> it will go into this overload. Because a list<T> is T.
         // then we get blow ups. we need to manually pass in which method to use
@@ -43,7 +44,8 @@ public static class ToDataTable
     /// <param name="objectsToBuildDataTableOffOf">List of objects to build</param>
     /// <param name="tableName">Table Name. Property Off Of The Data Table</param>
     /// <returns>Data table</returns>
-    public static DataTable BuildDataTableFromListOfObjects<T>(IEnumerable<T> objectsToBuildDataTableOffOf, string tableName) where T : class
+    public static DataTable BuildDataTableFromListOfObjects<T>(IEnumerable<T> objectsToBuildDataTableOffOf, string tableName)
+        where T : class
     {
         //*** we need to have different method names because if we pass in a list<T> it will go into this overload. Because a list<T> is T.
         // then we get blow ups. we need to manually pass in which method to use
@@ -60,16 +62,9 @@ public static class ToDataTable
         foreach (var propertyToBuild in propertiesToBuild)
         {
             //if its a nullable field then we need to 
-            if (ReflectionUtilties.IsNullableOfT(propertyToBuild))
-            {
-                //its some sort of nullable<int>...data set doesnt support this, so we get the underlying data type and set it to nullable
-                dataTableToBuild.Columns.Add(new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType.GetGenericArguments()[0]) { AllowDBNull = true });
-            }
-            else
-            {
-                //regular column, just add it
-                dataTableToBuild.Columns.Add(new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType));
-            }
+            dataTableToBuild.Columns.Add(ReflectionUtilties.IsNullableOfT(propertyToBuild) ?
+                                             new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType.GetGenericArguments()[0]) { AllowDBNull = true } :
+                                             new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType));
         }
 
         //now we need to go through each object and add the row
