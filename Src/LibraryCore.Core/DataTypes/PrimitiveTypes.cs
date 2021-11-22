@@ -9,10 +9,8 @@ public static class PrimitiveTypes
     /// Gives you the base types. The PropertyInfo.PropertyType.IsPrimitive doesnt give you string and the nullable types. This class will give you all the primitive types include nullable values
     /// </summary>
     /// <returns>List Of Types</returns>
-    public static ISet<Type> PrimitiveTypesSelect()
-    {
-        //go return the types
-        return new HashSet<Type>(new Type[] {
+    public static ISet<Type> PrimitiveTypesSelect() =>
+        new HashSet<Type>(new Type[] {
                 typeof(string),
                 typeof(bool),
                 typeof(bool?),
@@ -22,17 +20,17 @@ public static class PrimitiveTypes
                 typeof(TimeOnly?),
                 typeof(DateTime),
                 typeof(DateTime?),
-                typeof(Int16),
-                typeof(Int16?),
-                typeof(Int32),
-                typeof(Int32?),
-                typeof(Int64),
-                typeof(Int64?),
+                typeof(short),
+                typeof(short?),
+                typeof(int),
+                typeof(int?),
+                typeof(long),
+                typeof(long?),
                 typeof(double),
                 typeof(double?),
                 typeof(float),
                 typeof(float?),
                 typeof(decimal),
                 typeof(decimal?) });
-    }
+
 }
