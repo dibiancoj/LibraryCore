@@ -16,22 +16,7 @@ public static class StringExtensionMethods
     /// <param name="whichComparison">Which comparison to use</param>
     /// <returns>Boolean if it contains that value</returns>
     /// <remarks>stringToCheckIn.Contains("ValueToCheckForInSide (stringToCheckIn)", StringComparison.OrdinalIgnoreCase);</remarks>
-    public static bool Contains(this IEnumerable<string> stringsToLookThrough, string valueToCheckTheStringFor, StringComparison whichComparison)
-    {
-        //we could use an Any() call in linq but it was a tad bit slower. Since this is a hot path in most of my stuff going to leave it in the foreach loop
-        foreach (var stringToTest in stringsToLookThrough)
-        {
-            //use the singlar method so we have code reuse
-            if (stringToTest.Contains(valueToCheckTheStringFor, whichComparison))
-            {
-                //we found a match, so return true
-                return true;
-            }
-        }
-
-        //can't find the item
-        return false;
-    }
+    public static bool Contains(this IEnumerable<string> stringsToLookThrough, string valueToCheckTheStringFor, StringComparison whichComparison) => stringsToLookThrough.Any(x => x.Contains(valueToCheckTheStringFor, whichComparison));
 
     #endregion
 
