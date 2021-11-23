@@ -24,9 +24,6 @@ public class HttpGetOptionHeadAttribute : HttpMethodAttribute
         : base(SupportedMethodTypes, template)
     {
         //template should be not be null in this overload. Throw like all the rest of the HttpMethodAttribute implementations by Microsoft.
-        if (template == null)
-        {
-            throw new ArgumentNullException(nameof(template));
-        }
+        ArgumentNullException.ThrowIfNull(template);
     }
 }
