@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LibraryCore.Core.ThrowUtilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -73,10 +74,7 @@ public class RenderService : IRenderService
 
         var viewResult = RazorViewEngine.GetView(executingFilePath: null, viewPath: fullpathToViewOrPartial, isMainPage: false);
 
-        if (!viewResult.Success)
-        {
-            throw new ArgumentNullException($"{fullpathToViewOrPartial} does not match any available view. No view found.");
-        }
+        ThrowUtility.ThrowIfFalse(viewResult.Success);
 
         var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), modelStateDictionary ?? new ModelStateDictionary())
         {

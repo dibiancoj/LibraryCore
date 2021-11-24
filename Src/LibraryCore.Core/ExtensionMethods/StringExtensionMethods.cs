@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace LibraryCore.Core.ExtensionMethods;
@@ -258,6 +259,21 @@ public static class StringExtensionMethods
         }
 
         return temp.ToString();
+    }
+
+    #endregion
+
+    #region Throw If Null
+
+    [DoesNotReturn]
+    private static void ThrowIfNullOrEmptyException(string? expression) => throw new ArgumentException($"{expression} must be string that is not null or empty");
+
+    public static void ThrowIfNullOrEmpty([NotNull] this string? value, [CallerArgumentExpression("value")] string? expression = null)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            ThrowIfNullOrEmptyException(expression);
+        }
     }
 
     #endregion

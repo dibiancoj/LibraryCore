@@ -45,7 +45,7 @@ public class RenderServiceTest
     [Fact(DisplayName = "Can't Find View")]
     public async Task RenderViewToStringCantFindView()
     {
-        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
         {
             var mockIRazorViewEngine = new Mock<IRazorViewEngine>();
             var mockITempDataProvider = new Mock<ITempDataProvider>();
