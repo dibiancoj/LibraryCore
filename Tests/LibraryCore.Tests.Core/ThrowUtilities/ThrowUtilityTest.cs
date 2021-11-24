@@ -17,6 +17,10 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
 
                 Assert.Equal("valueToTest must be False, but was True", exception.Message);
             }
+            else
+            {
+                ThrowUtility.ThrowIfFalse(valueToTest);
+            }
         }
 
         [InlineData(true, false)]
@@ -29,6 +33,10 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
                 var exception = Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfFalse(valueToTest));
 
                 Assert.Equal("valueToTest must be True, but was False", exception.Message);
+            }
+            else
+            {
+                ThrowUtility.ThrowIfFalse(valueToTest);
             }
         }
 

@@ -336,6 +336,10 @@ public class StringExtensionMethodTest
 
             Assert.Equal("valueToTest must be string that is not null or empty", exception.Message);
         }
+        else
+        {
+            valueToTest.ThrowIfNullOrEmpty();
+        }
     }
 
     #endregion
