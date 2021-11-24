@@ -332,7 +332,9 @@ public class StringExtensionMethodTest
     {
         if (expectedToThrowException)
         {
-            Assert.Throws<ArgumentException>(() => valueToTest.ThrowIfNullOrEmpty());
+            var exception = Assert.Throws<ArgumentException>(() => valueToTest.ThrowIfNullOrEmpty());
+
+            Assert.Equal("valueToTest must be string that is not null or empty", exception.Message);
         }
     }
 

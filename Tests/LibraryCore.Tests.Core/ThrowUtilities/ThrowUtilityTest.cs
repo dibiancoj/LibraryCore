@@ -13,7 +13,9 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
         {
             if (expectedToThrowException)
             {
-                Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfTrue(valueToTest));
+                var exception = Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfTrue(valueToTest));
+
+                Assert.Equal("valueToTest must be False, but was True", exception.Message);
             }
         }
 
@@ -24,7 +26,9 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
         {
             if (expectedToThrowException)
             {
-                Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfFalse(valueToTest));
+                var exception = Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfFalse(valueToTest));
+
+                Assert.Equal("valueToTest must be True, but was False", exception.Message);
             }
         }
 
