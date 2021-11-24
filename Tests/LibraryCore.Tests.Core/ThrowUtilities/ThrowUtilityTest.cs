@@ -19,7 +19,7 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
             }
             else
             {
-                ThrowUtility.ThrowIfFalse(valueToTest);
+                ThrowUtility.ThrowIfTrue(valueToTest);
             }
         }
 
