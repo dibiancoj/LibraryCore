@@ -320,4 +320,24 @@ public class StringExtensionMethodTest
 
     #endregion
 
+    #region Throw If Null Or Empty
+
+    [InlineData(true, null)]
+    [InlineData(true, "")]
+    [InlineData(false, " ")]
+    [InlineData(false, "T")]
+    [InlineData(false, "Test")]
+    [Theory]
+    public void ThrowIfNullOrEmpty(bool expectedToThrowException, string valueToTest)
+    {
+        if (expectedToThrowException)
+        {
+            var exception = Assert.Throws<ArgumentException>(() => valueToTest.ThrowIfNullOrEmpty());
+
+            Assert.Equal("valueToTest must be string that is not null or empty", exception.Message);
+        }
+    }
+
+    #endregion
+
 }
