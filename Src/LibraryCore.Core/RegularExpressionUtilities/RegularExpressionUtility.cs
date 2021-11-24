@@ -45,7 +45,10 @@ public static class RegularExpressionUtility
     public static string? WrapSearchPhraseInString(string? stringToInspect, bool ignoreCase, string beginningReplacementTag, string endReplacementTag, params string[] searchPhrases)
     {
         //exit if there is no text right away
-        stringToInspect.ThrowIfNullOrEmpty();
+        if (stringToInspect.IsNullOrEmpty())
+        {
+            return stringToInspect;
+        }
 
         //build up the regex pattern. Should be "(SearchPhrase1)|(SearchPhrase2)"
         var searchPhrasePattern = string.Join('|', searchPhrases.Select(x => $"({x})"));
