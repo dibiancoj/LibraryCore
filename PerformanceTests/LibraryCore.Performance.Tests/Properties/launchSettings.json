@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LibraryCore.Performance.Tests": {
+      "commandName": "Project",
+      "commandLineArgs": "Union"
+    }
+  }
+}
