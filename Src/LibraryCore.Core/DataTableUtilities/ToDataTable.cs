@@ -62,7 +62,7 @@ public static class ToDataTable
         foreach (var propertyToBuild in propertiesToBuild)
         {
             //if its a nullable field then we need to 
-            dataTableToBuild.Columns.Add(ReflectionUtilties.IsNullableOfT(propertyToBuild) ?
+            dataTableToBuild.Columns.Add(ReflectionUtility.IsNullableOfT(propertyToBuild) ?
                                              new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType.GetGenericArguments()[0]) { AllowDBNull = true } :
                                              new DataColumn(propertyToBuild.Name, propertyToBuild.PropertyType));
         }

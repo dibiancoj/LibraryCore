@@ -5,7 +5,7 @@ using System.Reflection;
 namespace LibraryCore.Core.Reflection;
 
 [ExcludeFromCodeCoverage]
-public static class ReflectionUtilties
+public static class ReflectionUtility
 {
 
     #region Scanning For Types
@@ -17,12 +17,19 @@ public static class ReflectionUtilties
     /// <returns>All the types that implement that interface</returns>
     public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>()
     {
+        //grab the entry Assembly
+        var entryAssembly = Assembly.GetEntryAssembly() ?? throw new Exception("No Entry Assembly");
+
+        //get all the references Assembies
+        var referencesAssemblies = entryAssembly.GetReferencedAssemblies()
+                                    .Select(Assembly.Load);
+
         //NOT TESTABLE - No App Domain In Unit Test Project
-        return (Assembly.GetEntryAssembly() ?? throw new Exception("No Entry Assembly"))
-               .GetReferencedAssemblies()
-               .Select(Assembly.Load)
+        return referencesAssemblies
+               .Prepend(entryAssembly)
                .SelectMany(x => x.DefinedTypes)
-               .Where(x => x.ImplementedInterfaces.Contains(typeof(TInterface)));
+               .Where(x => x.ImplementedInterfaces.Contains(typeof(TInterface)))
+               .ToList();//don't want to create an iterator with assemblies
     }
 
     #endregion
