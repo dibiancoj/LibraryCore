@@ -26,11 +26,11 @@ public class ReflectionTests
     public void PropertyNullableOfTTest1()
     {
         //make sure it picks it up
-        Assert.True(ReflectionUtilties.IsNullableOfT(typeof(BaseDeriveReflectionClass).GetProperty(nameof(BaseDeriveReflectionClass.NullIdProperty))));
+        Assert.True(ReflectionUtility.IsNullableOfT(typeof(BaseDeriveReflectionClass).GetProperty(nameof(BaseDeriveReflectionClass.NullIdProperty))));
 
         //test to make sure it doesn't pick these guys up
-        Assert.False(ReflectionUtilties.IsNullableOfT(typeof(DummyObject).GetProperty(nameof(DummyObject.Id))));
-        Assert.False(ReflectionUtilties.IsNullableOfT(typeof(DummyObject).GetProperty(nameof(DummyObject.Description))));
+        Assert.False(ReflectionUtility.IsNullableOfT(typeof(DummyObject).GetProperty(nameof(DummyObject.Id))));
+        Assert.False(ReflectionUtility.IsNullableOfT(typeof(DummyObject).GetProperty(nameof(DummyObject.Description))));
     }
 
     #endregion
@@ -44,11 +44,11 @@ public class ReflectionTests
     public void PropertyIsCollectionTest1()
     {
         //make sure it picks it up
-        Assert.True(ReflectionUtilties.PropertyInfoIsIEnumerable(typeof(BaseDeriveReflectionClass).GetProperty(nameof(BaseDeriveReflectionClass.IEnumerablePropertyTest))));
+        Assert.True(ReflectionUtility.PropertyInfoIsIEnumerable(typeof(BaseDeriveReflectionClass).GetProperty(nameof(BaseDeriveReflectionClass.IEnumerablePropertyTest))));
 
         //test to make sure it doesn't pick these guys up
-        Assert.False(ReflectionUtilties.PropertyInfoIsIEnumerable(typeof(DummyObject).GetProperty(nameof(DummyObject.Id))));
-        Assert.False(ReflectionUtilties.PropertyInfoIsIEnumerable(typeof(DummyObject).GetProperty(nameof(DummyObject.Description))));
+        Assert.False(ReflectionUtility.PropertyInfoIsIEnumerable(typeof(DummyObject).GetProperty(nameof(DummyObject.Id))));
+        Assert.False(ReflectionUtility.PropertyInfoIsIEnumerable(typeof(DummyObject).GetProperty(nameof(DummyObject.Description))));
     }
 
     #endregion

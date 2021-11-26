@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using LibraryCore.Core.Reflection;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.CommandLineUtils;
 using System.Reflection;
@@ -20,10 +21,7 @@ namespace LibraryCore.Performance.Tests
             app.HelpOption("-?|-h|--help");
             app.VersionOption("--version", "1.0.0");
 
-            var allTestsInAssembly = Assembly.GetEntryAssembly()
-              .GetTypes()
-              .Where(x => !x.IsInterface && x.IsAssignableTo(typeof(IPerformanceTest)))
-              .ToList();
+            var allTestsInAssembly = ReflectionUtility.ScanForAllInstancesOfType<IPerformanceTest>();
 
             //go setup the tests in the command line utils
             BuildUpPerformanceTestListCommand(app, allTestsInAssembly);
