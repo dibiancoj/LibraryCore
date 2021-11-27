@@ -17,6 +17,23 @@ public class ReflectionTests
 
     #endregion
 
+    #region Scan For Interface
+
+    public interface IScanForAllInstancesOfType { }
+
+    public class ImplementationTest : IScanForAllInstancesOfType { }
+
+    [Fact]
+    public void ScanForAllInstancesOfTypeTest()
+    {
+        var result = ReflectionUtility.ScanForAllInstancesOfType<IScanForAllInstancesOfType>(System.Reflection.Assembly.GetExecutingAssembly());
+
+        Assert.Single(result);
+        Assert.IsType<ImplementationTest>(Activator.CreateInstance(result.First()));
+    }
+
+    #endregion
+
     #region Property Info Is Nullable Of T
 
     /// <summary>

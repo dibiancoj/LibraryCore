@@ -4,29 +4,34 @@ using System.Reflection;
 
 namespace LibraryCore.Core.Reflection;
 
-[ExcludeFromCodeCoverage]
 public static class ReflectionUtility
 {
 
     #region Scanning For Types
 
     /// <summary>
-    /// Scans assemblies to find all instances of TInterface ie: register all classes that implement IRepository
+    /// Scans assemblies to find all instances of TInterface ie: register all classes that implement IRepository. Use this overload for a normal app
     /// </summary>
     /// <typeparam name="TInterface">Interface type for the types that you want to register</typeparam>
     /// <returns>All the types that implement that interface</returns>
-    public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>()
-    {
-        //grab the entry Assembly
-        var entryAssembly = Assembly.GetEntryAssembly() ?? throw new Exception("No Entry Assembly");
+    [ExcludeFromCodeCoverage(Justification = "Not valid in a unit test context.")]
+    public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>() => ScanForAllInstancesOfType<TInterface>(Assembly.GetEntryAssembly() ?? throw new Exception("No Entry Assembly"));
 
+    /// <summary>
+    /// Scans assemblies to find all instances of TInterface ie: register all classes that implement IRepository
+    /// </summary>
+    /// <typeparam name="TInterface">Interface type for the types that you want to register</typeparam>
+    /// <param name="rootAssembly">Root rootAssembly. This is mainly used for unit testing where we don't have a real root. Use the other overload in a asp.net core app</param>
+    /// <returns>All the types that implement that interface</returns>
+    public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>(Assembly rootAssembly)
+    {
         //get all the references Assembies
-        var referencesAssemblies = entryAssembly.GetReferencedAssemblies()
+        var referencesAssemblies = rootAssembly.GetReferencedAssemblies()
                                     .Select(Assembly.Load);
 
         //NOT TESTABLE - No App Domain In Unit Test Project
         return referencesAssemblies
-               .Prepend(entryAssembly)
+               .Prepend(rootAssembly)
                .SelectMany(x => x.DefinedTypes)
                .Where(x => x.ImplementedInterfaces.Contains(typeof(TInterface)))
                .ToList();//don't want to create an iterator with assemblies
