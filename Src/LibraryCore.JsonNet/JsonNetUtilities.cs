@@ -90,7 +90,7 @@ public static class JsonNetUtilities
     /// <summary>
     /// Create a jobject from a stream. We don't need to allocate the string that gets thrown away. For larger http responses this is important bc GC doesn't run as often.
     /// </summary>
-    /// <param name="StreamToReadFrom">Stream to read from</param>
+    /// <param name="streamToReadFrom">Stream to read from</param>
     /// <returns>Jobject</returns>
     public static async Task<JObject> JObjectFromStreamAsync(Stream streamToReadFrom)
     {
