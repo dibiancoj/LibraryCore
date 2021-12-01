@@ -29,7 +29,7 @@ public static class ReflectionUtility
         var referencesAssemblies = rootAssembly.GetReferencedAssemblies()
                                     .Select(Assembly.Load);
 
-        //NOT TESTABLE - No App Domain In Unit Test Project
+        //basically do a union on the root assembly and the references assemblies. This way we can unit test this
         return referencesAssemblies
                .Prepend(rootAssembly)
                .SelectMany(x => x.DefinedTypes)
@@ -59,7 +59,7 @@ public static class ReflectionUtility
     /// <summary>
     /// Checks the property and returns if it is an IEnumerable (A Collection)
     /// </summary>
-    /// <param name="PropertyToCheck">Property Info To Check</param>
+    /// <param name="propertyToCheck">Property Info To Check</param>
     /// <returns>Result If It's A Collection</returns>
     public static bool PropertyInfoIsIEnumerable(PropertyInfo propertyToCheck)
     {
