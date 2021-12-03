@@ -36,7 +36,7 @@ public static class ExcelUtility
     /// <summary>
     /// Convert A Column Number To Its Alpha Bet Letter. Used Mainly When Using For Loops. You Convert The Number Into The Column Letter When Setting The Range Value With A AlphaBet Character
     /// </summary>
-    /// <param name="ColumnNumber">Int - Column Number</param>
+    /// <param name="columnNumber">Int - Column Number</param>
     /// <returns>String - Alpha Bet Character Which Is The Equivalant To The Numeric Column Number Passed In</returns>
     public static string ColumnIndexToColumnLetter(int columnNumber)
     {
