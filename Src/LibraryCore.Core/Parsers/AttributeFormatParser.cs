@@ -7,7 +7,7 @@ public static class AttributeFormatParser
 {
 
     /// <summary>
-    /// Parse a string format when you can't pass objects in. You would enter somethign like: "Add Immunization => Description = {0} | Provider = {1}", "immunizationSaveRequest.Description", "immunizationSaveRequest.MskProvider". Method Parameters would pass in immunizationSaveRequest
+    /// Parse a string format when you can't pass objects in. You would enter somethign like: "Add Immunization => Description = {0} | Provider = {1}", "immunizationSaveRequest.Description", "immunizationSaveRequest.Provider". Method Parameters would pass in immunizationSaveRequest
     /// </summary>
     /// <param name="format">format string. ie: Add Medication = {request.Id}</param>
     /// <param name="methodParameters">The variables context.ActionArguments</param>
