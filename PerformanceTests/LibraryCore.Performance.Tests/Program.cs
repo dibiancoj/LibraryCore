@@ -2,7 +2,6 @@
 using LibraryCore.Core.Reflection;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.CommandLineUtils;
-using System.Reflection;
 
 namespace LibraryCore.Performance.Tests
 {
