@@ -17,13 +17,16 @@ public static class JsonNetUtilities
     public static T DeserializeFromStream<T>(Stream streamToReadFrom)
     {
         //this is great if you make a web request and you get a stream back.
-        return (T)DeserializeFromStream(typeof(T), streamToReadFrom, JsonSerializer.CreateDefault());
+        return DeserializeFromStream<T>(streamToReadFrom, JsonSerializer.CreateDefault());
     }
 
     public static T DeserializeFromStream<T>(Stream streamToReadFrom, JsonSerializer jsonSerializer)
     {
-        //this is great if you make a web request and you get a stream back.
-        return (T)DeserializeFromStream(typeof(T), streamToReadFrom, jsonSerializer);
+        //contains duplicate code to the other untyped method but we want this typed.
+        using var streamReaderToUse = new StreamReader(streamToReadFrom);
+        using var jsonReaderToUse = new JsonTextReader(streamReaderToUse);
+
+        return jsonSerializer.Deserialize<T>(jsonReaderToUse) ?? throw new Exception("Not Able To Deserialize The Item");
     }
 
     /// <summary>
