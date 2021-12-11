@@ -16,6 +16,17 @@ public class JsonNetTest
     #region Serialize To Byte Array And Back
 
     [Fact]
+    public void JsonSerializeToByteArrayWithEmptyArray()
+    {
+        var settings = JsonSerializer.CreateDefault();
+        TestObject nullInstance = null;
+
+        var serializedBytes = JsonNetUtilities.SerializeToUtf8Bytes(nullInstance, settings);
+
+        Assert.Null(JsonNetUtilities.DeserializeFromByteArray<TestObject>(serializedBytes, settings));
+    }
+
+    [Fact]
     public void JsonSerializeToByteArrayAndBack()
     {
         var modelToSerialize = new TestObject();
@@ -32,6 +43,14 @@ public class JsonNetTest
     #endregion
 
     #region Deserialization From Stream
+
+    [Fact]
+    public void JsonDeserializationFromStreamWhenJsonIsNull()
+    {
+        using var blankMemoryStream = new MemoryStream();
+
+        Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(blankMemoryStream));
+    }
 
     [Fact]
     public void JsonDeserializationFromStreamTest()
@@ -56,6 +75,15 @@ public class JsonNetTest
     }
 
     [Fact]
+    public void JsonDeserializationFromStreamTestOverloadWithSerializerWhenJsonIsNull()
+    {
+        //null memory stream. string.Empty.ToByteArray() would have the same result (should be null)
+        using var blankMemoryStream = new MemoryStream();
+
+        Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(blankMemoryStream, JsonSerializer.CreateDefault()));
+    }
+
+    [Fact]
     public void JsonDeserializationFromStreamTestOverloadWithSerializer()
     {
         //create the dummy record
@@ -75,6 +103,15 @@ public class JsonNetTest
 
         //check the description
         Assert.Equal(recordToTest.Text, deserializedStringObject.Text);
+    }
+
+    [Fact]
+    public void JsonDeserializationFromStreamNonGenericVersionTestWhenJsonIsNull()
+    {
+        //null memory stream. string.Empty.ToByteArray() would have the same result (should be null)
+        using var blankMemoryStream = new MemoryStream();
+
+        Assert.Null(JsonNetUtilities.DeserializeFromStream(typeof(TestObject), blankMemoryStream, JsonSerializer.CreateDefault(new JsonSerializerSettings())) as TestObject);
     }
 
     [Fact]
