@@ -11,6 +11,12 @@ public class XmlSerializerHelperTest
     }
 
     [Fact]
+    public void SerializeAndDeserializeXmlCorrectWhenNullObject()
+    {
+        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObject((TestObject)null)));
+    }
+
+    [Fact]
     public void SerializeAndDeserializeXmlCorrect()
     {
         var xmlData = XMLSerializationHelper.SerializeObject(new TestObject { Id = 1, Text = "Test 1" });
@@ -18,6 +24,12 @@ public class XmlSerializerHelperTest
 
         Assert.Equal(1, backToObejct.Id);
         Assert.Equal("Test 1", backToObejct.Text);
+    }
+
+    [Fact]
+    public void SerializeAndDeserializeToXElementXmlCorrectWhenNullObject()
+    {
+        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObjectToXElement((TestObject)null)));
     }
 
     [Fact]
@@ -31,7 +43,22 @@ public class XmlSerializerHelperTest
     }
 
     [Fact]
-    public void DeserializeFromStream()
+    public void SerializeAndDeserializeFromStreamWhenNull()
+    {
+        var xmlData = XMLSerializationHelper.SerializeObjectToXElement((TestObject)null);
+
+        using var streamToUse = new MemoryStream();
+
+        xmlData.Save(streamToUse);
+
+        //rewind the stream to the beg.
+        streamToUse.Seek(0, SeekOrigin.Begin);
+
+        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(streamToUse));
+    }
+
+    [Fact]
+    public void SerializeAndDeserializeFromStream()
     {
         var xmlData = XMLSerializationHelper.SerializeObjectToXElement(new TestObject { Id = 9999, Text = "Test 9999" });
 

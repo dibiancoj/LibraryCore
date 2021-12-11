@@ -84,33 +84,40 @@ public class XMLSerializationHelper
     /// Deserialize an object
     /// </summary>
     /// <param name="xmlDataToDeserialize">Serialized Xml Data</param>
-    /// <returns>Object Of T</returns>
-    public static T DeserializeObject<T>(XElement xmlDataToDeserialize)
+    /// <returns>Object Of T. Will return null if T is null based on the xml representation</returns>
+    public static T? DeserializeObject<T>(XElement xmlDataToDeserialize)
     {
         using var xmlReader = xmlDataToDeserialize.CreateReader();
 
-        return (new XmlSerializer(typeof(T)).Deserialize(xmlReader) ?? throw new Exception("Can't Deserialize Object")).Cast<T>();
+        return ToNullable<T>(new XmlSerializer(typeof(T)).Deserialize(xmlReader));
     }
 
     /// <summary>
     /// Deserialize an object straight from a stream. If its byte based you will need to use UTF-8.
     /// </summary>
-    /// <returns>Object Of T</returns>
+    /// <returns>Object Of T. Will return null if T is null based on the xml representation</returns>
     /// <remarks>Caller should dispose of the stream</remarks>
-    public static T DeserializeObject<T>(Stream stream)
+    public static T? DeserializeObject<T>(Stream stream)
     {
-        return (new XmlSerializer(typeof(T)).Deserialize(stream) ?? throw new Exception("Can't Deserialize Object")).Cast<T>();
+        return ToNullable<T>(new XmlSerializer(typeof(T)).Deserialize(stream));
     }
 
     /// <summary>
     /// Deserialize an object
     /// </summary>
     /// <param name="xmlDataToDeserialize">Serialized Xml Data</param>
-    /// <returns>Object Of T</returns>
-    public static T DeserializeObject<T>(string xmlDataToDeserialize)
+    /// <returns>Object Of T. Will return null if T is null based on the xml representation</returns>
+    public static T? DeserializeObject<T>(string xmlDataToDeserialize)
     {
         //use the overload
-        return DeserializeObject<T>(XElement.Parse(xmlDataToDeserialize));
+        return ToNullable<T>(DeserializeObject<T>(XElement.Parse(xmlDataToDeserialize)));
+    }
+
+    private static T? ToNullable<T>(object? resultFromDeserialization)
+    {
+        return resultFromDeserialization == default ?
+                                    default :
+                                    (T)resultFromDeserialization;
     }
 
     #endregion
