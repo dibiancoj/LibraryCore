@@ -20,6 +20,6 @@ public class XDocumentExtensionMethodTest
 
         var parsedNode = XDocument.Parse(data.ToStringWithDeclaration());
 
-        Assert.Equal(@"<?xml version=""1.0"" encoding=""utf-16""?>", parsedNode.Declaration.ToString());
+        Assert.Equal(@"<?xml version=""1.0"" encoding=""utf-16""?>", parsedNode.Declaration!.ToString());
     }
 }

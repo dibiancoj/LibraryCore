@@ -15,7 +15,7 @@ public class IEnumerableExtensionMethodTest
     public void AnyWithNullCheckTest1()
     {
         //create a new null list that we will use to check
-        List<int> ListToTestWith = null;
+        List<int>? ListToTestWith = null;
 
         //check the null list
         Assert.False(ListToTestWith.AnyWithNullCheck());
@@ -52,7 +52,7 @@ public class IEnumerableExtensionMethodTest
     public void AnyWithNullCheckPredicateTest1()
     {
         //create a new null list that we will use to check
-        List<int> ListToTestWith = null;
+        List<int>? ListToTestWith = null;
 
         //should return false since we don't have an instance of an object
         Assert.False(ListToTestWith.AnyWithNullCheck(x => x == 5));
@@ -95,7 +95,7 @@ public class IEnumerableExtensionMethodTest
     [Fact]
     public void HasNoneIsNull()
     {
-        List<int> list = null;
+        List<int>? list = null;
 
         Assert.True(list.HasNoneWithNullCheck());
     }
@@ -159,7 +159,7 @@ public class IEnumerableExtensionMethodTest
     public void EmptyIfNullWithEnumerableThatIsNullTest1()
     {
         //original item to test
-        List<string> originalEnumerable = null;
+        List<string>? originalEnumerable = null;
 
         //go grab the result. (pass in empty enumerable...because the result should be empty)
         Assert.Equal(Enumerable.Empty<string>(), originalEnumerable.EmptyIfNull());

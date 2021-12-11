@@ -33,7 +33,7 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(CSVDelimiter);
 
         //add a row of data
-        delimiterBuilder.AddRow(new string[] { "1", "2", "", null });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", "", null });
 
         //add a row to test the none row
         delimiterBuilder.AddRow(Array.Empty<string>());
@@ -58,7 +58,7 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(CSVDelimiter);
 
         //add a row
-        delimiterBuilder.AddRow(new string[] { "1", "2", "3", "4" });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
 
         //what is the final output of creator
         var result = delimiterBuilder.WriteData();
@@ -86,7 +86,7 @@ public class DelimiterBuilderTest
         //create list of rows
         var rowsToAdd = new List<DelimiterRow>
             {
-                new DelimiterRow(new string[] { "1", "2", "", null })
+                new DelimiterRow(new string?[] { "1", "2", "", null })
             };
 
         //add the list (range of rows)
@@ -114,7 +114,7 @@ public class DelimiterBuilderTest
         //create list of rows
         var rowsToAdd = new List<DelimiterRow>
             {
-                new DelimiterRow(new string[] { "1", "2", "3", "4" })
+                new DelimiterRow(new string?[] { "1", "2", "3", "4" })
             };
 
         //add the list (range of rows)
@@ -144,8 +144,8 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(CSVDelimiter);
 
         //add 2 rows to the builder
-        delimiterBuilder.AddRow(new string[] { "1", "2", "3", "4" });
-        delimiterBuilder.AddRow(new string[] { string.Empty, "6", null, "8" });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
+        delimiterBuilder.AddRow(new string?[] { string.Empty, "6", null, "8" });
 
         //get the result
         var result = delimiterBuilder.WriteData();
@@ -181,8 +181,8 @@ public class DelimiterBuilderTest
         //create list of rows
         var rowsToAdd = new List<DelimiterRow>
             {
-                new DelimiterRow(new string[] { "1", "2", "3", "4" }),
-                new DelimiterRow(new string[] { string.Empty, "6", null, "8" })
+                new DelimiterRow(new string?[] { "1", "2", "3", "4" }),
+                new DelimiterRow(new string?[] { string.Empty, "6", null, "8" })
             };
 
         //add those rows to the builder
@@ -220,7 +220,7 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CSVDelimiter);
 
         //add a row
-        delimiterBuilder.AddRow(new string[] { "1", "2", "3", "4" });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
 
         //grab the resdult
         var result = delimiterBuilder.WriteData();
@@ -250,7 +250,7 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CSVDelimiter);
 
         //add a row
-        delimiterBuilder.AddRow(new string[] { "1", "2", null, string.Empty });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", null, string.Empty });
 
         //grab the resdult
         var result = delimiterBuilder.WriteData();
@@ -284,8 +284,8 @@ public class DelimiterBuilderTest
         var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CSVDelimiter);
 
         //add 2 rows
-        delimiterBuilder.AddRow(new string[] { "1", "2", "3", "4" });
-        delimiterBuilder.AddRow(new string[] { string.Empty, "6", null, "8" });
+        delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
+        delimiterBuilder.AddRow(new string?[] { string.Empty, "6", null, "8" });
 
         //grab the resdult
         var result = delimiterBuilder.WriteData();
@@ -327,8 +327,8 @@ public class DelimiterBuilderTest
         var rowsToAdd = new List<DelimiterRow>
             {
                 //rowsToAdd 2 rows to the list
-                new DelimiterRow(new string[] { "1", "2", "3", "4" }),
-                new DelimiterRow(new string[] { string.Empty, "6", null, "8" })
+                new DelimiterRow(new string?[] { "1", "2", "3", "4" }),
+                new DelimiterRow(new string?[] { string.Empty, "6", null, "8" })
             };
 
         //push those rows now

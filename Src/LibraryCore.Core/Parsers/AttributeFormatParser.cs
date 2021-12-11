@@ -13,7 +13,7 @@ public static class AttributeFormatParser
     /// <param name="methodParameters">The variables context.ActionArguments</param>
     /// <returns>formatted string that can be outputted straight to audit</returns>
     /// <remarks>internal so we can unit test it</remarks>
-    public static string ToFormattedString(string format, IDictionary<string, object> methodParameters)
+    public static string ToFormattedString(string format, IDictionary<string, object>? methodParameters)
     {
         //[Audit - "Save Medication = Drug Name Id - {saveRequest.DrugNameId} | Provider - {saveRequest.ProviderId}"
 
@@ -22,6 +22,12 @@ public static class AttributeFormatParser
         if (!format.Contains('{'))
         {
             return format;
+        }
+
+        //we have parameters so ensure we have method parmameters
+        if (methodParameters.HasNoneWithNullCheck())
+        {
+            throw new Exception("No Method Parameters Found When A Parameter Is Specified In The Template");
         }
 
         var builder = new StringBuilder();

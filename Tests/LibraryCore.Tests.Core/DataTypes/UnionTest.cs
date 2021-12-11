@@ -70,7 +70,7 @@ public class UnionTest
 
         if (unionToTest.Is<ValidPasswordResponse>())
         {
-            Assert.Equal("User1", unionToTest.As<ValidPasswordResponse>().UserName);
+            Assert.Equal("User1", unionToTest.As<ValidPasswordResponse>()!.UserName);
         }
         else
         {
@@ -89,7 +89,7 @@ public class UnionTest
         }
         else
         {
-            Assert.Equal("Invalid user name and or password", unionToTest.As<InvalidPasswordResponse>().ErrorMessage);
+            Assert.Equal("Invalid user name and or password", unionToTest.As<InvalidPasswordResponse>()!.ErrorMessage);
         }
     }
 

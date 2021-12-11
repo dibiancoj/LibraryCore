@@ -5,12 +5,13 @@
 		<IsPackable>false</IsPackable>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Using Include="Xunit" />
-		<Using Include="Newtonsoft.Json"/>
-		<Using Include="Newtonsoft.Json.Linq"/>
+		<Using Include="Newtonsoft.Json" />
+		<Using Include="Newtonsoft.Json.Linq" />
 		<Using Include="Moq" />
 	</ItemGroup>
 

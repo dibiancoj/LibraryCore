@@ -77,9 +77,9 @@ public class StringExtensionMethodTest
     /// Test if a string has a value in a string instance extension method (false result)
     /// </summary>
     [InlineData("")]
-    [InlineData((string)null)]
+    [InlineData((string?)null)]
     [Theory]
-    public void HasValueFalseResultTest1(string ValueToTest)
+    public void HasValueFalseResultTest1(string? ValueToTest)
     {
         Assert.False(ValueToTest.HasValue());
     }
@@ -101,9 +101,9 @@ public class StringExtensionMethodTest
     /// Test is a string is null or empty in a string instance extension method  (null result)
     /// </summary>
     [InlineData("")]
-    [InlineData((string)null)]
+    [InlineData((string?)null)]
     [Theory]
-    public void NullOrEmptyNullTestTest1(string ValueToTest)
+    public void NullOrEmptyNullTestTest1(string? ValueToTest)
     {
         Assert.True(ValueToTest.IsNullOrEmpty());
     }

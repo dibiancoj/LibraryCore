@@ -28,6 +28,6 @@ public class HttpGetOptionHeadAttributeTest
     [Fact]
     public void VerifyThrowsOnNullTemplate()
     {
-        Assert.Throws<ArgumentNullException>(() => new HttpGetOptionHeadAttribute(null).HttpMethods);
+        Assert.Throws<ArgumentNullException>(() => new HttpGetOptionHeadAttribute(null!).HttpMethods);
     }
 }

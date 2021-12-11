@@ -7,7 +7,7 @@ namespace LibraryCore.AspNet.SessionState;
 
 public class DistributedSessionStateService : ISessionStateService
 {
-    public DistributedSessionStateService(IHttpContextAccessor httpContextAccessor, IEnumerable<System.Text.Json.Serialization.JsonConverter> jsonTextConverters)
+    public DistributedSessionStateService(IHttpContextAccessor httpContextAccessor, IEnumerable<System.Text.Json.Serialization.JsonConverter>? jsonTextConverters)
     {
         HttpContextAccessor = httpContextAccessor;
         CachedJsonSerializerOptions = CreateSystemTextJsonSerializationOptions(jsonTextConverters);
@@ -106,7 +106,7 @@ public class DistributedSessionStateService : ISessionStateService
                     System.Text.Json.JsonSerializer.Deserialize<T>(bytesToDeserialize, CachedJsonSerializerOptions);
     }
 
-    private static JsonSerializerOptions CreateSystemTextJsonSerializationOptions(IEnumerable<System.Text.Json.Serialization.JsonConverter> jsonTextConverters)
+    private static JsonSerializerOptions CreateSystemTextJsonSerializationOptions(IEnumerable<System.Text.Json.Serialization.JsonConverter>? jsonTextConverters)
     {
         var options = new JsonSerializerOptions();
 

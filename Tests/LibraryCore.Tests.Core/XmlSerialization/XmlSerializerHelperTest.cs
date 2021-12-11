@@ -7,20 +7,20 @@ public class XmlSerializerHelperTest
     public class TestObject
     {
         public int Id { get; set; }
-        public string Text { get; set; }
+        public string Text { get; set; } = null!;
     }
 
     [Fact]
     public void SerializeAndDeserializeXmlCorrectWhenNullObject()
     {
-        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObject((TestObject)null)));
+        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObject((TestObject?)null)));
     }
 
     [Fact]
     public void SerializeAndDeserializeXmlCorrect()
     {
         var xmlData = XMLSerializationHelper.SerializeObject(new TestObject { Id = 1, Text = "Test 1" });
-        var backToObejct = XMLSerializationHelper.DeserializeObject<TestObject>(xmlData);
+        var backToObejct = XMLSerializationHelper.DeserializeObject<TestObject>(xmlData) ?? throw new Exception("Not Able To Deserialize Mode");
 
         Assert.Equal(1, backToObejct.Id);
         Assert.Equal("Test 1", backToObejct.Text);
@@ -29,14 +29,14 @@ public class XmlSerializerHelperTest
     [Fact]
     public void SerializeAndDeserializeToXElementXmlCorrectWhenNullObject()
     {
-        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObjectToXElement((TestObject)null)));
+        Assert.Null(XMLSerializationHelper.DeserializeObject<TestObject>(XMLSerializationHelper.SerializeObjectToXElement((TestObject?)null)));
     }
 
     [Fact]
     public void SerializeAndDeserializeToXElementXmlCorrect()
     {
         var xmlData = XMLSerializationHelper.SerializeObjectToXElement(new TestObject { Id = 1, Text = "Test 1" });
-        var backToObejct = XMLSerializationHelper.DeserializeObject<TestObject>(xmlData);
+        var backToObejct = XMLSerializationHelper.DeserializeObject<TestObject>(xmlData) ?? throw new Exception("Not Able To Deserialize Mode");
 
         Assert.Equal(1, backToObejct.Id);
         Assert.Equal("Test 1", backToObejct.Text);
@@ -45,7 +45,7 @@ public class XmlSerializerHelperTest
     [Fact]
     public void SerializeAndDeserializeFromStreamWhenNull()
     {
-        var xmlData = XMLSerializationHelper.SerializeObjectToXElement((TestObject)null);
+        var xmlData = XMLSerializationHelper.SerializeObjectToXElement((TestObject?)null);
 
         using var streamToUse = new MemoryStream();
 
@@ -69,7 +69,7 @@ public class XmlSerializerHelperTest
         //rewind the stream to the beg.
         streamToUse.Seek(0, SeekOrigin.Begin);
 
-        var result = XMLSerializationHelper.DeserializeObject<TestObject>(streamToUse);
+        var result = XMLSerializationHelper.DeserializeObject<TestObject>(streamToUse) ?? throw new Exception("Not Able To Deserialize Mode");
 
         Assert.Equal(9999, result.Id);
         Assert.Equal("Test 9999", result.Text);

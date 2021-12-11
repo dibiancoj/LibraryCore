@@ -7,9 +7,9 @@ public class FullMockIDistributedCache : IDistributedCache
 {
     private ConcurrentDictionary<string, byte[]> CacheStore { get; } = new();
 
-    public byte[] Get(string key) => CacheStore.GetValueOrDefault(key);
+    public byte[] Get(string key) => CacheStore.GetValueOrDefault(key)!;
 
-    public Task<byte[]> GetAsync(string key, CancellationToken token = default) => Task.FromResult(CacheStore.GetValueOrDefault(key));
+    public Task<byte[]> GetAsync(string key, CancellationToken token = default) => Task.FromResult(CacheStore.GetValueOrDefault(key))!;
 
     public void Refresh(string key) => throw new NotImplementedException();
 

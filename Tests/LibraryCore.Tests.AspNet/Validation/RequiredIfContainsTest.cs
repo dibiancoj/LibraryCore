@@ -18,24 +18,24 @@ public class RequiredIfContainsTest
             Three
         }
 
-        public IList<TestEnum> Value { get; set; }
+        public IList<TestEnum>? Value { get; set; }
 
         [RequiredIfContains(nameof(Value), TestEnum.Two, ErrorMessage = "My_Error_Resource")]
-        public string ValueIfYes { get; set; }
+        public string? ValueIfYes { get; set; }
     }
 
     public class RequiredIfModelMissingProperty
     {
         [RequiredIfContains("MissingProperty", TestEnum.Two, ErrorMessage = "My_Error_Resource")]
-        public string RequiredIfMissingPropertyCheck { get; set; }
+        public string? RequiredIfMissingPropertyCheck { get; set; }
     }
 
     public class RequiredNotArrayTestModel
     {
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         [RequiredIfContains(nameof(Value), TestEnum.Two, ErrorMessage = "My_Error_Resource")]
-        public string ValueIfYes { get; set; }
+        public string? ValueIfYes { get; set; }
     }
 
     private static IList<TestEnum> MockList(bool includeTwo)
