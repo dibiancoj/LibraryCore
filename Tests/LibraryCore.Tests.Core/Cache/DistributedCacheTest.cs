@@ -73,7 +73,7 @@ public class DistributedCacheTest
 
         var result = addOptions ?
                             await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), new DistributedCacheEntryOptions()) :
-                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), null);
+                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"));
 
         Assert.Equal(3, result.Count);
         Assert.Contains(result, x => x == 1);

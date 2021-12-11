@@ -67,28 +67,11 @@ public static class JsonNetUtilities
     /// <typeparam name="T">Type of the model to serialize</typeparam>
     /// <param name="modelToSerialize">model to serialize</param>
     /// <param name="jsonSerializer">Serializer if you have special settings</param>
-    /// <returns>Stream to consume</returns>
+    /// <returns>Stream to consume. This stream will be closed stream which you can call Encoding.UTF8.GetString(createdStream.ToArray() on</returns>
     /// <remarks>Be sure to dispose of the stream when done by the calling code</remarks>
-    public static MemoryStream SerializeToStream<T>(T modelToSerialize, JsonSerializer jsonSerializer)
-    {
-        var memoryStream = new MemoryStream();
+    public static JsonToStreamResult SerializeToStream<T>(T? modelToSerialize, JsonSerializer jsonSerializer) => JsonToStreamResult.SerializeToStream(modelToSerialize, jsonSerializer);
 
-        using var streamWriter = new StreamWriter(memoryStream);
-        using var jsonWriter = new JsonTextWriter(streamWriter);
-
-        jsonSerializer.Serialize(jsonWriter, modelToSerialize);
-        jsonWriter.Flush();
-        streamWriter.Flush();
-
-        return memoryStream;
-    }
-
-    public static byte[] SerializeToUtf8Bytes<T>(T modelToSerialize, JsonSerializer jsonSerializer)
-    {
-        using var memoryStream = SerializeToStream(modelToSerialize, jsonSerializer);
-
-        return memoryStream.ToArray();
-    }
+    public static byte[] SerializeToUtf8Bytes<T>(T? modelToSerialize, JsonSerializer jsonSerializer) => SerializeToStream(modelToSerialize, jsonSerializer).ToByteArray();
 
     #endregion
 

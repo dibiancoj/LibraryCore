@@ -141,6 +141,14 @@ public class JsonNetTest
     #region Serialize To Stream
 
     [Fact]
+    public void JsonSerializeToStreamWithNullObject()
+    {
+        using var createdStream = JsonNetUtilities.SerializeToStream((TestObject)null, JsonSerializer.CreateDefault());
+
+        Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream()));
+    }
+
+    [Fact]
     public void JsonSerializeToStream()
     {
         var modelToSerialize = new TestObject();
@@ -149,7 +157,20 @@ public class JsonNetTest
 
         using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
 
-        Assert.Equal(expectedResult, Encoding.UTF8.GetString(createdStream.ToArray()));
+        Assert.Equal(expectedResult, Encoding.UTF8.GetString(createdStream.ToByteArray()));
+    }
+
+    [Fact]
+    public void JsonSerializeAndDeserializeToStream()
+    {
+        var modelToSerialize = new TestObject();
+
+        using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
+
+        var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream());
+
+        Assert.Equal(modelToSerialize.Id, deserializedObject.Id);
+        Assert.Equal(modelToSerialize.Text, deserializedObject.Text);
     }
 
     #endregion
