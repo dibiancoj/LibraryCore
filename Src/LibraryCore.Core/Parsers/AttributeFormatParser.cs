@@ -24,6 +24,12 @@ public static class AttributeFormatParser
             return format;
         }
 
+        //we have parameters so ensure we have method parmameters
+        if (methodParameters.HasNoneWithNullCheck())
+        {
+            throw new Exception("No Method Parameters Found When A Parameter Is Specified In The Template");
+        }
+
         var builder = new StringBuilder();
 
         using (var reader = new StringReader(format))
@@ -62,13 +68,8 @@ public static class AttributeFormatParser
         return buffer.ToString();
     }
 
-    private static object MapFormatStatementToValue(string nodeStatment, IDictionary<string, object>? methodParameters)
+    private static object MapFormatStatementToValue(string nodeStatment, IDictionary<string, object> methodParameters)
     {
-        if (methodParameters.HasNoneWithNullCheck())
-        {
-            throw new Exception("No Method Parameters Found When A Parameter Is Specified In The Template");
-        }
-
         //this would be the "saveRequest.DrugNameId"...split by property value
         var nodePropertiesToParse = nodeStatment.Split('.').AsSpan();
 

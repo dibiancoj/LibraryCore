@@ -19,6 +19,15 @@ public class AttributeFormatParserTest
     }
 
     [Fact]
+    public void SingleParameterButNoDictionaryPassedIn()
+    {
+        Assert.Throws<Exception>(() =>
+        {
+            AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {PrescriptionId}", null);
+        });
+    }
+
+    [Fact]
     public void TwoSimpleParameter()
     {
         Assert.Equal("Delete - Prescription Id = 12345 | Doctor Id = 24",
