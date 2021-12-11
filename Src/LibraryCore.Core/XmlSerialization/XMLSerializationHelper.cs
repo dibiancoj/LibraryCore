@@ -53,7 +53,7 @@ public class XMLSerializationHelper
     /// </summary>
     /// <param name="serializeThisObject">Object to serialize</param>
     /// <returns>String Representation of this object</returns>
-    public static string SerializeObject<T>(T serializeThisObject)
+    public static string SerializeObject<T>(T? serializeThisObject)
     {
         //create the string writer object
         using var serializeStringWriter = new StringWriter();
@@ -70,7 +70,7 @@ public class XMLSerializationHelper
     /// </summary>
     /// <param name="serializeThisObject">Object to serialize</param>
     /// <returns>String Representation of this object</returns>
-    public static XElement SerializeObjectToXElement<T>(T serializeThisObject)
+    public static XElement SerializeObjectToXElement<T>(T? serializeThisObject)
     {
         //use the other method to grab the xml...this method builds it into a xelement so the user doesn't have to load it themselves for each call
         return XElement.Parse(SerializeObject(serializeThisObject));
