@@ -24,7 +24,7 @@ public class FullMockSessionState : ISession
 
     public virtual void Set(string key, byte[] value) => InternalSessionStateStorage[key] = value;
 
-    public virtual bool TryGetValue(string key, out byte[] value) => InternalSessionStateStorage.TryGetValue(key, out value);
+    public virtual bool TryGetValue(string key, out byte[] value) => InternalSessionStateStorage.TryGetValue(key, out value!);
 
     public static MockWithSessionResult BuildContextWithSession()
     {

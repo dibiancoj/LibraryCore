@@ -75,10 +75,10 @@ public class DistributedSessionStateServiceTest
 
         Assert.True(result.GetItemIfFoundInSession(out var itemFoundInSession));
 
-        Assert.Equal(24, itemFoundInSession.Id);
+        Assert.Equal(24, itemFoundInSession!.Id);
 
         //use the get
-        Assert.Equal(24, (await SessionStateServiceToUse.GetObjectAsync<BaseClass>(key, true)).Id);
+        Assert.Equal(24, (await SessionStateServiceToUse.GetObjectAsync<BaseClass>(key, true))!.Id);
     }
 
     public abstract class BaseClass

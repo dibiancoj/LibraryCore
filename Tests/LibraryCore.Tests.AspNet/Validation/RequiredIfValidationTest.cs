@@ -9,19 +9,19 @@ public class RequiredIfValidationTest
 
     public class RequiredIfModel
     {
-        public string Value { get; set; }
+        public string? Value { get; set; } 
 
         [RequiredIf(nameof(Value), "Yes", ErrorMessage = "My Error Message")]
-        public string ValueIfYes { get; set; }
+        public string? ValueIfYes { get; set; } 
 
         [RequiredIf(nameof(Value), "Yes1", "Yes2", ErrorMessage = "My Error Message")]
-        public string ValueIfYes1OrYes2 { get; set; }
+        public string? ValueIfYes1OrYes2 { get; set; } 
     }
 
     public class RequiredIfModelMissingProperty
     {
         [RequiredIf("MissingPropertyName", "SomeValue", ErrorMessage = "My Error Message")]
-        public string RequiredIfMissingPropertyCheck { get; set; }
+        public string? RequiredIfMissingPropertyCheck { get; set; } 
     }
 
     #endregion

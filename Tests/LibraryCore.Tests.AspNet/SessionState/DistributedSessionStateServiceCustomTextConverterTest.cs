@@ -8,7 +8,7 @@ public class DistributedSessionStateServiceCustomTextConverterTest
 {
     public class CustomConverterModel
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
     }
 
     public class CustomJsonConverter : System.Text.Json.Serialization.JsonConverter<CustomConverterModel>
@@ -23,11 +23,11 @@ public class DistributedSessionStateServiceCustomTextConverterTest
             {
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
-                    currentPropertyName = reader.GetString();
+                    currentPropertyName = reader.GetString() ?? throw new Exception("Property Name Value Not Set");
                 }
                 else if (currentPropertyName == "PrefixId" && reader.TokenType == JsonTokenType.String)
                 {
-                    modelToReturn.Id = reader.GetString();
+                    modelToReturn.Id = reader.GetString() ?? throw new Exception("Id Property Value Not Set");
                 }
             }
 
