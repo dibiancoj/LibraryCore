@@ -18,7 +18,7 @@ public class DistributedSessionStateService : ISessionStateService
     private JsonSerializerOptions CachedJsonSerializerOptions { get; }
     private Newtonsoft.Json.JsonSerializer JsonNetSerializerOptions { get; }
 
-    public async ValueTask<(bool ItemFoundInSession, T ItemInSession)> TryGetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
+    public async ValueTask<TryToGetResult<T>> TryGetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
     {
         await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
 
@@ -28,13 +28,16 @@ public class DistributedSessionStateService : ISessionStateService
                             DeserializeItem<T>(foundBytes, useJsonNetSerializer) :
                             default;
 
-        return (foundInSession, objectFound!); //with new vs throws nullability (as this differs from contract). Leaving for now since the boolean should be checked first.
+        return new TryToGetResult<T>(foundInSession, objectFound); //with new vs throws nullability (as this differs from contract). Leaving for now since the boolean should be checked first.
     }
 
-    public async ValueTask<T> GetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
+    public async ValueTask<T?> GetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
     {
-        //we don't care if it fails or not since the failure will return the default value
-        return (await TryGetObjectAsync<T>(key, useJsonNetSerializer).ConfigureAwait(false)).ItemInSession;
+        var result = await TryGetObjectAsync<T>(key, useJsonNetSerializer).ConfigureAwait(false);
+
+        _ = result.GetItemIfFoundInSession(out var itemInSession);
+
+        return itemInSession;
     }
 
     public async ValueTask SetObjectAsync<T>(string key, T objectToPutInSession, bool useJsonNetSerializer = false)
@@ -47,9 +50,9 @@ public class DistributedSessionStateService : ISessionStateService
 
     public async ValueTask<T> GetOrSetAsync<T>(string key, Func<Task<T>> creator, bool useJsonNetSerializer = false)
     {
-        var (itemFoundInSession, itemInSession) = await TryGetObjectAsync<T>(key, useJsonNetSerializer);
+        var result = await TryGetObjectAsync<T>(key, useJsonNetSerializer);
 
-        if (itemFoundInSession)
+        if (result.GetItemIfFoundInSession(out var itemInSession))
         {
             //found it right away return
             return itemInSession;

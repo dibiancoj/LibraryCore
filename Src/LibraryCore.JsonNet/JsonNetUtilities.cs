@@ -5,6 +5,10 @@ namespace LibraryCore.JsonNet;
 
 public static class JsonNetUtilities
 {
+    //** Note **
+    //The nullable reference checks has deserialize as nullable
+    //Passing in a null stream / string. Or "null"...Will result in a null object.
+    //We want to be correct so will return a nullable type as well.
 
     #region Deserialize
 
@@ -13,20 +17,20 @@ public static class JsonNetUtilities
     /// </summary>
     /// <typeparam name="T">Type to deserialize</typeparam>
     /// <param name="streamToReadFrom">Stream to read from</param>
-    /// <returns>the deserialized object</returns>
-    public static T DeserializeFromStream<T>(Stream streamToReadFrom)
+    /// <returns>The deserialized object or a null object if the representation is null</returns>
+    public static T? DeserializeFromStream<T>(Stream streamToReadFrom)
     {
         //this is great if you make a web request and you get a stream back.
         return DeserializeFromStream<T>(streamToReadFrom, JsonSerializer.CreateDefault());
     }
 
-    public static T DeserializeFromStream<T>(Stream streamToReadFrom, JsonSerializer jsonSerializer)
+    public static T? DeserializeFromStream<T>(Stream streamToReadFrom, JsonSerializer jsonSerializer)
     {
         //contains duplicate code to the other untyped method but we want this typed.
         using var streamReaderToUse = new StreamReader(streamToReadFrom);
         using var jsonReaderToUse = new JsonTextReader(streamReaderToUse);
 
-        return jsonSerializer.Deserialize<T>(jsonReaderToUse) ?? throw new Exception("Not Able To Deserialize The Item");
+        return jsonSerializer.Deserialize<T>(jsonReaderToUse);
     }
 
     /// <summary>
@@ -35,18 +39,18 @@ public static class JsonNetUtilities
     /// <param name="type">Type to deserialize</param>
     /// <param name="streamToReadFrom">Stream to read from</param>
     /// <param name="jsonSerializer">Json serializer settings</param>
-    /// <returns>the deserialized object</returns>
-    public static object DeserializeFromStream(Type type, Stream streamToReadFrom, JsonSerializer jsonSerializer)
+    /// <returns>The deserialized object or a null object if the representation is null</returns>
+    public static object? DeserializeFromStream(Type type, Stream streamToReadFrom, JsonSerializer jsonSerializer)
     {
         //this is great if you make a web request and you get a stream back.
         using var streamReaderToUse = new StreamReader(streamToReadFrom);
         using var jsonReaderToUse = new JsonTextReader(streamReaderToUse);
 
         //read the json from a stream - json size doesn't matter because only a small piece is read at a time from the HTTP request
-        return jsonSerializer.Deserialize(jsonReaderToUse, type)!;
+        return jsonSerializer.Deserialize(jsonReaderToUse, type);
     }
 
-    public static T DeserializeFromByteArray<T>(byte[] bytesToDeserialize, JsonSerializer jsonSerializer)
+    public static T? DeserializeFromByteArray<T>(byte[] bytesToDeserialize, JsonSerializer jsonSerializer)
     {
         using var memoryStream = new MemoryStream(bytesToDeserialize);
 
@@ -97,6 +101,7 @@ public static class JsonNetUtilities
     /// <returns>Jobject</returns>
     public static async Task<JObject> JObjectFromStreamAsync(Stream streamToReadFrom)
     {
+        //jobject doesn't support null types / objects. So this will always return an instance or throw (it throws in json.net)
         using var streamReaderToUse = new StreamReader(streamToReadFrom);
         using var jsonReaderToUse = new JsonTextReader(streamReaderToUse);
 

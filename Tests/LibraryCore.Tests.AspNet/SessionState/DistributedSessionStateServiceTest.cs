@@ -34,7 +34,7 @@ public class DistributedSessionStateServiceTest
 
         await SessionStateServiceToUse.RemoveObjectAsync(key);
 
-        Assert.False((await SessionStateServiceToUse.TryGetObjectAsync<Guid>(key)).ItemFoundInSession);
+        Assert.False((await SessionStateServiceToUse.TryGetObjectAsync<Guid>(key)).GetItemIfFoundInSession(out _));
     }
 
     [Fact]
@@ -71,11 +71,11 @@ public class DistributedSessionStateServiceTest
         await SessionStateServiceToUse.SetObjectAsync(key, model, true);
 
         //back with a try get
-        var (itemFoundInSession, itemInSession) = await SessionStateServiceToUse.TryGetObjectAsync<BaseClass>(key, true);
+        var result = await SessionStateServiceToUse.TryGetObjectAsync<BaseClass>(key, true);
 
-        Assert.True(itemFoundInSession);
+        Assert.True(result.GetItemIfFoundInSession(out var itemFoundInSession));
 
-        Assert.Equal(24, itemInSession.Id);
+        Assert.Equal(24, itemFoundInSession.Id);
 
         //use the get
         Assert.Equal(24, (await SessionStateServiceToUse.GetObjectAsync<BaseClass>(key, true)).Id);
