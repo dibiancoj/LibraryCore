@@ -63,7 +63,7 @@ public class ObjectExtensionMethodTest
     {
         var objectToTest = new MyDerivedObject();
 
-        Assert.Equal(MyValueDefault, objectToTest.As<MyObject>().MyValueGetter);
+        Assert.Equal(MyValueDefault, objectToTest.As<MyObject>()?.MyValueGetter);
     }
 
     /// <summary>

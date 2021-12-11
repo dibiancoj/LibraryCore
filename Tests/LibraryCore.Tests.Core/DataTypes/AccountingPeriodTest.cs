@@ -60,7 +60,7 @@ public class AccountingPeriodTest
     {
         Assert.True(AccountingPeriod.TryParseAccountingPeriod(202005, out var tryToParseValue));
 
-        Assert.Equal(2020, tryToParseValue.Year);
+        Assert.Equal(2020, tryToParseValue!.Year);
         Assert.Equal(5, tryToParseValue.Month);
         Assert.Equal(202005, tryToParseValue.FullAccountingPeriod);
         Assert.Equal(new DateOnly(2020, 5, 1), tryToParseValue.ToDate());

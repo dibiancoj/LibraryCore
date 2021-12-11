@@ -32,7 +32,7 @@ public class RunAndSuppressTest
     [Fact(DisplayName = "Successful Sync Call")]
     public void SuccessfulSyncCall()
     {
-        string errorLogger = null;
+        string? errorLogger = null;
 
         var (Successful, ResultObject) = RunAndSuppressErrors.RunAndSuppressAnyErrors(() => "Success Model", "Called Failed", (ex) => errorLogger = ex.ToString());
 

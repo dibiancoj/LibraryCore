@@ -22,7 +22,7 @@ public class ExceptionExtensionMethodTest
 
         Assert.True(exeptionRaised.TryParse<UnitTestException>(out var tryCastException));
         Assert.IsType<UnitTestException>(tryCastException);
-        Assert.Equal(9876, tryCastException.TestVariable);
+        Assert.Equal(9876, tryCastException!.TestVariable);
     }
 
     [Fact]

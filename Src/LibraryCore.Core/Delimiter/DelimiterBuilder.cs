@@ -22,7 +22,7 @@ public class DelimiterBuilder
     /// </summary>
     /// <param name="columnHeaders">Headers To Add To The Csv. Will Be The First Row Outputted</param>
     /// <param name="delimiterBetweenColumns">Delimiter To Use Between Columns</param>
-    public DelimiterBuilder(IList<string>? columnHeaders, string delimiterBetweenColumns)
+    public DelimiterBuilder(IList<string?>? columnHeaders, string delimiterBetweenColumns)
     {
         //create the string builder
         WorkingOutputWriter = new StringBuilder();
@@ -44,7 +44,7 @@ public class DelimiterBuilder
     /// <summary>
     /// Holds a row of data for the delimiter namespace. Shared between the creator and parser
     /// </summary>
-    public record DelimiterRow(IList<string> ColumnData);
+    public record DelimiterRow(IList<string?> ColumnData);
 
     #endregion
 
@@ -70,7 +70,7 @@ public class DelimiterBuilder
     /// Add A Row To The Output Of The CSV Data
     /// </summary>
     /// <param name="columnDataForThisRow">Row's column data</param>
-    public void AddRow(IList<string> columnDataForThisRow)
+    public void AddRow(IList<string?> columnDataForThisRow)
     {
         //Add the row's column data
         WriteOutRowOfData(new DelimiterRow(columnDataForThisRow));
