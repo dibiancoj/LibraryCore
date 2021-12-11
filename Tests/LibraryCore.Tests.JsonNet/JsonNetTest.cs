@@ -19,7 +19,7 @@ public class JsonNetTest
     public void JsonSerializeToByteArrayWithEmptyArray()
     {
         var settings = JsonSerializer.CreateDefault();
-        TestObject nullInstance = null;
+        TestObject? nullInstance = null;
 
         var serializedBytes = JsonNetUtilities.SerializeToUtf8Bytes(nullInstance, settings);
 
@@ -34,7 +34,7 @@ public class JsonNetTest
 
         var serializedBytes = JsonNetUtilities.SerializeToUtf8Bytes(modelToSerialize, settings);
 
-        var deserializedBackToModel = JsonNetUtilities.DeserializeFromByteArray<TestObject>(serializedBytes, settings);
+        var deserializedBackToModel = JsonNetUtilities.DeserializeFromByteArray<TestObject>(serializedBytes, settings) ?? throw new Exception("Not Able To Deserialize");
 
         Assert.Equal(9999, deserializedBackToModel.Id);
         Assert.Equal("Test", deserializedBackToModel.Text);
@@ -62,7 +62,7 @@ public class JsonNetTest
         using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
         //let's de-serialize it back from the stream
-        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream);
+        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream) ?? throw new Exception("Not Able To Deserialize"); 
 
         //let's test the data
         Assert.NotNull(deserializedStringObject);
@@ -93,7 +93,7 @@ public class JsonNetTest
         using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
         //let's de-serialize it back from the stream
-        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream, JsonSerializer.CreateDefault());
+        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream, JsonSerializer.CreateDefault()) ?? throw new Exception("Not Able To Deserialize");
 
         //let's test the data
         Assert.NotNull(deserializedStringObject);
@@ -124,7 +124,7 @@ public class JsonNetTest
         using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
         //let's de-serialize it back from the stream
-        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream(typeof(TestObject), jsonInStream, JsonSerializer.CreateDefault(new JsonSerializerSettings())) as TestObject;
+        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream(typeof(TestObject), jsonInStream, JsonSerializer.CreateDefault(new JsonSerializerSettings())) as TestObject ?? throw new Exception("Null Object");
 
         //let's test the data
         Assert.NotNull(deserializedStringObject);
@@ -143,7 +143,7 @@ public class JsonNetTest
     [Fact]
     public void JsonSerializeToStreamWithNullObject()
     {
-        using var createdStream = JsonNetUtilities.SerializeToStream((TestObject)null, JsonSerializer.CreateDefault());
+        using var createdStream = JsonNetUtilities.SerializeToStream((TestObject?)null, JsonSerializer.CreateDefault());
 
         Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream()));
     }
@@ -167,7 +167,7 @@ public class JsonNetTest
 
         using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
 
-        var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream());
+        var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream()) ?? throw new Exception("Not Able To Deserialize Model");
 
         Assert.Equal(modelToSerialize.Id, deserializedObject.Id);
         Assert.Equal(modelToSerialize.Text, deserializedObject.Text);
@@ -187,16 +187,16 @@ public class JsonNetTest
         using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
         //let's de-serialize it back from the stream
-        JObject jObject = await JsonNetUtilities.JObjectFromStreamAsync(jsonInStream);
+        var jObject = await JsonNetUtilities.JObjectFromStreamAsync(jsonInStream);
 
         //let's test the data
         Assert.NotNull(jObject);
 
         //check the properties. check the id
-        Assert.Equal(recordToTest.Id, jObject[nameof(TestObject.Id)].ToObject<int>());
+        Assert.Equal(recordToTest.Id, jObject[nameof(TestObject.Id)]?.ToObject<int>());
 
         //check the description
-        Assert.Equal(recordToTest.Text, jObject[nameof(TestObject.Text)].ToObject<string>());
+        Assert.Equal(recordToTest.Text, jObject[nameof(TestObject.Text)]?.ToObject<string>());
     }
 
     #endregion
