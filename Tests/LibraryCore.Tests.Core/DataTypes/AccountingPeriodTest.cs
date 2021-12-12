@@ -31,6 +31,7 @@ public class AccountingPeriodTest
     public void BuildPeriodFromNumbersWithInvalidMonth()
     {
         Assert.Throws<Exception>(() => new AccountingPeriod(13, 2020));
+        Assert.Throws<Exception>(() => new AccountingPeriod(0, 2020));
     }
 
     [Fact]
