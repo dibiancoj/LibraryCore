@@ -4,7 +4,7 @@ namespace LibraryCore.Tests.Core.Parsers;
 
 public class AttributeFormatParserTest
 {
-    private record MockSaveRequest(int Id, int ProviderId);
+    private record MockSaveRequest(int Id, int ProviderId, int? NullableId = null, MockSaveRequest? NestedObject = null);
 
     [Fact]
     public void NoParameters()
@@ -65,5 +65,53 @@ public class AttributeFormatParserTest
     public void MissingStartBracket()
     {
         Assert.Equal("Missing End Bracket - Id}", AttributeFormatParser.ToFormattedString("Missing End Bracket - Id}", new Dictionary<string, object> { { "Id", 12345 } }));
+    }
+
+    [Fact]
+    public void NullablePropertyWithValueOnObject()
+    {
+        Assert.Equal("Delete - Prescription Id = 1", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NullableId}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, 1) } }));
+    }
+
+    [Fact]
+    public void NullablePropertyWithNullValueOnObject()
+    {
+        Assert.Equal("Delete - Prescription Id = ", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NullableId}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWhenPopulated()
+    {
+        Assert.Equal("Delete - Prescription Id = 2", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.Id}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2)) } }));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWhenNull()
+    {
+        Assert.Equal("Delete - Prescription Id = ", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.Id}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWhenNullWithNullOutputString()
+    {
+        Assert.Equal("Delete - Prescription Id = null", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.Id}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }, "null"));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWithNullableProperty()
+    {
+        Assert.Equal("Delete - Prescription Id = 22", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.NullableId}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2, 22)) } }));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWithNullablePropertyWithNullOutputString()
+    {
+        Assert.Equal("Delete - Prescription Id = null", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.Id}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }, "null"));
+    }
+
+    [Fact]
+    public void TwoLevelNestedObjectWithNullablePropertyThatHasValuie()
+    {
+        Assert.Equal("Delete - Prescription Id = ", AttributeFormatParser.ToFormattedString("Delete - Prescription Id = {SaveRequest.NestedObject.NullableId}", new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2)) } }));
     }
 }

@@ -11,9 +11,10 @@ public static class AttributeFormatParser
     /// </summary>
     /// <param name="format">format string. ie: Add Medication = {request.Id}</param>
     /// <param name="methodParameters">The variables context.ActionArguments</param>
+    /// <param name="nullOutputValue">What character to output for a null value</param>
     /// <returns>formatted string that can be outputted straight to audit</returns>
     /// <remarks>internal so we can unit test it</remarks>
-    public static string ToFormattedString(string format, IDictionary<string, object>? methodParameters)
+    public static string ToFormattedString(string format, IDictionary<string, object>? methodParameters, string nullOutputValue = "")
     {
         //[Audit - "Save Medication = Drug Name Id - {saveRequest.DrugNameId} | Provider - {saveRequest.ProviderId}"
 
@@ -40,7 +41,7 @@ public static class AttributeFormatParser
 
                 //append either the replacement value or the character
                 builder.Append(currentCharacterRead == '{' ?
-                                        MapFormatStatementToValue(FindEndNodeBuffer(reader), methodParameters) :
+                                        MapFormatStatementToValue(FindEndNodeBuffer(reader), methodParameters) ?? nullOutputValue :
                                         currentCharacterRead);
             }
         }
@@ -83,7 +84,7 @@ public static class AttributeFormatParser
         foreach (var propertyLevel in nodePropertiesToParse[1..])
         {
             //grab the property and the value
-            tempObject = tempObject!.GetType().GetProperty(propertyLevel)?.GetValue(tempObject, null);
+            tempObject = tempObject?.GetType().GetProperty(propertyLevel)?.GetValue(tempObject, null);
         }
 
         return tempObject;
