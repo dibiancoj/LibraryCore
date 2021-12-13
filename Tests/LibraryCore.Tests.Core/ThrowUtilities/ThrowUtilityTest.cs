@@ -6,6 +6,21 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
     public class ThrowUtilityTest
     {
 
+        //[Fact]
+        //public void Test1()
+        //{
+        //    var exception = Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfTrue(true));
+
+        //    Assert.Equal("valueToTest must be False, but was True", exception.Message);
+        //}
+
+        //[Fact]
+        //public void Test2()
+        //{
+        //    ThrowUtility.ThrowIfTrue(false);
+        //    Assert.True(true);
+        //}
+
         [InlineData(false, false)]
         [InlineData(true, true)]
         [Theory]
@@ -20,6 +35,7 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
             else
             {
                 ThrowUtility.ThrowIfTrue(valueToTest);
+                Assert.False(valueToTest);
             }
         }
 
@@ -37,6 +53,7 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
             else
             {
                 ThrowUtility.ThrowIfFalse(valueToTest);
+                Assert.True(valueToTest);
             }
         }
 
