@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Core.ThrowUtilities;
+﻿using LibraryCore.Core.ThrowUtilities;
 
 namespace LibraryCore.Tests.Core.ThrowUtilities
 {
