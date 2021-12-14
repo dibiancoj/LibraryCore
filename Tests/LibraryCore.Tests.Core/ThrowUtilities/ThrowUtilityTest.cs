@@ -9,7 +9,9 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
         public void ThrowWithNoExpression()
         {
             Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfTrue(true, null));
+            ThrowUtility.ThrowIfTrue(false, null);
             Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfFalse(false, null));
+            ThrowUtility.ThrowIfFalse(true, null);
         }
 
         [InlineData(false, false)]
