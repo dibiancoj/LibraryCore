@@ -129,6 +129,42 @@ public class RunAndSuppressTest
 
     #endregion
 
+    #region Async No Return Tests
+
+    [Fact(DisplayName = "Async No Return Method - Success")]
+    public async Task SuccessfulAsyncNoReturnObject()
+    {
+        var logger = new StringBuilder();
+
+        Assert.True(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        {
+            _ = "test";
+
+            await Task.CompletedTask;
+
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal(string.Empty, logger.ToString());
+    }
+
+    [Fact(DisplayName = "Async No Return Method - Error")]
+    public async Task FailedAsyncNoReturnObject()
+    {
+        var logger = new StringBuilder();
+
+        Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        {
+            await Task.Delay(5);
+
+            throw new Exception("Throw Error");
+
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal("Throw Error", logger.ToString());
+    }
+
+    #endregion
+
     #region Async Value Task Tests
 
     private static async ValueTask<string> SimulateTaskWithDelayValueTaskAsync()
@@ -180,6 +216,44 @@ public class RunAndSuppressTest
 
         Assert.True(Successful);
         Assert.Equal("Success Model", ResultObject);
+    }
+
+    #endregion
+
+    #region Async No Return Value Task Tests
+
+    [Fact(DisplayName = "Async ValueTask - No Return Method - Success")]
+    public async Task SuccessfulValueTaskAsyncNoReturnObject()
+    {
+        var logger = new StringBuilder();
+
+        Assert.True(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        {
+            _ = "test";
+
+            await ValueTask.CompletedTask;
+
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal(string.Empty, logger.ToString());
+    }
+
+    [Fact(DisplayName = "Async ValueTask - No Return Method - Error")]
+    public async Task FailedValueTaskAsyncNoReturnObject()
+    {
+        var logger = new StringBuilder();
+
+        Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        {
+            await Task.Delay(5);
+
+            await ValueTask.CompletedTask;
+
+            throw new Exception("Throw Error");
+
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal("Throw Error", logger.ToString());
     }
 
     #endregion

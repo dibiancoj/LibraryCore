@@ -73,6 +73,28 @@ public static class RunAndSuppressErrors
     #region Async Task Methods
 
     /// <summary>
+    /// Run and execute a method. Supress the exception and record. Use this for methods that don't return anything. ie: Synch void methods
+    /// </summary>
+    /// <param name="action">Method to run which will run within a context and carry on if any errors occurrs</param>
+    /// <param name="errorLogger">On error run the following command. A write to a log should be performed.</param>
+    /// <returns>If the action was successful</returns>
+    public static async Task<bool> RunAndSuppressAnyErrorsAsync(Func<Task> action, Action<Exception> errorLogger)
+    {
+        try
+        {
+            await action();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            errorLogger(ex);
+
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Run a method and continue on if an error has occurred. Method gives you the ability to log the error which you should always do.
     /// </summary>
     /// <typeparam name="TResult">Result type of the method to call</typeparam>
@@ -112,6 +134,28 @@ public static class RunAndSuppressErrors
     #endregion
 
     #region Async ValueTask Methods
+
+    /// <summary>
+    /// Run and execute a method. Supress the exception and record. Use this for methods that don't return anything. ie: Synch void methods
+    /// </summary>
+    /// <param name="action">Method to run which will run within a context and carry on if any errors occurrs</param>
+    /// <param name="errorLogger">On error run the following command. A write to a log should be performed.</param>
+    /// <returns>If the action was successful</returns>
+    public static async ValueTask<bool> RunAndSuppressAnyErrorsValueTaskAsync(Func<ValueTask> action, Action<Exception> errorLogger)
+    {
+        try
+        {
+            await action();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            errorLogger(ex);
+
+            return false;
+        }
+    }
 
     /// <summary>
     /// Run a method and continue on if an error has occurred. Method gives you the ability to log the error which you should always do.
