@@ -227,7 +227,7 @@ public class RunAndSuppressTest
     {
         var logger = new StringBuilder();
 
-        Assert.True(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        Assert.True(await RunAndSuppressErrors.RunAndSuppressAnyErrorsValueTaskAsync(async () =>
         {
             _ = "test";
 
@@ -242,8 +242,8 @@ public class RunAndSuppressTest
     public async Task FailedValueTaskAsyncNoReturnObject()
     {
         var logger = new StringBuilder();
-
-        Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
+        
+        Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsValueTaskAsync(async () =>
         {
             await Task.Delay(5);
 
