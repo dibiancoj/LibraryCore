@@ -1,9 +1,40 @@
 ﻿using LibraryCore.Core.RunAndSuppress;
+using System.Text;
 
 namespace LibraryCore.Tests.Core.RunAndSuppress;
 
 public class RunAndSuppressTest
 {
+
+    #region Sync Void Tests
+
+    [Fact(DisplayName = "Sync Void Method - Success")]
+    public void SuccessfulSyncVoid()
+    {
+        var logger = new StringBuilder();
+
+        Assert.True(RunAndSuppressErrors.RunAndSuppressAnyErrors(() =>
+        {
+            _ = "Test";
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal(string.Empty, logger.ToString());
+    }
+
+    [Fact(DisplayName = "Sync Void Method - Error")]
+    public void FailedSyncVoid()
+    {
+        var logger = new StringBuilder();
+
+        Assert.False(RunAndSuppressErrors.RunAndSuppressAnyErrors(() =>
+        {
+            throw new Exception("Throw Error");
+        }, err => logger.Append(err.Message)));
+
+        Assert.Equal("Throw Error", logger.ToString());
+    }
+
+    #endregion
 
     #region Sync Tests
 
