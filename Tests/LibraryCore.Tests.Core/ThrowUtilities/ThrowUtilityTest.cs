@@ -5,6 +5,12 @@ namespace LibraryCore.Tests.Core.ThrowUtilities
 {
     public class ThrowUtilityTest
     {
+        [Fact]
+        public void ThrowWithNoExpression()
+        {
+            Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfTrue(true, null));
+            Assert.Throws<ArgumentException>(() => ThrowUtility.ThrowIfFalse(false, null));
+        }
 
         [InlineData(false, false)]
         [InlineData(true, true)]
