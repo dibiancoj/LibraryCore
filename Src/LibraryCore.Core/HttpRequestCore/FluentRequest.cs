@@ -18,7 +18,7 @@ public class FluentRequest
     {
 
     }
-    private HttpRequestMessage HttpRequest { get; }
+    public HttpRequestMessage HttpRequest { get; }
     private static MediaTypeWithQualityHeaderValue JsonAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/json");
     private static MediaTypeWithQualityHeaderValue TextHtmlAcceptType { get;} = new MediaTypeWithQualityHeaderValue("text/html");
 
