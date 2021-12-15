@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace LibraryCore.Core.HttpRequestCore;
@@ -18,6 +19,14 @@ public class FluentRequest
 
     }
     private HttpRequestMessage HttpRequest { get; }
+    private static MediaTypeWithQualityHeaderValue JsonAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/json");
+    private static MediaTypeWithQualityHeaderValue TextHtmlAcceptType { get;} = new MediaTypeWithQualityHeaderValue("text/html");
+
+    public enum AcceptType
+    {
+        Json,
+        TextHtml
+    }
 
     public HttpRequestMessage ToMessage() => HttpRequest;
 
@@ -40,6 +49,12 @@ public class FluentRequest
     public FluentRequest AddQueryString(string name, string value)
     {
         HttpRequest.RequestUri = new Uri(QueryHelpers.AddQueryString(HttpRequest.RequestUri!.AbsoluteUri, name, value));
+        return this;
+    }
+
+    public FluentRequest AddAcceptType(AcceptType acceptType)
+    {
+        HttpRequest.Headers.Accept.Add(RetrieveAcceptType(acceptType));
         return this;
     }
 
@@ -88,6 +103,16 @@ public class FluentRequest
 
         //return it
         return content;
+    }
+
+    private static MediaTypeWithQualityHeaderValue RetrieveAcceptType(AcceptType acceptType)
+    {
+        return acceptType switch
+        {
+            AcceptType.Json => JsonAcceptType,
+            AcceptType.TextHtml => TextHtmlAcceptType,
+            _ => throw new NotImplementedException(),
+        };
     }
 
 }

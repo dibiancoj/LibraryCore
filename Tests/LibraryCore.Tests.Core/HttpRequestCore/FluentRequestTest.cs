@@ -89,6 +89,17 @@ public class FluentRequestTest
         Assert.Equal("https://test.api/WeatherForecast?id100=100&id=4&id2=5", request.ToMessage().RequestUri!.AbsoluteUri);
     }
 
+    [InlineData(FluentRequest.AcceptType.Json, "application/json")]
+    [InlineData(FluentRequest.AcceptType.TextHtml, "text/html")]
+    [Theory]
+    public void AddAcceptType(FluentRequest.AcceptType acceptTypeToTest, string expectedValue)
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                .AddAcceptType(acceptTypeToTest);
+
+        Assert.Equal(expectedValue, request.ToMessage().Headers.Accept.ToString());
+    }
+
     [Fact]
     public async Task JsonRequestAndResponse()
     {
