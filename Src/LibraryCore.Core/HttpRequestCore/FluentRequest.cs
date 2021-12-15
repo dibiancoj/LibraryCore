@@ -50,7 +50,7 @@ public class FluentRequest
 
     public FluentRequest AddFileStreamBody(string fileName, byte[] fileBytes)
     {
-        HttpRequest.Content = BuildMultipartForm(fileName, fileBytes);
+        HttpRequest.Content = BuildMultipartForm(fileName, new MemoryStream(fileBytes));
         return this;
     }
 
@@ -58,17 +58,6 @@ public class FluentRequest
     {
         HttpRequest.Content = BuildMultipartForm(fileName, fileStream);
         return this;
-    }
-
-    /// <summary>
-    /// Build up the file to be uploaded from a byte array which will be sent over the wire in an http request
-    /// </summary>
-    /// <param name="fileName">file name for this file</param>
-    /// <param name="fileBytes">file bytes which contains the raw content of this file</param>
-    /// <returns>MultipartFormDataContent that contains the file to be uploaded in the http request</returns>
-    private static MultipartFormDataContent BuildMultipartForm(string fileName, byte[] fileBytes)
-    {
-        return BuildMultipartForm(fileName, new MemoryStream(fileBytes));
     }
 
     /// <summary>
