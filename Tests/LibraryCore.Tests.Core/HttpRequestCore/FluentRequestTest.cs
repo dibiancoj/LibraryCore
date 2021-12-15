@@ -58,6 +58,8 @@ public class FluentRequestTest
 
     #endregion
 
+    #region Unit Tests
+
     [Fact]
     public async Task JsonRequestAndResponse()
     {
@@ -135,6 +137,66 @@ public class FluentRequestTest
                                             req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
                                             req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
     }
+
+    [Fact]
+    public async Task FileStreamByteArrayRequestAndResponse()
+    {
+        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+
+        var byteArray = new byte[] { 1, 2, 3 };
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddFileStreamBody("test.jpg", byteArray)
+                                                .ToMessage();
+
+        var response = await HttpClientToUse.SendAsync(request);
+
+        var result = await response.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
+        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+    }
+
+    [Fact]
+    public async Task FileStreamRequestAndResponse()
+    {
+        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+
+        var byteArrayStream = new MemoryStream(new byte[] { 1, 2, 3 });
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddFileStreamBody("test.jpg", byteArrayStream)
+                                                .ToMessage();
+
+        var response = await HttpClientToUse.SendAsync(request);
+
+        var result = await response.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
+        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+    }
+
+    #endregion
 
 }
 
