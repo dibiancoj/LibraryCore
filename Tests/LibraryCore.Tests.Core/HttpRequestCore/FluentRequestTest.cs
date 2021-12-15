@@ -171,6 +171,42 @@ public class FluentRequestTest
     }
 
     [Fact]
+    public async Task JsonRequestWithBaseUrlAndAppendWithJsonResponse()
+    {
+        HttpClientToUse.BaseAddress = new Uri("https://test.api/");
+
+        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+
+        var jsonParameters = new
+        {
+            Id = 10,
+            Name = "Test"
+        };
+
+        var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
+                                         .AddHeader("Header1", "Header1Value")
+                                         .AddJsonBody(jsonParameters)
+                                         .ToMessage();
+
+        var response = await HttpClientToUse.SendAsync(request);
+
+        var result = await response.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
+        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+    }
+
+    [Fact]
     public async Task FormsEncodedRequestAndResponse()
     {
         var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
