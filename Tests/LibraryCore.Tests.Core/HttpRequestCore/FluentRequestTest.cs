@@ -100,8 +100,8 @@ public class FluentRequestTest
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && 
-                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && 
+        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get &&
+                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri &&
                                              req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
                                              req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
 
@@ -130,8 +130,8 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && 
-                                            req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && 
+        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get &&
+                                            req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri &&
                                             req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
                                             req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
     }
