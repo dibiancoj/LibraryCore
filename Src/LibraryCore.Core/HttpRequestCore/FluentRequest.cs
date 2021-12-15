@@ -48,13 +48,13 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddFileStream(string fileName, byte[] fileBytes)
+    public FluentRequest AddFileStreamBody(string fileName, byte[] fileBytes)
     {
         HttpRequest.Content = BuildMultipartForm(fileName, fileBytes);
         return this;
     }
 
-    public FluentRequest AddFileStream(string fileName, Stream fileStream)
+    public FluentRequest AddFileStreamBody(string fileName, Stream fileStream)
     {
         HttpRequest.Content = BuildMultipartForm(fileName, fileStream);
         return this;

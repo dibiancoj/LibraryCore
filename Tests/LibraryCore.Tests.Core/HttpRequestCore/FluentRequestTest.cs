@@ -79,15 +79,15 @@ public class FluentRequestTest
                                                 .AddJsonBody(jsonParameters)
                                                 .ToMessage();
 
-        var result = await HttpClientToUse.SendAsync(request);
+        var response = await HttpClientToUse.SendAsync(request);
 
-        var response = await result.EnsureSuccessStatusCode()
+        var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
-        Assert.Single(response);
-        Assert.Contains(response, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
         VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
@@ -120,15 +120,15 @@ public class FluentRequestTest
                                                 .AddFormsUrlEncodedBody(parameters)
                                                 .ToMessage();
 
-        var result = await HttpClientToUse.SendAsync(request);
+        var response = await HttpClientToUse.SendAsync(request);
 
-        var response = await result.EnsureSuccessStatusCode()
+        var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/x-www-form-urlencoded", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal("10=Test10&20=Test20", await request.Content!.ReadAsStringAsync());
-        Assert.Single(response);
-        Assert.Contains(response, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
         VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && 
                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && 
