@@ -22,7 +22,7 @@ namespace LibraryCore.JsonNet
             return StreamToWriteInto;
         }
 
-        public byte[] ToByteArray() => RewindAndConsumeStream().ToArray();
+        public byte[] ToByteArray() => StreamToWriteInto.ToArray();
 
         public static JsonToStreamResult SerializeToStream<T>(T modelToSerialize, JsonSerializer jsonSerializer)
         {
