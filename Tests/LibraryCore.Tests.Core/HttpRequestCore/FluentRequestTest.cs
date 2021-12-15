@@ -92,5 +92,49 @@ public class FluentRequestTest
         VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
 
+    [Fact]
+    public async Task FormsEncodedRequestAndResponse()
+    {
+        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && 
+                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && 
+                                             req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
+                                             req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
+
+        var parameters = new[]
+        {
+            new KeyValuePair<string,string>("10","Test10"),
+            new KeyValuePair<string,string>("20","Test20")
+        };
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddHeaders(new[]
+                                                {
+                                                    new KeyValuePair<string,string>("Header1", "Header1Value"),
+                                                    new KeyValuePair<string,string>("Header2", "Header2Value")
+                                                })
+                                                .AddFormsUrlEncodedBody(parameters)
+                                                .ToMessage();
+
+        var result = await HttpClientToUse.SendAsync(request);
+
+        var response = await result.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal("application/x-www-form-urlencoded", request.Content?.Headers?.ContentType?.MediaType);
+        Assert.Equal("10=Test10&20=Test20", await request.Content!.ReadAsStringAsync());
+        Assert.Single(response);
+        Assert.Contains(response, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && 
+                                            req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && 
+                                            req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
+                                            req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
+    }
+
 }
 
