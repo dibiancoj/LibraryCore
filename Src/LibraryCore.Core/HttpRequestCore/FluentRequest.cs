@@ -16,8 +16,8 @@ public class FluentRequest
     public FluentRequest(HttpMethod httpMethodType) :
         this(httpMethodType, string.Empty)
     {
-
     }
+
     public HttpRequestMessage HttpRequest { get; }
     private static MediaTypeWithQualityHeaderValue JsonAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/json");
     private static MediaTypeWithQualityHeaderValue TextHtmlAcceptType { get;} = new MediaTypeWithQualityHeaderValue("text/html");
