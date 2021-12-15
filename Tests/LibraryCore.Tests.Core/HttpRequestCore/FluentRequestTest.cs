@@ -61,6 +61,35 @@ public class FluentRequestTest
     #region Unit Tests
 
     [Fact]
+    public void AddQueryString()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                .AddQueryString("id", "4");
+
+        Assert.Equal("https://test.api/WeatherForecast?id=4", request.ToMessage().RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
+    public void AddMultipleQueryString()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                .AddQueryString("id", "4")
+                                .AddQueryString("id2", "5");
+
+        Assert.Equal("https://test.api/WeatherForecast?id=4&id2=5", request.ToMessage().RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
+    public void AddQueryStringWhenUrlHasQueryString()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast?id100=100")
+                                .AddQueryString("id", "4")
+                                .AddQueryString("id2", "5");
+
+        Assert.Equal("https://test.api/WeatherForecast?id100=100&id=4&id2=5", request.ToMessage().RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
     public async Task JsonRequestAndResponse()
     {
         var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
