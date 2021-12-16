@@ -8,7 +8,13 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
     {
         public record ResultModel(int Id, string Text);
 
+        [HttpGet("HeaderTest")]
+        public string HeaderTest() => $"{Request.Headers["MyHeader"].First()} Result";
+
         [HttpGet("SimpleJsonPayload")]
-        public ResultModel Get() => new (9999, "1111");
+        public ResultModel SimpleJsonPayload() => new (9999, "1111");
+
+        [HttpGet("SimpleJsonPayloadWithJsonParameters")]
+        public ResultModel SimpleJsonPayloadWithJsonParameters([FromBody] ResultModel parameters) => new(parameters.Id + 1, parameters.Text + "_Result");
     }
 }
