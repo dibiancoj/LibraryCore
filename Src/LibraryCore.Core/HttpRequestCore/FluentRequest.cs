@@ -45,7 +45,7 @@ public class FluentRequest
             throw new NullReferenceException("Null Request Uri");
         }
 
-        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri.OriginalString, name, value), UriKind.RelativeOrAbsolute);
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri.ToString(), name, value), UriKind.RelativeOrAbsolute);
         return this;
     }
 
