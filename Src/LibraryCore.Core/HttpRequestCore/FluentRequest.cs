@@ -21,11 +21,13 @@ public class FluentRequest
     public HttpRequestMessage HttpRequest { get; }
     private static MediaTypeWithQualityHeaderValue JsonAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/json");
     private static MediaTypeWithQualityHeaderValue TextHtmlAcceptType { get; } = new MediaTypeWithQualityHeaderValue("text/html");
+    private static MediaTypeWithQualityHeaderValue XmlAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/xml");
 
     public enum AcceptType
     {
         Json,
-        TextHtml
+        TextHtml,
+        Xml
     }
 
     public HttpRequestMessage ToMessage() => HttpRequest;
@@ -113,6 +115,7 @@ public class FluentRequest
         {
             AcceptType.Json => JsonAcceptType,
             AcceptType.TextHtml => TextHtmlAcceptType,
+            AcceptType.Xml => XmlAcceptType,
             _ => throw new NotImplementedException(),
         };
     }

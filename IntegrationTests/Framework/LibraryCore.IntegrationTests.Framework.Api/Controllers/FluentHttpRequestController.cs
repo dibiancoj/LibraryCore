@@ -6,13 +6,25 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
     [Route("[controller]")]
     public class FluentHttpRequestController : ControllerBase
     {
+
+        #region Models
         public record ResultModel(int Id, string Text);
+
+        public class XmlRoot
+        {
+            public int Id { get; set; }
+        }
+
+        #endregion
 
         [HttpGet("HeaderTest")]
         public string HeaderTest() => $"{Request.Headers["MyHeader"].First()} Result";
 
         [HttpGet("SimpleJsonPayload")]
-        public ResultModel SimpleJsonPayload() => new (9999, "1111");
+        public ResultModel SimpleJsonPayload() => new(9999, "1111");
+
+        [HttpGet("SimpleXmlPayload")]
+        public XmlRoot SimpleXmlPayload() => new() { Id = 5 };
 
         [HttpGet("SimpleJsonPayloadWithJsonParameters")]
         public ResultModel SimpleJsonPayloadWithJsonParameters([FromBody] ResultModel parameters) => new(parameters.Id + 1, parameters.Text + "_Result");
