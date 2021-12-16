@@ -71,6 +71,15 @@ public class FluentRequestTest
     }
 
     [Fact]
+    public void AddQueryStringToRelativePath()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
+                                .AddQueryString("id", "4");
+
+        Assert.Equal("WeatherForecast?id=4", request.Message.RequestUri!.ToString());
+    }
+
+    [Fact]
     public void AddMultipleQueryString()
     {
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")

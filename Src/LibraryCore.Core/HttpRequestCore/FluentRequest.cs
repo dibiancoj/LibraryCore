@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using Microsoft.AspNetCore.WebUtilities;
+using System;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -39,7 +40,12 @@ public class FluentRequest
 
     public FluentRequest AddQueryString(string name, string value)
     {
-        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.AbsoluteUri, name, value));
+        if (Message.RequestUri == null)
+        {
+            throw new NullReferenceException("Null Request Uri");
+        }
+
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri.ToString(), name, value), UriKind.RelativeOrAbsolute);
         return this;
     }
 

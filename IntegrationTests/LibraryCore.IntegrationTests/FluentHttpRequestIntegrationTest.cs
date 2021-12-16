@@ -42,6 +42,20 @@ namespace LibraryCore.IntegrationTests
         }
 
         [Fact]
+        public async Task QueryStringTest()
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/QueryStringTest")
+                                                                                            .AddQueryString("Q1", "One")
+                                                                                            .AddQueryString("Q2", "Two")
+                                                                                            .Message);
+
+            var result = await response.EnsureSuccessStatusCode()
+                                    .Content.ReadAsStringAsync();
+
+            Assert.Equal("One:Two", result);
+        }
+
+        [Fact]
         public async Task SimpleJsonPayload()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")

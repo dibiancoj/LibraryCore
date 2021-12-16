@@ -20,6 +20,9 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
         [HttpGet("HeaderTest")]
         public string HeaderTest() => $"{Request.Headers["MyHeader"].First()} Result";
 
+        [HttpGet("QueryStringTest")]
+        public string QueryStringTest() => $"{Request.Query["Q1"]}:{Request.Query["Q2"]}";
+
         [HttpGet("SimpleJsonPayload")]
         public ResultModel SimpleJsonPayload() => new(9999, "1111");
 
