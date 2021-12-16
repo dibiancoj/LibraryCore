@@ -96,10 +96,12 @@ public class FluentRequest
         fileStream.Seek(0, SeekOrigin.Begin);
 
         //create the start of the file upload
-        var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
+        var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture))
+        {
 
-        //add the content
-        content.Add(new StreamContent(fileStream), fileName.SurroundWithQuotes(), fileName.SurroundWithQuotes());
+            //add the content
+            { new StreamContent(fileStream), fileName.SurroundWithQuotes(), fileName.SurroundWithQuotes() }
+        };
 
         //return it
         return content;

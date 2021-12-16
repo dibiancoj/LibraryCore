@@ -42,10 +42,10 @@ public class FluentRequestTest
            .ReturnsAsync(mockResponseToReturn);
     }
 
-    private void MockHttpRequest(HttpResponseMessage mockResponseToReturn)
-    {
-        MockHttpRequest(mockResponseToReturn, x => true);
-    }
+    //private void MockHttpRequest(HttpResponseMessage mockResponseToReturn)
+    //{
+    //    MockHttpRequest(mockResponseToReturn, x => true);
+    //}
 
     private void VerifyAndThrow(Times times, Expression<Func<HttpRequestMessage, bool>> expressionToVerify)
     {
