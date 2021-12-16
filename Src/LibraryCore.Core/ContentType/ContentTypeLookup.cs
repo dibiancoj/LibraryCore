@@ -4,6 +4,26 @@ namespace LibraryCore.Core.ContentType;
 
 public static class ContentTypeLookup
 {
+    public enum AcceptTypeEnum
+    {
+        Json,
+        TextHtml,
+        Xml,
+        TextPlain
+    }
+
+    public static MediaTypeWithQualityHeaderValue RetrieveAcceptType(AcceptTypeEnum acceptType)
+    {
+        return acceptType switch
+        {
+            AcceptTypeEnum.Json => JsonMediaType,
+            AcceptTypeEnum.TextPlain => TextPlainMediaType,
+            AcceptTypeEnum.Xml => XmlMediaType,
+            AcceptTypeEnum.TextHtml => TextHtmlMediaType,
+            _ => throw new NotImplementedException(),
+        };
+    }
+
     /// <summary>
     /// Json content type
     /// </summary>
@@ -40,6 +60,11 @@ public static class ContentTypeLookup
     public const string ZipContentType = "application/zip";
 
     /// <summary>
+    /// Xml content type
+    /// </summary>
+    public const string XmlContentType = "application/xml";
+
+    /// <summary>
     /// Json media type so we don't need to create a new instance each time.
     /// </summary>
     public static MediaTypeWithQualityHeaderValue JsonMediaType { get; } = new MediaTypeWithQualityHeaderValue(JsonContentType);
@@ -47,10 +72,15 @@ public static class ContentTypeLookup
     /// <summary>
     /// Html media type so we don't need to create a new instance each time.
     /// </summary>
-    public static MediaTypeWithQualityHeaderValue HtmlMediaType { get; } = new MediaTypeWithQualityHeaderValue(HtmlContentType);
+    public static MediaTypeWithQualityHeaderValue TextHtmlMediaType { get; } = new MediaTypeWithQualityHeaderValue(HtmlContentType);
 
     /// <summary>
     /// text media type so we don't need to create a new instance each time.
     /// </summary>
-    public static MediaTypeWithQualityHeaderValue TextMediaType { get; } = new MediaTypeWithQualityHeaderValue(TextPlainContentType);
+    public static MediaTypeWithQualityHeaderValue TextPlainMediaType { get; } = new MediaTypeWithQualityHeaderValue(TextPlainContentType);
+
+    /// <summary>
+    /// Xml media type
+    /// </summary>
+    public static MediaTypeWithQualityHeaderValue XmlMediaType { get; } = new MediaTypeWithQualityHeaderValue(XmlContentType);
 }

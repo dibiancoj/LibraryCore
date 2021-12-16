@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using static LibraryCore.Core.ContentType.ContentTypeLookup;
 
 namespace LibraryCore.Tests.Core.HttpRequestCore;
 
@@ -66,7 +67,7 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                 .AddQueryString("id", "4");
 
-        Assert.Equal("https://test.api/WeatherForecast?id=4", request.ToMessage().RequestUri!.AbsoluteUri);
+        Assert.Equal("https://test.api/WeatherForecast?id=4", request.Message.RequestUri!.AbsoluteUri);
     }
 
     [Fact]
@@ -76,7 +77,7 @@ public class FluentRequestTest
                                 .AddQueryString("id", "4")
                                 .AddQueryString("id2", "5");
 
-        Assert.Equal("https://test.api/WeatherForecast?id=4&id2=5", request.ToMessage().RequestUri!.AbsoluteUri);
+        Assert.Equal("https://test.api/WeatherForecast?id=4&id2=5", request.Message.RequestUri!.AbsoluteUri);
     }
 
     [Fact]
@@ -86,18 +87,18 @@ public class FluentRequestTest
                                 .AddQueryString("id", "4")
                                 .AddQueryString("id2", "5");
 
-        Assert.Equal("https://test.api/WeatherForecast?id100=100&id=4&id2=5", request.ToMessage().RequestUri!.AbsoluteUri);
+        Assert.Equal("https://test.api/WeatherForecast?id100=100&id=4&id2=5", request.Message.RequestUri!.AbsoluteUri);
     }
 
-    [InlineData(FluentRequest.AcceptType.Json, "application/json")]
-    [InlineData(FluentRequest.AcceptType.TextHtml, "text/html")]
+    [InlineData(AcceptTypeEnum.Json, "application/json")]
+    [InlineData(AcceptTypeEnum.TextHtml, "text/html")]
     [Theory]
-    public void AddAcceptType(FluentRequest.AcceptType acceptTypeToTest, string expectedValue)
+    public void AddAcceptType(AcceptTypeEnum acceptTypeToTest, string expectedValue)
     {
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                 .AddAcceptType(acceptTypeToTest);
 
-        Assert.Equal(expectedValue, request.ToMessage().Headers.Accept.ToString());
+        Assert.Equal(expectedValue, request.Message.Headers.Accept.ToString());
     }
 
     [Fact]
@@ -119,7 +120,7 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                                 .AddHeader("Header1", "Header1Value")
                                                 .AddJsonBody(jsonParameters)
-                                                .ToMessage();
+                                                .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
@@ -155,7 +156,7 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get)
                                          .AddHeader("Header1", "Header1Value")
                                          .AddJsonBody(jsonParameters)
-                                         .ToMessage();
+                                         .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
@@ -191,7 +192,7 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
                                          .AddHeader("Header1", "Header1Value")
                                          .AddJsonBody(jsonParameters)
-                                         .ToMessage();
+                                         .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
@@ -232,7 +233,7 @@ public class FluentRequestTest
                                                     new KeyValuePair<string,string>("Header2", "Header2Value")
                                                 })
                                                 .AddFormsUrlEncodedBody(parameters)
-                                                .ToMessage();
+                                                .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
@@ -264,7 +265,7 @@ public class FluentRequestTest
 
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                                 .AddFileStreamBody("test.jpg", byteArray)
-                                                .ToMessage();
+                                                .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
@@ -293,7 +294,7 @@ public class FluentRequestTest
 
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                                 .AddFileStreamBody("test.jpg", byteArrayStream)
-                                                .ToMessage();
+                                                .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
 
