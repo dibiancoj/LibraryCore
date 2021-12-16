@@ -1,8 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using Microsoft.AspNetCore.WebUtilities;
-using System;
 using System.Globalization;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using static LibraryCore.Core.ContentType.ContentTypeLookup;
 
@@ -21,6 +19,11 @@ public class FluentRequest
     }
 
     public HttpRequestMessage Message { get; }
+
+    /// <summary>
+    /// No need to grab the http request message. Allow the conversion
+    /// </summary>
+    public static implicit operator HttpRequestMessage(FluentRequest request) => request.Message;
 
     public FluentRequest AddHeader(string headerName, string headerValue)
     {
@@ -98,11 +101,6 @@ public class FluentRequest
         //return it
         return content;
     }
-
-    /// <summary>
-    /// No need to grab the http request message. Allow the conversion
-    /// </summary>
-    public static implicit operator HttpRequestMessage(FluentRequest request) => request.Message;
 
 }
 
