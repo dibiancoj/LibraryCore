@@ -78,5 +78,37 @@ namespace LibraryCore.IntegrationTests
             Assert.Contains(result, x => x.Id == 14 && x.Text == "4_Result");
             Assert.Contains(result, x => x.Id == 15 && x.Text == "5_Result");
         }
+
+        [Fact]
+        public async Task FileUploadWithByteArrayTest()
+        {
+            var byteArray = new byte[] { 1, 2, 3 };
+
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
+                                                                                            .AddFileStreamBody("file1.jpg", byteArray)
+                                                                                            .ToMessage());
+
+            var result = await response.EnsureSuccessStatusCode()
+                                   .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
+
+            Assert.Single(result);
+            Assert.Contains(result, x => x.Id == 3 && x.Text == "file1.jpg");
+        }
+
+        [Fact]
+        public async Task FileUploadWithStreamTest()
+        {
+            var streamOfFile = new MemoryStream(new byte[] { 1, 2, 3 });
+
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
+                                                                                            .AddFileStreamBody("file1.jpg", streamOfFile)
+                                                                                            .ToMessage());
+
+            var result = await response.EnsureSuccessStatusCode()
+                                   .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
+
+            Assert.Single(result);
+            Assert.Contains(result, x => x.Id == 3 && x.Text == "file1.jpg");
+        }
     }
 }

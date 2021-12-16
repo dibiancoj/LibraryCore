@@ -20,5 +20,8 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         [HttpGet("FormsEncodedParameters")]
         public IEnumerable<ResultModel> FormsEncodedParameters([FromForm] IFormCollection parameters) => parameters.Select(t => new ResultModel(Convert.ToInt32(t.Key) + 10, t.Value + "_Result"));
+
+        [HttpPost("FileUploadStream")]
+        public IEnumerable<ResultModel> FileUploadStream() => Request.Form.Files.Select(file => new ResultModel(Convert.ToInt32(file.Length), file.FileName));
     }
 }
