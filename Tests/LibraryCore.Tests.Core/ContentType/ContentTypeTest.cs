@@ -15,6 +15,15 @@ public class ContentTypeTest
     }
 
     [Fact]
+    public void RetrieveAcceptTypeTest()
+    {
+        Assert.Equal(ContentTypeLookup.JsonMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.Json));
+        Assert.Equal(ContentTypeLookup.XmlMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.Xml));
+        Assert.Equal(ContentTypeLookup.TextPlainMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.TextPlain));
+        Assert.Equal(ContentTypeLookup.TextHtmlMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.TextHtml));
+    }
+
+    [Fact]
     public void JsonMediaType()
     {
         Assert.Equal(ContentTypeLookup.JsonContentType, ContentTypeLookup.JsonMediaType.MediaType);
