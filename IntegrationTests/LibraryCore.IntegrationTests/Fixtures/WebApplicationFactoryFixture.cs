@@ -2,6 +2,9 @@
 
 namespace LibraryCore.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// This is an xunit fixture to contain a singleton for all integration tests.
+    /// </summary>
     public class WebApplicationFactoryFixture: IDisposable
     {
         public WebApplicationFactoryFixture()
