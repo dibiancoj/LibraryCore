@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.HttpRequestCore;
+﻿using LibraryCore.Core.ExtensionMethods;
+using LibraryCore.Core.HttpRequestCore;
 using LibraryCore.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
 
@@ -8,12 +9,23 @@ namespace LibraryCore.IntegrationTests
     {
         public WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
-        public record ResultModel(int Id, string Text);
-
         public FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
         {
             WebApplicationFactoryFixture = webApplicationFactoryFixture;
         }
+
+        #region Models
+
+        public record ResultModel(int Id, string Text);
+
+        public class XmlRoot
+        {
+            public int Id { get; set; }
+        }
+
+        #endregion
+
+        #region Tests
 
         [Fact]
         public async Task HeaderTest()
@@ -42,6 +54,19 @@ namespace LibraryCore.IntegrationTests
         }
 
         [Fact]
+        public async Task SimpleXmlPayload()
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleXmlPayload")
+                                                                                           .AddAcceptType(FluentRequest.AcceptType.Xml)
+                                                                                           .ToMessage());
+
+            var result = await response.EnsureSuccessStatusCode()
+                                    .Content.ReadFromXmlAsync<XmlRoot>() ?? throw new Exception("Can't deserialize result");
+
+            Assert.Equal(5, result.Id);
+        }
+
+        [Fact]
         public async Task SimpleJsonPayloadWithJsonRequestParameters()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayloadWithJsonParameters")
@@ -63,7 +88,7 @@ namespace LibraryCore.IntegrationTests
         public async Task FormsEncodedParameters()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/FormsEncodedParameters")
-                                                                                            .AddFormsUrlEncodedBody(new []
+                                                                                            .AddFormsUrlEncodedBody(new[]
                                                                                             {
                                                                                                 new KeyValuePair<string,string>("4", "4"),
                                                                                                 new KeyValuePair<string,string>("5", "5")
@@ -110,5 +135,8 @@ namespace LibraryCore.IntegrationTests
             Assert.Single(result);
             Assert.Contains(result, x => x.Id == 3 && x.Text == "file1.jpg");
         }
+
+        #endregion
+
     }
 }
