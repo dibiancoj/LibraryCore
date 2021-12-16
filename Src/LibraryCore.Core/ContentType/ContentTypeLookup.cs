@@ -65,17 +65,17 @@ public static class ContentTypeLookup
     public const string XmlContentType = "application/xml";
 
     /// <summary>
-    /// Json media type so we don't need to create a new instance each time.
+    /// Json media type
     /// </summary>
     public static MediaTypeWithQualityHeaderValue JsonMediaType { get; } = new MediaTypeWithQualityHeaderValue(JsonContentType);
 
     /// <summary>
-    /// Html media type so we don't need to create a new instance each time.
+    /// Html media type
     /// </summary>
     public static MediaTypeWithQualityHeaderValue TextHtmlMediaType { get; } = new MediaTypeWithQualityHeaderValue(HtmlContentType);
 
     /// <summary>
-    /// text media type so we don't need to create a new instance each time.
+    /// text media type
     /// </summary>
     public static MediaTypeWithQualityHeaderValue TextPlainMediaType { get; } = new MediaTypeWithQualityHeaderValue(TextPlainContentType);
 
