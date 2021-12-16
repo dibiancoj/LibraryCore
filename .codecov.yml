@@ -25,6 +25,6 @@ coverage:
 # which folders/files to ignore
 ignore:
    - "**/Resources.Designer.cs"
-   - "**/LibraryCore.IntegrationTests.Framework.Api/*"
+   - "IntegrationTests/LibraryCore.IntegrationTests/*"
 #  - "Src/LibraryCore.Core/Properties/*"
 
