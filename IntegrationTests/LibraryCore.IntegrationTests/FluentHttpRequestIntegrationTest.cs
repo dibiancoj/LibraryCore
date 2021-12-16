@@ -58,5 +58,25 @@ namespace LibraryCore.IntegrationTests
             Assert.Equal(6, result.Id);
             Assert.Equal("5_Result", result.Text);
         }
+
+        [Fact]
+        public async Task FormsEncodedParameters()
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/FormsEncodedParameters")
+                                                                                            .AddFormsUrlEncodedBody(new []
+                                                                                            {
+                                                                                                new KeyValuePair<string,string>("4", "4"),
+                                                                                                new KeyValuePair<string,string>("5", "5")
+                                                                                            })
+                                                                                            .ToMessage());
+
+            var result = await response.EnsureSuccessStatusCode()
+                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
+
+            Assert.Equal(2, result.Count());
+
+            Assert.Contains(result, x => x.Id == 14 && x.Text == "4_Result");
+            Assert.Contains(result, x => x.Id == 15 && x.Text == "5_Result");
+        }
     }
 }
