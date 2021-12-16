@@ -104,5 +104,10 @@ public class FluentRequest
         return content;
     }
 
+    /// <summary>
+    /// No need to grab the http request message. Allow the conversion
+    /// </summary>
+    public static implicit operator HttpRequestMessage(FluentRequest request) => request.Message;
+
 }
 

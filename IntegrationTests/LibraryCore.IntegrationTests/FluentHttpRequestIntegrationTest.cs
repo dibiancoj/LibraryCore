@@ -32,8 +32,7 @@ namespace LibraryCore.IntegrationTests
         public async Task HeaderTest()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/HeaderTest")
-                                                                                            .AddHeader("MyHeader", "My Value")
-                                                                                            .Message);
+                                                                                            .AddHeader("MyHeader", "My Value"));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadAsStringAsync();
@@ -46,8 +45,7 @@ namespace LibraryCore.IntegrationTests
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/QueryStringTest")
                                                                                             .AddQueryString("Q1", "One")
-                                                                                            .AddQueryString("Q2", "Two")
-                                                                                            .Message);
+                                                                                            .AddQueryString("Q2", "Two"));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadAsStringAsync();
@@ -58,8 +56,7 @@ namespace LibraryCore.IntegrationTests
         [Fact]
         public async Task SimpleJsonPayload()
         {
-            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")
-                                                                                            .Message);
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload"));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<ResultModel>() ?? throw new Exception("Can't deserialize result");
@@ -72,8 +69,7 @@ namespace LibraryCore.IntegrationTests
         public async Task SimpleXmlPayload()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleXmlPayload")
-                                                                                           .AddAcceptType(AcceptTypeEnum.Xml)
-                                                                                           .Message);
+                                                                                           .AddAcceptType(AcceptTypeEnum.Xml));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromXmlAsync<XmlRoot>() ?? throw new Exception("Can't deserialize result");
@@ -89,8 +85,7 @@ namespace LibraryCore.IntegrationTests
                                                                                             {
                                                                                                 Id = 5,
                                                                                                 Text = "5"
-                                                                                            })
-                                                                                            .Message);
+                                                                                            }));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<ResultModel>() ?? throw new Exception("Can't deserialize result");
@@ -107,8 +102,7 @@ namespace LibraryCore.IntegrationTests
                                                                                             {
                                                                                                 new KeyValuePair<string,string>("4", "4"),
                                                                                                 new KeyValuePair<string,string>("5", "5")
-                                                                                            })
-                                                                                            .Message);
+                                                                                            }));
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -125,8 +119,7 @@ namespace LibraryCore.IntegrationTests
             var byteArray = new byte[] { 1, 2, 3 };
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", byteArray)
-                                                                                            .Message);
+                                                                                            .AddFileStreamBody("file1.jpg", byteArray));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -141,8 +134,7 @@ namespace LibraryCore.IntegrationTests
             var streamOfFile = new MemoryStream(new byte[] { 1, 2, 3 });
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", streamOfFile)
-                                                                                            .Message);
+                                                                                            .AddFileStreamBody("file1.jpg", streamOfFile));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
