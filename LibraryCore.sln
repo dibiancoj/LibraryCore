@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31410.357
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Core", "Src\LibraryCore.Core\LibraryCore.Core.csproj", "{8323D1BC-B403-4056-98A3-37F901032EAC}"
 EndProject
@@ -29,9 +29,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{44
 		Commands\RunPerformanceTest.bat = Commands\RunPerformanceTest.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.Performance.Tests", "PerformanceTests\LibraryCore.Performance.Tests\LibraryCore.Performance.Tests.csproj", "{2D76D344-F683-4F8B-87A5-BF6FC077AAFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Performance.Tests", "PerformanceTests\LibraryCore.Performance.Tests\LibraryCore.Performance.Tests.csproj", "{2D76D344-F683-4F8B-87A5-BF6FC077AAFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerformanceTests", "PerformanceTests", "{056D9475-618C-453C-8BDF-F578E8F07945}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{8C77AB2D-937E-4E17-9CA5-1A389EDC3F32}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests.Framework.Api", "Tests\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj", "{7EBA93FB-AAA2-4B1B-AAB1-782080E81363}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{647DDB3F-A7E7-4B85-93CD-61CFC477E0D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.IntegrationTests", "IntegrationTests\LibraryCore.IntegrationTests\LibraryCore.IntegrationTests.csproj", "{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +75,14 @@ Global
 		{2D76D344-F683-4F8B-87A5-BF6FC077AAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D76D344-F683-4F8B-87A5-BF6FC077AAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D76D344-F683-4F8B-87A5-BF6FC077AAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EBA93FB-AAA2-4B1B-AAB1-782080E81363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBA93FB-AAA2-4B1B-AAB1-782080E81363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBA93FB-AAA2-4B1B-AAB1-782080E81363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBA93FB-AAA2-4B1B-AAB1-782080E81363}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +92,10 @@ Global
 		{7F466EE2-3BD4-4AB9-8081-3ED1B78C0FB1} = {1D339B68-769A-4737-B446-6D02703CF8C4}
 		{4D41A3CB-FE8F-4BDF-84A5-F5C28B3B4B86} = {1D339B68-769A-4737-B446-6D02703CF8C4}
 		{2D76D344-F683-4F8B-87A5-BF6FC077AAFB} = {056D9475-618C-453C-8BDF-F578E8F07945}
+		{8C77AB2D-937E-4E17-9CA5-1A389EDC3F32} = {1D339B68-769A-4737-B446-6D02703CF8C4}
+		{7EBA93FB-AAA2-4B1B-AAB1-782080E81363} = {8C77AB2D-937E-4E17-9CA5-1A389EDC3F32}
+		{647DDB3F-A7E7-4B85-93CD-61CFC477E0D8} = {1D339B68-769A-4737-B446-6D02703CF8C4}
+		{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA} = {647DDB3F-A7E7-4B85-93CD-61CFC477E0D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61C7767-7D12-4313-8DA2-56AE8FC5AAD5}

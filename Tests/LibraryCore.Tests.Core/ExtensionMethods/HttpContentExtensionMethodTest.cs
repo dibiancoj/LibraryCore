@@ -28,5 +28,4 @@ public class HttpContentExtensionMethodTest
         Assert.Equal(100, result.Id); ;
         Assert.Equal("One Hundred", result.Name);
     }
-
 }
