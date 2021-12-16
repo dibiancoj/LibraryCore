@@ -40,12 +40,7 @@ public class FluentRequest
 
     public FluentRequest AddQueryString(string name, string value)
     {
-        if (Message.RequestUri == null)
-        {
-            throw new NullReferenceException("Null Request Uri");
-        }
-
-        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri.ToString(), name, value), UriKind.RelativeOrAbsolute);
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.ToString(), name, value), UriKind.RelativeOrAbsolute);
         return this;
     }
 
