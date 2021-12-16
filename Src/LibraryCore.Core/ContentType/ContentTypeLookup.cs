@@ -7,8 +7,8 @@ public static class ContentTypeLookup
     public enum AcceptTypeEnum
     {
         Json,
-        TextHtml,
         Xml,
+        TextHtml,
         TextPlain
     }
 
