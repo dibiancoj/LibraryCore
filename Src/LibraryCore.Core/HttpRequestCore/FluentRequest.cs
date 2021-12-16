@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using static LibraryCore.Core.ContentType.ContentTypeLookup;
 
 namespace LibraryCore.Core.HttpRequestCore;
 
@@ -10,7 +11,7 @@ public class FluentRequest
 {
     public FluentRequest(HttpMethod httpMethodType, string url)
     {
-        HttpRequest = new HttpRequestMessage(httpMethodType, url);
+        Message = new HttpRequestMessage(httpMethodType, url);
     }
 
     public FluentRequest(HttpMethod httpMethodType) :
@@ -18,23 +19,11 @@ public class FluentRequest
     {
     }
 
-    public HttpRequestMessage HttpRequest { get; }
-    private static MediaTypeWithQualityHeaderValue JsonAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/json");
-    private static MediaTypeWithQualityHeaderValue TextHtmlAcceptType { get; } = new MediaTypeWithQualityHeaderValue("text/html");
-    private static MediaTypeWithQualityHeaderValue XmlAcceptType { get; } = new MediaTypeWithQualityHeaderValue("application/xml");
-
-    public enum AcceptType
-    {
-        Json,
-        TextHtml,
-        Xml
-    }
-
-    public HttpRequestMessage ToMessage() => HttpRequest;
+    public HttpRequestMessage Message { get; }
 
     public FluentRequest AddHeader(string headerName, string headerValue)
     {
-        HttpRequest.Headers.Add(headerName, headerValue);
+        Message.Headers.Add(headerName, headerValue);
         return this;
     }
 
@@ -42,7 +31,7 @@ public class FluentRequest
     {
         foreach (var header in headers)
         {
-            HttpRequest.Headers.Add(header.Key, header.Value);
+            Message.Headers.Add(header.Key, header.Value);
         }
 
         return this;
@@ -50,37 +39,37 @@ public class FluentRequest
 
     public FluentRequest AddQueryString(string name, string value)
     {
-        HttpRequest.RequestUri = new Uri(QueryHelpers.AddQueryString(HttpRequest.RequestUri!.AbsoluteUri, name, value));
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.AbsoluteUri, name, value));
         return this;
     }
 
-    public FluentRequest AddAcceptType(AcceptType acceptType)
+    public FluentRequest AddAcceptType(AcceptTypeEnum acceptType)
     {
-        HttpRequest.Headers.Accept.Add(RetrieveAcceptType(acceptType));
+        Message.Headers.Accept.Add(RetrieveAcceptType(acceptType));
         return this;
     }
 
     public FluentRequest AddJsonBody<T>(T model)
     {
-        HttpRequest.Content = JsonContent.Create(model);
+        Message.Content = JsonContent.Create(model);
         return this;
     }
 
     public FluentRequest AddFormsUrlEncodedBody(IEnumerable<KeyValuePair<string, string>> parametersToAdd)
     {
-        HttpRequest.Content = new FormUrlEncodedContent(parametersToAdd);
+        Message.Content = new FormUrlEncodedContent(parametersToAdd);
         return this;
     }
 
     public FluentRequest AddFileStreamBody(string fileName, byte[] fileBytes)
     {
-        HttpRequest.Content = BuildMultipartForm(fileName, new MemoryStream(fileBytes));
+        Message.Content = BuildMultipartForm(fileName, new MemoryStream(fileBytes));
         return this;
     }
 
     public FluentRequest AddFileStreamBody(string fileName, Stream fileStream)
     {
-        HttpRequest.Content = BuildMultipartForm(fileName, fileStream);
+        Message.Content = BuildMultipartForm(fileName, fileStream);
         return this;
     }
 
@@ -107,17 +96,6 @@ public class FluentRequest
 
         //return it
         return content;
-    }
-
-    private static MediaTypeWithQualityHeaderValue RetrieveAcceptType(AcceptType acceptType)
-    {
-        return acceptType switch
-        {
-            AcceptType.Json => JsonAcceptType,
-            AcceptType.TextHtml => TextHtmlAcceptType,
-            AcceptType.Xml => XmlAcceptType,
-            _ => throw new NotImplementedException(),
-        };
     }
 
 }

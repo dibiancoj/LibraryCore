@@ -2,6 +2,7 @@
 using LibraryCore.Core.HttpRequestCore;
 using LibraryCore.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
+using static LibraryCore.Core.ContentType.ContentTypeLookup;
 
 namespace LibraryCore.IntegrationTests
 {
@@ -32,7 +33,7 @@ namespace LibraryCore.IntegrationTests
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/HeaderTest")
                                                                                             .AddHeader("MyHeader", "My Value")
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadAsStringAsync();
@@ -44,7 +45,7 @@ namespace LibraryCore.IntegrationTests
         public async Task SimpleJsonPayload()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<ResultModel>() ?? throw new Exception("Can't deserialize result");
@@ -57,8 +58,8 @@ namespace LibraryCore.IntegrationTests
         public async Task SimpleXmlPayload()
         {
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleXmlPayload")
-                                                                                           .AddAcceptType(FluentRequest.AcceptType.Xml)
-                                                                                           .ToMessage());
+                                                                                           .AddAcceptType(AcceptTypeEnum.Xml)
+                                                                                           .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromXmlAsync<XmlRoot>() ?? throw new Exception("Can't deserialize result");
@@ -75,7 +76,7 @@ namespace LibraryCore.IntegrationTests
                                                                                                 Id = 5,
                                                                                                 Text = "5"
                                                                                             })
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<ResultModel>() ?? throw new Exception("Can't deserialize result");
@@ -93,7 +94,7 @@ namespace LibraryCore.IntegrationTests
                                                                                                 new KeyValuePair<string,string>("4", "4"),
                                                                                                 new KeyValuePair<string,string>("5", "5")
                                                                                             })
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                     .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -111,7 +112,7 @@ namespace LibraryCore.IntegrationTests
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
                                                                                             .AddFileStreamBody("file1.jpg", byteArray)
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -127,7 +128,7 @@ namespace LibraryCore.IntegrationTests
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
                                                                                             .AddFileStreamBody("file1.jpg", streamOfFile)
-                                                                                            .ToMessage());
+                                                                                            .Message);
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
