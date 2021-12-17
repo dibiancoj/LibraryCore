@@ -119,7 +119,7 @@ namespace LibraryCore.IntegrationTests
             var byteArray = new byte[] { 1, 2, 3 };
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", byteArray));
+                                                                                            .AddFileStreamBody("file1.jpg", "formFiles", byteArray));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -134,7 +134,7 @@ namespace LibraryCore.IntegrationTests
             var streamOfFile = new MemoryStream(new byte[] { 1, 2, 3 });
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", streamOfFile));
+                                                                                            .AddFileStreamBody("file1.jpg", "formFiles", streamOfFile));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");

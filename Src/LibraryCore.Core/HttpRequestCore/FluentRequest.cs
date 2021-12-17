@@ -65,15 +65,15 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddFileStreamBody(string fileName, byte[] fileBytes)
+    public FluentRequest AddFileStreamBody(string fileName, string parameterName, byte[] fileBytes)
     {
-        Message.Content = BuildMultipartForm(fileName, new MemoryStream(fileBytes));
+        Message.Content = BuildMultipartForm(fileName, parameterName, new MemoryStream(fileBytes));
         return this;
     }
 
-    public FluentRequest AddFileStreamBody(string fileName, Stream fileStream)
+    public FluentRequest AddFileStreamBody(string fileName, string parameterName, Stream fileStream)
     {
-        Message.Content = BuildMultipartForm(fileName, fileStream);
+        Message.Content = BuildMultipartForm(fileName, parameterName, fileStream);
         return this;
     }
 
@@ -81,9 +81,10 @@ public class FluentRequest
     /// Build up the file to be uploaded from a streamy which will be sent over the wire in an http request
     /// </summary>
     /// <param name="fileName">file name for this file</param>
+    /// <param name="parameterName">This is the parameter name in web api. If this doesn't match then the binding won't come through with any files</param>
     /// <param name="fileStream">file bytes which contains the raw content of this file</param>
     /// <returns>MultipartFormDataContent that contains the file to be uploaded in the http request</returns>
-    private static MultipartFormDataContent BuildMultipartForm(string fileName, Stream fileStream)
+    private static MultipartFormDataContent BuildMultipartForm(string fileName, string parameterName, Stream fileStream)
     {
         //portal svc has a few checks. we need file name to have quotes "jason.jpg" around it. .net default does not include quotes
 
@@ -95,7 +96,7 @@ public class FluentRequest
         {
 
             //add the content
-            { new StreamContent(fileStream), fileName.SurroundWithQuotes(), fileName.SurroundWithQuotes() }
+            { new StreamContent(fileStream), parameterName.SurroundWithQuotes(), fileName.SurroundWithQuotes() }
         };
 
         //return it
