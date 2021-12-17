@@ -51,7 +51,7 @@ public class FluentRequestTest
     private void VerifyAndThrow(Times times, Expression<Func<HttpRequestMessage, bool>> expressionToVerify)
     {
         MockHttpHandler.Protected().Verify(
-             "SendAsync",
+             nameof(HttpClient.SendAsync),
              times,
              ItExpr.Is(expressionToVerify),
              ItExpr.IsAny<CancellationToken>());
