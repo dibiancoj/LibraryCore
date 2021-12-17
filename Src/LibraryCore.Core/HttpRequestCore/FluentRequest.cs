@@ -65,38 +65,36 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddFileStreamBody(string fileName, byte[] fileBytes)
+    public FluentRequest AddFileStreamBody(string parameterName, params KeyValuePair<string, byte[]>[] filesToUpload)
     {
-        Message.Content = BuildMultipartForm(fileName, new MemoryStream(fileBytes));
+        Message.Content = BuildMultipartForm(parameterName, filesToUpload.Select(x => new KeyValuePair<string, Stream>(x.Key, new MemoryStream(x.Value))).ToList());
         return this;
     }
 
-    public FluentRequest AddFileStreamBody(string fileName, Stream fileStream)
+    public FluentRequest AddFileStreamBody(string parameterName, params KeyValuePair<string, Stream>[] filesToUpload)
     {
-        Message.Content = BuildMultipartForm(fileName, fileStream);
+        Message.Content = BuildMultipartForm(parameterName, filesToUpload);
         return this;
     }
 
     /// <summary>
     /// Build up the file to be uploaded from a streamy which will be sent over the wire in an http request
     /// </summary>
-    /// <param name="fileName">file name for this file</param>
-    /// <param name="fileStream">file bytes which contains the raw content of this file</param>
+    /// <param name="filesToUpload">Files to upload. Key is the file name value is the stream</param>
+    /// <param name="parameterName">This is the parameter name in web api. If this doesn't match then the binding won't come through with any files</param>
     /// <returns>MultipartFormDataContent that contains the file to be uploaded in the http request</returns>
-    private static MultipartFormDataContent BuildMultipartForm(string fileName, Stream fileStream)
+    private static MultipartFormDataContent BuildMultipartForm(string parameterName, IEnumerable<KeyValuePair<string, Stream>> filesToUpload)
     {
+        var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
+
         //portal svc has a few checks. we need file name to have quotes "jason.jpg" around it. .net default does not include quotes
-
-        //always reset / rewind the stream to the beginning incase there was some reads on it
-        fileStream.Seek(0, SeekOrigin.Begin);
-
-        //create the start of the file upload
-        var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture))
+        foreach (var fileStreamToAdd in filesToUpload)
         {
+            //always reset / rewind the stream to the beginning incase there was some reads on it
+            fileStreamToAdd.Value.Seek(0, SeekOrigin.Begin);
 
-            //add the content
-            { new StreamContent(fileStream), fileName.SurroundWithQuotes(), fileName.SurroundWithQuotes() }
-        };
+            content.Add(new StreamContent(fileStreamToAdd.Value), parameterName.SurroundWithQuotes(), fileStreamToAdd.Key.SurroundWithQuotes());
+        }
 
         //return it
         return content;
