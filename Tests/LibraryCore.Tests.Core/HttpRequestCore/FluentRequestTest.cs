@@ -273,7 +273,7 @@ public class FluentRequestTest
         var byteArray = new byte[] { 1, 2, 3 };
 
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
-                                                .AddFileStreamBody("test.jpg", byteArray)
+                                                .AddFileStreamBody("formFiles", new KeyValuePair<string, byte[]>("test.jpg", byteArray))
                                                 .Message;
 
         var response = await HttpClientToUse.SendAsync(request);
@@ -299,10 +299,10 @@ public class FluentRequestTest
 
         MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
 
-        var byteArrayStream = new MemoryStream(new byte[] { 1, 2, 3 });
+        using var byteArrayStream = new MemoryStream(new byte[] { 1, 2, 3 });
 
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
-                                                .AddFileStreamBody("test.jpg", byteArrayStream)
+                                                .AddFileStreamBody("formFiles", new KeyValuePair<string, Stream>("test.jpg", byteArrayStream))
                                                 .Message;
 
         var response = await HttpClientToUse.SendAsync(request);

@@ -119,7 +119,7 @@ namespace LibraryCore.IntegrationTests
             var byteArray = new byte[] { 1, 2, 3 };
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", "formFiles", byteArray));
+                                                                                            .AddFileStreamBody("formFiles", new KeyValuePair<string, byte[]>("file1.jpg", byteArray)));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -131,16 +131,20 @@ namespace LibraryCore.IntegrationTests
         [Fact]
         public async Task FileUploadWithStreamTest()
         {
-            var streamOfFile = new MemoryStream(new byte[] { 1, 2, 3 });
+            var streamOfFile1 = new MemoryStream(new byte[] { 1, 2, 3 });
+            var streamOfFile2 = new MemoryStream(new byte[] { 4, 5, 6, 7 });
 
             var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
-                                                                                            .AddFileStreamBody("file1.jpg", "formFiles", streamOfFile));
+                                                                                            .AddFileStreamBody("formFiles",
+                                                                                                    new KeyValuePair<string, Stream>("file1.jpg", streamOfFile1),
+                                                                                                    new KeyValuePair<string, Stream>("file2.jpg", streamOfFile2)));
 
             var result = await response.EnsureSuccessStatusCode()
                                    .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
 
-            Assert.Single(result);
+            Assert.Equal(2, result.Count());
             Assert.Contains(result, x => x.Id == 3 && x.Text == "file1.jpg");
+            Assert.Contains(result, x => x.Id == 4 && x.Text == "file2.jpg");
         }
 
         #endregion
