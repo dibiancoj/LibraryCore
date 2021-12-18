@@ -1,0 +1,12 @@
+# Add 'repo' label to any root file changes
+all:
+- '*'
+
+jsonnet:
+- Src/LibraryCore.JsonNet/**/*
+
+core:
+- Src/LibraryCore.Core/**/*
+
+aspnet:
+- Src/LibraryCore.AspNet/**/*
