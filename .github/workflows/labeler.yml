@@ -1,4 +1,4 @@
-name: LibraryCore.Workflow
+name: PullRequest.Labeler
 
 on:
 - pull_request_target
