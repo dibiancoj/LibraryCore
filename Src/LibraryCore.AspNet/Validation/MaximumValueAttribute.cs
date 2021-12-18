@@ -20,11 +20,8 @@ public class MaximumValueAttribute : ValidationAttribute
 
     public override bool IsValid(object? value)
     {
-        if (value == null)
-        {
-            return AllowNullValues;
-        }
-
-        return Convert.ToDouble(value) <= MaximumValueAccepted;
+        return value == null?
+                AllowNullValues :
+                Convert.ToDouble(value) <= MaximumValueAccepted; 
     }
 }
