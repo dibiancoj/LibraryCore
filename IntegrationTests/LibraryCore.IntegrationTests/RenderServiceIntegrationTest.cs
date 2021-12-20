@@ -13,8 +13,6 @@ namespace LibraryCore.IntegrationTests
 
         private static string RemoveLineEndings(string text) => text.ReplaceLineEndings(string.Empty);
 
-        private static void AssertIgnoreLineEndings(string expectedValue, string actual) => Assert.Equal(RemoveLineEndings(expectedValue), RemoveLineEndings(actual));
-
         [Fact]
         public async Task CantFindView()
         {
@@ -30,7 +28,7 @@ namespace LibraryCore.IntegrationTests
 
             var result = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-            AssertIgnoreLineEndings("<div>Test</div>", result);
+            Assert.Equal("<div>Test</div>", result, ignoreLineEndingDifferences: true);
         }
 
         [Fact]
@@ -40,7 +38,7 @@ namespace LibraryCore.IntegrationTests
 
             var result = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-            AssertIgnoreLineEndings("\r\n<div aria-key=key1 aria-value=value1>\r\n</div>", result);
+            Assert.Equal("\r\n<div aria-key=key1 aria-value=value1>\r\n</div>", result, ignoreLineEndingDifferences: true);
         }
     }
 }
