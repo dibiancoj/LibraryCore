@@ -15,12 +15,12 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
         private IRenderService RenderService { get; }
 
         [HttpGet("CantFindView")]
-        public async Task<IActionResult> CantFindView() => Json(await RenderService.RenderToStringAsync("~/Views/RenderService/CantFindView.cshtml"));
+        public async Task<IActionResult> CantFindView() => Content(await RenderService.RenderToStringAsync("~/Views/RenderService/CantFindView.cshtml"));
 
         [HttpGet("WithModel")]
-        public async Task<IActionResult> WithModel() => Json(await RenderService.RenderToStringAsync("~/Views/RenderService/WithModel.cshtml", new KeyValuePair<string, string>("key1", "value1")));
+        public async Task<IActionResult> WithModel() => Content(await RenderService.RenderToStringAsync("~/Views/RenderService/WithModel.cshtml", new KeyValuePair<string, string>("key1", "value1")));
 
         [HttpGet("NoModel")]
-        public async Task<IActionResult> NoModel() => Json(await RenderService.RenderToStringAsync("~/Views/RenderService/NoModel.cshtml"));
+        public async Task<IActionResult> NoModel() => Content(await RenderService.RenderToStringAsync("~/Views/RenderService/NoModel.cshtml"));
     }
 }

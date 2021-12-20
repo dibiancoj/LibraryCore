@@ -11,6 +11,10 @@ namespace LibraryCore.IntegrationTests
 
         private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
+        private static string RemoveLineEndings(string text) => text.ReplaceLineEndings(string.Empty);
+
+        private static void AssertIgnoreLineEndings(string expectedValue, string actual) => Assert.Equal(RemoveLineEndings(expectedValue), RemoveLineEndings(actual));
+
         [Fact]
         public async Task CantFindView()
         {
@@ -26,7 +30,7 @@ namespace LibraryCore.IntegrationTests
 
             var result = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-            Assert.Equal("\"\\u003Cdiv\\u003ETest\\u003C/div\\u003E\"", result);
+            AssertIgnoreLineEndings("<div>Test</div>", result);
         }
 
         [Fact]
@@ -36,7 +40,7 @@ namespace LibraryCore.IntegrationTests
 
             var result = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-            Assert.Equal("\"\\r\\n\\u003Cdiv aria-key=key1 aria-value=value1\\u003E\\r\\n\\u003C/div\\u003E\"", result);
+            AssertIgnoreLineEndings("\r\n<div aria-key=key1 aria-value=value1>\r\n</div>", result);
         }
     }
 }
