@@ -42,6 +42,8 @@ public class AccountingPeriod
         return new AccountingPeriod(a.ToDate().AddMonths(-b));
     }
 
+    public static implicit operator DateOnly(AccountingPeriod accountingPeriod) => accountingPeriod.ToDate();
+
     #endregion
 
     #region Public Methods
