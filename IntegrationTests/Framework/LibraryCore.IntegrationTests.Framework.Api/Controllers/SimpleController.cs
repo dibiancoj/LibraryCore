@@ -22,5 +22,8 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
 
         [MaximumValue(100)]
         public int MaximumValue { get; set; }
+
+        [MinimumValue(25)]
+        public int MinimumValue { get; set; }
     }
 }

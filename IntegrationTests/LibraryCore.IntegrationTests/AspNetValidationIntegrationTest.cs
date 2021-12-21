@@ -34,6 +34,17 @@ namespace LibraryCore.IntegrationTests
             Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
             Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
         }
+
+        [InlineData(true, 50)]
+        [InlineData(false, 1)]
+        [Theory]
+        public async Task MinimumValueTest(bool expectedToBeSuccessful, int maxValueToUse)
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { MinimumValue = maxValueToUse });
+
+            Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
+            Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 
     public class ValidationTest
@@ -41,5 +52,7 @@ namespace LibraryCore.IntegrationTests
         public DateTime? DataOfBirth { get; set; } = DateTime.Now.AddYears(-2);
 
         public int MaximumValue { get; set; } = 50;
+
+        public int MinimumValue { get; set; } = 50;
     }
 }
