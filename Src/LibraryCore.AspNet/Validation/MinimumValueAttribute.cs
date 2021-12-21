@@ -20,11 +20,8 @@ public class MinimumValueAttribute : ValidationAttribute
 
     public override bool IsValid(object? value)
     {
-        if (value == null)
-        {
-            return AllowNullValues;
-        }
-
-        return Convert.ToDouble(value) > MinimumValueAccepted;
+        return value == null ?
+            AllowNullValues:
+            Convert.ToDouble(value) > MinimumValueAccepted;
     }
 }
