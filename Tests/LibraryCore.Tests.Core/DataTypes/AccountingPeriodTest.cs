@@ -17,6 +17,16 @@ public class AccountingPeriodTest
     }
 
     [Fact]
+    public void ImplicitOperator()
+    {
+        var initDateToTest = new DateOnly(2020, 5, 1);
+
+        DateOnly temp = new AccountingPeriod(initDateToTest);
+
+        Assert.Equal(initDateToTest, temp);
+    }
+
+    [Fact]
     public void BuildPeriodFromNumbers()
     {
         var temp = new AccountingPeriod(5, 2020);
