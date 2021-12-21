@@ -70,6 +70,35 @@ namespace LibraryCore.IntegrationTests
             Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
             Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
         }
+
+        [InlineData(true, "", false)] //required field is not set so it should be valid
+        [InlineData(true, "IsRequired", true)] //required field says past date should be valid and it is. So it should be valid
+        [InlineData(true, "SomeRandomText", false)] //text doesn't match whats in the list so the required field is not valid
+        [InlineData(false, "IsRequired", false)] //required field says past date should be valid. Past date is null so it should be a 400
+        [Theory]
+        public async Task RequiredIfContainsTest(bool expectedToBeSuccessful, string requiredIfFieldValue, bool setTargetValue)
+        {
+            string? requiredIfContainsTarget = setTargetValue ? "some text": null;
+
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfContainsValue = new[] { requiredIfFieldValue }, RequiredIfContainsTarget = requiredIfContainsTarget });
+
+            Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
+            Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [InlineData(true, "")]
+        [InlineData(false, "123")]
+        [InlineData(false, "abc")]
+        [InlineData(false, "1055134343")]
+        [InlineData(true, "10551")]
+        [Theory]
+        public async Task ZipCodeTest(bool expectedToBeSuccessful, string zipCodeValue)
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { ZipCodeValue = zipCodeValue });
+
+            Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
+            Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 
     public class ValidationTest
@@ -82,5 +111,9 @@ namespace LibraryCore.IntegrationTests
 
         public DateTime? PastDateValue { get; set; }
         public string? RequiredIfValue { get; set; }
+
+        public string? RequiredIfContainsTarget { get; set; }
+        public IEnumerable<string> RequiredIfContainsValue { get; set; } = Array.Empty<string>();
+        public string? ZipCodeValue { get; set; }
     }
 }
