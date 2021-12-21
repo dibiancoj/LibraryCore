@@ -19,5 +19,8 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
     {
         [DateOfBirthRange]
         public DateTime? DataOfBirth { get; set; }
+
+        [MaximumValue(100)]
+        public int MaximumValue { get; set; }
     }
 }
