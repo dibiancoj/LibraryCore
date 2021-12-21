@@ -12,7 +12,7 @@ namespace LibraryCore.Core.ThrowUtilities
 
         [DoesNotReturn]
         private static void ThrowIfFalseException(string? expression) => throw new ArgumentException($"{expression} must be True, but was False");
-        
+
         [DoesNotReturn]
         private static void ThrowIfTrueException(string? expression) => throw new ArgumentException($"{expression} must be False, but was True");
 

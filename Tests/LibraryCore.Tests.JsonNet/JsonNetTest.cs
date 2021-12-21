@@ -62,7 +62,7 @@ public class JsonNetTest
         using var jsonInStream = JsonConvert.SerializeObject(recordToTest).ToMemoryStream();
 
         //let's de-serialize it back from the stream
-        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream) ?? throw new Exception("Not Able To Deserialize"); 
+        var deserializedStringObject = JsonNetUtilities.DeserializeFromStream<TestObject>(jsonInStream) ?? throw new Exception("Not Able To Deserialize");
 
         //let's test the data
         Assert.NotNull(deserializedStringObject);
@@ -188,7 +188,7 @@ public class JsonNetTest
 
         //let's de-serialize it back from the stream
         var jObject = await JsonNetUtilities.JObjectFromStreamAsync(jsonInStream);
-        
+
         //let's test the data
         Assert.NotNull(jObject);
 

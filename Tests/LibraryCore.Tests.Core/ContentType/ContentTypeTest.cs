@@ -44,6 +44,6 @@ public class ContentTypeTest
     [Fact]
     public void XmlMediaType()
     {
-        Assert.Equal(ContentTypeLookup.XmlContentType , ContentTypeLookup.XmlMediaType.MediaType);
+        Assert.Equal(ContentTypeLookup.XmlContentType, ContentTypeLookup.XmlMediaType.MediaType);
     }
 }

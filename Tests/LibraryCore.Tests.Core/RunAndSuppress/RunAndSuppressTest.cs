@@ -242,7 +242,7 @@ public class RunAndSuppressTest
     public async Task FailedValueTaskAsyncNoReturnObject()
     {
         var logger = new StringBuilder();
-        
+
         Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsValueTaskAsync(async () =>
         {
             await Task.Delay(5);

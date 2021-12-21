@@ -12,8 +12,8 @@ public class WebApplicationFactoryFixture : IDisposable
         ApplicationFactory = new WebApplicationFactory<Program>()
         .WithWebHostBuilder(builder =>
           {
-                  // ... Configure test services
-              });
+              // ... Configure test services
+          });
 
         HttpClientToUse = ApplicationFactory.CreateClient();
     }
