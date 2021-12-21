@@ -1,4 +1,5 @@
 ﻿using LibraryCore.AspNet.Attributes;
+using LibraryCore.AspNet.ExtensionMethods.HttpContextExtensionMethods;
 using LibraryCore.AspNet.Validation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,9 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
 
         [HttpPost("ValidationTest")]
         public bool ValidationTest([FromBody] ValidationTest model) => true;
+
+        [HttpGet("IsAjaxCall")]
+        public bool IsAjaxCall() => HttpContext.Request.IsAjaxRequest();
     }
 
     public class ValidationTest

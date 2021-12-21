@@ -1,21 +1,21 @@
 ﻿using LibraryCore.IntegrationTests.Fixtures;
 using System.Net;
 
-namespace LibraryCore.IntegrationTests
+namespace LibraryCore.IntegrationTests;
+
+public class AspNetAttributeIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 {
-    public class AspNetAttributeIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
+    public AspNetAttributeIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
     {
-        public AspNetAttributeIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
-        {
-            WebApplicationFactoryFixture = webApplicationFactoryFixture;
-        }
+        WebApplicationFactoryFixture = webApplicationFactoryFixture;
+    }
 
-        private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
-        [Fact]
-        public async Task HttpGetOptionHeadAttribute()
-        {
-            var valuesToTest = new List<KeyValuePair<HttpMethod, bool>>
+    [Fact]
+    public async Task HttpGetOptionHeadAttribute()
+    {
+        var valuesToTest = new List<KeyValuePair<HttpMethod, bool>>
             {
                 new KeyValuePair<HttpMethod, bool>(HttpMethod.Put, false),
                 new KeyValuePair<HttpMethod, bool>(HttpMethod.Post, false),
@@ -27,13 +27,12 @@ namespace LibraryCore.IntegrationTests
                 new KeyValuePair<HttpMethod, bool>(HttpMethod.Head, true)
             };
 
-            foreach (var valueToTest in valuesToTest)
-            {
-                var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new HttpRequestMessage(valueToTest.Key, "Simple/AspNetHttpMethodTest"));
+        foreach (var valueToTest in valuesToTest)
+        {
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new HttpRequestMessage(valueToTest.Key, "Simple/AspNetHttpMethodTest"));
 
-                Assert.Equal(valueToTest.Value, response.IsSuccessStatusCode);
-                Assert.Equal(valueToTest.Value ? HttpStatusCode.OK : HttpStatusCode.MethodNotAllowed, response.StatusCode);
-            }
+            Assert.Equal(valueToTest.Value, response.IsSuccessStatusCode);
+            Assert.Equal(valueToTest.Value ? HttpStatusCode.OK : HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
     }
 }
