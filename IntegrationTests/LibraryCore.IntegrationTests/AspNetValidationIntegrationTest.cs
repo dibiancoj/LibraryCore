@@ -56,6 +56,20 @@ namespace LibraryCore.IntegrationTests
             Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
             Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
         }
+
+        [InlineData(true, "", false)] //required field is not set so it should be valid
+        [InlineData(true, "IsRequired", true)] //required field says past date should be valid and it is. So it should be valid
+        [InlineData(false, "IsRequired", false)] //required field says past date should be valid. Past date is null so it should be a 400
+        [Theory]
+        public async Task RequiredIfTest(bool expectedToBeSuccessful, string requiredIfFieldValue, bool setPastDate)
+        {
+            var pastDateValue = setPastDate ? DateTime.Now.AddDays(-2) : new DateTime?();
+
+            var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfValue = requiredIfFieldValue, PastDateValue = pastDateValue });
+
+            Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
+            Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 
     public class ValidationTest
@@ -67,5 +81,6 @@ namespace LibraryCore.IntegrationTests
         public int MinimumValue { get; set; } = 50;
 
         public DateTime? PastDateValue { get; set; }
+        public string? RequiredIfValue { get; set; }
     }
 }

@@ -26,7 +26,10 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
         [MinimumValue(25)]
         public int MinimumValue { get; set; }
 
+        [RequiredIf(nameof(RequiredIfValue), "IsRequired")]
         [PastDateValidation(false)]
-        public DateTime PastDateValue{ get; set; }
+        public DateTime? PastDateValue{ get; set; }
+
+        public string? RequiredIfValue { get; set; }
     }
 }
