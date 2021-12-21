@@ -25,5 +25,8 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
 
         [MinimumValue(25)]
         public int MinimumValue { get; set; }
+
+        [PastDateValidation(false)]
+        public DateTime PastDateValue{ get; set; }
     }
 }
