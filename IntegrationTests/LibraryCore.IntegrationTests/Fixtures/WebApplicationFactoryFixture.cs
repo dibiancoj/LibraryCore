@@ -24,18 +24,12 @@ public class WebApplicationFactoryFixture : IDisposable
 
     #region Dispose Method
 
-    /// <summary>
-    /// Disposes My Object
-    /// </summary>
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Dispose Overload. Ensures my database connection is closed
-    /// </summary>
     private void Dispose(bool disposing)
     {
         if (!this.Disposed)
