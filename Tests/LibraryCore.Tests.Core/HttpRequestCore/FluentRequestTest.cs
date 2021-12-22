@@ -1,10 +1,10 @@
 ﻿using LibraryCore.Core.HttpRequestCore;
-using Moq.Protected;
-using System.Linq.Expressions;
+using LibraryCore.Tests.Core.GlobalMocks;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using static LibraryCore.Core.ContentType.ContentTypeLookup;
+using static LibraryCore.Tests.Core.GlobalMocks.HttpRequestSetup;
 
 namespace LibraryCore.Tests.Core.HttpRequestCore;
 
@@ -12,52 +12,10 @@ public class FluentRequestTest
 {
     public FluentRequestTest()
     {
-        MockHttpHandler = new Mock<HttpMessageHandler>();
-        HttpClientToUse = new HttpClient(MockHttpHandler.Object);
+        HttpRequestMockSetup = new HttpRequestSetup();
     }
 
-    private Mock<HttpMessageHandler> MockHttpHandler { get; }
-    private HttpClient HttpClientToUse { get; }
-
-    #region Framework
-
-    public record WeatherForecast(int Id, int TemperatureF, string Summary);
-
-    private static HttpResponseMessage CreateMockResponse<T>(HttpStatusCode httpStatusCode, T modelToExpect)
-    {
-        return new HttpResponseMessage
-        {
-            StatusCode = httpStatusCode,
-            Content = new StringContent(JsonSerializer.Serialize(modelToExpect))
-        };
-    }
-
-    private void MockHttpRequest(HttpResponseMessage mockResponseToReturn, Expression<Func<HttpRequestMessage, bool>> messageCheck)
-    {
-        MockHttpHandler
-        .Protected()
-        .Setup<Task<HttpResponseMessage>>(
-              "SendAsync",
-              ItExpr.Is(messageCheck),
-              ItExpr.IsAny<CancellationToken>())
-           .ReturnsAsync(mockResponseToReturn);
-    }
-
-    //private void MockHttpRequest(HttpResponseMessage mockResponseToReturn)
-    //{
-    //    MockHttpRequest(mockResponseToReturn, x => true);
-    //}
-
-    private void VerifyAndThrow(Times times, Expression<Func<HttpRequestMessage, bool>> expressionToVerify)
-    {
-        MockHttpHandler.Protected().Verify(
-             nameof(HttpClient.SendAsync),
-             times,
-             ItExpr.Is(expressionToVerify),
-             ItExpr.IsAny<CancellationToken>());
-    }
-
-    #endregion
+    private HttpRequestSetup HttpRequestMockSetup { get; }
 
     #region Unit Tests
 
@@ -118,7 +76,7 @@ public class FluentRequestTest
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
 
         var jsonParameters = new
         {
@@ -131,7 +89,7 @@ public class FluentRequestTest
                                                 .AddJsonBody(jsonParameters)
                                                 .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -141,20 +99,20 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
 
     [Fact]
     public async Task JsonRequestWithBaseUrlAndResponse()
     {
-        HttpClientToUse.BaseAddress = new Uri("https://test.api/WeatherForecast");
+        HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/WeatherForecast");
 
         var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
 
         var jsonParameters = new
         {
@@ -167,7 +125,11 @@ public class FluentRequestTest
                                          .AddJsonBody(jsonParameters)
                                          .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var request2 = new FluentRequest(HttpMethod.Get)
+                                       .AddHeader("Header1", "Header1Value")
+                                       .AddJsonBody(jsonParameters);
+
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -177,20 +139,20 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
 
     [Fact]
     public async Task JsonRequestWithBaseUrlAndAppendWithJsonResponse()
     {
-        HttpClientToUse.BaseAddress = new Uri("https://test.api/");
+        HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/");
 
         var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
 
         var jsonParameters = new
         {
@@ -203,7 +165,7 @@ public class FluentRequestTest
                                          .AddJsonBody(jsonParameters)
                                          .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -213,7 +175,7 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
 
     [Fact]
@@ -224,7 +186,7 @@ public class FluentRequestTest
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get &&
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get &&
                                              req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri &&
                                              req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
                                              req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
@@ -244,7 +206,7 @@ public class FluentRequestTest
                                                 .AddFormsUrlEncodedBody(parameters)
                                                 .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -254,7 +216,7 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get &&
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get &&
                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri &&
                                             req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value") &&
                                             req.Headers.Any(t => t.Key == "Header2" && t.Value.First() == "Header2Value"));
@@ -268,7 +230,7 @@ public class FluentRequestTest
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
 
         var byteArray = new byte[] { 1, 2, 3 };
 
@@ -276,7 +238,7 @@ public class FluentRequestTest
                                                 .AddFileStreamBody("formFiles", new KeyValuePair<string, byte[]>("test.jpg", byteArray))
                                                 .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -286,7 +248,7 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
     }
 
     [Fact]
@@ -297,7 +259,7 @@ public class FluentRequestTest
                 new WeatherForecast(1, 10, "Weather 1")
             });
 
-        MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
 
         using var byteArrayStream = new MemoryStream(new byte[] { 1, 2, 3 });
 
@@ -305,7 +267,7 @@ public class FluentRequestTest
                                                 .AddFileStreamBody("formFiles", new KeyValuePair<string, Stream>("test.jpg", byteArrayStream))
                                                 .Message;
 
-        var response = await HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
 
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
@@ -315,7 +277,7 @@ public class FluentRequestTest
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
 
-        VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
     }
 
     #endregion

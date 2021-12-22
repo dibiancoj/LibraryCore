@@ -29,6 +29,15 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     #region Tests
 
     [Fact]
+    public async Task HttpClientToJsonExtensionMethodTest()
+    {
+        var result = await WebApplicationFactoryFixture.HttpClientToUse.SendRequestToJsonAsync< ResultModel>(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")) ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal(9999, result.Id);
+        Assert.Equal("1111", result.Text);
+    }
+
+    [Fact]
     public async Task HeaderTest()
     {
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/HeaderTest")
