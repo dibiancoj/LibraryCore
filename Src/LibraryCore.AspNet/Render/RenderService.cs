@@ -95,7 +95,7 @@ public class RenderService : IRenderService
             RouteData = Accessor.HttpContext.GetRouteData()
         };
 
-        await viewResult.View.RenderAsync(viewContext).ConfigureAwait(false);
+        await viewResult.View.RenderAsync(viewContext);
 
         return outputWriter.ToString();
     }

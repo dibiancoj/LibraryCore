@@ -19,7 +19,7 @@ public static class TaskExtensionMethods
     public static async Task<TMethodResult> Then<TTaskResult, TMethodResult>(this Task<TTaskResult> antecedent, Func<TTaskResult, TMethodResult> continuation)
     {
         //run the continuation and return the result
-        return continuation(await antecedent.ConfigureAwait(false));
+        return continuation(await antecedent);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public static class TaskExtensionMethods
     public static async Task<TMethodResult> Then<TTaskResult, TMethodResult>(this Task<TTaskResult> antecedent, Func<TTaskResult, Task<TMethodResult>> continuation)
     {
         //run the continuation and return the result
-        return await continuation(await antecedent.ConfigureAwait(false)).ConfigureAwait(false);
+        return await continuation(await antecedent);
     }
 
     /// <summary>

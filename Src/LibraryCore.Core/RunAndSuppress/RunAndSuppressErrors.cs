@@ -119,7 +119,7 @@ public static class RunAndSuppressErrors
         try
         {
             //run the action
-            return new RunAndSupressErrorResult<TResult>(true, await actionAsync().ConfigureAwait(false));
+            return new RunAndSupressErrorResult<TResult>(true, await actionAsync());
         }
         catch (Exception ex)
         {
@@ -182,7 +182,7 @@ public static class RunAndSuppressErrors
         try
         {
             //run the action
-            return new RunAndSupressErrorResult<TResult>(true, await actionAsync().ConfigureAwait(false));
+            return new RunAndSupressErrorResult<TResult>(true, await actionAsync());
         }
         catch (Exception ex)
         {

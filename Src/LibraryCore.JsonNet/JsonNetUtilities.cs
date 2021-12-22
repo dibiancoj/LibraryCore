@@ -88,7 +88,7 @@ public static class JsonNetUtilities
         using var streamReaderToUse = new StreamReader(streamToReadFrom);
         using var jsonReaderToUse = new JsonTextReader(streamReaderToUse);
 
-        return await JObject.LoadAsync(jsonReaderToUse).ConfigureAwait(false);
+        return await JObject.LoadAsync(jsonReaderToUse);
     }
 
     #endregion

@@ -65,8 +65,8 @@ namespace LibraryCore.Core.Cache
             {
                 x.AddExpirationToken(new CancellationChangeToken(cancellationToken.Token));
 
-                return await factory(x).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+                return await factory(x);
+            });
         }
 
     }

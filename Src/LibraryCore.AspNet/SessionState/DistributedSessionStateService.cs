@@ -20,7 +20,7 @@ public class DistributedSessionStateService : ISessionStateService
 
     public async ValueTask<TryToGetResult<T>> TryGetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
     {
-        await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.LoadAsync();
 
         var foundInSession = HttpContextAccessor.HttpContext.Session.TryGetValue(key, out var foundBytes);
 
@@ -33,7 +33,7 @@ public class DistributedSessionStateService : ISessionStateService
 
     public async ValueTask<T?> GetObjectAsync<T>(string key, bool useJsonNetSerializer = false)
     {
-        var result = await TryGetObjectAsync<T>(key, useJsonNetSerializer).ConfigureAwait(false);
+        var result = await TryGetObjectAsync<T>(key, useJsonNetSerializer);
 
         _ = result.GetItemIfFoundInSession(out var itemInSession);
 
@@ -42,10 +42,10 @@ public class DistributedSessionStateService : ISessionStateService
 
     public async ValueTask SetObjectAsync<T>(string key, T objectToPutInSession, bool useJsonNetSerializer = false)
     {
-        await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.LoadAsync();
 
         HttpContextAccessor.HttpContext.Session.Set(key, SerializeObject(objectToPutInSession, useJsonNetSerializer));
-        await HttpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.CommitAsync();
     }
 
     public async ValueTask<T> GetOrSetAsync<T>(string key, Func<Task<T>> creator, bool useJsonNetSerializer = false)
@@ -59,7 +59,7 @@ public class DistributedSessionStateService : ISessionStateService
         }
 
         //not found in session go create it, set it, and rturn it
-        var objectToPutInSession = await creator().ConfigureAwait(false);
+        var objectToPutInSession = await creator();
 
         //set the object
         await SetObjectAsync(key, objectToPutInSession, useJsonNetSerializer);
@@ -69,25 +69,25 @@ public class DistributedSessionStateService : ISessionStateService
 
     public async ValueTask RemoveObjectAsync(string key)
     {
-        await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.LoadAsync();
 
         HttpContextAccessor.HttpContext.Session.Remove(key);
-        await HttpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.CommitAsync();
     }
 
     public async ValueTask ClearAllSessionObjectsForThisUserAsync()
     {
-        await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.LoadAsync();
 
         HttpContextAccessor.HttpContext.Session.Clear();
-        await HttpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.CommitAsync();
     }
 
     public async ValueTask<bool> HasKeyInSessionAsync(string key) => (await SessionItemKeysAsync()).Contains(key);
 
     public async ValueTask<IEnumerable<string>> SessionItemKeysAsync()
     {
-        await HttpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
+        await HttpContextAccessor.HttpContext.Session.LoadAsync();
 
         return HttpContextAccessor.HttpContext.Session.Keys;
     }
