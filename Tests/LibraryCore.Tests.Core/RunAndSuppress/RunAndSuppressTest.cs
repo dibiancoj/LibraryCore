@@ -99,7 +99,7 @@ public class RunAndSuppressTest
     {
         string errorLogger;
 
-        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync<string>(() => throw new NotImplementedException(), () => "Called Failed", (ex) => errorLogger = ex.ToString());
+        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(() => throw new NotImplementedException(), () => "Called Failed", (ex) => errorLogger = ex.ToString());
 
         Assert.False(Successful);
         Assert.Equal("Called Failed", ResultObject);
@@ -110,7 +110,7 @@ public class RunAndSuppressTest
     {
         string errorLogger;
 
-        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync<string>(() => SimulateTaskWithDelayAsync(), () => "Called Failed", (ex) => errorLogger = ex.ToString());
+        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(() => SimulateTaskWithDelayAsync(), () => "Called Failed", (ex) => errorLogger = ex.ToString());
 
         Assert.True(Successful);
         Assert.Equal("Success Model", ResultObject);
@@ -121,7 +121,7 @@ public class RunAndSuppressTest
     {
         string errorLogger;
 
-        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync<string>(SimulateTaskWithDelayAsync, () => "Called Failed", (ex) => errorLogger = ex.ToString());
+        var (Successful, ResultObject) = await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(SimulateTaskWithDelayAsync, () => "Called Failed", (ex) => errorLogger = ex.ToString());
 
         Assert.True(Successful);
         Assert.Equal("Success Model", ResultObject);
