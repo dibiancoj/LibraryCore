@@ -16,9 +16,7 @@ public static class HttpClientExtensionMethods
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
 
-        using var contentStream = rawResponse.EnsureSuccessStatusCode().Content.ReadAsStream(cancellationToken);
-
-        return XmlSerialization.XMLSerializationHelper.DeserializeObject<T>(contentStream);
+        return await rawResponse.Content.ReadFromXmlAsync<T>(cancellationToken: cancellationToken);
     }
 
     private static Task<HttpResponseMessage> SendMessageHelper(HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)
