@@ -1,6 +1,8 @@
-﻿using Moq.Protected;
+﻿using LibraryCore.Core.XmlSerialization;
+using Moq.Protected;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 
 namespace LibraryCore.Tests.Core.GlobalMocks;
@@ -18,12 +20,21 @@ public class HttpRequestSetup
 
     public record WeatherForecast(int Id, int TemperatureF, string Summary);
 
-    public static HttpResponseMessage CreateMockResponse<T>(HttpStatusCode httpStatusCode, T modelToExpect)
+    public static HttpResponseMessage CreateJsonMockResponse<T>(HttpStatusCode httpStatusCode, T modelToExpect)
     {
         return new HttpResponseMessage
         {
             StatusCode = httpStatusCode,
             Content = new StringContent(JsonSerializer.Serialize(modelToExpect))
+        };
+    }
+
+    public static HttpResponseMessage CreateXmlMockResponse<T>(HttpStatusCode httpStatusCode, T modelToExpect)
+    {
+        return new HttpResponseMessage
+        {
+            StatusCode = httpStatusCode,
+            Content = new StringContent(XMLSerializationHelper.SerializeObjectToXElement(modelToExpect).ToString(), Encoding.UTF8, "text/xml")
         };
     }
 
