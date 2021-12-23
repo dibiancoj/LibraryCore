@@ -31,10 +31,22 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     [Fact]
     public async Task HttpClientToJsonExtensionMethodTest()
     {
-        var result = await WebApplicationFactoryFixture.HttpClientToUse.SendRequestToJsonAsync< ResultModel>(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")) ?? throw new Exception("Can't deserialize result");
+        var result = await WebApplicationFactoryFixture.HttpClientToUse.SendRequestToJsonAsync<ResultModel>(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload")) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal(9999, result.Id);
         Assert.Equal("1111", result.Text);
+    }
+
+    [Fact]
+    public async Task HttpClientToXmlExtensionMethodTest()
+    {
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleXmlPayload")
+                                                                                     .AddAcceptType(AcceptTypeEnum.Xml));
+
+        var result = await response.EnsureSuccessStatusCode()
+                                .Content.ReadFromXmlAsync<XmlRoot>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal(5, result.Id);
     }
 
     [Fact]

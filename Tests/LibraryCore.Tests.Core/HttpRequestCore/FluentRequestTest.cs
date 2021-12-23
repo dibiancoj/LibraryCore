@@ -71,7 +71,7 @@ public class FluentRequestTest
     [Fact]
     public async Task JsonRequestAndResponse()
     {
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
@@ -107,7 +107,7 @@ public class FluentRequestTest
     {
         HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/WeatherForecast");
 
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
@@ -147,7 +147,7 @@ public class FluentRequestTest
     {
         HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/");
 
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
@@ -181,7 +181,7 @@ public class FluentRequestTest
     [Fact]
     public async Task FormsEncodedRequestAndResponse()
     {
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
@@ -225,7 +225,7 @@ public class FluentRequestTest
     [Fact]
     public async Task FileStreamByteArrayRequestAndResponse()
     {
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
@@ -254,7 +254,7 @@ public class FluentRequestTest
     [Fact]
     public async Task FileStreamRequestAndResponse()
     {
-        var mockResponse = CreateMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
                 new WeatherForecast(1, 10, "Weather 1")
             });
