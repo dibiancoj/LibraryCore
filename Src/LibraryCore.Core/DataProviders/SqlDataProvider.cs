@@ -134,6 +134,55 @@ public class SqlDataProvider : IDataProvider, IAsyncDisposable
 
     public async Task<T?> ScalarAsync<T>(string sqlToRun, CommandType commandTypeToRun, IEnumerable<SqlParameter>? queryParameters = null, int? commandTimeOut = null) => (T?)await ScalarAsync(sqlToRun, commandTypeToRun, queryParameters, commandTimeOut);
 
+    public async Task BulkInsertAsync(string dataTableSchema, DataTable dataTableToLoad, SqlBulkCopyOptions copyOptions, int batchSize, int? commandTimeOut = null)
+    {
+        await ConnSql.OpenAsync();
+
+        SqlTransaction? sqlTransactionToUse = null;
+
+        try
+        {
+            sqlTransactionToUse = ConnSql.BeginTransaction();
+
+            using var sqlToRunBulk = new SqlBulkCopy(ConnSql, copyOptions, sqlTransactionToUse)
+            {
+                BatchSize = batchSize,
+                DestinationTableName = $"{dataTableSchema}.{dataTableToLoad.TableName}"
+            };
+
+            if (commandTimeOut.HasValue)
+            {
+                sqlToRunBulk.BulkCopyTimeout = commandTimeOut.Value;
+            }
+
+            sqlToRunBulk.WriteToServer(dataTableToLoad.CreateDataReader());
+
+            sqlTransactionToUse.Commit();
+        }
+        catch (Exception)
+        {
+            sqlTransactionToUse?.Rollback();
+
+            throw;
+        }
+        finally
+        {
+            if (sqlTransactionToUse != null)
+            {
+                await sqlTransactionToUse.DisposeAsync();
+            }
+
+            await CloseConnectionAsync();
+        }
+    }
+
+    #endregion
+
+    #region Public Static Methods
+
+    public static string BuildConnectionString(string serverAndInstanceName, string databaseName, string userId, string password) => $"Server={serverAndInstanceName};Database={databaseName};User Id={userId};Password={password};";
+    public static string BuildConnectionString(string serverAndInstanceName, string databaseName) => $"Server={serverAndInstanceName};Database={databaseName};Trusted_Connection=True;";
+
     #endregion
 
     #region Supporting Methods
@@ -196,11 +245,11 @@ public class SqlDataProvider : IDataProvider, IAsyncDisposable
         }
     }
 
-
     protected virtual async ValueTask DisposeAsyncInternal(bool disposing)
     {
         if (disposing)
         {
+            await ConnSql.CloseAsync();
             await ConnSql.DisposeAsync();
             Disposed = true;
         }

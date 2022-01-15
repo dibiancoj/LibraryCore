@@ -19,4 +19,5 @@ public interface IDataProvider
     Task<XElement> XmlDataAsync(string sqlToRun, CommandType commandTypeToRun, IEnumerable<SqlParameter>? queryParameters = null, int? commandTimeOut = null);
     Task<object?> ScalarAsync(string sqlToRun, CommandType commandTypeToRun, IEnumerable<SqlParameter>? queryParameters = null, int? commandTimeOut = null);
     Task<T?> ScalarAsync<T>(string sqlToRun, CommandType commandTypeToRun, IEnumerable<SqlParameter>? queryParameters = null, int? commandTimeOut = null);
+    Task BulkInsertAsync(string dataTableSchema, DataTable dataTableToLoad, SqlBulkCopyOptions copyOptions, int batchSize, int? commandTimeOut= null);
 }
