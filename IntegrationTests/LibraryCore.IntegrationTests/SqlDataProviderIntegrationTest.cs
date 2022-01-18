@@ -138,7 +138,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
             new SqlParameter("@TestId", testId)
         });
 
-        Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound!.ToString());
+        Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound?.ToString());
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
             new SqlParameter("@TestId", testId)
         });
 
-        Assert.Equal(nameof(ScalarTypedTests), descriptionFound!.ToString());
+        Assert.Equal(nameof(ScalarTypedTests), descriptionFound?.ToString());
     }
 
     [Fact]
