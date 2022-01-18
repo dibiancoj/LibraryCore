@@ -1,9 +1,26 @@
 version: "3.9"
 services:
-  sqldata:
+  sql-server:
       image: mcr.microsoft.com/mssql/server:2017-latest
       environment:
         - SA_PASSWORD=Pass@word
         - ACCEPT_EULA=Y
       ports:
         - "5434:1433"
+  integration-tests:
+    container_name: integration-tests
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    environment:
+      - ConnectionStrings__TimeSheetContext=Data Source=sql-server-database; Initial Catalog=TimeSheets; User Id=sa; Password=1AvenueCodePassword*
+    volumes:
+      - .:/src
+      - ../test:/test
+    working_dir: /Src
+    command:
+      [
+        "dotnet",
+        "test",
+        "../IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj"
+      ]
+    depends_on:
+      - sql-server
