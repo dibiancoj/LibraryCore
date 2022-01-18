@@ -15,7 +15,7 @@ services:
     volumes:
       - .:/src
       - ../test:/test
-    working_dir: /Src
+    working_dir: /IntegrationTests
     command:
       [
         "dotnet",
