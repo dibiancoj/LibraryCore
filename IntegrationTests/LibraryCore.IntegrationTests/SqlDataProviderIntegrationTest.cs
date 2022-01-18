@@ -125,6 +125,40 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
     }
 
     [Fact]
+    public async Task ScalarUnTypedTests()
+    {
+        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+
+        var testId = Guid.NewGuid();
+
+        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarUnTypedTests), testId));
+
+        var descriptionFound = await dataProvider.ScalarAsync("select Description from states where TestId = @TestId", CommandType.Text, new[]
+        {
+            new SqlParameter("@TestId", testId)
+        });
+
+        Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound!.ToString());
+    }
+
+    [Fact]
+    public async Task ScalarTypedTests()
+    {
+        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+
+        var testId = Guid.NewGuid();
+
+        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarTypedTests), testId));
+
+        var descriptionFound = await dataProvider.ScalarAsync<string>("select Description from states where TestId = @TestId", CommandType.Text, new[]
+        {
+            new SqlParameter("@TestId", testId)
+        });
+
+        Assert.Equal(nameof(ScalarTypedTests), descriptionFound!.ToString());
+    }
+
+    [Fact]
     public async Task BulkInsert()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
