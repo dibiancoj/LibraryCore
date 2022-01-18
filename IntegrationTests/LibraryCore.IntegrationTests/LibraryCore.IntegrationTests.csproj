@@ -22,6 +22,11 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="Moq" Version="4.16.1" />
@@ -41,5 +46,9 @@
 	  <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
 	  <ProjectReference Include="..\..\Src\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
 	  <ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="DatabaseModels\" />
+	  <Folder Include="Database\" />
 	</ItemGroup>
 </Project>

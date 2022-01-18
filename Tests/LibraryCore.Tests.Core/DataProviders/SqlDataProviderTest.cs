@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.DataProviders;
-using System.Data.SqlClient;
 
 namespace LibraryCore.Tests.Core.DataProviders;
 
