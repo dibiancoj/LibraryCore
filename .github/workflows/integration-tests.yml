@@ -24,3 +24,5 @@ jobs:
     - name: IntegrationTests
       working-directory: ./IntegrationTests
       run: docker-compose up --exit-code-from integration-tests integration-tests
+      env: 
+        DB_PW: ${{secrets.IntegrationTestSqlPw}}
