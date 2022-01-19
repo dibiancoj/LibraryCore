@@ -21,10 +21,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
     - name: IntegrationTests
       working-directory: ./IntegrationTests
       run: docker-compose up --exit-code-from integration-tests integration-tests
