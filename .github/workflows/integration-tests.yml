@@ -1,4 +1,4 @@
-name: LibraryCore.Workflow
+name: Integration-Tests
 
 on:
   push:
