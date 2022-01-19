@@ -24,7 +24,7 @@ namespace LibraryCore.IntegrationTests.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=localhost,5434;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
+                optionsBuilder.UseSqlServer("Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
             }
         }
 
