@@ -1,12 +1,14 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Data.Common;
-using Microsoft.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace LibraryCore.Core.DataProviders;
 
+[ExcludeFromCodeCoverage(Justification = "Tested In Integration Project. Using this as a 1 off")]
 public class SqlDataProvider : IDataProvider, IAsyncDisposable
 {
 
