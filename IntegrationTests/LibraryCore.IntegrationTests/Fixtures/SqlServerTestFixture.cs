@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.DataProviders;
 using LibraryCore.IntegrationTests.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace LibraryCore.IntegrationTests.Fixtures;
 
@@ -12,9 +13,16 @@ public class SqlServerTestFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        //so we can debug it in visual studio
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Db_ConnectionString")))
+        {
+            Console.WriteLine("No DbConnection String Found In Env Variables. Setting Connection String In " + nameof(SqlServerTestFixture));
+            Environment.SetEnvironmentVariable("Db_ConnectionString", "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
+        } 
+         
         using var dbContext = new IntegrationTestDbContext();
         await dbContext.Database.MigrateAsync();
-        
+
         ConnectionString = dbContext.Database.GetConnectionString() ?? throw new Exception("Null Connection String)");
     }
 

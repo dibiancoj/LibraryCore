@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using LibraryCore.IntegrationTests.DatabaseModels;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace LibraryCore.IntegrationTests.Database
 {
@@ -24,9 +25,9 @@ namespace LibraryCore.IntegrationTests.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = Environment.GetEnvironmentVariable("Db_ConnectionString") ?? throw new Exception("Sql Server Connection String Not Found In Env Variables");
+                //Console.WriteLine(dbConnectionStringFromEnvVariable);
 
-                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("Db_ConnectionString") ?? "No Connection String Found From Env Variable. Using Default Value For Integration Test");
             }
         }
 
