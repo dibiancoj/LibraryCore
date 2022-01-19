@@ -37,7 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{647DDB3F-A7E7-4B85-93CD-61CFC477E0D8}"
 	ProjectSection(SolutionItems) = preProject
-		IntegrationTests\docker-compose.yml = IntegrationTests\docker-compose.yml
 		IntegrationTests\MigrationsDocumentation.md = IntegrationTests\MigrationsDocumentation.md
 	EndProjectSection
 EndProject
