@@ -24,7 +24,9 @@ namespace LibraryCore.IntegrationTests.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
+                var connectionString = Environment.GetEnvironmentVariable("Db_ConnectionString") ?? throw new Exception("Sql Server Connection String Not Found In Env Variables");
+
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 

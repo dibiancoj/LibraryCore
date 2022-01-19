@@ -10,8 +10,8 @@ services:
   integration-tests:
     container_name: integration-tests
     image: mcr.microsoft.com/dotnet/sdk:6.0
-#    environment:
-#      - ConnectionStrings__TimeSheetContext=Data Source=sql-server-database; Initial Catalog=TimeSheets; User Id=sa; Password=password
+    environment:
+      - Db_ConnectionString=Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true
     volumes:
       - .:/Src
     working_dir: /Src
