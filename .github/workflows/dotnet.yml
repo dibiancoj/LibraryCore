@@ -1,4 +1,4 @@
-name: LibraryCore.Workflow
+name: Gated-Build
 
 on:
   push:
