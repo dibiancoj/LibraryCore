@@ -23,4 +23,4 @@ jobs:
         dotnet-version: 6.x
     - name: IntegrationTests
       working-directory: ./IntegrationTests
-      run: docker-compose up -e DbPw=${{ secrets.IntegrationTestSqlServerPw }} --exit-code-from integration-tests integration-tests
+      run: docker-compose up --exit-code-from integration-tests integration-tests
