@@ -197,7 +197,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
 
         var results = await dataProvider.DataTableAsync("select * from states where TestId = @TestId", CommandType.Text, readTableParmeters);
 
-        Assert.Equal(3, results.Rows.Count);
+        Assert.Equal(2, results.Rows.Count);
         Assert.Equal("BulkInsert_0", results.Rows[0]["Description"]);
         Assert.Equal("BulkInsert_1", results.Rows[1]["Description"]);
     }
