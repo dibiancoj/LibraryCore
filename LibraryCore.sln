@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{44736F91-EA46-467A-8C68-1B7B712F8B92}"
 	ProjectSection(SolutionItems) = preProject
+		Commands\IntegratedTestInVsEnvSetup.ps1 = Commands\IntegratedTestInVsEnvSetup.ps1
+		Commands\IntegratedTestInVsEnvTearDown.ps1 = Commands\IntegratedTestInVsEnvTearDown.ps1
 		Commands\PublishAndPushNuget.bat = Commands\PublishAndPushNuget.bat
 		Commands\RunPerformanceTest.bat = Commands\RunPerformanceTest.bat
 	EndProjectSection
