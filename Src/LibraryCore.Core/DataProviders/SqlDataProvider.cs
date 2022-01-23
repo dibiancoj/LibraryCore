@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace LibraryCore.Core.DataProviders;
 
-//[ExcludeFromCodeCoverage(Justification = "Tested In Integration Project. Using this as a 1 off")]
+[ExcludeFromCodeCoverage(Justification = "Tested In Integration Project. Using this as a 1 off")]
 public class SqlDataProvider : IDataProvider, IAsyncDisposable
 {
 
