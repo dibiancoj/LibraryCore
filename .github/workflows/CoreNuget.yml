@@ -1,4 +1,4 @@
-name: UpdateNugetPackages
+name: Update-Nuget-Packages
 
 on:
   workflow_dispatch:

@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{44736F91-EA46-467A-8C68-1B7B712F8B92}"
 	ProjectSection(SolutionItems) = preProject
+		Commands\IntegratedTestInVsEnvSetup.ps1 = Commands\IntegratedTestInVsEnvSetup.ps1
+		Commands\IntegratedTestInVsEnvTearDown.ps1 = Commands\IntegratedTestInVsEnvTearDown.ps1
 		Commands\PublishAndPushNuget.bat = Commands\PublishAndPushNuget.bat
 		Commands\RunPerformanceTest.bat = Commands\RunPerformanceTest.bat
 	EndProjectSection
@@ -36,6 +38,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{8C77AB2D-937E-4E17-9CA5-1A389EDC3F32}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{647DDB3F-A7E7-4B85-93CD-61CFC477E0D8}"
+	ProjectSection(SolutionItems) = preProject
+		IntegrationTests\MigrationsDocumentation.md = IntegrationTests\MigrationsDocumentation.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests", "IntegrationTests\LibraryCore.IntegrationTests\LibraryCore.IntegrationTests.csproj", "{6D73CB8D-A4ED-41DC-AD4E-7DAC04F3BDBA}"
 EndProject
