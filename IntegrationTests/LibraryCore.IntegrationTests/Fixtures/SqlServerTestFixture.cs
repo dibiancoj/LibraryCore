@@ -13,7 +13,7 @@ public class SqlServerTestFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        //so we can debug it in visual studio
+        //so we can debug it in visual studio. Complete hack
         if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Db_ConnectionString")))
         {
             Console.WriteLine("No DbConnection String Found In Env Variables. Setting Connection String In " + nameof(SqlServerTestFixture));
