@@ -18,6 +18,7 @@ public class EnumUtilityTest
         public string Description { get; }
     }
 
+    [Flags]
     public enum TestEnum : int
     {
         [DescriptionText("City_123")]
@@ -101,6 +102,55 @@ public class EnumUtilityTest
     {
         Assert.Equal(expectedIsDefined, EnumUtility.AttributeIsDefined<DescriptionTextAttribute>(testEnumValue));
     }
+
+    #endregion
+
+    #region Bit Mask
+
+    [Fact]
+    public void BitMaskTest()
+    {
+        //start enum value
+        var workingBitMaskValue = TestEnum.City;
+
+        //check what values we have in the bit mask
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
+
+        //now add state
+        workingBitMaskValue = EnumUtility.BitMaskAddItem(workingBitMaskValue, TestEnum.State);
+
+        //make sure we have the correct values
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
+
+        //now add Country
+        workingBitMaskValue = EnumUtility.BitMaskAddItem(workingBitMaskValue, TestEnum.Country);
+
+        //make sure we have the correct values
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
+
+        //let's try the multiple add items
+        var MultipleRangeAdd = EnumUtility.BitMaskAddItem(TestEnum.City, TestEnum.Country, TestEnum.State);
+
+        //make sure we have the correct values
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
+        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
+        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
+
+        //let's test the multiple contains
+        Assert.False(EnumUtility.BitMaskContainsValue(MultipleRangeAdd, TestEnum.Planet));
+        Assert.True(EnumUtility.BitMaskContainsValue(MultipleRangeAdd, TestEnum.State));
+    }
+
 
     #endregion
 

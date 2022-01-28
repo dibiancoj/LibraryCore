@@ -98,4 +98,108 @@ public static class EnumUtility
 
     #endregion
 
+    #region Bit Mask
+
+    //example of how to create the bit mask enum
+    //[Flags]
+    //public enum Days : int
+    //{
+    //    None = 0,
+    //    Sunday = 1,
+    //    Monday = 2,
+    //    Tuesday = 4,
+    //    Wednesday = 8,
+    //    Thursday = 16,
+    //    Friday = 32,
+    //    Saturday = 64
+    //}
+
+    /// <summary>
+    /// Takes a bit mask and add's to it and returns the updated enum value
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <param name="workingEnumValue">The working enum. So the combination of all the enums that have been joined together</param>
+    /// <param name="valueToAdd">value to add to the working enum value</param>
+    /// <returns>the new updated enum that the value to add and the working enum value have been merged into</returns>
+    public static T BitMaskAddItem<T>(T workingEnumValue, T valueToAdd) where T : struct
+    {
+        //add the logical or's together then parse it and return it
+        return BitMaskAddItemHelper(workingEnumValue, valueToAdd);
+    }
+
+    /// <summary>
+    /// Takes a bit mask and add's to it and returns the updated enum value
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <param name="workingEnumValue">The working enum. So the combination of all the enums that have been joined together</param>
+    /// <param name="valuesToAdd">values to add to the working enum value</param>
+    /// <returns>the new updated enum that the value to add and the working enum value have been merged into</returns>
+    public static T BitMaskAddItem<T>(T workingEnumValue, params T[] valuesToAdd) where T : struct
+    {
+        //loop through all the values and keep adding them to the base item
+        foreach (var EnumToAdd in valuesToAdd)
+        {
+            //go add this enum to the list
+            workingEnumValue = BitMaskAddItemHelper(workingEnumValue, EnumToAdd);
+        }
+
+        //go return the working enum value
+        return workingEnumValue;
+    }
+
+    /// <summary>
+    /// Takes a bit mask and add's to it and returns the updated enum value. Used privately so we don't need to validate it. If we want to add a bunch of items we don't want to validate on each loop
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <param name="workingEnumValue">The working enum. So the combination of all the enums that have been joined together</param>
+    /// <param name="valueToAdd">value to add to the working enum value</param>
+    /// <returns>the new updated enum that the value to add and the working enum value have been merged into</returns>
+    private static T BitMaskAddItemHelper<T>(T workingEnumValue, T valueToAdd) where T : struct
+    {
+        //add the logical or's together then parse it and return it
+        return Enum.Parse<T>((Convert.ToInt64(workingEnumValue) | Convert.ToInt64(valueToAdd)).ToString());
+    }
+
+    /// <summary>
+    /// Check to see if the value to check for (bit mask) is in the working enum value. ie is part of the bit mask.
+    /// </summary>
+    /// <typeparam name="T">Value of the enum</typeparam>
+    /// <param name="workingEnumValue">Working Enum Value To Look In For The ValueToCheckFor</param>
+    /// <param name="valueToCheckFor">Value To Check For In The Enum</param>
+    /// <returns>True if it is in the enum. Ie is selected</returns>
+    public static bool BitMaskContainsValue<T>(T workingEnumValue, T valueToCheckFor) where T : Enum => BitMaskContainsValueHelper(workingEnumValue, valueToCheckFor);
+
+    /// <summary>
+    /// Check to see if any of the values passed in (bit mask) is in the working enum value. ie is part of the bit mask. Added this overload so you don't need to build up the bit mask in the calling code
+    /// </summary>
+    /// <typeparam name="T">Value of the enum</typeparam>
+    /// <param name="workingEnumValue">Working Enum Value To Look In For The ValueToCheckFor</param>
+    /// <param name="enumValueToCheckFor">Array of Values To Check For In The Enum</param>
+    /// <returns>True 1 of the enum values you are checking for is found. Ie is selected</returns>
+    public static bool BitMaskContainsValue<T>(T workingEnumValue, params T[] enumValueToCheckFor) where T : Enum
+    {
+        //let's loop through all the params items and build up my enum to check
+        return enumValueToCheckFor.Any(x => BitMaskContainsValueHelper(workingEnumValue, x));
+    }
+
+    /// <summary>
+    /// Returns all the selected flags in the working enum value.
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <param name="workingEnumValue">Working enum value to look in</param>
+    /// <returns>list of flags that are selected. Uses yield to chain. Use ToArray() to send the values to an array</returns>
+    public static IEnumerable<T> BitMaskSelectedItems<T>(T workingEnumValue) where T : Enum => GetValuesLazy<T>().Where(x => BitMaskContainsValueHelper(workingEnumValue, x));
+
+    /// <summary>
+    /// Check to see if the value to check for (bit mask) is in the working enum value. ie is part of the bit mask.
+    /// Helper method is used so we don't have to validate the enum each time when called inside a loop such as BitMaskSelectedItems
+    /// </summary>
+    /// <typeparam name="T">Value of the enum</typeparam>
+    /// <param name="workingEnumValue">Working Enum Value To Look In For The ValueToCheckFor</param>
+    /// <param name="valueToCheckFor">Value To Check For In The Enum</param>
+    /// <returns>True if it is in the enum. Ie is selected</returns>
+    private static bool BitMaskContainsValueHelper<T>(T workingEnumValue, T valueToCheckFor) where T : Enum => (Convert.ToInt64(workingEnumValue) & Convert.ToInt64(valueToCheckFor)) == Convert.ToInt64(valueToCheckFor);
+
+    #endregion
+
 }
