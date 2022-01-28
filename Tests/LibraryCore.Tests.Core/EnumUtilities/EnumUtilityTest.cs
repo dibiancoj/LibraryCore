@@ -112,7 +112,7 @@ public class EnumUtilityTest
     {
         //start enum value
         var workingBitMaskValue = TestEnum.City;
-
+        
         //check what values we have in the bit mask
         Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
         Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
@@ -136,19 +136,6 @@ public class EnumUtilityTest
         Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
         Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
         Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
-
-        //let's try the multiple add items
-        var MultipleRangeAdd = EnumUtility.BitMaskAddItem(TestEnum.City, TestEnum.Country, TestEnum.State);
-
-        //make sure we have the correct values
-        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.City));
-        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.State));
-        Assert.True(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Country));
-        Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
-
-        //let's test the multiple contains
-        Assert.False(EnumUtility.BitMaskContainsValue(MultipleRangeAdd, TestEnum.Planet));
-        Assert.True(EnumUtility.BitMaskContainsValue(MultipleRangeAdd, TestEnum.State));
     }
 
 
