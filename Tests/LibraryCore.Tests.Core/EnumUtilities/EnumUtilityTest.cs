@@ -107,6 +107,8 @@ public class EnumUtilityTest
 
     #region Bit Mask
 
+    #region Enum Utility
+
     [Fact]
     public void BitMaskAddAValue()
     {
@@ -169,6 +171,74 @@ public class EnumUtilityTest
         Assert.Contains(workingValue, x => x == TestEnum.Planet);
         Assert.DoesNotContain(workingValue, x => x == TestEnum.Country);
     }
+
+    #endregion
+
+    #region Bit Mask Builder
+
+    [Fact]
+    public void BitMaskAddAValueBuilder()
+    {
+        var result = new BitMaskBuilder<TestEnum>(TestEnum.Planet)
+                                        .AddItem(TestEnum.State)
+                                        .SelectedItems();
+
+        //city = 0...so always included
+        Assert.Contains(result, x => x == TestEnum.City);
+        Assert.DoesNotContain(result, x => x == TestEnum.Country);
+        Assert.Contains(result, x => x == TestEnum.Planet);
+        Assert.Contains(result, x => x == TestEnum.State);
+    }
+
+    [Fact]
+    public void BitMaskRemoveItemBuilder()
+    {
+        var selectedItems = new BitMaskBuilder<TestEnum>(TestEnum.Planet)
+                                                .AddItem(TestEnum.State)
+                                                .AddItem(TestEnum.Country)
+                                                .RemoveItem(TestEnum.State)
+                                                .SelectedItems();
+
+        Assert.DoesNotContain(selectedItems, x => x == TestEnum.State);
+        Assert.Contains(selectedItems, x => x == TestEnum.Planet);
+        Assert.Contains(selectedItems, x => x == TestEnum.Country);
+    }
+
+    [Fact]
+    public void BitMaskContainsAValueBuilder()
+    {
+        var builder = new BitMaskBuilder<TestEnum>(TestEnum.Planet);
+
+        Assert.True(builder.ContainsValue(TestEnum.Planet));
+
+        //value = 0 so always included
+        Assert.True(builder.ContainsValue( TestEnum.City));
+        Assert.False(builder.ContainsValue(TestEnum.State));
+        Assert.False(builder.ContainsValue(TestEnum.Country));
+
+        builder.AddItem(TestEnum.Country);
+
+        Assert.True(builder.ContainsValue(TestEnum.City));
+        Assert.False(builder.ContainsValue(TestEnum.State));
+        Assert.True(builder.ContainsValue(TestEnum.Planet));
+        Assert.True(builder.ContainsValue(TestEnum.Country));
+    }
+
+    [Fact]
+    public void BitMaskSelectedValuesBuilder()
+    {
+        var result = new BitMaskBuilder<TestEnum>(TestEnum.Planet)
+                                    .AddItem(TestEnum.State)
+                                    .SelectedItems();
+
+        //always contains because value = 0
+        Assert.Contains(result, x => x == TestEnum.City);
+        Assert.Contains(result, x => x == TestEnum.State);
+        Assert.Contains(result, x => x == TestEnum.Planet);
+        Assert.DoesNotContain(result, x => x == TestEnum.Country);
+    }
+
+    #endregion
 
     #endregion
 
