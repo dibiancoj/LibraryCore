@@ -128,6 +128,18 @@ public static class EnumUtility
     }
 
     /// <summary>
+    /// Remove a value from a bit mask value
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <param name="workingEnumValue">The working enum. So the combination of all the enums that have been joined together</param>
+    /// <param name="valueToRemove">Value to remove</param>
+    /// <returns>The updated enum value</returns>
+    public static T BitMaskRemoveItem<T>(T workingEnumValue, T valueToRemove) where T : struct
+    {
+        return Enum.Parse<T>((Convert.ToInt64(workingEnumValue) & ~Convert.ToInt64(valueToRemove)).ToString());
+    }
+
+    /// <summary>
     /// Check to see if the value to check for (bit mask) is in the working enum value. ie is part of the bit mask.
     /// </summary>
     /// <typeparam name="T">Value of the enum</typeparam>

@@ -138,6 +138,19 @@ public class EnumUtilityTest
         Assert.False(EnumUtility.BitMaskContainsValue(workingBitMaskValue, TestEnum.Planet));
     }
 
+    [Fact]
+    public void BitMaskRemoveItem()
+    {
+        var workingValue = EnumUtility.BitMaskAddItem(EnumUtility.BitMaskAddItem(TestEnum.Planet, TestEnum.State), TestEnum.Country);
+
+        workingValue = EnumUtility.BitMaskRemoveItem(workingValue, TestEnum.State);
+
+        var selectedItems = EnumUtility.BitMaskSelectedItems(workingValue).ToArray();
+
+        Assert.DoesNotContain(selectedItems, x => x == TestEnum.State);
+        Assert.Contains(selectedItems, x => x == TestEnum.Planet);
+        Assert.Contains(selectedItems, x => x == TestEnum.Country);
+    }
 
     #endregion
 
