@@ -23,7 +23,7 @@ public class RuleParserEngine
             var characterRead = reader.ReadCharacter();
             var nextPeekedCharacter = reader.PeekCharacter();
 
-            var tokenFactoryFound = TokenFactories.First(x => x.IsToken(characterRead, nextPeekedCharacter));
+            var tokenFactoryFound = TokenFactories.FirstOrDefault(x => x.IsToken(characterRead, nextPeekedCharacter)) ?? throw new Exception($"No Token Found For Value = {characterRead}{nextPeekedCharacter}");
 
             tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader));
         }

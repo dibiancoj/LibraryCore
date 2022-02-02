@@ -12,6 +12,17 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     private RuleParserFixture RuleParserFixture { get; }
 
     [Fact]
+    public void NoFactoryFoundTest()
+    {
+        var exceptionThrown = Assert.Throws<Exception>(() =>
+        {
+            var result = RuleParserFixture.RuleParserEngineToUse.ParseString("true ** true");
+        });
+
+        Assert.Contains("No Token Found For Value = **", exceptionThrown.Message);
+    }
+
+    [Fact]
     public void TruthFactoryTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("true == true");
