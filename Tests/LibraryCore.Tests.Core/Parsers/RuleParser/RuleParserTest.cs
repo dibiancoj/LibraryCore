@@ -11,6 +11,8 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
 
     private RuleParserFixture RuleParserFixture { get; }
 
+    #region Basic Factory Test Parsing
+
     [Fact]
     public void NoFactoryFoundTest()
     {
@@ -184,5 +186,33 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[11]);
         Assert.IsType<NumberToken>(result[12]);
     }
+
+    [Fact]
+    public void ParameterPropertyNameTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.PatientName == 1");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<ParameterPropertyToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<NumberToken>(result[4]);
+    }
+
+    [Fact]
+    public void MethodCallTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1 == 1");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<MethodCallToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<NumberToken>(result[4]);
+    }
+
+    #endregion
 
 }

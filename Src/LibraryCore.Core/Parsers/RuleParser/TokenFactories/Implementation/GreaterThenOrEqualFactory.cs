@@ -21,5 +21,5 @@ public class GreaterThenOrEqualFactory : ITokenFactory
 [DebuggerDisplay(">=")]
 public record GreaterThenOrEqualToken() : Token, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(ParameterExpression surveyParameter) => throw new NotImplementedException();
+    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
 }

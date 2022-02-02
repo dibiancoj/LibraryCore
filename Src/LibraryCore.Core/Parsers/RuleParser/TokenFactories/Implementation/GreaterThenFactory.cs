@@ -16,5 +16,5 @@ public class GreaterThenFactory : ITokenFactory
 [DebuggerDisplay(">")]
 public record GreaterThenToken() : Token, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(ParameterExpression surveyParameter) => throw new NotImplementedException();
+    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
 }

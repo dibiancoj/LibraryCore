@@ -20,5 +20,5 @@ public class EqualsFactory : ITokenFactory
 [DebuggerDisplay("==")]
 public record EqualsToken() : Token, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(ParameterExpression surveyParameter) => throw new NotImplementedException();
+    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
 }

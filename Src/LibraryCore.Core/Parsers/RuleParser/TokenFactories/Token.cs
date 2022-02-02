@@ -4,7 +4,7 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 
 public abstract record Token
 {
-    public abstract Expression CreateExpression(ParameterExpression surveyParameter);
+    public abstract Expression CreateExpression(IEnumerable<ParameterExpression> parameters);
 }
 
 /// <summary>

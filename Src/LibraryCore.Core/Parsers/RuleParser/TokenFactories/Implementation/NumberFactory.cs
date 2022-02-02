@@ -26,5 +26,5 @@ public class NumberFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record NumberToken(int Value) : Token
 {
-    public override Expression CreateExpression(ParameterExpression surveyParameter) => Expression.Constant(Value);
+    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => Expression.Constant(Value);
 }

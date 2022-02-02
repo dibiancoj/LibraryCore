@@ -13,6 +13,9 @@ public class RuleParserEngine
 
     private IEnumerable<ITokenFactory> TokenFactories { get; }
 
+    //$ParameterName.PropertyName Of a property passed in
+    //@MethodCall
+
     public IImmutableList<Token> ParseString(string stringToParse)
     {
         using var reader = new StringReader(stringToParse);

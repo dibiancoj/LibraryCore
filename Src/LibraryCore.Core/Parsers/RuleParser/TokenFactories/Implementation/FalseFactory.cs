@@ -24,5 +24,5 @@ public class FalseFactory : ITokenFactory
 [DebuggerDisplay("False")]
 public record FalseToken() : Token
 {
-    public override Expression CreateExpression(ParameterExpression surveyParameter) => Expression.Constant(false);
+    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => Expression.Constant(false);
 }
