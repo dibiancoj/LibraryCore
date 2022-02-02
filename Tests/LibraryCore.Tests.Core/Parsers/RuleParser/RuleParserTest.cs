@@ -1,6 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
-namespace LibraryCore.Tests.Core.Parsers;
+namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserTest : IClassFixture<RuleParserFixture>
 {
@@ -16,7 +16,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     {
         var exceptionThrown = Assert.Throws<Exception>(() =>
         {
-            var result = RuleParserFixture.RuleParserEngineToUse.ParseString("true ** true");
+            _ = RuleParserFixture.RuleParserEngineToUse.ParseString("true ** true");
         });
 
         Assert.Contains("No Token Found For Value = **", exceptionThrown.Message);

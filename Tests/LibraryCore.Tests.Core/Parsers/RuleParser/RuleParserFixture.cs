@@ -2,7 +2,7 @@
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
-namespace LibraryCore.Tests.Core.Parsers;
+namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserFixture
 {
