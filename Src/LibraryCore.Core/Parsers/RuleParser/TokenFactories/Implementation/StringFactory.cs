@@ -34,5 +34,5 @@ public class StringFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record StringToken(string Value) : Token
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => Expression.Constant(Value);
+    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
 }

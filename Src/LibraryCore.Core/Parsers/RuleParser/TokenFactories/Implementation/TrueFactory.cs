@@ -23,5 +23,5 @@ public class TrueFactory : ITokenFactory
 [DebuggerDisplay("True")]
 public record TrueToken() : Token
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => Expression.Constant(true);
+    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(true);
 }

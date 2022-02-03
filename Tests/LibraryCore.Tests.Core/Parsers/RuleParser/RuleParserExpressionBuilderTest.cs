@@ -30,6 +30,15 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void PropertyNameWithOneParameterWhichIsNotSpecifiedPositiveRule()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Age == 30");
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.True(expression.Compile().Invoke(Model));
+    }
+
+    [Fact]
     public void NonObjectParameter()
     {
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Size == 25");

@@ -22,5 +22,5 @@ public class AndAlsoFactory : ITokenFactory
 [DebuggerDisplay("&&")]
 public record AndAlsoToken() : Token, IBinaryExpressionCombiner
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
+    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

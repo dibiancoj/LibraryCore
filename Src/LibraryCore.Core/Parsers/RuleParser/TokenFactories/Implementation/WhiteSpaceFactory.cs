@@ -16,5 +16,5 @@ public class WhiteSpaceFactory : ITokenFactory
 [DebuggerDisplay("Whitespace")]
 public record WhiteSpaceToken() : Token
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
+    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

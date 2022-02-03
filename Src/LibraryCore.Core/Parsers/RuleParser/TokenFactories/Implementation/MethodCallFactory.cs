@@ -78,7 +78,7 @@ public class MethodCallFactory : ITokenFactory
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
 public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<Token> AdditionalParameters) : Token
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters)
+    public override Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //convert all the additional parameters to an expression
         var additionalParameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();

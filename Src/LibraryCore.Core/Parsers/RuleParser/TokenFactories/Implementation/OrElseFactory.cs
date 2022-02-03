@@ -20,5 +20,5 @@ public class OrElseFactory : ITokenFactory
 [DebuggerDisplay("||")]
 public record OrElseToken() : Token, IBinaryExpressionCombiner
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters) => throw new NotImplementedException();
+    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

@@ -18,26 +18,43 @@ public class ParameterPropertyFactory : ITokenFactory
             text.Append((char)stringReader.Read());
         }
 
-        var finalString = text.ToString();
+        var finalValue = text.ToString();
 
-        if (!finalString.Contains('.'))
+        if (finalValue.Contains('.'))
         {
-            throw new Exception("No Parameter Name Or Property Name Is Specified. Format Should Be 'ParameterName.PropertyName'");
+            var splitText = finalValue.Split('.');
+
+            return new ParameterPropertyToken(splitText[0], splitText[1]);
         }
 
-        var splitText = text.ToString().Split('.');
-
-        return new ParameterPropertyToken(splitText[0], splitText[1]);
+        return new ParameterPropertyToken(null, finalValue);
     }
 }
 
 [DebuggerDisplay("Parameter Property Name = {ParameterName}.{PropertyName}")]
-public record ParameterPropertyToken(string ParameterName, string PropertyName) : Token
+public record ParameterPropertyToken(string? ParameterName, string PropertyName) : Token
 {
-    public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters)
+    public override Expression CreateExpression(IList<ParameterExpression> parameters)
     {
-        var parameter = parameters.SingleOrDefault(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception($"Parameter Name Not Found: {ParameterName}");
+        //need to handle a few scenarios
+        //A property off of a single parameter which is an object. ie: $MyParameter.Age
+        //A property which is an int (non-object). ie: $MyInt
+        //Multiple parameters. ie: $Parameter1.Age and we have a $Parameter2
 
-        return Expression.PropertyOrField(parameter, PropertyName);
+        int howManyParameters = parameters.Count;
+
+        //if the property name matches the parameter ie: $MyInt == 5. Then just add a reference to that parameter
+        if (howManyParameters == 1 && parameters[0].Name == PropertyName)
+        {
+            return parameters[0];
+        }
+
+        //if there is 1 parameter then we know which parameter they want so they can just do $Age and we know its off of $MyParameter. 
+        //if there is more then 1 we need to search for that parameter
+        var parameterExpression = howManyParameters == 1 ?
+                                                        parameters[0] :
+                                                        parameters.SingleOrDefault(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception($"Parameter Name Not Found: {ParameterName}");
+
+        return Expression.PropertyOrField(parameterExpression, PropertyName);
     }
 }
