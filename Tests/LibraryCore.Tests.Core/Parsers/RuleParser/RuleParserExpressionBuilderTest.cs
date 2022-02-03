@@ -4,13 +4,13 @@ namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 {
-    public record SurveyModel(string Name, int Age, bool IsMarried, IDictionary<int, string> Answers);
+    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers);
     private SurveyModel Model { get; }
     private RuleParserFixture RuleParserFixture { get; }
 
     public RuleParserExpressionBuilderTest(RuleParserFixture ruleParserFixture)
     {
-        Model = new SurveyModel("Jacob DeGrom", 30, true, new Dictionary<int, string>
+        Model = new SurveyModel("Jacob DeGrom", 30, true, null, new Dictionary<int, string>
         {
             { 1, "Yes" },
             { 2, "High" }
@@ -140,7 +140,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 
     //equals
     [InlineData("$Survey.Age == 29", false)]
-    [InlineData("$Survey.Age == 30",true)]
+    [InlineData("$Survey.Age == 30", true)]
 
     //not equal
     [InlineData("$Survey.Age != 29", true)]
@@ -165,6 +165,11 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [InlineData("$Survey.Age >= 29", true)]
     [InlineData("$Survey.Age >= 30", true)]
     [InlineData("$Survey.Age >= 31", false)]
+
+    //is null
+    [InlineData("$Survey.NumberOfKidsNullable == null", true)]
+    [InlineData("$Survey.NumberOfKidsNullable != null", false)]
+
     [Theory]
     public void ComparisonTest(string statementToTest, bool expectedResult)
     {
@@ -250,9 +255,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Name == 'Jason'");
@@ -269,9 +274,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Name == 'John' && $Survey.IsMarried != True");
@@ -288,9 +293,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1(1) == 'High'");
@@ -312,7 +317,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Age == 30 && $Size.Age == 12");
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel>(tokens, "Survey", "Size");
 
-        Assert.True(expression.Compile().Invoke(Model, new SurveyModel("Jacob", 12, false, new Dictionary<int, string>())));
+        Assert.True(expression.Compile().Invoke(Model, new SurveyModel("Jacob", 12, false, null, new Dictionary<int, string>())));
     }
 
     [Fact]
@@ -322,8 +327,8 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel, SurveyModel>(tokens, "Survey", "Size", "Color");
 
         Assert.True(expression.Compile().Invoke(Model,
-                                                new SurveyModel("Jacob", 12, false, new Dictionary<int, string>()),
-                                                new SurveyModel("Teenager", 15, false, new Dictionary<int, string>())));
+                                                new SurveyModel("Jacob", 12, false, null, new Dictionary<int, string>()),
+                                                new SurveyModel("Teenager", 15, false, null, new Dictionary<int, string>())));
     }
 
     #endregion

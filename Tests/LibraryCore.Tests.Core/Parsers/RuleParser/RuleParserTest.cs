@@ -83,6 +83,19 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void NullFactoryTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == null");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<NullToken>(result[4]);
+    }
+
+    [Fact]
     public void LessThenTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 < 1");

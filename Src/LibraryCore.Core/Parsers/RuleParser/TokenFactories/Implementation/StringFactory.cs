@@ -24,7 +24,7 @@ public class StringFactory : ITokenFactory
         }
 
         //read the closing "]
-        stringReader.Read();
+        _ = stringReader.Read();
 
         return new StringToken(text.ToString());
     }

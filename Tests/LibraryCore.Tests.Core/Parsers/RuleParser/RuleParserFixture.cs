@@ -13,6 +13,7 @@ public class RuleParserFixture
         {
             new TrueFactory(),
             new FalseFactory(),
+            new NullTokenFactory(),
 
             new ParameterPropertyFactory(),
             new WhiteSpaceFactory(),
