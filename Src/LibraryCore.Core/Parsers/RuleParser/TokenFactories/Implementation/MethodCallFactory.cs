@@ -19,7 +19,7 @@ public class MethodCallFactory : ITokenFactory
     public bool IsToken(char characterRead, char characterPeaked) => characterRead == '@';
 
     //@MyMethod(1)
-    //@MyMethod(1,[abc], true)
+    //@MyMethod(1,'abc', true)
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
@@ -63,7 +63,7 @@ public class MethodCallFactory : ITokenFactory
         //eat the closing )
         _ = reader.Read();
 
-        foreach(var parameter in text.ToString().Split(','))
+        foreach (var parameter in text.ToString().Split(','))
         {
             using var parameterReader = new StringReader(parameter.Trim());
 
