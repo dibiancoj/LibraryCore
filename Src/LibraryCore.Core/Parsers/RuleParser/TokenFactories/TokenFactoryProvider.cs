@@ -1,4 +1,7 @@
-﻿namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+﻿using LibraryCore.Core.ExtensionMethods;
+using System.Text;
+
+namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 
 public class TokenFactoryProvider
 {

@@ -27,7 +27,7 @@ public class MethodCallFactory : ITokenFactory
         {
             //need to determine the method name so we walk 
             var methodName = WalkTheMethodName(stringReader);
-            var parameterGroup = WalkTheParameterString(stringReader, tokenFactoryProvider).ToArray();
+            var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
 
             return new MethodCallToken(RegisterdMethods[methodName], parameterGroup);
         }
@@ -47,32 +47,6 @@ public class MethodCallFactory : ITokenFactory
         return text.ToString();
     }
 
-    private static IEnumerable<Token> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider)
-    {
-        var text = new StringBuilder();
-
-        //eat the opening (
-        _ = reader.Read();
-
-        //eat until the end of the method
-        while (reader.HasMoreCharacters() && reader.PeekCharacter() != ')')
-        {
-            text.Append(reader.ReadCharacter());
-        }
-
-        //eat the closing )
-        _ = reader.Read();
-
-        foreach (var parameter in text.ToString().Split(','))
-        {
-            using var parameterReader = new StringReader(parameter.Trim());
-
-            var characterRead = parameterReader.ReadCharacter();
-            var nextPeekedCharacter = parameterReader.PeekCharacter();
-
-            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter).CreateToken(characterRead, parameterReader, tokenFactoryProvider);
-        }
-    }
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
