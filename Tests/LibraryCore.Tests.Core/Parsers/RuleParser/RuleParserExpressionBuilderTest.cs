@@ -29,6 +29,15 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.True(expression.Compile().Invoke(Model));
     }
 
+    [Fact]
+    public void NonObjectParameter()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Size == 25");
+        var expression = RuleParserExpressionBuilder.BuildExpression<int>(tokens, "Size");
+
+        Assert.True(expression.Compile().Invoke(25));
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -280,6 +289,30 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 
         Assert.Single(filteredDataSet);
         Assert.Equal("Jacob", filteredDataSet.Single().Name);
+    }
+
+    #endregion
+
+    #region Multiple Parameters
+
+    [Fact]
+    public void TwoParameterTest()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Age == 30 && $Size.Age == 12");
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel>(tokens, "Survey", "Size");
+
+        Assert.True(expression.Compile().Invoke(Model, new SurveyModel("Jacob", 12, false, new Dictionary<int, string>())));
+    }
+
+    [Fact]
+    public void ThreeParameterTest()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Age == 30 && $Size.Age == 12 && $Color.Age == 15");
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel, SurveyModel>(tokens, "Survey", "Size", "Color");
+
+        Assert.True(expression.Compile().Invoke(Model,
+                                                new SurveyModel("Jacob", 12, false, new Dictionary<int, string>()),
+                                                new SurveyModel("Teenager", 15, false, new Dictionary<int, string>())));
     }
 
     #endregion

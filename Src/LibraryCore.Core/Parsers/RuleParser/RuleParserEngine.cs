@@ -14,7 +14,24 @@ public class RuleParserEngine
     private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //$ParameterName.PropertyName Of a property passed in
-    //@MethodCall(1,true, 'sometext')
+    //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
+
+    //Types:
+    //SomeValue == 'some text'
+    //SomeValue == true
+    //SomeValue == 24
+
+    //Comparison
+    //== Equal
+    //!= Does Not Equal
+    //>
+    //>=
+    //<
+    //<=
+
+    //Combiners
+    //&& AndAlso
+    //|| OrElse
 
     public IImmutableList<Token> ParseString(string stringToParse)
     {
