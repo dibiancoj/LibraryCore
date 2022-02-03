@@ -139,8 +139,8 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     //age is 30 for these tests
 
     //equals
-    [InlineData("$Survey.Age == 30",true)]
     [InlineData("$Survey.Age == 29", false)]
+    [InlineData("$Survey.Age == 30",true)]
 
     //not equal
     [InlineData("$Survey.Age != 29", true)]
@@ -152,9 +152,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [InlineData("$Survey.Age < 30", false)]
 
     //less then or equal
+    [InlineData("$Survey.Age <= 29", false)]
     [InlineData("$Survey.Age <= 30", true)]
     [InlineData("$Survey.Age <= 31", true)]
-    [InlineData("$Survey.Age <= 29", false)]
 
     //greater then
     [InlineData("$Survey.Age > 29", true)]
