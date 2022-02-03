@@ -20,6 +20,7 @@ public class RuleParserEngine
     //SomeValue == 'some text'
     //SomeValue == true
     //SomeValue == 24
+    //SomeValue == null
 
     //Comparison
     //== Equal

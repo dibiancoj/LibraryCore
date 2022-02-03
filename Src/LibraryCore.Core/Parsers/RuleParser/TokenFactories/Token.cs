@@ -8,7 +8,7 @@ public abstract record Token
 }
 
 /// <summary>
-/// ==, <=, >=, <, >
+/// ==, !=, <=, >=, <, >
 /// </summary>
 public interface IBinaryComparisonToken { }
 

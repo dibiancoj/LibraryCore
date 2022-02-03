@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using LibraryCore.Core.ExtensionMethods;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
@@ -12,7 +13,7 @@ public class GreaterThenOrEqualFactory : ITokenFactory
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the last =
-        _ = stringReader.Read();
+        stringReader.EatXNumberOfCharacters(1);
         return CachedToken;
     }
 

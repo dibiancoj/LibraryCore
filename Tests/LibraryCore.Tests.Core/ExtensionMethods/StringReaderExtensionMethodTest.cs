@@ -39,4 +39,21 @@ public class StringReaderExtensionMethodTest
 
         Assert.Equal('c', reader.PeekCharacter());
     }
+
+    [Fact]
+    public void EatXNumberOfCharactersTest()
+    {
+        using var reader = new StringReader("abcd");
+
+        reader.EatXNumberOfCharacters(1);
+
+        Assert.Equal('b', reader.PeekCharacter());
+
+        reader.EatXNumberOfCharacters(2);
+
+        Assert.Equal('d', reader.PeekCharacter());
+
+        //try when we are at the end of file
+        reader.EatXNumberOfCharacters(10);
+    }
 }

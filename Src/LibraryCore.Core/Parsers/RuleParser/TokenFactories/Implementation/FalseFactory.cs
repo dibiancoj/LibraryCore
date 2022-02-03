@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using LibraryCore.Core.ExtensionMethods;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
@@ -12,13 +13,9 @@ public class FalseFactory : ITokenFactory
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read alse
-        _ = stringReader.Read();
-        _ = stringReader.Read();
-        _ = stringReader.Read();
-        _ = stringReader.Read();
+        stringReader.EatXNumberOfCharacters(4);
         return CachedToken;
     }
-
 }
 
 [DebuggerDisplay("False")]

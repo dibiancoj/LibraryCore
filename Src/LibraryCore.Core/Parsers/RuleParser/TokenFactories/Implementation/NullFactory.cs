@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using LibraryCore.Core.ExtensionMethods;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
@@ -12,9 +13,7 @@ public class NullTokenFactory : ITokenFactory
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the ull
-        _ = stringReader.Read();
-        _ = stringReader.Read();
-        _ = stringReader.Read();
+        stringReader.EatXNumberOfCharacters(3);
 
         return CachedToken;
     }
