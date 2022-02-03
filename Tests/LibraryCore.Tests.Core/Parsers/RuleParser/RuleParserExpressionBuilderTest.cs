@@ -136,37 +136,39 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 
     #region Comparison Tests
 
+    //age is 30 for these tests
+
     //equals
-    [InlineData("==", 30, true)]
-    [InlineData("==", 29, false)]
+    [InlineData("$Survey.Age == 30",true)]
+    [InlineData("$Survey.Age == 29", false)]
 
     //not equal
-    [InlineData("!=", 29, true)]
-    [InlineData("!=", 30, false)]
-    [InlineData("!=", 31, true)]
+    [InlineData("$Survey.Age != 29", true)]
+    [InlineData("$Survey.Age != 30", false)]
+    [InlineData("$Survey.Age != 31", true)]
 
     //less then
-    [InlineData("<", 31, true)]
-    [InlineData("<", 30, false)]
+    [InlineData("$Survey.Age < 31", true)]
+    [InlineData("$Survey.Age < 30", false)]
 
     //less then or equal
-    [InlineData("<=", 30, true)]
-    [InlineData("<=", 31, true)]
-    [InlineData("<=", 29, false)]
+    [InlineData("$Survey.Age <= 30", true)]
+    [InlineData("$Survey.Age <= 31", true)]
+    [InlineData("$Survey.Age <= 29", false)]
 
     //greater then
-    [InlineData(">", 29, true)]
-    [InlineData(">", 30, false)]
-    [InlineData(">", 31, false)]
+    [InlineData("$Survey.Age > 29", true)]
+    [InlineData("$Survey.Age > 30", false)]
+    [InlineData("$Survey.Age > 31", false)]
 
     //greater then or equal
-    [InlineData(">=", 29, true)]
-    [InlineData(">=", 30, true)]
-    [InlineData(">=", 31, false)]
+    [InlineData("$Survey.Age >= 29", true)]
+    [InlineData("$Survey.Age >= 30", true)]
+    [InlineData("$Survey.Age >= 31", false)]
     [Theory]
-    public void ComparisonTest(string comparisonOperator, int ageToCompile, bool expectedResult)
+    public void ComparisonTest(string statementToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString($"$Survey.Age {comparisonOperator} {ageToCompile}");
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
