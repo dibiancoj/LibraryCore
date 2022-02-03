@@ -179,6 +179,17 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
     }
 
+    [InlineData("$Survey.Name == null", true)]
+    [InlineData("$Survey.Name != null", false)]
+    [Theory]
+    public void NullStringComparisonTest(string statementToTest, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel(null!, 0, false, null, null!)));
+    }
+
     #endregion
 
     #region Combiner Tests [AndAlso OrElse]
