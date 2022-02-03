@@ -9,7 +9,7 @@ public class OrElseFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeaked) => characterRead == '|' && characterPeaked == '|';
 
-    public Token CreateToken(char characterRead, StringReader stringReader)
+    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other ||
         _ = stringReader.Read();

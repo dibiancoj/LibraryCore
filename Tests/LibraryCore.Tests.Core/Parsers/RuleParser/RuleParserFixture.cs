@@ -9,7 +9,7 @@ public class RuleParserFixture
 {
     public RuleParserFixture()
     {
-        RuleParserEngineToUse = new RuleParserEngine(new ITokenFactory[]
+        RuleParserEngineToUse = new RuleParserEngine(new TokenFactoryProvider(new ITokenFactory[]
         {
             new TrueFactory(),
             new FalseFactory(),
@@ -19,7 +19,7 @@ public class RuleParserFixture
             new StringFactory(),
             new NumberFactory(),
             new MethodCallFactory()
-                   .RegisterNewMethodAlias("MyMethod1", new MethodCallFactory.RegisteredMethodParameters(typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!, new []{Expression.Constant(20)})),
+                   .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!),
 
             new LessThenOrEqualFactory(),
             new LessThenFactory(),
@@ -29,7 +29,7 @@ public class RuleParserFixture
 
             new OrElseFactory(),
             new AndAlsoFactory()
-        });
+        }));
     }
 
     public RuleParserEngine RuleParserEngineToUse { get; }

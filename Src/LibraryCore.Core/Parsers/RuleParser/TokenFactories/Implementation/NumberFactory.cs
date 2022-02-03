@@ -9,7 +9,7 @@ public class NumberFactory : ITokenFactory
 {
     public bool IsToken(char characterRead, char characterPeaked) => char.IsNumber(characterRead);
 
-    public Token CreateToken(char characterRead, StringReader stringReader)
+    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder().Append(characterRead);
 

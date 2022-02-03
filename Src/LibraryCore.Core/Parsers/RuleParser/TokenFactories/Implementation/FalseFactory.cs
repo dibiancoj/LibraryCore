@@ -9,7 +9,7 @@ public class FalseFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeaked) => characterRead == 'f' && characterPeaked == 'a';
 
-    public Token CreateToken(char characterRead, StringReader stringReader)
+    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read alse
         _ = stringReader.Read();

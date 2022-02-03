@@ -6,12 +6,12 @@ namespace LibraryCore.Core.Parsers.RuleParser;
 
 public class RuleParserEngine
 {
-    public RuleParserEngine(IEnumerable<ITokenFactory> tokenFactories)
+    public RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
     {
-        TokenFactories = tokenFactories;
+        TokenFactoryProvider = tokenFactoryProvider;
     }
 
-    private IEnumerable<ITokenFactory> TokenFactories { get; }
+    private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //$ParameterName.PropertyName Of a property passed in
     //@MethodCall
@@ -26,9 +26,9 @@ public class RuleParserEngine
             var characterRead = reader.ReadCharacter();
             var nextPeekedCharacter = reader.PeekCharacter();
 
-            var tokenFactoryFound = TokenFactories.FirstOrDefault(x => x.IsToken(characterRead, nextPeekedCharacter)) ?? throw new Exception($"No Token Found For Value = {characterRead}{nextPeekedCharacter}");
+            var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter);
 
-            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader));
+            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider));
         }
 
         return tokens.ToImmutableList();

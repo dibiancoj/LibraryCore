@@ -7,13 +7,18 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class StringFactory : ITokenFactory
 {
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == '[';
+    /// <summary>
+    /// Single quote
+    /// </summary>
+    private const char TokenIdentifier = '\'';
 
-    public Token CreateToken(char characterRead, StringReader stringReader)
+    public bool IsToken(char characterRead, char characterPeaked) => characterRead == TokenIdentifier;
+
+    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
 
-        while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != ']')
+        while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != TokenIdentifier)
         {
             text.Append(stringReader.ReadCharacter());
         }

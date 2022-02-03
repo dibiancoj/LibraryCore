@@ -53,7 +53,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void StringFactoryTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("[abc] == [def]");
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("'abc' == 'def'");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<StringToken>(result[0]);
@@ -203,7 +203,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void MethodCallTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1 == 1");
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1(1,true, 'bla') == 1");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<MethodCallToken>(result[0]);
