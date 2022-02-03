@@ -6,7 +6,7 @@ namespace LibraryCore.Core.Parsers.RuleParser;
 
 public static class RuleParserExpressionBuilder
 {
-    public static Expression<Func<bool>> BuildExpression<T1>(IEnumerable<Token> tokens)
+    public static Expression<Func<bool>> BuildExpression(IEnumerable<Token> tokens)
     {
         var parametersToUse = Array.Empty<ParameterExpression>();
 

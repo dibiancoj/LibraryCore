@@ -320,7 +320,16 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 
     #endregion
 
-    #region Multiple Parameters
+    #region None Or Multiple Parameters
+
+    [Fact]
+    public void NoParameterTest()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 2");
+        var expression = RuleParserExpressionBuilder.BuildExpression(tokens);
+
+        Assert.False(expression.Compile().Invoke());
+    }
 
     [Fact]
     public void TwoParameterTest()
