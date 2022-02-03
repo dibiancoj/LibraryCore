@@ -22,4 +22,6 @@ public class EqualsFactory : ITokenFactory
 public record EqualsToken() : Token, IBinaryComparisonToken
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.Equal(left, right);
 }

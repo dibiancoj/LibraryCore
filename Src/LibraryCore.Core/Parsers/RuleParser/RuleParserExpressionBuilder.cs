@@ -46,22 +46,22 @@ public static class RuleParserExpressionBuilder
 
         Expression? left = null;
         Expression? right = null;
-        Token? operation = null;
-        Token? combiner = null;
+        IBinaryComparisonToken? operation = null;
+        IBinaryExpressionCombiner? combiner = null;
 
         foreach (var token in tokens.Where(x => x is not WhiteSpaceToken))
         {
             Expression temp = null!;
 
-            if (token is IBinaryComparisonToken)
+            if (token is IBinaryComparisonToken tempBinaryComparisonToken)
             {
-                //==, >, >=, <=
-                operation = token;
+                //==, !=, >, >=, <=
+                operation = tempBinaryComparisonToken;
             }
-            else if (token is IBinaryExpressionCombiner)
+            else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
             {
                 //AndAlso OrElse
-                combiner = token;
+                combiner = tempBinaryExpressionCombiner;
             }
             else
             {
@@ -81,16 +81,13 @@ public static class RuleParserExpressionBuilder
             if (left != null && right != null)
             {
                 //at this point we have an operator because we have a left and a right
-                var currentWorkingExpression = CreateComparisonOperator(left,
-                                                                        right,
-                                                                        operation ?? throw new NullReferenceException($"{nameof(operation)}"));
+                var currentWorkingExpression = operation?.CreateBinaryOperatorExpression(left, right) ??  throw new NullReferenceException($"{nameof(operation)}");
 
                 //combiner would be && , ||
                 workingExpression = combiner == null ?
                         currentWorkingExpression :
-                        CreateCombinedExpressions(combiner,
-                                                  workingExpression ?? throw new NullReferenceException($"{nameof(workingExpression)} Is Null"),
-                                                  currentWorkingExpression ?? throw new NullReferenceException($"{nameof(currentWorkingExpression)} is null"));
+                        combiner.CreateBinaryOperatorExpression(workingExpression ?? throw new NullReferenceException($"{nameof(workingExpression)} Is Null"), 
+                                                                currentWorkingExpression ?? throw new NullReferenceException($"{nameof(currentWorkingExpression)} is null")); 
 
                 left = null;
                 operation = null;
@@ -101,24 +98,4 @@ public static class RuleParserExpressionBuilder
 
         return workingExpression ?? throw new Exception("No Expressions Found");
     }
-
-    private static Expression CreateCombinedExpressions(Token binaryExpressionCombiner, Expression workingExpression, Expression currentExpression) =>
-        binaryExpressionCombiner switch
-        {
-            AndAlsoToken => Expression.AndAlso(workingExpression, currentExpression),
-            OrElseToken => Expression.OrElse(workingExpression, currentExpression),
-            _ => throw new NotImplementedException()
-        };
-
-    private static Expression CreateComparisonOperator(Expression left, Expression right, Token operation) =>
-        operation switch
-        {
-            GreaterThenToken => Expression.GreaterThan(left, right),
-            GreaterThenOrEqualToken => Expression.GreaterThanOrEqual(left, right),
-            EqualsToken => Expression.Equal(left, right),//Expression.Equal(Expression.Convert(left, right.Type), right),
-            NotEqualsToken => Expression.NotEqual(left, right),
-            LessThenToken => Expression.LessThan(left, right),
-            LessThenOrEqualToken => Expression.LessThanOrEqual(left, right),
-            _ => throw new NotImplementedException("Create Comparison Operator Not Build For Token Type = " + operation.GetType().Name),
-        };
 }

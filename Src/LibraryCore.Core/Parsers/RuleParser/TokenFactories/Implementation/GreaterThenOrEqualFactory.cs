@@ -23,4 +23,6 @@ public class GreaterThenOrEqualFactory : ITokenFactory
 public record GreaterThenOrEqualToken() : Token, IBinaryComparisonToken
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.GreaterThanOrEqual(left, right);
 }

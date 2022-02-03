@@ -10,9 +10,18 @@ public abstract record Token
 /// <summary>
 /// ==, !=, <=, >=, <, >
 /// </summary>
-public interface IBinaryComparisonToken { }
+public interface IBinaryComparisonToken : IBinaryOperator
+{
+}
 
 /// <summary>
 /// AndAlso, OrElse
 /// </summary>
-public interface IBinaryExpressionCombiner { }
+public interface IBinaryExpressionCombiner : IBinaryOperator
+{
+}
+
+public interface IBinaryOperator
+{
+    public abstract Expression CreateBinaryOperatorExpression(Expression left, Expression right);
+}

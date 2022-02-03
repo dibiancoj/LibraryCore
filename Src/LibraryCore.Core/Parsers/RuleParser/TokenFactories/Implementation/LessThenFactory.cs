@@ -17,4 +17,6 @@ public class LessThenFactory : ITokenFactory
 public record LessThenToken() : Token, IBinaryComparisonToken
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.LessThan(left, right);
 }

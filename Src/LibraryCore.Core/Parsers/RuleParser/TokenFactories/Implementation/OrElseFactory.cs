@@ -22,4 +22,6 @@ public class OrElseFactory : ITokenFactory
 public record OrElseToken() : Token, IBinaryExpressionCombiner
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.OrElse(left, right);
 }

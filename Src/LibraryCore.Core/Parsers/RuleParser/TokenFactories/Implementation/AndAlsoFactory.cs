@@ -23,5 +23,7 @@ public class AndAlsoFactory : ITokenFactory
 [DebuggerDisplay("&&")]
 public record AndAlsoToken() : Token, IBinaryExpressionCombiner
 {
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.AndAlso(left, right);
+
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

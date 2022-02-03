@@ -22,4 +22,6 @@ public class NotEqualsFactory : ITokenFactory
 public record NotEqualsToken() : Token, IBinaryComparisonToken
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.NotEqual(left, right);
 }

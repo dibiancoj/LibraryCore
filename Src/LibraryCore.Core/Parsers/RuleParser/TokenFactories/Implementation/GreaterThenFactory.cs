@@ -17,4 +17,6 @@ public class GreaterThenFactory : ITokenFactory
 public record GreaterThenToken() : Token, IBinaryComparisonToken
 {
     public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.GreaterThan(left, right);
 }
