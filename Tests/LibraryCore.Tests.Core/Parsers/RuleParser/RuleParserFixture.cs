@@ -1,7 +1,7 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
-using System.Linq.Expressions;
+using static LibraryCore.Tests.Core.Parsers.RuleParser.RuleParserExpressionBuilderTest;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -26,6 +26,7 @@ public class RuleParserFixture
             new GreaterThenOrEqualFactory(),
             new GreaterThenFactory(),
             new EqualsFactory(),
+            new NotEqualsFactory(),
 
             new OrElseFactory(),
             new AndAlsoFactory()
@@ -34,5 +35,5 @@ public class RuleParserFixture
 
     public RuleParserEngine RuleParserEngineToUse { get; }
 
-    public static int GetAnswerId(int questionId) => questionId + 1;
+    public static string GetAnswerId(SurveyModel surveyModel, int questionId) => surveyModel.Answers[questionId];
 }

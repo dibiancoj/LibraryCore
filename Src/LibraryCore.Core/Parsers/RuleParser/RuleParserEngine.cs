@@ -14,7 +14,7 @@ public class RuleParserEngine
     private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //$ParameterName.PropertyName Of a property passed in
-    //@MethodCall
+    //@MethodCall(1,true, 'sometext')
 
     public IImmutableList<Token> ParseString(string stringToParse)
     {

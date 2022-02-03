@@ -7,7 +7,7 @@ public class TrueFactory : ITokenFactory
 {
     private TrueToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == 't' && characterPeaked == 'r';
+    public bool IsToken(char characterRead, char characterPeaked) => string.Equals(new string(new char[] { characterRead, characterPeaked }), "tr", StringComparison.OrdinalIgnoreCase);
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

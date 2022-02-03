@@ -24,10 +24,13 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.Contains("No Token Found For Value = **", exceptionThrown.Message);
     }
 
-    [Fact]
-    public void TruthFactoryTest()
+    [Theory]
+    [InlineData("True")]
+    [InlineData("true")]
+    [InlineData("TRUE")]
+    public void TruthFactoryTest(string trueCase)
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("true == true");
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString($"{trueCase} == {trueCase}");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<TrueToken>(result[0]);
@@ -37,10 +40,13 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<TrueToken>(result[4]);
     }
 
-    [Fact]
-    public void FalseFactoryTest()
+    [Theory]
+    [InlineData("False")]
+    [InlineData("false")]
+    [InlineData("FALSE")]
+    public void FalseFactoryTest(string falseCase)
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("false == false");
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString($"{falseCase} == {falseCase}");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<FalseToken>(result[0]);
@@ -142,6 +148,19 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void NotEqualTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 != 1");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<NotEqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<NumberToken>(result[4]);
+    }
+
+    [Fact]
     public void AndAlsoTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1 && 2 == 2");
@@ -188,7 +207,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void ParameterPropertyNameTest()
+    public void ParameterPropertyNameWithParameterNameTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.PatientName == 1");
 

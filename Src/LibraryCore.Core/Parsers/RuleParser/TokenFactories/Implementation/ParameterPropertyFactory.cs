@@ -18,6 +18,13 @@ public class ParameterPropertyFactory : ITokenFactory
             text.Append((char)stringReader.Read());
         }
 
+        var finalString = text.ToString();
+
+        if (!finalString.Contains('.'))
+        {
+            throw new Exception("No Parameter Name Or Property Name Is Specified. Format Should Be 'ParameterName.PropertyName'");
+        }
+
         var splitText = text.ToString().Split('.');
 
         return new ParameterPropertyToken(splitText[0], splitText[1]);
@@ -29,8 +36,8 @@ public record ParameterPropertyToken(string ParameterName, string PropertyName) 
 {
     public override Expression CreateExpression(IEnumerable<ParameterExpression> parameters)
     {
-        var paremterFound = parameters.SingleOrDefault(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception($"Parameter Name Not Found: {ParameterName}");
+        var parameter = parameters.SingleOrDefault(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception($"Parameter Name Not Found: {ParameterName}");
 
-        return Expression.PropertyOrField(paremterFound, PropertyName);
+        return Expression.PropertyOrField(parameter, PropertyName);
     }
 }
