@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -244,6 +245,25 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[3]);
         Assert.IsType<NumberToken>(result[4]);
     }
+
+    #endregion
+
+    #region Create Token - Not Implemented
+
+    [Fact]
+    public void EqualCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new EqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void NotEqualCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void AndAlsoCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void OrElseCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new OrElseToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void WhiteSpaceCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new WhiteSpaceToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     #endregion
 
