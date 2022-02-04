@@ -16,7 +16,7 @@ namespace LibraryCore.Performance.Tests.Tests
             using var reader = new StringReader("abcdef");
             int c = 0;
 
-            while (reader.Peek() != -1 && reader.Peek() != 'z')
+            while (reader.Peek() != -1 && (char)reader.Peek() != 'z')
             {
                 c = reader.Read();
             }
@@ -30,7 +30,7 @@ namespace LibraryCore.Performance.Tests.Tests
             using var reader = new StringReader("abcdef");
             int c = 0;
 
-            while (Helper(reader, x => x != 'z'))
+            while (Helper(reader, x => (char)x != 'z'))
             {
                 c = reader.Read();
             }
