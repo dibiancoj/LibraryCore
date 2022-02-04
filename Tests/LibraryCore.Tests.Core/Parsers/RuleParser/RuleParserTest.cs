@@ -265,6 +265,18 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void WhiteSpaceCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new WhiteSpaceToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
+    [Fact]
+    public void LessThenTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new LessThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void LessThenOrEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new LessThenOrEqualToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void GreaterThenTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new GreaterThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
+    [Fact]
+    public void GreaterThenEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new GreaterThenOrEqualToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
     #endregion
 
 }
