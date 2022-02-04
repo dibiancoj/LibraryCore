@@ -23,6 +23,12 @@ public class StringFactory : ITokenFactory
             text.Append(stringReader.ReadCharacter());
         }
 
+        //did we ever find a closing bracket?
+        if (!stringReader.HasMoreCharacters())
+        {
+            throw new Exception("Missing closing quote on String Value. Current Value = " + text.ToString());
+        }
+
         //read the closing '
         stringReader.EatXNumberOfCharacters(1);
 
