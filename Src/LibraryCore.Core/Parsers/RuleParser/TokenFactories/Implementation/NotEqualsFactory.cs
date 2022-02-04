@@ -14,6 +14,7 @@ public class NotEqualsFactory : ITokenFactory
     {
         //read the other equals
         stringReader.EatXNumberOfCharacters(1);
+
         return CachedToken;
     }
 }

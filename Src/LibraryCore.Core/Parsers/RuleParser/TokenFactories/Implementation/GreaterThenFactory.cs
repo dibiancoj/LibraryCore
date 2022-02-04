@@ -10,7 +10,6 @@ public class GreaterThenFactory : ITokenFactory
     public bool IsToken(char characterRead, char characterPeaked) => characterRead == '>' && characterPeaked != '=';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
-
 }
 
 [DebuggerDisplay(">")]

@@ -12,8 +12,9 @@ public class FalseFactory : ITokenFactory
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
-        //read alse
+        //read f ...alse
         stringReader.EatXNumberOfCharacters(4);
+
         return CachedToken;
     }
 }

@@ -1,6 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-
-namespace LibraryCore.Tests.Core.Parsers.RuleParser;
+﻿namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 {
@@ -16,6 +14,14 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
     {
         var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Name == 'noclosingbracket"));
 
-        Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);    
+        Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);
+    }
+
+    [Fact]
+    public void NumberNotParseable()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == 12345678912341231231232156789"));
+
+        Assert.Equal("Number Factory Not Able To Parse Number. Value = 12345678912341231231232156789", result.Message);
     }
 }

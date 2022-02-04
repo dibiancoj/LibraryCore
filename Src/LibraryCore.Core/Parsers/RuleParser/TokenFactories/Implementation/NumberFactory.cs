@@ -18,7 +18,12 @@ public class NumberFactory : ITokenFactory
             text.Append(stringReader.ReadCharacter());
         }
 
-        return new NumberToken(Convert.ToInt32(text.ToString()));
+        if (!int.TryParse(text.ToString(), out int number))
+        {
+            throw new Exception("Number Factory Not Able To Parse Number. Value = " + text.ToString());
+        }
+
+        return new NumberToken(number);
     }
 
 }

@@ -12,8 +12,9 @@ public class OrElseFactory : ITokenFactory
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
-        //read the other ||
+        //read the other |
         stringReader.EatXNumberOfCharacters(1);
+
         return CachedToken;
     }
 }

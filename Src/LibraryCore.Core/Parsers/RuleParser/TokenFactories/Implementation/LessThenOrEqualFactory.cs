@@ -14,6 +14,7 @@ public class LessThenOrEqualFactory : ITokenFactory
     {
         //read the last =
         stringReader.EatXNumberOfCharacters(1);
+
         return CachedToken;
     }
 

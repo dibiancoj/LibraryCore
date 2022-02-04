@@ -12,7 +12,7 @@ public class TrueFactory : ITokenFactory
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
-        //rue alse
+        //read the t ..rue
         stringReader.EatXNumberOfCharacters(3);
         
         return CachedToken;
