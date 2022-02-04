@@ -23,7 +23,7 @@ public class StringFactory : ITokenFactory
             text.Append(stringReader.ReadCharacter());
         }
 
-        //read the closing "]
+        //read the closing '
         stringReader.EatXNumberOfCharacters(1);
 
         return new StringToken(text.ToString());
