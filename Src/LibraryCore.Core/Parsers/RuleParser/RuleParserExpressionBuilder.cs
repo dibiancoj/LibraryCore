@@ -78,10 +78,10 @@ public static class RuleParserExpressionBuilder
                 right = temp;
             }
 
-            if (left != null && right != null)
+            if (left != null && right != null && operation != null)
             {
                 //at this point we have an operator because we have a left and a right
-                var currentWorkingExpression = operation?.CreateBinaryOperatorExpression(left, right) ??  throw new NullReferenceException($"{nameof(operation)}");
+                var currentWorkingExpression = operation.CreateBinaryOperatorExpression(left, right);
 
                 //combiner would be && , ||
                 workingExpression = combiner == null ?
