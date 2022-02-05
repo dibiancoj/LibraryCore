@@ -8,7 +8,7 @@ public class AndAlsoFactory : ITokenFactory
 {
     private AndAlsoToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == '&' && characterPeaked == '&';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '&' && characterPeeked == '&';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

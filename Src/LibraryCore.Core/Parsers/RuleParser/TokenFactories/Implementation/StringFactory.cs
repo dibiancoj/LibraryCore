@@ -12,7 +12,7 @@ public class StringFactory : ITokenFactory
     /// </summary>
     private const char TokenIdentifier = '\'';
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == TokenIdentifier;
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == TokenIdentifier;
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

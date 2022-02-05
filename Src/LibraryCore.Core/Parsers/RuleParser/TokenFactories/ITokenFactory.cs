@@ -2,7 +2,7 @@
 
 public interface ITokenFactory
 {
-    bool IsToken(char characterRead, char characterPeaked);
+    bool IsToken(char characterRead, char characterPeeked);
     Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider);
 }
 

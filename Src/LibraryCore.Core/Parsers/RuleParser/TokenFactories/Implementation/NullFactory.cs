@@ -8,7 +8,7 @@ public class NullTokenFactory : ITokenFactory
 {
     private NullToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == 'n' && characterPeaked == 'u';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'n' && characterPeeked == 'u';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

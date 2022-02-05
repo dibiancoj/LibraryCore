@@ -7,7 +7,7 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class ParameterPropertyFactory : ITokenFactory
 {
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == '$';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '$';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

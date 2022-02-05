@@ -7,7 +7,7 @@ public class WhiteSpaceFactory : ITokenFactory
 {
     private WhiteSpaceToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => char.IsWhiteSpace(characterRead);
+    public bool IsToken(char characterRead, char characterPeeked) => char.IsWhiteSpace(characterRead);
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
 }

@@ -8,7 +8,7 @@ public class FalseFactory : ITokenFactory
 {
     private FalseToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => string.Equals(new string(new char[] { characterRead, characterPeaked }), "fa", StringComparison.OrdinalIgnoreCase);
+    public bool IsToken(char characterRead, char characterPeeked) => string.Equals(new string(new char[] { characterRead, characterPeeked }), "fa", StringComparison.OrdinalIgnoreCase);
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

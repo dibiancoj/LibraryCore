@@ -10,7 +10,7 @@ public class ArrayFactory : ITokenFactory
     //[1,2,3]
     //['string 1','string 2', 'string 3]
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == '[';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '[';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

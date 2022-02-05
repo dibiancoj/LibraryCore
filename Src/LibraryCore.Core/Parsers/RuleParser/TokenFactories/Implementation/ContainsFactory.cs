@@ -11,7 +11,7 @@ public class ContainsFactory : ITokenFactory
 
     private ContainsToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == 'c' && characterPeaked == 'o';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'c' && characterPeeked == 'o';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
@@ -39,7 +39,7 @@ public record ContainsToken() : Token, IBinaryComparisonToken
                                         typeof(string);
 
         return typeof(Enumerable).GetMethods()
-                                .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Count() == 2)
+                                .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Length == 2)
                                 .Single()
                                 .MakeGenericMethod(typeOfArray);
     }

@@ -8,7 +8,7 @@ public class LikeFactory : ITokenFactory
 {
     private LikeToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == 'l' && characterPeaked == 'i';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'l' && characterPeeked == 'i';
 
     public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
@@ -26,7 +26,7 @@ public record LikeToken() : Token, IBinaryComparisonToken
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right)
     {
         var stringContains = typeof(string).GetMethods()
-                                           .First(x => x.Name == nameof(string.Contains) && x.GetParameters().Count() == 1);
+                                           .First(x => x.Name == nameof(string.Contains) && x.GetParameters().Length == 1);
 
         return Expression.Call(left, stringContains, right);
     }

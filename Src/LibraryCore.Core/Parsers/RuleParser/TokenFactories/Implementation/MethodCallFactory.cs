@@ -16,7 +16,7 @@ public class MethodCallFactory : ITokenFactory
         return this;
     }
 
-    public bool IsToken(char characterRead, char characterPeaked) => characterRead == '@';
+    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '@';
 
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
