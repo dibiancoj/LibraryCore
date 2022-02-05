@@ -29,3 +29,7 @@ jobs:
       run: dotnet test --filter FullyQualifiedName!~LibraryCore.IntegrationTests --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
+      with:
+        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.opencover.xml,./Tests/LibraryCore.Tests.Core/coverage.opencover.xml,./Tests/LibraryCore.Tests.AspNet/coverage.opencover.xml # optional
+        fail_ci_if_error: true # optional (default = false)
+
