@@ -10,7 +10,7 @@ public class FalseFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => string.Equals(new string(new char[] { characterRead, characterPeeked }), "fa", StringComparison.OrdinalIgnoreCase);
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read f ...alse
         stringReader.EatXNumberOfCharacters(4);
@@ -20,7 +20,7 @@ public class FalseFactory : ITokenFactory
 }
 
 [DebuggerDisplay("False")]
-public record FalseToken() : Token
+public record FalseToken() : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(false);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(false);
 }

@@ -10,7 +10,7 @@ public class NullTokenFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'n' && characterPeeked == 'u';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the ull
         stringReader.EatXNumberOfCharacters(3);
@@ -20,7 +20,7 @@ public class NullTokenFactory : ITokenFactory
 }
 
 [DebuggerDisplay("null")]
-public record NullToken() : Token
+public record NullToken() : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(null);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(null);
 }

@@ -9,11 +9,11 @@ public class WhiteSpaceFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => char.IsWhiteSpace(characterRead);
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
 }
 
 [DebuggerDisplay("Whitespace")]
-public record WhiteSpaceToken() : Token
+public record WhiteSpaceToken() : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

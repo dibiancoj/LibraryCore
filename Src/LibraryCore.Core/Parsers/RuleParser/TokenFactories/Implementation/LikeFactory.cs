@@ -10,7 +10,7 @@ public class LikeFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'l' && characterPeeked == 'i';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the l...ike
         stringReader.EatXNumberOfCharacters(3);
@@ -19,9 +19,9 @@ public class LikeFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Like")]
-public record LikeToken() : Token, IBinaryComparisonToken
+public record LikeToken() : IToken, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right)
     {

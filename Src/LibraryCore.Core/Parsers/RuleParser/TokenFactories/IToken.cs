@@ -2,9 +2,9 @@
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 
-public abstract record Token
+public interface IToken
 {
-    public abstract Expression CreateExpression(IList<ParameterExpression> parameters);
+    Expression CreateExpression(IList<ParameterExpression> parameters);
 }
 
 /// <summary>
@@ -23,5 +23,5 @@ public interface IBinaryExpressionCombiner : IBinaryOperator
 
 public interface IBinaryOperator
 {
-    public abstract Expression CreateBinaryOperatorExpression(Expression left, Expression right);
+    Expression CreateBinaryOperatorExpression(Expression left, Expression right);
 }

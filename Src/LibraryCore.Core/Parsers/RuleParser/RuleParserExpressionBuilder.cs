@@ -6,14 +6,14 @@ namespace LibraryCore.Core.Parsers.RuleParser;
 
 public static class RuleParserExpressionBuilder
 {
-    public static Expression<Func<bool>> BuildExpression(IEnumerable<Token> tokens)
+    public static Expression<Func<bool>> BuildExpression(IEnumerable<IToken> tokens)
     {
         var parametersToUse = Array.Empty<ParameterExpression>();
 
         return Expression.Lambda<Func<bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
     }
 
-    public static Expression<Func<T1, bool>> BuildExpression<T1>(IEnumerable<Token> tokens, string parameterOneName)
+    public static Expression<Func<T1, bool>> BuildExpression<T1>(IEnumerable<IToken> tokens, string parameterOneName)
     {
         var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
         var parametersToUse = new[] { parameter1 };
@@ -21,7 +21,7 @@ public static class RuleParserExpressionBuilder
         return Expression.Lambda<Func<T1, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
     }
 
-    public static Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(IEnumerable<Token> tokens, string parameterOneName, string parameterTwoName)
+    public static Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(IEnumerable<IToken> tokens, string parameterOneName, string parameterTwoName)
     {
         var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
         var parameter2 = Expression.Parameter(typeof(T2), parameterTwoName);
@@ -30,7 +30,7 @@ public static class RuleParserExpressionBuilder
         return Expression.Lambda<Func<T1, T2, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
     }
 
-    public static Expression<Func<T1, T2, T3, bool>> BuildExpression<T1, T2, T3>(IEnumerable<Token> tokens, string parameterOneName, string parameterTwoName, string parameterThreeName)
+    public static Expression<Func<T1, T2, T3, bool>> BuildExpression<T1, T2, T3>(IEnumerable<IToken> tokens, string parameterOneName, string parameterTwoName, string parameterThreeName)
     {
         var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
         var parameter2 = Expression.Parameter(typeof(T2), parameterTwoName);
@@ -40,7 +40,7 @@ public static class RuleParserExpressionBuilder
         return Expression.Lambda<Func<T1, T2, T3, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
     }
 
-    private static Expression CreateExpression(IEnumerable<Token> tokens, ParameterExpression[] parametersToUse)
+    private static Expression CreateExpression(IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
     {
         Expression? workingExpression = null;
 

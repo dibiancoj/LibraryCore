@@ -10,7 +10,7 @@ public class EqualsFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '=' && characterPeeked == '=';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other equals
         stringReader.EatXNumberOfCharacters(1);
@@ -19,9 +19,9 @@ public class EqualsFactory : ITokenFactory
 }
 
 [DebuggerDisplay("==")]
-public record EqualsToken() : Token, IBinaryComparisonToken
+public record EqualsToken() : IToken, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.Equal(left, right);
 }

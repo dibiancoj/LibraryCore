@@ -9,13 +9,13 @@ public class LessThenFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '<' && characterPeeked != '=';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
 }
 
 [DebuggerDisplay("<")]
-public record LessThenToken() : Token, IBinaryComparisonToken
+public record LessThenToken() : IToken, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.LessThan(left, right);
 }
