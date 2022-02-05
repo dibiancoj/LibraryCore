@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
@@ -8,12 +7,14 @@ public class LikeFactory : ITokenFactory
 {
     private LikeToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'l' && characterPeeked == 'i';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "li", StringComparison.OrdinalIgnoreCase);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the l...ike
-        stringReader.EatXNumberOfCharacters(3);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'I', 'i');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'K', 'k');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
         return CachedToken;
     }
 }

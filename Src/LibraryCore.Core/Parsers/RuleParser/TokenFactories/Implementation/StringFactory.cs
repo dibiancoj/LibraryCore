@@ -12,7 +12,7 @@ public class StringFactory : ITokenFactory
     /// </summary>
     private const char TokenIdentifier = '\'';
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == TokenIdentifier;
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
@@ -30,7 +30,7 @@ public class StringFactory : ITokenFactory
         }
 
         //read the closing '
-        stringReader.EatXNumberOfCharacters(1);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, TokenIdentifier);
 
         return new StringToken(text.ToString());
     }

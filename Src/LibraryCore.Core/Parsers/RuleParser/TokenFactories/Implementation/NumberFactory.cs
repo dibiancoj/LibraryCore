@@ -7,7 +7,7 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class NumberFactory : ITokenFactory
 {
-    public bool IsToken(char characterRead, char characterPeeked) => char.IsNumber(characterRead);
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => char.IsNumber(characterRead);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {

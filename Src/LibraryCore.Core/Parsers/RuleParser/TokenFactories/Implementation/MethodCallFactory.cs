@@ -16,7 +16,7 @@ public class MethodCallFactory : ITokenFactory
         return this;
     }
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '@';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '@';
 
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
@@ -29,7 +29,7 @@ public class MethodCallFactory : ITokenFactory
             var methodName = WalkTheMethodName(stringReader);
 
             //eat the opening (
-            stringReader.EatXNumberOfCharacters(1);
+            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '(');
 
             bool hasNoParameters = stringReader.PeekCharacter() == ')';
 

@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -11,12 +10,18 @@ public class ContainsFactory : ITokenFactory
 
     private ContainsToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'c' && characterPeeked == 'o';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "co", StringComparison.OrdinalIgnoreCase);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other c...ontains
-        stringReader.EatXNumberOfCharacters(7);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'O', 'o');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'N', 'n');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'T', 't');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'A', 'a');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'I', 'i');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'N', 'n');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'S', 's');
 
         return CachedToken;
     }

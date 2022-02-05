@@ -1,7 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using System.Text;
-
-namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+﻿namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 
 public class TokenFactoryProvider
 {
@@ -12,8 +9,8 @@ public class TokenFactoryProvider
 
     private IEnumerable<ITokenFactory> TokenFactories { get; }
 
-    public ITokenFactory ResolveTokenFactory(char currentCharacterRead, char peekedCharacter)
+    public ITokenFactory ResolveTokenFactory(char currentCharacterRead, char peekedCharacter, string readAndPeakedCharacters)
     {
-        return TokenFactories.FirstOrDefault(x => x.IsToken(currentCharacterRead, peekedCharacter)) ?? throw new Exception($"No Token Found For Value = {currentCharacterRead}{peekedCharacter}");
+        return TokenFactories.FirstOrDefault(x => x.IsToken(currentCharacterRead, peekedCharacter, readAndPeakedCharacters)) ?? throw new Exception($"No Token Found For Value = {currentCharacterRead}{peekedCharacter}");
     }
 }

@@ -8,12 +8,12 @@ public class AndAlsoFactory : ITokenFactory
 {
     private AndAlsoToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '&' && characterPeeked == '&';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => readAndPeakedCharacters == "&&";
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other &
-        stringReader.EatXNumberOfCharacters(1);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '&');
 
         return CachedToken;
     }

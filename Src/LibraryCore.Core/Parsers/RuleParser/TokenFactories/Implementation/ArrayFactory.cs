@@ -1,7 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -10,14 +9,14 @@ public class ArrayFactory : ITokenFactory
     //[1,2,3]
     //['string 1','string 2', 'string 3]
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '[';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '[';
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != ']')
         {
             //need to determine the method name so we walk 
-            
+
             var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ']').ToArray();
 
             return new ArrayToken(parameterGroup);

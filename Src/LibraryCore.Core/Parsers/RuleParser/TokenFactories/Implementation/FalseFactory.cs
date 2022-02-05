@@ -8,12 +8,15 @@ public class FalseFactory : ITokenFactory
 {
     private FalseToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => string.Equals(new string(new char[] { characterRead, characterPeeked }), "fa", StringComparison.OrdinalIgnoreCase);
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "fa", StringComparison.OrdinalIgnoreCase);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read f ...alse
-        stringReader.EatXNumberOfCharacters(4);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'A', 'a');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'S', 's');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
 
         return CachedToken;
     }
