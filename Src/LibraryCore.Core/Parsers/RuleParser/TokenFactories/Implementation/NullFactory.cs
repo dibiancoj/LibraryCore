@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
@@ -8,12 +7,14 @@ public class NullTokenFactory : ITokenFactory
 {
     private NullToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'n' && characterPeeked == 'u';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "nu", StringComparison.OrdinalIgnoreCase);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the ull
-        stringReader.EatXNumberOfCharacters(3);
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'U', 'u');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
 
         return CachedToken;
     }

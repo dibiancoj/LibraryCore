@@ -8,13 +8,15 @@ public class TrueFactory : ITokenFactory
 {
     private TrueToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => string.Equals(new string(new char[] { characterRead, characterPeeked }), "tr", StringComparison.OrdinalIgnoreCase);
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "tr", StringComparison.OrdinalIgnoreCase);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the t ..rue
-        stringReader.EatXNumberOfCharacters(3);
-        
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'R', 'r');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'U', 'u');
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
+
         return CachedToken;
     }
 }

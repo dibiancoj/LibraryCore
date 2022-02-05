@@ -21,7 +21,7 @@ public static class RuleParsingUtility
         }
 
         //eat the closing )
-        reader.EatXNumberOfCharacters(1);
+        ThrowIfCharacterNotExpected(reader, closingCharacter);
 
         foreach (var parameter in text.ToString().Split(','))
         {
@@ -29,8 +29,19 @@ public static class RuleParsingUtility
 
             var characterRead = parameterReader.ReadCharacter();
             var nextPeekedCharacter = parameterReader.PeekCharacter();
+            var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
 
-            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter).CreateToken(characterRead, parameterReader, tokenFactoryProvider);
+            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked).CreateToken(characterRead, parameterReader, tokenFactoryProvider);
+        }
+    }
+
+    public static void ThrowIfCharacterNotExpected(StringReader reader, params char[] expectedCharacterRead)
+    {
+        char characterRead = reader.ReadCharacter();
+
+        if (!expectedCharacterRead.Contains(characterRead))
+        {
+            throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ",expectedCharacterRead)}");
         }
     }
 }

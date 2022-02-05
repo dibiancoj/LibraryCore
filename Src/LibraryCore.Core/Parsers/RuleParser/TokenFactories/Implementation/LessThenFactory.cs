@@ -7,7 +7,7 @@ public class LessThenFactory : ITokenFactory
 {
     private LessThenToken CachedToken { get; } = new();
 
-    public bool IsToken(char characterRead, char characterPeeked) => characterRead == '<' && characterPeeked != '=';
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '<' && characterPeeked != '=';
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => CachedToken;
 }
