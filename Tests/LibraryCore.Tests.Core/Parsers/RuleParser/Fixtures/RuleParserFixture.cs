@@ -32,6 +32,7 @@ public class RuleParserFixture
             new EqualsFactory(),
             new NotEqualsFactory(),
             new ContainsFactory(),
+            new LikeFactory(),
 
             new OrElseFactory(),
             new AndAlsoFactory()

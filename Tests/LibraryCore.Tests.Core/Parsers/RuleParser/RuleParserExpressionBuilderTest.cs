@@ -175,6 +175,17 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
     }
 
+    [InlineData("'abc' like 'def'", false)]
+    [InlineData("'baseball' like 'base'", true)] //sql it's column name which is the longer text inside smaller text which we search for
+    [Theory]
+    public void StringLike(string code, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
+    }
+
     #endregion
 
     #region Comparison Tests

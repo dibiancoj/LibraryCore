@@ -32,6 +32,7 @@ public class RuleParserEngine
     //<
     //<=
     //contains ie: [1,2,3] contains $Parameter.Age or @MethodWithArray contains $Parameter.Age
+    //like ie: 'tester' like 'test'
 
     //Combiners
     //&& AndAlso

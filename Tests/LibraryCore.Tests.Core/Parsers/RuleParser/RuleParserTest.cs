@@ -163,6 +163,19 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void LikeTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("'test' like 'tester'");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<StringToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<LikeToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<StringToken>(result[4]);
+    }
+
+    [Fact]
     public void NotEqualTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 != 1");
