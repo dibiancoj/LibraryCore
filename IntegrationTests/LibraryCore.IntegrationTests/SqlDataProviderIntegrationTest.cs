@@ -1,206 +1,206 @@
-﻿using LibraryCore.IntegrationTests.Fixtures;
-using Microsoft.Data.SqlClient;
-using System.Data;
+﻿//using LibraryCore.IntegrationTests.Fixtures;
+//using Microsoft.Data.SqlClient;
+//using System.Data;
 
-namespace LibraryCore.IntegrationTests;
+//namespace LibraryCore.IntegrationTests;
 
-public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture>
-{
-    public SqlDataProviderIntegrationTest(SqlServerTestFixture sqlServerTestFixture)
-    {
-        SqlServerTestFixture = sqlServerTestFixture;
-    }
+//public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture>
+//{
+//    public SqlDataProviderIntegrationTest(SqlServerTestFixture sqlServerTestFixture)
+//    {
+//        SqlServerTestFixture = sqlServerTestFixture;
+//    }
 
-    private SqlServerTestFixture SqlServerTestFixture { get; }
+//    private SqlServerTestFixture SqlServerTestFixture { get; }
 
-    #region Framework
+//    #region Framework
 
-    private static async Task<int> InsertRecordIntoState(SqlServerTestFixture sqlServerTestFixture, string stateDescription, Guid testId)
-    {
-        await using var dataProvider = sqlServerTestFixture.CreateDataProvider();
+//    private static async Task<int> InsertRecordIntoState(SqlServerTestFixture sqlServerTestFixture, string stateDescription, Guid testId)
+//    {
+//        await using var dataProvider = sqlServerTestFixture.CreateDataProvider();
 
-        return await dataProvider.ExecuteNonQueryAsync("dbo.CreateState",
-                                                        CommandType.StoredProcedure,
-                                                        new[]
-                                                             {
-                                                                new SqlParameter("@TestId", testId),
-                                                                new SqlParameter("@Description", stateDescription)
-                                                             });
-    }
+//        return await dataProvider.ExecuteNonQueryAsync("dbo.CreateState",
+//                                                        CommandType.StoredProcedure,
+//                                                        new[]
+//                                                             {
+//                                                                new SqlParameter("@TestId", testId),
+//                                                                new SqlParameter("@Description", stateDescription)
+//                                                             });
+//    }
 
-    #endregion
+//    #endregion
 
-    [Fact]
-    public async Task CanConnectToDatabase()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task CanConnectToDatabase()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        Assert.True(await dataProvider.CanConnectToDatabaseAsync());
-    }
+//        Assert.True(await dataProvider.CanConnectToDatabaseAsync());
+//    }
 
-    [Fact]
-    public async Task DatatableTest()
-    {
+//    [Fact]
+//    public async Task DatatableTest()
+//    {
 
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DatatableTest), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DatatableTest), testId));
 
-        var dataTable = await dataProvider.DataTableAsync("select * from states where TestId = @TestId", CommandType.Text, new[]
-        {
-            new SqlParameter("@TestId", testId)
-        });
+//        var dataTable = await dataProvider.DataTableAsync("select * from states where TestId = @TestId", CommandType.Text, new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        });
 
-        Assert.Equal(1, dataTable.Rows.Count);
-        Assert.Equal(nameof(DatatableTest), dataTable.Rows[0]["Description"]);
-    }
+//        Assert.Equal(1, dataTable.Rows.Count);
+//        Assert.Equal(nameof(DatatableTest), dataTable.Rows[0]["Description"]);
+//    }
 
-    [Fact]
-    public async Task DataSetTest()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task DataSetTest()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DataSetTest), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DataSetTest), testId));
 
-        var dataSet = await dataProvider.DataSetAsync("select * from states where TestId = @TestId", CommandType.Text, new[]
-        {
-            new SqlParameter("@TestId", testId)
-        });
+//        var dataSet = await dataProvider.DataSetAsync("select * from states where TestId = @TestId", CommandType.Text, new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        });
 
-        Assert.Equal(1, dataSet.Tables[0].Rows.Count);
-        Assert.Equal(nameof(DataSetTest), dataSet.Tables[0].Rows[0]["Description"]);
-    }
+//        Assert.Equal(1, dataSet.Tables[0].Rows.Count);
+//        Assert.Equal(nameof(DataSetTest), dataSet.Tables[0].Rows[0]["Description"]);
+//    }
 
-    [Fact]
-    public async Task DataReaderTest()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task DataReaderTest()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        var readTableParmeters = new[]
-        {
-            new SqlParameter("@TestId", testId)
-        };
+//        var readTableParmeters = new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        };
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DataReaderTest), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(DataReaderTest), testId));
 
-        //data reader
-        using var reader = await dataProvider.DataReaderAsync("select * from states where TestId = @TestId", CommandType.Text, CommandBehavior.SingleRow, readTableParmeters);
+//        //data reader
+//        using var reader = await dataProvider.DataReaderAsync("select * from states where TestId = @TestId", CommandType.Text, CommandBehavior.SingleRow, readTableParmeters);
 
-        await reader.ReadAsync();
+//        await reader.ReadAsync();
 
-        Assert.Equal(nameof(DataReaderTest), reader["Description"]);
-        await reader.CloseAsync();
-    }
+//        Assert.Equal(nameof(DataReaderTest), reader["Description"]);
+//        await reader.CloseAsync();
+//    }
 
-    [Fact]
-    public async Task XmlQueryTypes()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task XmlQueryTypes()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        var readTableParmeters = new[]
-        {
-            new SqlParameter("@TestId", testId)
-        };
+//        var readTableParmeters = new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        };
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(XmlQueryTypes), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(XmlQueryTypes), testId));
 
-        //XmlDataAsync will call XmlReaderAsync
-        var result = await dataProvider.XmlDataAsync("select * from states where TestId = @TestId for xml path, root('root')", CommandType.Text, readTableParmeters);
+//        //XmlDataAsync will call XmlReaderAsync
+//        var result = await dataProvider.XmlDataAsync("select * from states where TestId = @TestId for xml path, root('root')", CommandType.Text, readTableParmeters);
 
-        Assert.Single(result.Elements("row"));
+//        Assert.Single(result.Elements("row"));
 
-        var rowElement = result.Element("row") ?? throw new Exception("No Row Element");
+//        var rowElement = result.Element("row") ?? throw new Exception("No Row Element");
 
-        Assert.Equal(3, rowElement.Elements().Count());
-        Assert.Equal(testId, Guid.Parse(rowElement.Element("TestId")!.Value));
-        Assert.Equal(nameof(XmlQueryTypes), rowElement.Element("Description")!.Value);
-    }
+//        Assert.Equal(3, rowElement.Elements().Count());
+//        Assert.Equal(testId, Guid.Parse(rowElement.Element("TestId")!.Value));
+//        Assert.Equal(nameof(XmlQueryTypes), rowElement.Element("Description")!.Value);
+//    }
 
-    [Fact]
-    public async Task ScalarUnTypedTests()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task ScalarUnTypedTests()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarUnTypedTests), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarUnTypedTests), testId));
 
-        var descriptionFound = await dataProvider.ScalarAsync("select Description from states where TestId = @TestId", CommandType.Text, new[]
-        {
-            new SqlParameter("@TestId", testId)
-        });
+//        var descriptionFound = await dataProvider.ScalarAsync("select Description from states where TestId = @TestId", CommandType.Text, new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        });
 
-        Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound?.ToString());
-    }
+//        Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound?.ToString());
+//    }
 
-    [Fact]
-    public async Task ScalarTypedTests()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task ScalarTypedTests()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarTypedTests), testId));
+//        Assert.Equal(1, await InsertRecordIntoState(SqlServerTestFixture, nameof(ScalarTypedTests), testId));
 
-        var descriptionFound = await dataProvider.ScalarAsync<string>("select Description from states where TestId = @TestId", CommandType.Text, new[]
-        {
-            new SqlParameter("@TestId", testId)
-        });
+//        var descriptionFound = await dataProvider.ScalarAsync<string>("select Description from states where TestId = @TestId", CommandType.Text, new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        });
 
-        Assert.Equal(nameof(ScalarTypedTests), descriptionFound?.ToString());
-    }
+//        Assert.Equal(nameof(ScalarTypedTests), descriptionFound?.ToString());
+//    }
 
-    [Fact]
-    public async Task BulkInsert()
-    {
-        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
+//    [Fact]
+//    public async Task BulkInsert()
+//    {
+//        await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
-        var testId = Guid.NewGuid();
+//        var testId = Guid.NewGuid();
 
-        var readTableParmeters = new[]
-        {
-            new SqlParameter("@TestId", testId)
-        };
+//        var readTableParmeters = new[]
+//        {
+//            new SqlParameter("@TestId", testId)
+//        };
 
-        var dtToLoad = new DataTable("States");
+//        var dtToLoad = new DataTable("States");
 
-        var testIdColumn = new DataColumn("TestId", typeof(Guid));
-        var stateIdColumn = new DataColumn("StateId", typeof(int))
-        {
-            AutoIncrement = true
-        };
-        var descriptionColumn = new DataColumn("Description", typeof(string));
+//        var testIdColumn = new DataColumn("TestId", typeof(Guid));
+//        var stateIdColumn = new DataColumn("StateId", typeof(int))
+//        {
+//            AutoIncrement = true
+//        };
+//        var descriptionColumn = new DataColumn("Description", typeof(string));
 
-        dtToLoad.Columns.Add(testIdColumn);
-        dtToLoad.Columns.Add(stateIdColumn);
-        dtToLoad.Columns.Add(descriptionColumn);
+//        dtToLoad.Columns.Add(testIdColumn);
+//        dtToLoad.Columns.Add(stateIdColumn);
+//        dtToLoad.Columns.Add(descriptionColumn);
 
-        for (int i = 0; i < 2; i++)
-        {
-            var rowToAdd = dtToLoad.NewRow();
+//        for (int i = 0; i < 2; i++)
+//        {
+//            var rowToAdd = dtToLoad.NewRow();
 
-            rowToAdd["TestId"] = testId;
-            rowToAdd["Description"] = $"BulkInsert_{i}";
+//            rowToAdd["TestId"] = testId;
+//            rowToAdd["Description"] = $"BulkInsert_{i}";
 
-            dtToLoad.Rows.Add(rowToAdd);
-        }
+//            dtToLoad.Rows.Add(rowToAdd);
+//        }
 
-        await dataProvider.BulkInsertAsync("dbo", dtToLoad, SqlBulkCopyOptions.Default, 10);
+//        await dataProvider.BulkInsertAsync("dbo", dtToLoad, SqlBulkCopyOptions.Default, 10);
 
-        var results = await dataProvider.DataTableAsync("select * from states where TestId = @TestId", CommandType.Text, readTableParmeters);
+//        var results = await dataProvider.DataTableAsync("select * from states where TestId = @TestId", CommandType.Text, readTableParmeters);
 
-        Assert.Equal(2, results.Rows.Count);
-        Assert.Equal("BulkInsert_0", results.Rows[0]["Description"]);
-        Assert.Equal("BulkInsert_1", results.Rows[1]["Description"]);
-    }
+//        Assert.Equal(2, results.Rows.Count);
+//        Assert.Equal("BulkInsert_0", results.Rows[0]["Description"]);
+//        Assert.Equal("BulkInsert_1", results.Rows[1]["Description"]);
+//    }
 
-}
+//}
 
