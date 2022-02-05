@@ -339,6 +339,9 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ContainsTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
+    [Fact]
+    public void LikeTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new LikeToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
     #endregion
 
 }
