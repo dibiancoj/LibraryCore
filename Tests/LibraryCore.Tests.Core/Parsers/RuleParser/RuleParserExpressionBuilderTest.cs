@@ -105,6 +105,15 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void BasicMethodCallWithNoParametersPositive()
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("@GetANumberWithNoParameters() == 24");
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.True(expression.Compile().Invoke(Model));
+    }
+
+    [Fact]
     public void BasicMethodCallNegative()
     {
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1(1) == 'No'");
@@ -130,6 +139,39 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
         Assert.False(expression.Compile().Invoke(Model));
+    }
+
+    [InlineData("[1,2,3] contains $Survey.Age", false)]
+    [InlineData("[1,2,3, 30] contains $Survey.Age", true)]
+    [Theory]
+    public void ArrayContainsInt(string code, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
+    }
+
+    [InlineData("['John', 'Bob'] contains $Survey.Name", false)]
+    [InlineData("['Jacob DeGrom', 'Johnny Bench'] contains $Survey.Name", true)]
+    [Theory]
+    public void ArrayContainsString(string code, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
+    }
+
+    [InlineData("@GetAnswerArray() contains 20", false)]
+    [InlineData("@GetAnswerArray() contains 2", true)]
+    [Theory]
+    public void ContainsFromMethod(string code, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
     }
 
     #endregion

@@ -27,7 +27,21 @@ public class MethodCallFactory : ITokenFactory
         {
             //need to determine the method name so we walk 
             var methodName = WalkTheMethodName(stringReader);
-            var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
+
+            //eat the opening (
+            stringReader.EatXNumberOfCharacters(1);
+
+            bool hasNoParameters = stringReader.PeekCharacter() == ')';
+
+            var parameterGroup = hasNoParameters ?
+                                        Enumerable.Empty<Token>() :
+                                        RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
+
+            if (hasNoParameters)
+            {
+                //closing )
+                stringReader.Read();
+            }
 
             return new MethodCallToken(RegisterdMethods[methodName], parameterGroup);
         }
@@ -57,8 +71,12 @@ public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<Toke
         //convert all the additional parameters to an expression
         var additionalParameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();
 
+        IEnumerable<Expression> parametersToPassIn = RegisteredMethodToUse.GetParameters().Any() ?
+                                                    parameters.Concat(additionalParameterExpression) :
+                                                    Enumerable.Empty<Expression>();
+
         //parameters = The overall method parameters that was created
         //additional parameters = is whatever we want to call this method with
-        return Expression.Call(RegisteredMethodToUse, parameters.Concat(additionalParameterExpression));
+        return Expression.Call(RegisteredMethodToUse, parametersToPassIn);
     }
 }

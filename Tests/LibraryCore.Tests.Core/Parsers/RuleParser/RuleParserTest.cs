@@ -246,6 +246,38 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<NumberToken>(result[4]);
     }
 
+    [Fact]
+    public void ArrayOfNumberTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("[1,2,3]");
+
+        Assert.Equal(1, result.Count);
+        Assert.IsType<ArrayToken>(result[0]);
+
+        var array = result.OfType<ArrayToken>().First();
+        var values = array.Values.ToArray();
+
+        Assert.IsType<NumberToken>(values[0]);
+        Assert.IsType<NumberToken>(values[1]);
+        Assert.IsType<NumberToken>(values[2]);
+    }
+
+    [Fact]
+    public void ArrayOfStringsTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("['item 1','item 2','item 3']");
+
+        Assert.Equal(1, result.Count);
+        Assert.IsType<ArrayToken>(result[0]);
+
+        var array = result.OfType<ArrayToken>().First();
+        var values = array.Values.ToArray();
+
+        Assert.IsType<StringToken>(values[0]);
+        Assert.IsType<StringToken>(values[1]);
+        Assert.IsType<StringToken>(values[2]);
+    }
+
     #endregion
 
     #region Create Token - Not Implemented

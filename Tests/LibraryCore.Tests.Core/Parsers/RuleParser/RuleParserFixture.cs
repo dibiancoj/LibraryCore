@@ -19,8 +19,11 @@ public class RuleParserFixture
             new WhiteSpaceFactory(),
             new StringFactory(),
             new NumberFactory(),
+            new ArrayFactory(),
             new MethodCallFactory()
-                   .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!),
+                   .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
+                   .RegisterNewMethodAlias("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
+                   .RegisterNewMethodAlias("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!),
 
             new LessThenOrEqualFactory(),
             new LessThenFactory(),
@@ -28,6 +31,7 @@ public class RuleParserFixture
             new GreaterThenFactory(),
             new EqualsFactory(),
             new NotEqualsFactory(),
+            new ContainsFactory(),
 
             new OrElseFactory(),
             new AndAlsoFactory()
@@ -36,5 +40,7 @@ public class RuleParserFixture
 
     public RuleParserEngine RuleParserEngineToUse { get; }
 
+    public static int GetANumberWithNoParameters() => 24;
     public static string GetAnswerId(SurveyModel surveyModel, int questionId) => surveyModel.Answers[questionId];
+    public static IEnumerable<int> GetAnswerArray(SurveyModel surveyModel) => new[] { 1, 2, 3 };
 }

@@ -14,9 +14,6 @@ public static class RuleParsingUtility
     {
         var text = new StringBuilder();
 
-        //eat the opening (
-        reader.EatXNumberOfCharacters(1);
-
         //eat until the end of the method
         while (reader.HasMoreCharacters() && reader.PeekCharacter() != closingCharacter)
         {

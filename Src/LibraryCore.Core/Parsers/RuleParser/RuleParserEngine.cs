@@ -15,6 +15,8 @@ public class RuleParserEngine
 
     //$ParameterName.PropertyName Of a property passed in
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
+    //[1,2,3] <-- array of ints
+    //['item 1', 'item 2', 'item 3'] <-- array of strings
 
     //Types:
     //SomeValue == 'some text'
@@ -29,6 +31,7 @@ public class RuleParserEngine
     //>=
     //<
     //<=
+    //contains ie: [1,2,3] contains $Parameter.Age or @MethodWithArray contains $Parameter.Age
 
     //Combiners
     //&& AndAlso
