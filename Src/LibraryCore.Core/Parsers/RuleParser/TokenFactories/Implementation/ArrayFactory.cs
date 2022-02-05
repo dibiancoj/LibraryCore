@@ -23,7 +23,7 @@ public class ArrayFactory : ITokenFactory
             return new ArrayToken(parameterGroup);
         }
 
-        throw new Exception("MethodCallFactory Not Able To Parse Information");
+        throw new Exception("ArrayFactory Not Able To Parse Information");
     }
 }
 
