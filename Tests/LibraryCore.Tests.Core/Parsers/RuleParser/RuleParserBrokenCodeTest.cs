@@ -1,4 +1,6 @@
-﻿namespace LibraryCore.Tests.Core.Parsers.RuleParser;
+﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+
+namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 {

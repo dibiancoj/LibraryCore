@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
@@ -242,6 +243,19 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<MethodCallToken>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<NumberToken>(result[4]);
+    }
+
+    [Fact]
+    public void ContainsTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1() contains 1");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<MethodCallToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<ContainsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
         Assert.IsType<NumberToken>(result[4]);
     }

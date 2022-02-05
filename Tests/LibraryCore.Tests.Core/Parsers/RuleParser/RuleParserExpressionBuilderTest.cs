@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
+using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
