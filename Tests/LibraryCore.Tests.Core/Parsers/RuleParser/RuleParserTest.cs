@@ -336,6 +336,9 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void GreaterThenEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new GreaterThenOrEqualToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
+    [Fact]
+    public void ContainsTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+
     #endregion
 
 }
