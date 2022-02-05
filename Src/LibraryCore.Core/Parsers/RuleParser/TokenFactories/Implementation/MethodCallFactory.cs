@@ -21,7 +21,7 @@ public class MethodCallFactory : ITokenFactory
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
         {
@@ -34,7 +34,7 @@ public class MethodCallFactory : ITokenFactory
             bool hasNoParameters = stringReader.PeekCharacter() == ')';
 
             var parameterGroup = hasNoParameters ?
-                                        Enumerable.Empty<Token>() :
+                                        Enumerable.Empty<IToken>() :
                                         RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
 
             if (hasNoParameters)
@@ -64,9 +64,9 @@ public class MethodCallFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
-public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<Token> AdditionalParameters) : Token
+public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<IToken> AdditionalParameters) : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //convert all the additional parameters to an expression
         var additionalParameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();

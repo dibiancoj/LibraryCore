@@ -10,20 +10,19 @@ public class AndAlsoFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '&' && characterPeeked == '&';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other &
         stringReader.EatXNumberOfCharacters(1);
 
         return CachedToken;
     }
-
 }
 
 [DebuggerDisplay("&&")]
-public record AndAlsoToken() : Token, IBinaryExpressionCombiner
+public record AndAlsoToken() : IToken, IBinaryExpressionCombiner
 {
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.AndAlso(left, right);
 
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

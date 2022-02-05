@@ -13,7 +13,7 @@ public class ContainsFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == 'c' && characterPeeked == 'o';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other c...ontains
         stringReader.EatXNumberOfCharacters(7);
@@ -23,7 +23,7 @@ public class ContainsFactory : ITokenFactory
 }
 
 [DebuggerDisplay("in")]
-public record ContainsToken() : Token, IBinaryComparisonToken
+public record ContainsToken() : IToken, IBinaryComparisonToken
 {
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right)
     {
@@ -44,5 +44,5 @@ public record ContainsToken() : Token, IBinaryComparisonToken
                                 .MakeGenericMethod(typeOfArray);
     }
 
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

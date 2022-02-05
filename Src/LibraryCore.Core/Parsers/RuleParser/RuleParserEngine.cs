@@ -38,10 +38,10 @@ public class RuleParserEngine
     //&& AndAlso
     //|| OrElse
 
-    public IImmutableList<Token> ParseString(string stringToParse)
+    public IImmutableList<IToken> ParseString(string stringToParse)
     {
         using var reader = new StringReader(stringToParse);
-        var tokens = new List<Token>();
+        var tokens = new List<IToken>();
 
         while (reader.HasMoreCharacters())
         {

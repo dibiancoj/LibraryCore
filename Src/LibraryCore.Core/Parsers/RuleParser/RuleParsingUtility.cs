@@ -10,7 +10,7 @@ public static class RuleParsingUtility
     /// Walk the parmeters in a method or between (....). This is specifically for method parameter parsing but can be used. The reader should be passed in with the first character being '('
     /// Syntax (24,true,'test'). This will work with multiple scenarios
     /// </summary>
-    public static IEnumerable<Token> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider, char closingCharacter)
+    public static IEnumerable<IToken> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider, char closingCharacter)
     {
         var text = new StringBuilder();
 

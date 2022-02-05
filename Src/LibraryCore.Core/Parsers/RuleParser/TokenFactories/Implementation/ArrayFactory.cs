@@ -12,7 +12,7 @@ public class ArrayFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '[';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != ']')
         {
@@ -28,9 +28,9 @@ public class ArrayFactory : ITokenFactory
 }
 
 [DebuggerDisplay("{Values}")]
-public record ArrayToken(IEnumerable<Token> Values) : Token
+public record ArrayToken(IEnumerable<IToken> Values) : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         var type = Values.Any(x => x is NumberToken) ?
                         typeof(int) :

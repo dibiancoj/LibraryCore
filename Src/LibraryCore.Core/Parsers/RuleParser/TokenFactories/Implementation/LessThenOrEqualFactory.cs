@@ -10,7 +10,7 @@ public class LessThenOrEqualFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '<' && characterPeeked == '=';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the last =
         stringReader.EatXNumberOfCharacters(1);
@@ -21,9 +21,9 @@ public class LessThenOrEqualFactory : ITokenFactory
 }
 
 [DebuggerDisplay("<=")]
-public record LessThenOrEqualToken() : Token, IBinaryComparisonToken
+public record LessThenOrEqualToken() : IToken, IBinaryComparisonToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.LessThanOrEqual(left, right);
 }

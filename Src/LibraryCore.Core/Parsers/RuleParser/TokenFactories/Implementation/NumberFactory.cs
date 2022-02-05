@@ -9,7 +9,7 @@ public class NumberFactory : ITokenFactory
 {
     public bool IsToken(char characterRead, char characterPeeked) => char.IsNumber(characterRead);
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder().Append(characterRead);
 
@@ -29,7 +29,7 @@ public class NumberFactory : ITokenFactory
 }
 
 [DebuggerDisplay("{Value}")]
-public record NumberToken(int Value) : Token
+public record NumberToken(int Value) : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
 }

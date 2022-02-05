@@ -10,7 +10,7 @@ public class TrueFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => string.Equals(new string(new char[] { characterRead, characterPeeked }), "tr", StringComparison.OrdinalIgnoreCase);
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the t ..rue
         stringReader.EatXNumberOfCharacters(3);
@@ -20,7 +20,7 @@ public class TrueFactory : ITokenFactory
 }
 
 [DebuggerDisplay("True")]
-public record TrueToken() : Token
+public record TrueToken() : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(true);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(true);
 }

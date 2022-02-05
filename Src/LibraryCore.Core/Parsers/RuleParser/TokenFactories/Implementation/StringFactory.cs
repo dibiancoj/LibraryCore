@@ -14,7 +14,7 @@ public class StringFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == TokenIdentifier;
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
 
@@ -38,7 +38,7 @@ public class StringFactory : ITokenFactory
 }
 
 [DebuggerDisplay("{Value}")]
-public record StringToken(string Value) : Token
+public record StringToken(string Value) : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
 }

@@ -9,7 +9,7 @@ public class ParameterPropertyFactory : ITokenFactory
 {
     public bool IsToken(char characterRead, char characterPeeked) => characterRead == '$';
 
-    public Token CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
 
@@ -32,9 +32,9 @@ public class ParameterPropertyFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Parameter Property Name = {ParameterName}.{PropertyName}")]
-public record ParameterPropertyToken(string? ParameterName, string PropertyName) : Token
+public record ParameterPropertyToken(string? ParameterName, string PropertyName) : IToken
 {
-    public override Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
         //A property off of a single parameter which is an object. ie: $MyParameter.Age
