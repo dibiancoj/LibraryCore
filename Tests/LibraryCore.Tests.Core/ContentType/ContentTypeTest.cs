@@ -46,4 +46,10 @@ public class ContentTypeTest
     {
         Assert.Equal(ContentTypeLookup.XmlContentType, ContentTypeLookup.XmlMediaType.MediaType);
     }
+
+    [Fact]
+    public void InvalidEnumForTimeZone()
+    {
+        Assert.Throws<NotImplementedException>(() => ContentTypeLookup.RetrieveAcceptType((ContentTypeLookup.AcceptTypeEnum)10000));
+    }
 }

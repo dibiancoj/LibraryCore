@@ -13,6 +13,18 @@ public class IcsCalendarTest
         Assert.Equal("text/calendar", IcsCalendarCreator.ICSMimeType);
     }
 
+    [Fact]
+    public void InvalidEnumForTimeZone()
+    {
+      Assert.Throws<NotImplementedException>(() => IcsCalendarCreator.CreateICSAppointment((IcsCalendarCreator.IcsTimeZoneEnum)999999,
+                                                                          new DateTime(2015, 3, 5, 3, 55, 0),
+                                                                          new DateTime(2015, 3, 10, 4, 58, 0),
+                                                                          "Test Summary 123",
+                                                                          "Location Text 123",
+                                                                          "BodyOfReminder 123",
+                                                                          false));
+    }
+
     /// <summary>
     /// Test the creation of the appointment with specific date times
     /// </summary>
