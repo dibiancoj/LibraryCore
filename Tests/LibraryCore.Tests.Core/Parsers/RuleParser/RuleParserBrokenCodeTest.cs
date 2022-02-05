@@ -26,4 +26,12 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 
         Assert.Equal("Number Factory Not Able To Parse Number. Value = 12345678912341231231232156789", result.Message);
     }
+
+    [Fact]
+    public void TrueStartsValidButEntireWordNotPresent()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == trNOT"));
+
+        Assert.Equal("Character Read N Is Not Expected. Expected Character = U or u", result.Message);
+    }
 }
