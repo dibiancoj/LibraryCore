@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using System.Linq.Expressions;
 

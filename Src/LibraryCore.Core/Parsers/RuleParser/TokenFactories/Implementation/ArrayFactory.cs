@@ -15,8 +15,6 @@ public class ArrayFactory : ITokenFactory
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != ']')
         {
-            //need to determine the method name so we walk 
-
             var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ']').ToArray();
 
             return new ArrayToken(parameterGroup);

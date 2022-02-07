@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -24,11 +25,11 @@ public record LikeToken() : IToken, IBinaryComparisonToken
 {
     public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 
+    private static MethodInfo CachedStringContains => typeof(string).GetMethods()
+                                                      .First(x => x.Name == nameof(string.Contains) && x.GetParameters().Length == 1);
+
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right)
     {
-        var stringContains = typeof(string).GetMethods()
-                                           .First(x => x.Name == nameof(string.Contains) && x.GetParameters().Length == 1);
-
-        return Expression.Call(left, stringContains, right);
+        return Expression.Call(left, CachedStringContains, right);
     }
 }

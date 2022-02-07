@@ -37,17 +37,19 @@ public record ContainsToken() : IToken, IBinaryComparisonToken
         return Expression.Call(null, containsMethodInfo, left, right);
     }
 
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+
+    private static MethodInfo EnumerableContains => typeof(Enumerable).GetMethods()
+                                                    .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Length == 2)
+                                                    .Single();
+
+    private static MethodInfo IntEnumerableContains => EnumerableContains.MakeGenericMethod(typeof(int));
+    private static MethodInfo StringEnumerableContains => EnumerableContains.MakeGenericMethod(typeof(string));
+
     private static MethodInfo CreateEnumerableContains(Expression left)
     {
-        Type typeOfArray = typeof(IEnumerable<int>).IsAssignableFrom(left.Type) ?
-                                        typeof(int) :
-                                        typeof(string);
-
-        return typeof(Enumerable).GetMethods()
-                                .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Length == 2)
-                                .Single()
-                                .MakeGenericMethod(typeOfArray);
+        return typeof(IEnumerable<int>).IsAssignableFrom(left.Type) ?
+                                        IntEnumerableContains :
+                                        StringEnumerableContains;
     }
-
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
 }
