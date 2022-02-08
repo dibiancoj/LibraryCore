@@ -272,6 +272,18 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, 5, new Dictionary<int, string>(), Price: 35)));
     }
 
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfKidsNullable", 80, true)]
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfKidsNullable", 79, false)]
+    [Theory]
+    public void NullableArrayContainsFromMethod(string statementToTest, int? numberToSet, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, numberToSet, new Dictionary<int, string>())));
+
+    }
+
     [Fact]
     public void AndAlsoIsTrue()
     {
