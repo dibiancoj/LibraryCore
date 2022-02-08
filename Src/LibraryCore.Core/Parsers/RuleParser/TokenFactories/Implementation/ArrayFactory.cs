@@ -29,10 +29,13 @@ public record ArrayToken(IEnumerable<IToken> Values) : IToken
 {
     public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
-        var type = Values.Any(x => x is NumberToken) ?
-                        typeof(int) :
-                        typeof(string);
+        var type = DetermineType();
 
         return Expression.NewArrayInit(type, Values.Select(x => x.CreateExpression(parameters)));
+    }
+
+    private Type DetermineType()
+    {
+        return Values.OfType<INumberToken>().FirstOrDefault()?.NumberType ?? typeof(string);
     }
 }

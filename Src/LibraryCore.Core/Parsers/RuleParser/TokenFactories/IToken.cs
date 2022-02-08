@@ -25,3 +25,8 @@ public interface IBinaryOperator
 {
     Expression CreateBinaryOperatorExpression(Expression left, Expression right);
 }
+
+public interface INumberToken
+{
+    Type NumberType { get; }
+}

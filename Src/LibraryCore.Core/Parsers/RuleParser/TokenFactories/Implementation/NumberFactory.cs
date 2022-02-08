@@ -109,14 +109,18 @@ public class NumberFactory : ITokenFactory
     }
 }
 
-[DebuggerDisplay("{Value} | Type = {TypeToUse}")]
-public record NumberToken(int Value, Type TypeToUse) : IToken
+[DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
+public record NumberToken(int Value, Type TypeToUse) : IToken, INumberToken
 {
+    public Type NumberType => TypeToUse;
+
     public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }
 
-[DebuggerDisplay("{Value} | Type = {TypeToUse}")]
-public record NumberDoubleToken(double Value, Type TypeToUse) : IToken
+[DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
+public record NumberDoubleToken(double Value, Type TypeToUse) : IToken, INumberToken
 {
+    public Type NumberType => TypeToUse;
+
     public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

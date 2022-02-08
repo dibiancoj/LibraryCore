@@ -43,13 +43,16 @@ public record ContainsToken() : IToken, IBinaryComparisonToken
                                                     .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Length == 2)
                                                     .Single();
 
-    private static MethodInfo IntEnumerableContains => EnumerableContains.MakeGenericMethod(typeof(int));
-    private static MethodInfo StringEnumerableContains => EnumerableContains.MakeGenericMethod(typeof(string));
+    private static MethodInfo CreateEnumerableContainsMethodInfo(Type typeOfArrayData) => EnumerableContains.MakeGenericMethod(typeOfArrayData);
 
     private static MethodInfo CreateEnumerableContains(Expression left)
     {
-        return typeof(IEnumerable<int>).IsAssignableFrom(left.Type) ?
-                                        IntEnumerableContains :
-                                        StringEnumerableContains;
+        //this might be really limited. This handles a method which returns the type. Really anything that is IEnumerable<T>
+        if (typeof(System.Collections.IEnumerable).IsAssignableFrom(left.Type) && left.Type.IsGenericType)
+        {
+            return CreateEnumerableContainsMethodInfo(left.Type.GenericTypeArguments[0]);
+        }
+
+        return CreateEnumerableContainsMethodInfo(left.Type.GetElementType() ?? throw new Exception("Can't Get Element Type"));
     }
 }
