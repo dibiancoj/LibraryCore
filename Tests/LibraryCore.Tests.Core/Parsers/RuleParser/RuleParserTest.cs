@@ -36,11 +36,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString($"{trueCase} == {trueCase}");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<TrueToken>(result[0]);
+        Assert.IsType<BooleanToken>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<TrueToken>(result[4]);
+        Assert.IsType<BooleanToken>(result[4]);
     }
 
     [Theory]
@@ -52,11 +52,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString($"{falseCase} == {falseCase}");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<FalseToken>(result[0]);
+        Assert.IsType<BooleanToken>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<FalseToken>(result[4]);
+        Assert.IsType<BooleanToken>(result[4]);
     }
 
     [Fact]
