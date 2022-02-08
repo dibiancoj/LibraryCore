@@ -11,9 +11,16 @@ public class NumberFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
+        static bool IsFinalCharacter(StringReader readerToUse)
+        {
+            var peekedCharacter = readerToUse.PeekCharacter();
+
+            return !char.IsWhiteSpace(peekedCharacter) && peekedCharacter != 'd' && peekedCharacter != '?';
+        }
+
         var text = new StringBuilder().Append(characterRead);
 
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()) && stringReader.PeekCharacter() != 'd' && stringReader.PeekCharacter() != '?')
+        while (stringReader.HasMoreCharacters() && IsFinalCharacter(stringReader))
         {
             text.Append(stringReader.ReadCharacter());
         }
