@@ -54,6 +54,12 @@ public class NumberFactory : ITokenFactory
 
     private static (bool IsDoubleDataType, bool IsNullable) WalkAdditionalCharacters(StringReader stringReader)
     {
+        //after a number you can specify:
+        //? = nullable
+        //d = double
+
+        //so after the number is done..see if the next characters are either of those then create the expression based on that type (nullable and is double or int)
+
         var peekNextCharacter = stringReader.PeekCharacter();
 
         if (peekNextCharacter != DoubleTokenIdentifier && peekNextCharacter != NullableTokenIdentifier)
@@ -64,6 +70,7 @@ public class NumberFactory : ITokenFactory
         bool isDouble = false;
         bool isNullable = false;
 
+        //walk until the end of the string or a space which is the real end of this number
         while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
         {
             var readCharacter = stringReader.ReadCharacter();
