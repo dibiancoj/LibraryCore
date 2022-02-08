@@ -5,7 +5,7 @@ namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 {
-    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers);
+    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers, bool? NullableBoolTest = null);
     private SurveyModel Model { get; }
     private RuleParserFixture RuleParserFixture { get; }
 
@@ -309,6 +309,43 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
         Assert.True(expression.Compile().Invoke(Model));
+    }
+
+    #endregion
+
+    #region Misc
+
+    [InlineData("$Survey.NumberOfKidsNullable > 1?", true)]
+    [InlineData("$Survey.NumberOfKidsNullable < 5?", false)]
+    [Theory]
+    public void NullableIntWithValueTest(string statementToText, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>())));
+    }
+
+    [InlineData("$Survey.NullableBoolTest == true?", true)]
+    [InlineData("$Survey.NullableBoolTest == false?", false)]
+    [Theory]
+    public void NullableBoolWithValueTest(string statementToText, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>(), true)));
+    }
+
+    [InlineData("$Survey.NullableBoolTest == true?", false)]
+    [InlineData("$Survey.NullableBoolTest == false?", false)]
+    [Theory]
+    public void NullableBoolWithNullValueTest(string statementToText, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>())));
     }
 
     #endregion

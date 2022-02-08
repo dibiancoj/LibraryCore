@@ -17,6 +17,7 @@ public class RuleParserEngine
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
     //[1,2,3] <-- array of ints
     //['item 1', 'item 2', 'item 3'] <-- array of strings
+    //For Nullable types add a question mark after value. ie: number? or true? or false?
 
     //Types:
     //SomeValue == 'some text'

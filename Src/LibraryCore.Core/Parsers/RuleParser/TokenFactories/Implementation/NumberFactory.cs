@@ -18,18 +18,20 @@ public class NumberFactory : ITokenFactory
             text.Append(stringReader.ReadCharacter());
         }
 
+        Type typeToUse = RuleParsingUtility.DetermineNullableType<int, int?>(stringReader);
+
         if (!int.TryParse(text.ToString(), out int number))
         {
             throw new Exception("Number Factory Not Able To Parse Number. Value = " + text.ToString());
         }
 
-        return new NumberToken(number);
+        return new NumberToken(number, typeToUse);
     }
 
 }
 
 [DebuggerDisplay("{Value}")]
-public record NumberToken(int Value) : IToken
+public record NumberToken(int Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

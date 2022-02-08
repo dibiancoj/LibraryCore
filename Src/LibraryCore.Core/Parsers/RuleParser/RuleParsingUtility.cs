@@ -44,4 +44,15 @@ public static class RuleParsingUtility
             throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ",expectedCharacterRead)}");
         }
     }
+
+    public static Type DetermineNullableType<T, TNullableType>(StringReader reader)
+    {
+        if (reader.PeekCharacter() == '?')
+        {
+            ThrowIfCharacterNotExpected(reader, '?');
+            return typeof(TNullableType);
+        }
+
+        return typeof(T);
+    }
 }
