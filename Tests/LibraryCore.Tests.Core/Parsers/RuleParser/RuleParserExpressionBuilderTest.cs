@@ -256,6 +256,34 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 
     #region Combiner Tests [AndAlso OrElse]
 
+    //nullable double
+    [InlineData("[1d?,2d?,3d?, 35d?] contains $Survey.Price", true)]
+    [InlineData("[1d?,2d?,3d?] contains $Survey.Price", false)]
+
+    //nullable ints
+    [InlineData("[1?,2?,3?, 5?] contains $Survey.NumberOfKidsNullable", true)]
+    [InlineData("[1?,2?,3?] contains $Survey.NumberOfKidsNullable", false)]
+    [Theory]
+    public void NullableArrayContains(string statementToTest, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, 5, new Dictionary<int, string>(), Price: 35)));
+    }
+
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfKidsNullable", 80, true)]
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfKidsNullable", 79, false)]
+    [Theory]
+    public void NullableArrayContainsFromMethod(string statementToTest, int? numberToSet, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, numberToSet, new Dictionary<int, string>())));
+
+    }
+
     [Fact]
     public void AndAlsoIsTrue()
     {

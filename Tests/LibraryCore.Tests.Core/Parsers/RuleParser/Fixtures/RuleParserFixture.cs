@@ -22,6 +22,7 @@ public class RuleParserFixture
             new MethodCallFactory()
                    .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
                    .RegisterNewMethodAlias("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
+                   .RegisterNewMethodAlias("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
                    .RegisterNewMethodAlias("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!),
 
             new LessThenOrEqualFactory(),
@@ -43,4 +44,5 @@ public class RuleParserFixture
     public static int GetANumberWithNoParameters() => 24;
     public static string GetAnswerId(SurveyModel surveyModel, int questionId) => surveyModel.Answers[questionId];
     public static IEnumerable<int> GetAnswerArray(SurveyModel surveyModel) => new[] { 1, 2, 3 };
+    public static IEnumerable<int?> GetNullableIntArray(SurveyModel surveyModel) => new List<int?> { 1, 2, 3, 80 };
 }
