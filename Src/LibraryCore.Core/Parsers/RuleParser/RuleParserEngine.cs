@@ -18,8 +18,10 @@ public class RuleParserEngine
     //[1,2,3] <-- array of ints
     //['item 1', 'item 2', 'item 3'] <-- array of strings
     //Numbers:
-    // 1  = 1 as an int
-    // 1? = 1 as nullable int
+    // 1     = 1 as an int
+    // 1?    = 1 as nullable int
+    // 1.5d  = 1.5 double
+    // 1.5d? = 1.5 nullable double
 
     //Types:
     //SomeValue == 'some text'

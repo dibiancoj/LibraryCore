@@ -13,25 +13,50 @@ public class NumberFactory : ITokenFactory
     {
         var text = new StringBuilder().Append(characterRead);
 
-        while (stringReader.HasMoreCharacters() && char.IsNumber(stringReader.PeekCharacter()))
+        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()) && stringReader.PeekCharacter() != 'd')
         {
             text.Append(stringReader.ReadCharacter());
         }
 
-        Type typeToUse = RuleParsingUtility.DetermineNullableType<int, int?>(stringReader);
+        var peekNextCharacter = stringReader.PeekCharacter();
 
-        if (!int.TryParse(text.ToString(), out int number))
-        {
-            throw new Exception("Number Factory Not Able To Parse Number. Value = " + text.ToString());
-        }
-
-        return new NumberToken(number, typeToUse);
+        return peekNextCharacter == 'D' || peekNextCharacter == 'd' ?
+            CreateDoubleToken(stringReader, text):
+            CreateIntToken(stringReader, text);
     }
 
+    private static IToken CreateDoubleToken(StringReader stringReader, StringBuilder textFound)
+    {
+        //remove the last character which is d
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'd');
+
+        if (!double.TryParse(textFound.ToString(), out double number))
+        {
+            throw new Exception("Number Factory Not Able To Parse Number. Value = " + textFound.ToString());
+        }
+
+        return new NumberDoubleToken(number, RuleParsingUtility.DetermineNullableType<double, double?>(stringReader));
+    }
+
+    private static IToken CreateIntToken(StringReader stringReader, StringBuilder textFound)
+    {
+        if (!int.TryParse(textFound.ToString(), out int number))
+        {
+            throw new Exception("Number Factory Not Able To Parse Number. Value = " + textFound);
+        }
+
+        return new NumberToken(number, RuleParsingUtility.DetermineNullableType<int, int?>(stringReader));
+    }
 }
 
-[DebuggerDisplay("{Value}")]
+[DebuggerDisplay("{Value} | Type = {TypeToUse}")]
 public record NumberToken(int Value, Type TypeToUse) : IToken
+{
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+}
+
+[DebuggerDisplay("{Value} | Type = {TypeToUse}")]
+public record NumberDoubleToken(double Value, Type TypeToUse) : IToken
 {
     public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }
