@@ -7,6 +7,9 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class NumberFactory : ITokenFactory
 {
+    private const char NullableTokenIdentifier = '?';
+    private const char DoubleTokenIdentifier = 'd';
+
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => char.IsNumber(characterRead);
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
@@ -19,47 +22,41 @@ public class NumberFactory : ITokenFactory
         }
 
         //we need to handle if this is nullable or a double (double = 'd', nullable = '?')
-        var (IsDouble, IsNullable) = WalkAdditionalCharacters(stringReader);
+        var (IsDoubleDataType, IsNullable) = WalkAdditionalCharacters(stringReader);
 
-        var typeToUse = DetermineType(IsDouble, IsNullable);
+        var typeToUse = DetermineType(IsDoubleDataType, IsNullable);
 
-        return IsDouble ?
+        return IsDoubleDataType ?
             CreateDoubleToken(typeToUse, text) :
             CreateIntToken(typeToUse, text);
     }
 
     private static Type DetermineType(bool isDouble, bool isNullable)
     {
-        if (isDouble && isNullable)
-        {
-            return typeof(double?);
-        }
-
         if (isDouble)
         {
-            return typeof(double);
+            return isNullable ?
+                        typeof(double?) :
+                        typeof(double);
         }
 
-        if (isNullable)
-        {
-            return typeof(int?);
-        }
-
-        return typeof(int);
+        return isNullable ?
+            typeof(int?) :
+            typeof(int);
     }
 
     private static bool IsFinalCharacter(StringReader readerToUse)
     {
         var peekedCharacter = readerToUse.PeekCharacter();
 
-        return !char.IsWhiteSpace(peekedCharacter) && peekedCharacter != 'd' && peekedCharacter != '?';
+        return !char.IsWhiteSpace(peekedCharacter) && peekedCharacter != DoubleTokenIdentifier && peekedCharacter != NullableTokenIdentifier;
     }
 
-    private static (bool IsDouble, bool IsNullable) WalkAdditionalCharacters(StringReader stringReader)
+    private static (bool IsDoubleDataType, bool IsNullable) WalkAdditionalCharacters(StringReader stringReader)
     {
         var peekNextCharacter = stringReader.PeekCharacter();
 
-        if (peekNextCharacter != 'd' && peekNextCharacter != '?')
+        if (peekNextCharacter != DoubleTokenIdentifier && peekNextCharacter != NullableTokenIdentifier)
         {
             return (false, false);
         }
@@ -71,11 +68,11 @@ public class NumberFactory : ITokenFactory
         {
             var readCharacter = stringReader.ReadCharacter();
 
-            if (readCharacter == 'd')
+            if (readCharacter == DoubleTokenIdentifier)
             {
                 isDouble = true;
             }
-            else if (readCharacter == '?')
+            else if (readCharacter == NullableTokenIdentifier)
             {
                 isNullable = true;
             }
