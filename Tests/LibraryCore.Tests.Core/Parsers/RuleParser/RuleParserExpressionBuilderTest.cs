@@ -5,7 +5,7 @@ namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 {
-    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers, bool? NullableBoolTest = null);
+    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers, bool? NullableBoolTest = null, double? Price = null, double PriceNonNullable = 5);
     private SurveyModel Model { get; }
     private RuleParserFixture RuleParserFixture { get; }
 
@@ -15,7 +15,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         {
             { 1, "Yes" },
             { 2, "High" }
-        });
+        }, Price: 5);
         RuleParserFixture = ruleParserFixture;
     }
 
@@ -223,6 +223,14 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     //is null
     [InlineData("$Survey.NumberOfKidsNullable == null", true)]
     [InlineData("$Survey.NumberOfKidsNullable != null", false)]
+
+    //nullable double
+    [InlineData("$Survey.Price > 3.45d?", true)]
+    [InlineData("$Survey.Price < 4.50d?", false)]
+
+    //non-nullable double
+    [InlineData("$Survey.PriceNonNullable > 3.45d", true)]
+    [InlineData("$Survey.PriceNonNullable < 4.50d", false)]
 
     [Theory]
     public void ComparisonTest(string statementToTest, bool expectedResult)
