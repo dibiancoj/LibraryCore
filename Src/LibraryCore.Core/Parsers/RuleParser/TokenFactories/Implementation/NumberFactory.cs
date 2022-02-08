@@ -13,7 +13,7 @@ public class NumberFactory : ITokenFactory
     {
         var text = new StringBuilder().Append(characterRead);
 
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()) && stringReader.PeekCharacter() != 'd')
+        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()) && stringReader.PeekCharacter() != 'd' && stringReader.PeekCharacter() != '?')
         {
             text.Append(stringReader.ReadCharacter());
         }
