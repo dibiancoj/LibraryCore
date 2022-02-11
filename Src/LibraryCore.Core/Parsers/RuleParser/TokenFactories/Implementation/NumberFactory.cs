@@ -102,7 +102,7 @@ public class NumberFactory : ITokenFactory
     {
         if (!int.TryParse(textFound.ToString(), out int number))
         {
-            throw new Exception("Number Factory [Int] Not Able To Parse Number. Value = " + textFound);
+            throw new Exception("Number Factory [Int] Not Able To Parse Number. Value = " + textFound.ToString());
         }
 
         return new NumberToken(number, typeToUse);
