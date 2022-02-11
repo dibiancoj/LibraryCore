@@ -20,7 +20,7 @@ public class ArrayFactory : ITokenFactory
             return new ArrayToken(parameterGroup);
         }
 
-        throw new Exception("ArrayFactory Not Able To Parse Information");
+        throw new Exception("ArrayFactory Has Blank Array Or Is Not Able To Parse The Value");
     }
 }
 

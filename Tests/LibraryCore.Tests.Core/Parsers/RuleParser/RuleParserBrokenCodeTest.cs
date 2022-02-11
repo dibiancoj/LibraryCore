@@ -34,4 +34,12 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 
         Assert.Equal("Character Read N Is Not Expected. Expected Character = U or u", result.Message);
     }
+
+    [Fact]
+    public void ArrayNotValidSyntax()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == []"));
+
+        Assert.Equal("ArrayFactory Has Blank Array Or Is Not Able To Parse The Value", result.Message);
+    }
 }
