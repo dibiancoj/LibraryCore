@@ -36,10 +36,18 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void ArrayNotValidSyntax()
+    public void ArrayInValidSyntax()
     {
         var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == []"));
 
         Assert.Equal("ArrayFactory Has Blank Array Or Is Not Able To Parse The Value", result.Message);
+    }
+
+    [Fact]
+    public void MethodCallInvalidSyntax()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == @"));
+
+        Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
     }
 }
