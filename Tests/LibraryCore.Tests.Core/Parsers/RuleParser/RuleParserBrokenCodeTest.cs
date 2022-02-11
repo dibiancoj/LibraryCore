@@ -50,4 +50,20 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 
         Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
     }
+
+    [Fact]
+    public void IntNotParseable()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == 12.32.23"));
+
+        Assert.Equal("Number Factory [Int] Not Able To Parse Number. Value = 12.32.23", result.Message);
+    }
+
+    [Fact]
+    public void DoubleNotParseable()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == 12.32.23d"));
+
+        Assert.Equal("Number Factory [Double] Not Able To Parse Number. Value = 12.32.23", result.Message);
+    }
 }
