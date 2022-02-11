@@ -19,8 +19,6 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
         Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);
     }
 
-
-
     [Fact]
     public void TrueStartsValidButEntireWordNotPresent()
     {
