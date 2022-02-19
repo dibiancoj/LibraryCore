@@ -28,6 +28,11 @@ public class MethodCallFactory : ITokenFactory
             //need to determine the method name so we walk 
             var methodName = WalkTheMethodName(stringReader);
 
+            if (!RegisterdMethods.TryGetValue(methodName, out var tryToGetMethodInfoResult))
+            {
+                throw new Exception($"Method Name = {methodName} Is Not Registered In MethodCallFactory. Call {nameof(RegisterNewMethodAlias)} To Register The Method");
+            }
+
             //eat the opening (
             RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '(');
 
@@ -40,10 +45,10 @@ public class MethodCallFactory : ITokenFactory
             if (hasNoParameters)
             {
                 //closing )
-                stringReader.Read();
+                RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, ')');
             }
 
-            return new MethodCallToken(RegisterdMethods[methodName], parameterGroup);
+            return new MethodCallToken(tryToGetMethodInfoResult, parameterGroup);
         }
 
         throw new Exception("MethodCallFactory Not Able To Parse Information");
