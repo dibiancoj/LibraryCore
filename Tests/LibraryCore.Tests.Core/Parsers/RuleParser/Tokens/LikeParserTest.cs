@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using System.Linq.Expressions;
 
@@ -17,7 +16,9 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("'test' like 'tester'");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("'test' like 'tester'")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<StringToken>(result[0]);
@@ -36,10 +37,12 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void StringLike(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(code);
-        var expression = RuleParserExpressionBuilder.BuildExpression(tokens);
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(code)
+                                                .BuildExpression()
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke());
+        Assert.Equal(expectedResult, expression.Invoke());
     }
 }
 

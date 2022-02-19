@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -16,7 +15,9 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("@MyMethod1(1,true, 'bla') == 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("@MyMethod1(1,true, 'bla') == 1")
+                                                .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<MethodCallToken>(result[0]);
@@ -53,10 +54,12 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void BasicMethodCallPositive(bool expectedResult, string clauseToTest)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(clauseToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(clauseToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
 }

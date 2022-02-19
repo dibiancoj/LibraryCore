@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -16,7 +15,9 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020^");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                             .ParseString("$Param1 == ^1/1/2020^")
+                                             .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -30,7 +31,9 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void DateTimeWithTimeParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020 2:00pm^");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Param1 == ^1/1/2020 2:00pm^")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -48,7 +51,9 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void NullableDateTimeParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020^?");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Param1 == ^1/1/2020^?")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -79,10 +84,12 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void DateTimeTests(string clauseToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(clauseToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(clauseToTest)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [InlineData("$Survey.LastLogin == ^2/1/2020^?", true)]
@@ -94,10 +101,12 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void NullableDateTimeTests(string clauseToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(clauseToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(clauseToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder()
                                                                     .WithLastLogIn(new DateTime(2020, 2, 1))
                                                                     .Value));
     }

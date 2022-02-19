@@ -16,7 +16,9 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("'abc' == 'def'");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc' == 'def'")
+                                                .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<StringToken>(result[0]);
@@ -45,26 +47,28 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(expressionToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [Fact]
     public void ExpressionInLinq()
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name == 'Jacob DeGrom'");
-        var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Name == 'Jacob DeGrom'")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(
                                 new SurveyModelBuilder(),
                                 new SurveyModelBuilder()
                                     .WithName("John"));
 
-        var results = records.Where(compiledExpression);
-
-        Assert.Single(results);
+        Assert.Single(records.Where(expression));
     }
 }
 

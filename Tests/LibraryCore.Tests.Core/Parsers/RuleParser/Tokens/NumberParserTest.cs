@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -16,7 +15,9 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void IntParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("1 == 24");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("1 == 24")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -35,7 +36,9 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void DoubleParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("1d == 24d");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("1d == 24d")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<double>>(result[0]);
@@ -77,10 +80,12 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void IntExpressionsToTest(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(expressionToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [InlineData("$PriceOfSurgery >= 17d", false)]
@@ -95,17 +100,21 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void DoubleExpressionsToTest(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(expressionToTest)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [Fact]
     public void ExpressionInLinq()
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$SurgeryCount == 10 || $PriceOfSurgery == 9.95d");
-        var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$SurgeryCount == 10 || $PriceOfSurgery == 9.95d")
+                                               .BuildExpression<Survey>("Survey")
+                                               .Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(
 
@@ -123,7 +132,7 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
                                     .WithSurgeryCount(100)
                                     .WithSurgeryPrice(100));
 
-        var results = records.Where(compiledExpression);
+        var results = records.Where(expression);
 
         Assert.Equal(2, results.Count());
         Assert.Contains(results, x => x.Name == "1");

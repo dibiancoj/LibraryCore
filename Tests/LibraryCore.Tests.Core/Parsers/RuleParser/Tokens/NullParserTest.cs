@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -16,7 +15,9 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("1 == null");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("1 == null")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -33,10 +34,12 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(expressionToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder()
                                                        .WithName(nameValueToSet)
                                                        .Value));
     }
@@ -44,8 +47,10 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ExpressionInLinq()
     {
-        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name == null || $Name == 'Jacob'");
-        var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Name == null || $Name == 'Jacob'")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(
                                 new SurveyModelBuilder()
@@ -57,7 +62,7 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
                                 new SurveyModelBuilder()
                                     .WithName("John"));
 
-        var results = records.Where(compiledExpression);
+        var results = records.Where(expression);
 
         Assert.Equal(2, results.Count());
         Assert.Contains(results, x => x.Name == "Jacob");
