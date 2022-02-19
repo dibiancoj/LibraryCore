@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
-public class NullTokenFactory : ITokenFactory
+public class NullFactory : ITokenFactory
 {
     private NullToken CachedToken { get; } = new();
 
