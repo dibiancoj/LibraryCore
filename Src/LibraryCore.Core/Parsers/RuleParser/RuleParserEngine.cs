@@ -14,18 +14,20 @@ public class RuleParserEngine
     private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //Types:
-    //SomeValue == 'some text'  <-- string
-    //SomeValue == true         <-- boolean
-    //SomeValue == 24           <-- int
-    //SomeValue == 24?          <-- nullable int
-    //SomeValue == 24d          <-- double
-    //SomeValue == 24d?         <-- nullable double
-    //SomeValue == null         <-- null values
-    //SomeValue == ^1/1/2000^   <-- date
-    //SomeValue == ^1/1/2000^?  <-- nullable date
-    //[1,2,3] contains 2        <-- array of ints
-    //['a1','a2'] contains 'a2' <-- array of strings
- 
+    //SomeValue == 'some text'          <-- string
+    //SomeValue == true                 <-- boolean
+    //SomeValue == 24                   <-- int
+    //SomeValue == 24?                  <-- nullable int
+    //SomeValue == 24d                  <-- double
+    //SomeValue == 24d?                 <-- nullable double
+    //SomeValue == null                 <-- null values
+    //SomeValue == ^1/1/2000^           <-- date
+    //SomeValue == ^1/1/2022 1:00pm^    <-- date with time
+    //SomeValue == ^1/1/2000^?          <-- nullable date
+    //SomeValue == ^1/1/2000 1:00pm^?   <-- nullable date with time
+    //[1,2,3] contains 2                <-- array of ints
+    //['a1','a2'] contains 'a2'         <-- array of strings
+
     //Parameter / Methods Calls
     //$ParameterName.PropertyName Of a property passed in
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace

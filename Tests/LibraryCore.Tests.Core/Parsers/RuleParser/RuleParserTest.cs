@@ -321,6 +321,24 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void DateTimeWithTimeTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020 2:00pm^");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<ParameterPropertyToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<DateToken>(result[4]);
+
+        var dateAsDateToken = (DateToken)result[4];
+
+        Assert.Equal(typeof(DateTime), dateAsDateToken.TypeToUse);
+        Assert.Equal(new DateTime(2020, 1, 1, 14, 0, 0), dateAsDateToken.Value);
+    }
+
+    [Fact]
     public void NullableDateTimeTest()
     {
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020^?");
@@ -331,7 +349,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
         Assert.IsType<DateToken>(result[4]);
-        Assert.Equal(typeof(DateTime?),((DateToken)result[4]).TypeToUse);
+        Assert.Equal(typeof(DateTime?), ((DateToken)result[4]).TypeToUse);
     }
 
     #endregion

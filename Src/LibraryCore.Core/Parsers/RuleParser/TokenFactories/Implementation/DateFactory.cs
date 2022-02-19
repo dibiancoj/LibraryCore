@@ -31,15 +31,8 @@ public class DateFactory : ITokenFactory
 
     private static bool IsInDateClause(StringReader readerToUse)
     {
-        //go until we hit a ^
-        var peekedCharacter = readerToUse.PeekCharacter();
-
-        if (char.IsWhiteSpace(peekedCharacter))
-        {
-            throw new Exception($"No Closing {DateTimeIdentifier} Was Found For Date Token.");
-        }
-
-        return peekedCharacter != DateTimeIdentifier;
+        //need to handle white spaces for the time
+        return readerToUse.PeekCharacter() != DateTimeIdentifier;
     }
 
     private static bool IsNullableDate(StringReader readerToUse)
