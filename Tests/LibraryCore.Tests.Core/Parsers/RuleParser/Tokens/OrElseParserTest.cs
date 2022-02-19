@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
 
@@ -35,6 +36,9 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[11]);
         Assert.IsType<NumberToken<int>>(result[12]);
     }
+
+    [Fact]
+    public void LessThenOrEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new OrElseToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     //string
     [InlineData("$Name == 'John Portal' || $Name == 'Bob'", false)]
