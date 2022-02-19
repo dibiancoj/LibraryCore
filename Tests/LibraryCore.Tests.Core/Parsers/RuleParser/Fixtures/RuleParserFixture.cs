@@ -11,7 +11,7 @@ public class RuleParserFixture
         RuleParserEngineToUse = new RuleParserEngine(new TokenFactoryProvider(new ITokenFactory[]
         {
             new BooleanFactory(),
-            new NullTokenFactory(),
+            new NullFactory(),
 
             new ParameterPropertyFactory(),
             new WhiteSpaceFactory(),
