@@ -25,7 +25,7 @@ public static class RuleParserRegistration
     /// Call if you need additional configuration such as registered methods
     /// </summary>
     /// <returns>RuleParserConfiguration which you can configure and then create the registration</returns>
-    public static RuleParserConfiguration AddAndConfigureRuleParser(this IServiceCollection serviceDescriptors) => new(serviceDescriptors);
+    public static RuleParserConfiguration AddRuleParserWithConfiguration(this IServiceCollection serviceDescriptors) => new(serviceDescriptors);
 
 
 }

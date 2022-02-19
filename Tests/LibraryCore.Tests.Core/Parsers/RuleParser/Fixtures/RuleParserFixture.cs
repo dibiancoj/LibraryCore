@@ -9,7 +9,7 @@ public class RuleParserFixture
     public RuleParserFixture()
     {
         ServiceProvider = new ServiceCollection()
-           .AddAndConfigureRuleParser()
+           .AddRuleParserWithConfiguration()
                .WithRegisterMethod("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
                .WithRegisterMethod("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
                .WithRegisterMethod("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
