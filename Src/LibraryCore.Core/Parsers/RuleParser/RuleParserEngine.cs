@@ -21,6 +21,8 @@ public class RuleParserEngine
     //SomeValue == 24d          <-- double
     //SomeValue == 24d?         <-- nullable double
     //SomeValue == null         <-- null values
+    //SomeValue == ^1/1/2000^   <-- date
+    //SomeValue == ^1/1/2000^?  <-- nullable date
     //[1,2,3] contains 2        <-- array of ints
     //['a1','a2'] contains 'a2' <-- array of strings
  

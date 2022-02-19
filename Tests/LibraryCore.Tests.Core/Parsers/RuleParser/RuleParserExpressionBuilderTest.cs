@@ -5,13 +5,13 @@ namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
 public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
 {
-    public record SurveyModel(string Name, int Age, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers, bool? NullableBoolTest = null, double? Price = null, double PriceNonNullable = 5);
+    public record SurveyModel(string Name, int Age, DateTime DateOfBirth, DateTime? LastLogin, bool IsMarried, int? NumberOfKidsNullable, IDictionary<int, string> Answers, bool? NullableBoolTest = null, double? Price = null, double PriceNonNullable = 5);
     private SurveyModel Model { get; }
     private RuleParserFixture RuleParserFixture { get; }
 
     public RuleParserExpressionBuilderTest(RuleParserFixture ruleParserFixture)
     {
-        Model = new SurveyModel("Jacob DeGrom", 30, true, null, new Dictionary<int, string>
+        Model = new SurveyModel("Jacob DeGrom", 30, new DateTime(2020, 2, 1), new DateTime(2020, 2, 1), true, null, new Dictionary<int, string>
         {
             { 1, "Yes" },
             { 2, "High" }
@@ -186,6 +186,36 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
     }
 
+    [InlineData("$Survey.DateOfBirth == ^1/1/2020^", false)]
+    [InlineData("$Survey.DateOfBirth >= ^1/1/2020^", true)]
+    [InlineData("$Survey.DateOfBirth == ^3/1/2020^", false)]
+    [InlineData("$Survey.DateOfBirth == ^2/1/2020^", true)]
+    [InlineData("$Survey.DateOfBirth < ^1/1/2019^", false)]
+    [InlineData("$Survey.DateOfBirth > ^1/1/2019^", true)]
+    [Theory]
+    public void DateTimeTests(string clauseToTest, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(clauseToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
+    }
+
+    [InlineData("$Survey.LastLogin == ^2/1/2020^?", true)]
+    [InlineData("$Survey.LastLogin == ^1/1/2020^?", false)]
+    [InlineData("$Survey.LastLogin >= ^1/1/2020^?", true)]
+    [InlineData("$Survey.LastLogin == ^3/1/2020^?", false)]
+    [InlineData("$Survey.LastLogin < ^1/1/2019^?", false)]
+    [InlineData("$Survey.LastLogin > ^1/1/2019^?", true)]
+    [Theory]
+    public void NullableDateTimeTests(string clauseToTest, bool expectedResult)
+    {
+        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(clauseToTest);
+        var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
+
+        Assert.Equal(expectedResult, expression.Compile().Invoke(Model));
+    }
+
     #endregion
 
     #region Comparison Tests
@@ -249,7 +279,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel(null!, 0, false, null, null!)));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel(null!, 0, DateTime.MinValue, null, false, null, null!)));
     }
 
     #endregion
@@ -269,7 +299,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, 5, new Dictionary<int, string>(), Price: 35)));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, DateTime.MinValue, null, false, 5, new Dictionary<int, string>(), Price: 35)));
     }
 
     [InlineData("@GetNullableIntArray() contains $Survey.NumberOfKidsNullable", 80, true)]
@@ -280,7 +310,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, false, numberToSet, new Dictionary<int, string>())));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("Custom Name", 24, DateTime.MinValue, null, false, numberToSet, new Dictionary<int, string>())));
 
     }
 
@@ -359,7 +389,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>())));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, DateTime.MinValue, null, true, 10, new Dictionary<int, string>())));
     }
 
     [InlineData("$Survey.NullableBoolTest == true?", true)]
@@ -370,7 +400,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>(), true)));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, DateTime.MinValue, null, true, 10, new Dictionary<int, string>(), true)));
     }
 
     [InlineData("$Survey.NullableBoolTest == true?", false)]
@@ -381,7 +411,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToText);
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel>(tokens, "Survey");
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, true, 10, new Dictionary<int, string>())));
+        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModel("John", 21, DateTime.MinValue, null, true, 10, new Dictionary<int, string>())));
     }
 
     #endregion
@@ -393,9 +423,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, DateTime.MinValue, null, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Name == 'Jason'");
@@ -412,9 +442,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, DateTime.MinValue, null, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Name == 'John' && $Survey.IsMarried != True");
@@ -431,9 +461,9 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
     {
         var dataSet = new List<SurveyModel>
         {
-            new SurveyModel("John", 21, false, null, new Dictionary<int,string>{ {1, "NA" } }),
-            new SurveyModel("Jacob", 30, true, null, new Dictionary<int,string>{ {1, "High" } }),
-            new SurveyModel("Jason", 37, true, null, new Dictionary<int,string>{ {1, "Low" } })
+            new SurveyModel("John", 21, DateTime.MinValue, null, false, null, new Dictionary<int,string>{ {1, "NA" } }),
+            new SurveyModel("Jacob", 30, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "High" } }),
+            new SurveyModel("Jason", 37, DateTime.MinValue, null, true, null, new Dictionary<int,string>{ {1, "Low" } })
         };
 
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1(1) == 'High'");
@@ -464,7 +494,7 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.Age == 30 && $Size.Age == 12");
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel>(tokens, "Survey", "Size");
 
-        Assert.True(expression.Compile().Invoke(Model, new SurveyModel("Jacob", 12, false, null, new Dictionary<int, string>())));
+        Assert.True(expression.Compile().Invoke(Model, new SurveyModel("Jacob", 12, DateTime.MinValue, null, false, null, new Dictionary<int, string>())));
     }
 
     [Fact]
@@ -474,8 +504,8 @@ public class RuleParserExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var expression = RuleParserExpressionBuilder.BuildExpression<SurveyModel, SurveyModel, SurveyModel>(tokens, "Survey", "Size", "Color");
 
         Assert.True(expression.Compile().Invoke(Model,
-                                                new SurveyModel("Jacob", 12, false, null, new Dictionary<int, string>()),
-                                                new SurveyModel("Teenager", 15, false, null, new Dictionary<int, string>())));
+                                                new SurveyModel("Jacob", 12, DateTime.MinValue, null, false, null, new Dictionary<int, string>()),
+                                                new SurveyModel("Teenager", 15, DateTime.MinValue, null, false, null, new Dictionary<int, string>())));
     }
 
     #endregion

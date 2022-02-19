@@ -6,6 +6,8 @@ namespace LibraryCore.Core.Parsers.RuleParser;
 
 public static class RuleParsingUtility
 {
+    internal const char NullableDataTypeIdentifier = '?';
+
     /// <summary>
     /// Walk the parmeters in a method or between (....). This is specifically for method parameter parsing but can be used. The reader should be passed in with the first character being '('
     /// Syntax (24,true,'test'). This will work with multiple scenarios
@@ -47,9 +49,9 @@ public static class RuleParsingUtility
 
     internal static Type DetermineNullableType<T, TNullableType>(StringReader reader)
     {
-        if (reader.PeekCharacter() == '?')
+        if (reader.PeekCharacter() == NullableDataTypeIdentifier)
         {
-            ThrowIfCharacterNotExpected(reader, '?');
+            ThrowIfCharacterNotExpected(reader, NullableDataTypeIdentifier);
             return typeof(TNullableType);
         }
 

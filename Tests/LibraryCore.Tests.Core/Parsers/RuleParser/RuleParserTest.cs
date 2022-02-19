@@ -306,6 +306,34 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<StringToken>(values[2]);
     }
 
+    [Fact]
+    public void DateTimeTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020^");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<ParameterPropertyToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<DateToken>(result[4]);
+        Assert.Equal(typeof(DateTime), ((DateToken)result[4]).TypeToUse);
+    }
+
+    [Fact]
+    public void NullableDateTimeTest()
+    {
+        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020^?");
+
+        Assert.Equal(5, result.Count);
+        Assert.IsType<ParameterPropertyToken>(result[0]);
+        Assert.IsType<WhiteSpaceToken>(result[1]);
+        Assert.IsType<EqualsToken>(result[2]);
+        Assert.IsType<WhiteSpaceToken>(result[3]);
+        Assert.IsType<DateToken>(result[4]);
+        Assert.Equal(typeof(DateTime?),((DateToken)result[4]).TypeToUse);
+    }
+
     #endregion
 
     #region Create Token - Not Implemented

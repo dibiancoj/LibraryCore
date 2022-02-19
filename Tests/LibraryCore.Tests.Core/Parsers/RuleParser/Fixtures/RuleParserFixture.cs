@@ -18,6 +18,7 @@ public class RuleParserFixture
             new WhiteSpaceFactory(),
             new StringFactory(),
             new NumberFactory(),
+            new DateFactory(),
             new ArrayFactory(),
             new MethodCallFactory()
                    .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
