@@ -78,11 +78,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == null");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
@@ -104,11 +104,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 < 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<LessThenToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -117,11 +117,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 <= 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<LessThenOrEqualToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -130,11 +130,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 > 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<GreaterThenToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -143,11 +143,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 >= 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<GreaterThenOrEqualToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -156,11 +156,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -182,11 +182,11 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 != 1");
 
         Assert.Equal(5, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<NotEqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -195,21 +195,21 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1 && 2 == 2");
 
         Assert.Equal(13, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
 
         Assert.IsType<WhiteSpaceToken>(result[5]);
         Assert.IsType<AndAlsoToken>(result[6]);
         Assert.IsType<WhiteSpaceToken>(result[7]);
 
-        Assert.IsType<NumberToken>(result[8]);
+        Assert.IsType<NumberToken<int>>(result[8]);
         Assert.IsType<WhiteSpaceToken>(result[9]);
         Assert.IsType<EqualsToken>(result[10]);
         Assert.IsType<WhiteSpaceToken>(result[11]);
-        Assert.IsType<NumberToken>(result[12]);
+        Assert.IsType<NumberToken<int>>(result[12]);
     }
 
     [Fact]
@@ -218,21 +218,21 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1 || 2 == 2");
 
         Assert.Equal(13, result.Count);
-        Assert.IsType<NumberToken>(result[0]);
+        Assert.IsType<NumberToken<int>>(result[0]);
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
 
         Assert.IsType<WhiteSpaceToken>(result[5]);
         Assert.IsType<OrElseToken>(result[6]);
         Assert.IsType<WhiteSpaceToken>(result[7]);
 
-        Assert.IsType<NumberToken>(result[8]);
+        Assert.IsType<NumberToken<int>>(result[8]);
         Assert.IsType<WhiteSpaceToken>(result[9]);
         Assert.IsType<EqualsToken>(result[10]);
         Assert.IsType<WhiteSpaceToken>(result[11]);
-        Assert.IsType<NumberToken>(result[12]);
+        Assert.IsType<NumberToken<int>>(result[12]);
     }
 
     [Fact]
@@ -245,7 +245,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -258,7 +258,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<EqualsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -271,7 +271,7 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<WhiteSpaceToken>(result[1]);
         Assert.IsType<ContainsToken>(result[2]);
         Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken>(result[4]);
+        Assert.IsType<NumberToken<int>>(result[4]);
     }
 
     [Fact]
@@ -285,9 +285,9 @@ public class RuleParserTest : IClassFixture<RuleParserFixture>
         var array = result.OfType<ArrayToken>().First();
         var values = array.Values.ToArray();
 
-        Assert.IsType<NumberToken>(values[0]);
-        Assert.IsType<NumberToken>(values[1]);
-        Assert.IsType<NumberToken>(values[2]);
+        Assert.IsType<NumberToken<int>>(values[0]);
+        Assert.IsType<NumberToken<int>>(values[1]);
+        Assert.IsType<NumberToken<int>>(values[2]);
     }
 
     [Fact]

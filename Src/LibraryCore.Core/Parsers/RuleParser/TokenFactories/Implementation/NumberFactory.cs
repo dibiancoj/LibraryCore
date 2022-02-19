@@ -95,7 +95,7 @@ public class NumberFactory : ITokenFactory
             throw new Exception("Number Factory [Double] Not Able To Parse Number. Value = " + textFound.ToString());
         }
 
-        return new NumberDoubleToken(number, typeToUse);
+        return new NumberToken<double>(number, typeToUse);
     }
 
     private static IToken CreateIntToken(Type typeToUse, StringBuilder textFound)
@@ -105,20 +105,12 @@ public class NumberFactory : ITokenFactory
             throw new Exception("Number Factory [Int] Not Able To Parse Number. Value = " + textFound.ToString());
         }
 
-        return new NumberToken(number, typeToUse);
+        return new NumberToken<int>(number, typeToUse);
     }
 }
 
 [DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
-public record NumberToken(int Value, Type TypeToUse) : IToken, INumberToken
-{
-    public Type NumberType => TypeToUse;
-
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
-}
-
-[DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
-public record NumberDoubleToken(double Value, Type TypeToUse) : IToken, INumberToken
+public record NumberToken<T>(T Value, Type TypeToUse) : IToken, INumberToken
 {
     public Type NumberType => TypeToUse;
 
