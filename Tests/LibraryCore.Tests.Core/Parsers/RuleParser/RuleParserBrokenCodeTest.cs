@@ -58,4 +58,12 @@ public class RuleParserBrokenCodeTest : IClassFixture<RuleParserFixture>
 
         Assert.Equal("Number Factory [Double] Not Able To Parse Number. Value = 12.32.23", result.Message);
     }
+
+    [Fact]
+    public void MethodNameNotRegistered()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == @MethodNotRegistered()"));
+
+        Assert.Equal("Method Name = MethodNotRegistered Is Not Registered In MethodCallFactory. Call RegisterNewMethodAlias To Register The Method", result.Message);
+    }
 }

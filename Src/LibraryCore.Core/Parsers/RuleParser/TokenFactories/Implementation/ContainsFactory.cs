@@ -15,13 +15,7 @@ public class ContainsFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other c...ontains
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'O', 'o');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'N', 'n');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'T', 't');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'A', 'a');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'I', 'i');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'N', 'n');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'S', 's');
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, "ONTAINS");
 
         return CachedToken;
     }

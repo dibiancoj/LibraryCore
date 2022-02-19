@@ -12,9 +12,7 @@ public class NullTokenFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the ull
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'U', 'u');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, "ULL");
 
         return CachedToken;
     }

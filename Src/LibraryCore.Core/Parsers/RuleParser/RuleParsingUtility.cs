@@ -10,7 +10,7 @@ public static class RuleParsingUtility
     /// Walk the parmeters in a method or between (....). This is specifically for method parameter parsing but can be used. The reader should be passed in with the first character being '('
     /// Syntax (24,true,'test'). This will work with multiple scenarios
     /// </summary>
-    public static IEnumerable<IToken> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider, char closingCharacter)
+    internal static IEnumerable<IToken> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider, char closingCharacter)
     {
         var text = new StringBuilder();
 
@@ -35,17 +35,17 @@ public static class RuleParsingUtility
         }
     }
 
-    public static void ThrowIfCharacterNotExpected(StringReader reader, params char[] expectedCharacterRead)
+    internal static void ThrowIfCharacterNotExpected(StringReader reader, params char[] expectedCharacterRead)
     {
         char characterRead = reader.ReadCharacter();
 
         if (!expectedCharacterRead.Contains(characterRead))
         {
-            throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ",expectedCharacterRead)}");
+            throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ", expectedCharacterRead)}");
         }
     }
 
-    public static Type DetermineNullableType<T, TNullableType>(StringReader reader)
+    internal static Type DetermineNullableType<T, TNullableType>(StringReader reader)
     {
         if (reader.PeekCharacter() == '?')
         {
@@ -54,5 +54,13 @@ public static class RuleParsingUtility
         }
 
         return typeof(T);
+    }
+
+    internal static void EatOrThrowCharacters(StringReader stringReader, string charactersToEat)
+    {
+        foreach (var characterToEat in charactersToEat)
+        {
+            ThrowIfCharacterNotExpected(stringReader, char.ToUpper(characterToEat), char.ToLower(characterToEat));
+        }
     }
 }

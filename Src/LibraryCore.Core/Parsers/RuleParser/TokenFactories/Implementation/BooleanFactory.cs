@@ -10,24 +10,11 @@ public class BooleanFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
-        bool valueToUse;
+        //set the value if its true / false.
+        bool valueToUse = characterRead == 't' || characterRead == 'T';
 
-        if (characterRead == 'f' || characterRead == 'F')
-        {
-            valueToUse = false;
-
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'A', 'a');
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'L', 'l');
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'S', 's');
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
-        }
-        else
-        {
-            valueToUse = true;
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'R', 'r');
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'U', 'u');
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
-        }
+        //skip the first character since we already read it. Then eat the rest of the word
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, valueToUse.ToString()[1..]);
 
         return new BooleanToken(valueToUse, RuleParsingUtility.DetermineNullableType<bool, bool?>(stringReader));
     }
