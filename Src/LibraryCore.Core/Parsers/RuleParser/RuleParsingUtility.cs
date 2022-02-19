@@ -41,7 +41,7 @@ public static class RuleParsingUtility
 
         if (!expectedCharacterRead.Contains(characterRead))
         {
-            throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ",expectedCharacterRead)}");
+            throw new Exception($"Character Read {characterRead} Is Not Expected. Expected Character = {string.Join(" or ", expectedCharacterRead)}");
         }
     }
 
