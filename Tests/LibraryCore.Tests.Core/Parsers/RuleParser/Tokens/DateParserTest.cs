@@ -16,7 +16,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020^");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020^");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -30,7 +30,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void DateTimeWithTimeParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020 2:00pm^");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020 2:00pm^");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -48,7 +48,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void NullableDateTimeParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^1/1/2020^?");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^1/1/2020^?");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -64,7 +64,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     {
         var errorRaised = Assert.Throws<Exception>(() =>
         {
-            RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^abcd^");
+            RuleParserFixture.ResolveRuleParserEngine().ParseString("$Param1 == ^abcd^");
         });
 
         Assert.Equal("Date Time Factory Not Able To Parse Date. Value = abcd", errorRaised.Message);
@@ -79,7 +79,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void DateTimeTests(string clauseToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(clauseToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(clauseToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
@@ -94,7 +94,7 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void NullableDateTimeTests(string clauseToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(clauseToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(clauseToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()

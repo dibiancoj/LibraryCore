@@ -16,7 +16,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ArrayOfNumberTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("[1,2,3]");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("[1,2,3]");
 
         Assert.Equal(1, result.Count);
         Assert.IsType<ArrayToken>(result[0]);
@@ -32,7 +32,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ArrayOfStringsTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("['item 1','item 2','item 3']");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("['item 1','item 2','item 3']");
 
         Assert.Equal(1, result.Count);
         Assert.IsType<ArrayToken>(result[0]);
@@ -48,7 +48,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ArrayInValidSyntax()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == []"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == []"));
 
         Assert.Equal("ArrayFactory Has Blank Array Or Is Not Able To Parse The Value", result.Message);
     }
@@ -72,7 +72,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void NullableArrayContains(string statementToTest, bool expectedResult, double? numberOfBoats, int? numberOfMotorcycles)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
@@ -86,7 +86,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void NullableArrayContainsFromMethod(string statementToTest, int? numberToSet, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(statementToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(statementToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()

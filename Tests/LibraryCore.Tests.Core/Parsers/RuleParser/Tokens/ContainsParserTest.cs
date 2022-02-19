@@ -17,7 +17,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1() contains 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("@MyMethod1() contains 1");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<MethodCallToken>(result[0]);
@@ -35,7 +35,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ArrayContainsInt(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(code);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
@@ -46,7 +46,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ArrayContainsString(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(code);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
@@ -57,7 +57,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ContainsFromMethod(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(code);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));

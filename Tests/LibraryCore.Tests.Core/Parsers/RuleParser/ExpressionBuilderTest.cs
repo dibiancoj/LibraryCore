@@ -15,7 +15,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void NoParameterTest()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 2");
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("1 == 2");
         var expression = RuleParserExpressionBuilder.BuildExpression(tokens);
 
         Assert.False(expression.Compile().Invoke());
@@ -24,7 +24,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void TwoParameterTest()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.SurgeryCount == 24 && $Size.SurgeryCount == 12");
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.SurgeryCount == 24 && $Size.SurgeryCount == 12");
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey, Survey>(tokens, "Survey", "Size");
 
         Assert.True(expression.Compile().Invoke(new SurveyModelBuilder()
@@ -39,7 +39,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ThreeParameterTest()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.SurgeryCount == 30 && $Size.SurgeryCount == 12 && $Color.SurgeryCount == 15");
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.SurgeryCount == 30 && $Size.SurgeryCount == 12 && $Color.SurgeryCount == 15");
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey, Survey, Survey>(tokens, "Survey", "Size", "Color");
 
         Assert.True(expression.Compile().Invoke(new SurveyModelBuilder()

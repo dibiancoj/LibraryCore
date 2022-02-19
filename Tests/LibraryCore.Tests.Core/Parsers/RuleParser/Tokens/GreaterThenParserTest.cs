@@ -17,7 +17,7 @@ public class GreaterThenParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 > 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("1 > 1");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -36,7 +36,7 @@ public class GreaterThenParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));

@@ -17,7 +17,7 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("'test' like 'tester'");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("'test' like 'tester'");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<StringToken>(result[0]);
@@ -36,7 +36,7 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void StringLike(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(code);
         var expression = RuleParserExpressionBuilder.BuildExpression(tokens);
 
         Assert.Equal(expectedResult, expression.Compile().Invoke());

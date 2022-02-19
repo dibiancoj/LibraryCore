@@ -17,7 +17,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 != 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("1 != 1");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -35,7 +35,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
@@ -46,7 +46,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ExpressionInLinq()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Name != null && $Name != 'Jacob'");
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name != null && $Name != 'Jacob'");
         var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(

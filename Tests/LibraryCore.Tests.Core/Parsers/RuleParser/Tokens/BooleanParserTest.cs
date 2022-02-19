@@ -19,7 +19,7 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ParseTest(bool canDrive)
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString($"$Survey.CanDrive == {canDrive.ToString().ToLower()}");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString($"$Survey.CanDrive == {canDrive.ToString().ToLower()}");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -36,7 +36,7 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void TrueStartsValidButEntireWordNotPresent()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == trNOT"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == trNOT"));
 
         Assert.Equal("Character Read N Is Not Expected. Expected Character = U or u", result.Message);
     }
@@ -49,7 +49,7 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool canDriveToSet, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
@@ -67,7 +67,7 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTestWithNullables(string expressionToTest, bool? hasAccount, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()

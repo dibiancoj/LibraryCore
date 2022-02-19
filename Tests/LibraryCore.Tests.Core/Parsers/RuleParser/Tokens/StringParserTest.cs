@@ -16,7 +16,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("'abc' == 'def'");
+        var result = RuleParserFixture.ResolveRuleParserEngine().ParseString("'abc' == 'def'");
 
         Assert.Equal(5, result.Count);
         Assert.IsType<StringToken>(result[0]);
@@ -35,7 +35,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void StringWithNoClosingBracket()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Name == 'noclosingbracket"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name == 'noclosingbracket"));
 
         Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);
     }
@@ -45,7 +45,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString(expressionToTest);
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
@@ -54,7 +54,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ExpressionInLinq()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Name == 'Jacob DeGrom'");
+        var tokens = RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name == 'Jacob DeGrom'");
         var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(

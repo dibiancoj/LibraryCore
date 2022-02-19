@@ -3,40 +3,35 @@ using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace LibraryCore.Core.Parsers.RuleParser.ExtensionMethods;
+namespace LibraryCore.Core.Parsers.RuleParser.Registration;
 
-public static class RuleParserRegistration
+public class RuleParserConfiguration
 {
-    /*
-     * using LibraryCore.Core.Parsers.RuleParser;
-       using LibraryCore.Core.Parsers.RuleParser.ExtensionMethods;
-       using Microsoft.Extensions.DependencyInjection;
-
-       var serviceProviderBuilder = new ServiceCollection()
-               .AddLogging()
-               .AddRuleParser();
-
-       var serviceProvider = serviceProviderBuilder.BuildServiceProvider();
-
-       var parser = serviceProvider.GetRequiredService<RuleParserEngine>();
-
-       var tokens = parser.ParseString("24 == 24");
-
-       var expression = RuleParserExpressionBuilder.BuildExpression(tokens);
-
-       var result = expression.Compile().Invoke();
-    */
-
-    public static IServiceCollection AddRuleParser(this IServiceCollection serviceDescriptors, params KeyValuePair<string, MethodInfo>[] methodCallRegistrations)
+    public RuleParserConfiguration(IServiceCollection serviceDescriptors)
     {
-        serviceDescriptors.AddRuleParserRules(methodCallRegistrations);
-        serviceDescriptors.AddSingleton<TokenFactoryProvider>();
-        serviceDescriptors.AddSingleton<RuleParserEngine>();
-
-        return serviceDescriptors;
+        ServiceDescriptors = serviceDescriptors;
+        RegisteredMethods = new Dictionary<string, MethodInfo>();
     }
 
-    private static IServiceCollection AddRuleParserRules(this IServiceCollection serviceDescriptors, params KeyValuePair<string, MethodInfo>[] methodCallRegistrations)
+    private IServiceCollection ServiceDescriptors { get; }
+    private Dictionary<string, MethodInfo> RegisteredMethods { get; }
+
+    public RuleParserConfiguration WithRegisterMethod(string key, MethodInfo methodInfo)
+    {
+        RegisteredMethods.Add(key, methodInfo);
+        return this;
+    }
+
+    public IServiceCollection BuildRuleParser()
+    {
+        AddRuleParserRules(ServiceDescriptors, RegisteredMethods);
+        ServiceDescriptors.AddSingleton<TokenFactoryProvider>();
+        ServiceDescriptors.AddSingleton<RuleParserEngine>();
+
+        return ServiceDescriptors;
+    }
+
+    private static IServiceCollection AddRuleParserRules(IServiceCollection serviceDescriptors, IDictionary<string, MethodInfo> methodCallRegistrations)
     {
         //data types
         serviceDescriptors.AddSingleton<ITokenFactory, BooleanFactory>();
