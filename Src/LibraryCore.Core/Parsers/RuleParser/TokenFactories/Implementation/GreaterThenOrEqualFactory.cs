@@ -13,7 +13,7 @@ public class GreaterThenOrEqualFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the last =
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '=');
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, "=");
 
         return CachedToken;
     }

@@ -13,7 +13,8 @@ public class EqualsFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the other equals
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '=');
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, "=");
+
         return CachedToken;
     }
 }

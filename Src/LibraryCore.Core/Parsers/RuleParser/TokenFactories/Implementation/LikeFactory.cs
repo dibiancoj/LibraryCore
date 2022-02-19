@@ -13,9 +13,8 @@ public class LikeFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         //read the l...ike
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'I', 'i');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'K', 'k');
-        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, 'E', 'e');
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, "IKE");
+        
         return CachedToken;
     }
 }
