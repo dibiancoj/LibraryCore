@@ -59,6 +59,17 @@ public class DateParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal(typeof(DateTime?), ((DateToken)result[4]).TypeToUse);
     }
 
+    [Fact]
+    public void InvalidDate()
+    {
+        var errorRaised = Assert.Throws<Exception>(() =>
+        {
+            RuleParserFixture.RuleParserEngineToUse.ParseString("$Param1 == ^abcd^");
+        });
+
+        Assert.Equal("Date Time Factory Not Able To Parse Date. Value = abcd", errorRaised.Message);
+    }
+
     [InlineData("$Survey.DateOfBirth == ^1/1/2020^", false)]
     [InlineData("$Survey.DateOfBirth >= ^1/1/2020^", true)]
     [InlineData("$Survey.DateOfBirth == ^3/1/2020^", false)]
