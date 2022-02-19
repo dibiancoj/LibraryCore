@@ -7,7 +7,6 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class NumberFactory : ITokenFactory
 {
-    private const char NullableTokenIdentifier = '?';
     private const char DoubleTokenIdentifier = 'd';
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => char.IsNumber(characterRead);
@@ -49,7 +48,7 @@ public class NumberFactory : ITokenFactory
     {
         var peekedCharacter = readerToUse.PeekCharacter();
 
-        return !char.IsWhiteSpace(peekedCharacter) && peekedCharacter != DoubleTokenIdentifier && peekedCharacter != NullableTokenIdentifier;
+        return !char.IsWhiteSpace(peekedCharacter) && peekedCharacter != DoubleTokenIdentifier && peekedCharacter != RuleParsingUtility.NullableDataTypeIdentifier;
     }
 
     private static (bool IsDoubleDataType, bool IsNullable) WalkAdditionalCharacters(StringReader stringReader)
@@ -62,7 +61,7 @@ public class NumberFactory : ITokenFactory
 
         var peekNextCharacter = stringReader.PeekCharacter();
 
-        if (peekNextCharacter != DoubleTokenIdentifier && peekNextCharacter != NullableTokenIdentifier)
+        if (peekNextCharacter != DoubleTokenIdentifier && peekNextCharacter != RuleParsingUtility.NullableDataTypeIdentifier)
         {
             return (false, false);
         }
@@ -79,7 +78,7 @@ public class NumberFactory : ITokenFactory
             {
                 isDouble = true;
             }
-            else if (readCharacter == NullableTokenIdentifier)
+            else if (readCharacter == RuleParsingUtility.NullableDataTypeIdentifier)
             {
                 isNullable = true;
             }
@@ -90,29 +89,27 @@ public class NumberFactory : ITokenFactory
 
     private static IToken CreateDoubleToken(Type typeToUse, StringBuilder textFound)
     {
-        if (!double.TryParse(textFound.ToString(), out double number))
+        if (!double.TryParse(textFound.ToString(), out double tryToParseNumber))
         {
             throw new Exception("Number Factory [Double] Not Able To Parse Number. Value = " + textFound.ToString());
         }
 
-        return new NumberToken<double>(number, typeToUse);
+        return new NumberToken<double>(tryToParseNumber, typeToUse);
     }
 
     private static IToken CreateIntToken(Type typeToUse, StringBuilder textFound)
     {
-        if (!int.TryParse(textFound.ToString(), out int number))
+        if (!int.TryParse(textFound.ToString(), out int tryToParseNumber))
         {
             throw new Exception("Number Factory [Int] Not Able To Parse Number. Value = " + textFound.ToString());
         }
 
-        return new NumberToken<int>(number, typeToUse);
+        return new NumberToken<int>(tryToParseNumber, typeToUse);
     }
 }
 
-[DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
-public record NumberToken<T>(T Value, Type TypeToUse) : IToken, INumberToken
+[DebuggerDisplay("Value = {Value} | Type = {NumberType.Name}")]
+public record NumberToken<T>(T Value, Type NumberType) : IToken, INumberToken
 {
-    public Type NumberType => TypeToUse;
-
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, NumberType);
 }

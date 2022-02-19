@@ -1,7 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
-using static LibraryCore.Tests.Core.Parsers.RuleParser.RuleParserExpressionBuilderTest;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
@@ -18,6 +17,7 @@ public class RuleParserFixture
             new WhiteSpaceFactory(),
             new StringFactory(),
             new NumberFactory(),
+            new DateFactory(),
             new ArrayFactory(),
             new MethodCallFactory()
                    .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
@@ -42,7 +42,7 @@ public class RuleParserFixture
     public RuleParserEngine RuleParserEngineToUse { get; }
 
     public static int GetANumberWithNoParameters() => 24;
-    public static string GetAnswerId(SurveyModel surveyModel, int questionId) => surveyModel.Answers[questionId];
-    public static IEnumerable<int> GetAnswerArray(SurveyModel surveyModel) => new[] { 1, 2, 3 };
-    public static IEnumerable<int?> GetNullableIntArray(SurveyModel surveyModel) => new List<int?> { 1, 2, 3, 80 };
+    public static string GetAnswerId(Survey surveyModel, int questionId) => surveyModel.Answers[questionId];
+    public static IEnumerable<int> GetAnswerArray(Survey surveyModel) => new[] { 1, 2, 3 };
+    public static IEnumerable<int?> GetNullableIntArray(Survey surveyModel) => new List<int?> { 1, 2, 3, 80 };
 }
