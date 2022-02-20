@@ -18,9 +18,9 @@ namespace LibraryCore.Performance.Tests.Tests
         [GlobalSetup]
         public void Init()
         {
-               var serviceProvider = new ServiceCollection()
-                 .AddRuleParser()
-                 .BuildServiceProvider();
+            var serviceProvider = new ServiceCollection()
+              .AddRuleParser()
+              .BuildServiceProvider();
 
             Parser = serviceProvider.GetRequiredService<RuleParserEngine>();
         }
