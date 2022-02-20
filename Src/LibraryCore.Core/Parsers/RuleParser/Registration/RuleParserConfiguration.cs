@@ -22,6 +22,13 @@ public class RuleParserConfiguration
         return this;
     }
 
+    public RuleParserConfiguration WithCustomTokenFactory<T>()
+        where T : class, ITokenFactory
+    {
+        ServiceDescriptors.AddSingleton<ITokenFactory, T>();
+        return this;
+    }
+
     public IServiceCollection BuildRuleParser()
     {
         AddRuleParserRules(ServiceDescriptors, RegisteredMethods);

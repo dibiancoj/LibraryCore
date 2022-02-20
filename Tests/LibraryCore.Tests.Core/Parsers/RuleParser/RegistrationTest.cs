@@ -30,8 +30,9 @@ public class RegistrationTest
     public void CustomRuleAlongWithCurrentRules()
     {
         var serviceProvider = new ServiceCollection()
-               .AddSingleton<ITokenFactory, CustomTokenFactory>()
-               .AddRuleParser()
+                  .AddRuleParserWithConfiguration()
+                        .WithCustomTokenFactory<CustomTokenFactory>()
+                  .BuildRuleParser()
                .BuildServiceProvider();
 
         var ruleParser = serviceProvider.GetRequiredService<RuleParserEngine>();
