@@ -29,7 +29,7 @@ public class LessThenParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void LessThenTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new LessThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LessThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("$PriceOfSurgery < 9.99d", false)]
     [InlineData("$PriceOfSurgery < 10d", true)]

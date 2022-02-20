@@ -29,7 +29,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void NotEqualCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("$Name != null", null, false)]
     [InlineData("$Name != null", "abc", true)]

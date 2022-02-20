@@ -29,7 +29,7 @@ public class GreaterThenOrEqualParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void GreaterThenEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new GreaterThenOrEqualToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new GreaterThenOrEqualToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("$PriceOfSurgery >= 9.99d", true)]
     [InlineData("$PriceOfSurgery >= 8.25d", true)]

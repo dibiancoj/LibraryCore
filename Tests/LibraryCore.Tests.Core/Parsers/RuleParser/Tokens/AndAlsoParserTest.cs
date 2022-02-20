@@ -39,7 +39,7 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void LessThenOrEqualTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     //string
     [InlineData("$Name == 'John Portal' && $Name == 'Bob'", false)]

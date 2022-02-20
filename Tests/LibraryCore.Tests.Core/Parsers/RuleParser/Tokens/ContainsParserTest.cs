@@ -29,7 +29,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void ContainsTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("[1,2,3] contains $Survey.SurgeryCount", false)]
     [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount", true)]
