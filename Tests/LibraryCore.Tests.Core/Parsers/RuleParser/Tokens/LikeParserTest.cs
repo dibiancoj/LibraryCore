@@ -32,17 +32,17 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LikeToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
 
-    [InlineData("'abc' like 'def'", false)]
-    [InlineData("'baseball' like 'base'", true)] //sql it's column name which is the longer text inside smaller text which we search for
+    [InlineData("$Name like 'John'", false)]
+    [InlineData("$Name like 'Jacob'", true)]
     [Theory]
-    public void StringLike(string code, bool expectedResult)
+    public void LikeTest(string expressionToTest, bool expectedResult)
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                                .ParseString(code)
-                                                .BuildExpression()
+                                                .ParseString(expressionToTest)
+                                                .BuildExpression<Survey>("Survey")
                                                 .Compile();
 
-        Assert.Equal(expectedResult, expression.Invoke());
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 }
 
