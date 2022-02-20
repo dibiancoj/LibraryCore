@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -16,7 +15,9 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1(1,true, 'bla') == 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("@MyMethod1(1,true, 'bla') == 1")
+                                                .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<MethodCallToken>(result[0]);
@@ -29,7 +30,7 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void MethodNameNotRegistered()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == @MethodNotRegistered()"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == @MethodNotRegistered()"));
 
         Assert.Equal("Method Name = MethodNotRegistered Is Not Registered In MethodCallFactory. Call RegisterNewMethodAlias To Register The Method", result.Message);
     }
@@ -37,7 +38,7 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void MethodCallInvalidSyntax()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.RuleParserEngineToUse.ParseString("$Id == @"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == @"));
 
         Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
     }
@@ -53,10 +54,12 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void BasicMethodCallPositive(bool expectedResult, string clauseToTest)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(clauseToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString(clauseToTest)
+                                                .BuildExpression<Survey>("Survey")
+                                                .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
 }

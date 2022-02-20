@@ -46,7 +46,7 @@ public class RuleParserEngine
     //&& AndAlso
     //|| OrElse
 
-    public IImmutableList<IToken> ParseString(string stringToParse)
+    public RuleParserCompilationResult ParseString(string stringToParse)
     {
         using var reader = new StringReader(stringToParse);
         var tokens = new List<IToken>();
@@ -64,6 +64,6 @@ public class RuleParserEngine
             tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider));
         }
 
-        return tokens.ToImmutableList();
+        return new RuleParserCompilationResult(tokens.ToImmutableList());
     }
 }

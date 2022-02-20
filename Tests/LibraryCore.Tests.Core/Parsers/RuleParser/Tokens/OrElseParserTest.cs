@@ -17,7 +17,9 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParserTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1 || 2 == 2");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("1 == 1 || 2 == 2")
+                                            .CompilationTokenResult;
 
         Assert.Equal(13, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -54,10 +56,12 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(expressionToTest)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
 }

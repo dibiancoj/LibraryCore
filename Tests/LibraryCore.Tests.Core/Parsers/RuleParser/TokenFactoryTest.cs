@@ -16,7 +16,7 @@ public class TokenFactoryTest : IClassFixture<RuleParserFixture>
     {
         var exceptionThrown = Assert.Throws<Exception>(() =>
         {
-            _ = RuleParserFixture.RuleParserEngineToUse.ParseString("true ** true");
+            _ = RuleParserFixture.ResolveRuleParserEngine().ParseString("true ** true");
         });
 
         Assert.Contains("No Token Found For Value = **", exceptionThrown.Message);

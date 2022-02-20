@@ -1,6 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Core.Parsers.RuleParser.Registration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
@@ -8,38 +8,19 @@ public class RuleParserFixture
 {
     public RuleParserFixture()
     {
-        RuleParserEngineToUse = new RuleParserEngine(new TokenFactoryProvider(new ITokenFactory[]
-        {
-            new BooleanFactory(),
-            new NullTokenFactory(),
+        ServiceProvider = new ServiceCollection()
+           .AddRuleParserWithConfiguration()
+               .WithRegisterMethod("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
+               .WithRegisterMethod("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
+               .WithRegisterMethod("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
+               .WithRegisterMethod("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!)
+           .BuildRuleParser()
 
-            new ParameterPropertyFactory(),
-            new WhiteSpaceFactory(),
-            new StringFactory(),
-            new NumberFactory(),
-            new DateFactory(),
-            new ArrayFactory(),
-            new MethodCallFactory()
-                   .RegisterNewMethodAlias("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
-                   .RegisterNewMethodAlias("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
-                   .RegisterNewMethodAlias("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
-                   .RegisterNewMethodAlias("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!),
-
-            new LessThenOrEqualFactory(),
-            new LessThenFactory(),
-            new GreaterThenOrEqualFactory(),
-            new GreaterThenFactory(),
-            new EqualsFactory(),
-            new NotEqualsFactory(),
-            new ContainsFactory(),
-            new LikeFactory(),
-
-            new OrElseFactory(),
-            new AndAlsoFactory()
-        }));
+           .BuildServiceProvider();
     }
 
-    public RuleParserEngine RuleParserEngineToUse { get; }
+    private IServiceProvider ServiceProvider { get; }
+    public RuleParserEngine ResolveRuleParserEngine() => ServiceProvider.GetRequiredService<RuleParserEngine>();
 
     public static int GetANumberWithNoParameters() => 24;
     public static string GetAnswerId(Survey surveyModel, int questionId) => surveyModel.Answers[questionId];

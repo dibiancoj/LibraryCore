@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using System.Linq.Expressions;
 
@@ -17,7 +16,9 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("@MyMethod1() contains 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                           .ParseString("@MyMethod1() contains 1")
+                                           .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<MethodCallToken>(result[0]);
@@ -35,10 +36,12 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ArrayContainsInt(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(code)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [InlineData("['John', 'Bob'] contains $Survey.Name", false)]
@@ -46,10 +49,12 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ArrayContainsString(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(code)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [InlineData("@GetAnswerArray() contains 20", false)]
@@ -57,11 +62,12 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ContainsFromMethod(string code, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(code);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(code)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
-
 }
 

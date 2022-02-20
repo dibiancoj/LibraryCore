@@ -16,7 +16,9 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseParameterWithOneParameterTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.PatientName == 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("$Survey.PatientName == 1")
+                                                .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -34,7 +36,9 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseParameterWithShortHandParameterTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("$PatientName == 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$PatientName == 1")
+                                            .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<ParameterPropertyToken>(result[0]);
@@ -54,53 +58,61 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(expressionToTest)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [Fact]
     public void NonObjectParameter()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Size == 25");
-        var expression = RuleParserExpressionBuilder.BuildExpression<int>(tokens, "Size");
-
-        Assert.True(expression.Compile().Invoke(25));
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Size == 25")
+                                            .BuildExpression<int>("Size")
+                                            .Compile();
+            
+        Assert.True(expression.Invoke(25));
     }
 
     [Fact]
     public void PropertyNamePositiveRule()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Survey.SurgeryCount == 10");
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Survey.SurgeryCount == 10")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.True(expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.True(expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [Fact]
     public void PropertyNameWithOneParameterWhichIsNotSpecifiedPositiveRule()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$SurgeryCount == 10");
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$SurgeryCount == 10")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.True(expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.True(expression.Invoke(new SurveyModelBuilder().Value));
     }
 
     [Fact]
     public void EqualExpressionInLinq()
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString("$Name == 'Jacob DeGrom'");
-        var compiledExpression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey").Compile();
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Name == 'Jacob DeGrom'")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
         var records = SurveyModelBuilder.CreateArrayOfRecords(
                                 new SurveyModelBuilder(),
                                 new SurveyModelBuilder()
                                     .WithName("John"));
 
-        var results = records.Where(compiledExpression);
-
-        Assert.Single(results);
+        Assert.Single(records.Where(expression));
     }
 }
 

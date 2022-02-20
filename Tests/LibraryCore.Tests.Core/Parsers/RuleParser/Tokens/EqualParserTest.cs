@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using System.Linq.Expressions;
 
@@ -17,7 +16,9 @@ public class EqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.RuleParserEngineToUse.ParseString("1 == 1");
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                             .ParseString("1 == 1")
+                                             .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
         Assert.IsType<NumberToken<int>>(result[0]);
@@ -38,10 +39,12 @@ public class EqualParserTest : IClassFixture<RuleParserFixture>
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool expectedResult)
     {
-        var tokens = RuleParserFixture.RuleParserEngineToUse.ParseString(expressionToTest);
-        var expression = RuleParserExpressionBuilder.BuildExpression<Survey>(tokens, "Survey");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString(expressionToTest)
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
 
-        Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder().Value));
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 }
 
