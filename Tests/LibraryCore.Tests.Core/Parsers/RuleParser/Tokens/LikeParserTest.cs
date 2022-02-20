@@ -33,6 +33,7 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
 
 
     [InlineData("$Name like 'John'", false)]
+    [InlineData("$Name like 'John' || $SurgeryCount == 10", true)]
     [InlineData("$Name like 'Jacob'", true)]
     [Theory]
     public void LikeTest(string expressionToTest, bool expectedResult)
