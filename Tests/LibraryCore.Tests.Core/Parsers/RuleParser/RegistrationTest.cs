@@ -1,6 +1,8 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.Registration;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -24,5 +26,35 @@ public class RegistrationTest
                         .Invoke());
     }
 
+    [Fact]
+    public void CustomRuleAlongWithCurrentRules()
+    {
+        var serviceProvider = new ServiceCollection()
+               .AddSingleton<ITokenFactory, CustomTokenFactory>()
+               .AddRuleParser()
+               .BuildServiceProvider();
+
+        var ruleParser = serviceProvider.GetRequiredService<RuleParserEngine>();
+        
+        var tokens = ruleParser.ParseString("! == 99.99d");
+
+        Assert.IsType<CustomToken>(tokens.CompilationTokenResult[0]);
+
+        Assert.True(tokens
+                        .BuildExpression()
+                        .Compile()
+                        .Invoke());
+    }
+
+    public class CustomTokenFactory : ITokenFactory
+    {
+        public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => new CustomToken();
+        public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '!';
+    }
+
+    public class CustomToken : IToken
+    {
+        public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(99.99, typeof(double));
+    }
 }
 

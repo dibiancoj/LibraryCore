@@ -28,6 +28,4 @@ public static class RuleParserRegistration
     /// </summary>
     /// <returns>RuleParserConfiguration which you can configure and then create the registration</returns>
     public static RuleParserConfiguration AddRuleParserWithConfiguration(this IServiceCollection serviceDescriptors) => new(serviceDescriptors);
-
-
 }
