@@ -5,4 +5,4 @@ Library using .net core
 
 [![codecov](https://codecov.io/gh/dibiancoj/LibraryCore/branch/master/graph/badge.svg?token=KBQKSJYVZF)](https://codecov.io/gh/dibiancoj/LibraryCore)
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/dibiancoj/LibraryCore?sort=semver)
+<!---![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/dibiancoj/LibraryCore?sort=semver) -->
