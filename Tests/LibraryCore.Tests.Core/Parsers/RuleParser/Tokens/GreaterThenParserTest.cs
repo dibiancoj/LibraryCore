@@ -29,7 +29,7 @@ public class GreaterThenParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void GreaterThenTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new GreaterThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new GreaterThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("$PriceOfSurgery > 9.99d", false)]
     [InlineData("$PriceOfSurgery > 8.25d", true)]

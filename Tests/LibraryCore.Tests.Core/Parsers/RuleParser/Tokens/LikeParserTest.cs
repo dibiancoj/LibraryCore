@@ -29,7 +29,7 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void LikeTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new LikeToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LikeToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
 
     [InlineData("'abc' like 'def'", false)]

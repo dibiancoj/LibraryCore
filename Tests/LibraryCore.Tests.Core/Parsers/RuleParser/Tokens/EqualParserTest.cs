@@ -29,7 +29,7 @@ public class EqualParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void EqualCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new EqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new EqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     [InlineData("$PriceOfSurgery == 9.99d", true)]
     [InlineData("$PriceOfSurgery == 8.25d", false)]

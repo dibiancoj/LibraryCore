@@ -6,5 +6,5 @@ namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
 public class WhiteSpaceParserTest
 {
     [Fact]
-    public void WhiteSpaceCreateTokenNotImplement() => Assert.Throws<NotImplementedException>(() => new WhiteSpaceToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new WhiteSpaceToken().CreateExpression(Array.Empty<ParameterExpression>()));
 }
