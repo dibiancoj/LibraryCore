@@ -9,7 +9,7 @@ namespace LibraryCore.Performance.Tests.Tests
     public class ImmutableListBuilderPerfTest : IPerformanceTest
     {
         public string CommandName => "ImmListBuilder";
-        public string Description => "Run the immutable list builder vs List.ToImmutableLIst";
+        public string Description => "Run the immutable list builder vs List.ToImmutableList";
 
         [Params(5, 50, 100, 500, 1000, 10000)]
         public int NumberOfElements { get; set; }
