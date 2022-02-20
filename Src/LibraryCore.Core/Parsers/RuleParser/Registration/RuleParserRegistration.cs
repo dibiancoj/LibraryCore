@@ -14,6 +14,8 @@ public static class RuleParserRegistration
            .BuildRuleParser()
 
            .BuildServiceProvider();
+
+        var ruleParser = ServiceProvider.GetRequiredService<RuleParserEngine>();
     */
 
     /// <summary>
