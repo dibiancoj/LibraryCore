@@ -17,7 +17,7 @@ public ref struct StringSpanReader
     private int Index { get; set; }
 
     public bool HasMoreCharacters() => Index < StringToParse.Length;
-    public char Peek() => StringToParse[Index];
+    public char? Peek() => HasMoreCharacters() ? StringToParse[Index] : null;
     public char Read() => StringToParse[Index++];
 
     public string? Peek(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);
@@ -52,13 +52,13 @@ public ref struct StringSpanReader
     {
         var tryToFindIndex = StringToParse.IndexOf(characterToLookFor, stringComparison);
 
-        if(tryToFindIndex == -1)
+        if (tryToFindIndex == -1)
         {
             return null;
         }
 
         var tempResult = new string(StringToParse.Slice(Index, tryToFindIndex));
-        
+
         //fast forward the index
         Index = tryToFindIndex;
 
