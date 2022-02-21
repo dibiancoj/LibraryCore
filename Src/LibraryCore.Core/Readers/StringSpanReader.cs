@@ -1,7 +1,8 @@
 ﻿namespace LibraryCore.Core.Readers;
 
 /// <summary>
-/// This a strict ensure you pass a ref value into any methods otherwise, the Index get's copied resulting in weird issues
+/// This a strict ensure you pass a ref value into any methods otherwise, the Index get's copied resulting in weird issues.
+/// This is faster by a string reader by 2x.
 /// </summary>
 public ref struct StringSpanReader
 {
