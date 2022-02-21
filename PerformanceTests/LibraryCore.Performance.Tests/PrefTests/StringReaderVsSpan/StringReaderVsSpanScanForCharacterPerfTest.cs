@@ -31,8 +31,6 @@ public class StringReaderVsSpanScanForCharacterPerfTest : IPerformanceTest
         return sb.ToString();
     }
 
-
-
     [Benchmark]
     public string StructSpanStringReaderInLibrary()
     {
