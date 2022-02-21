@@ -18,34 +18,31 @@ public ref struct StringSpanReader
     public char? Peek() => HasMoreCharacters() ? StringToParse[Index] : null;
     public char? Read() => HasMoreCharacters() ? StringToParse[Index++] : null;
 
-    public string? Peek(int numberOfCharacters)
-    {
-        if (!HasMoreCharacters())
-        {
-            return null;
-        }
-
-        return new string(DontHaveEnoughCharactersLeft(numberOfCharacters) ?
-                                    StringToParse[Index..] :
-                                    StringToParse.Slice(Index, numberOfCharacters));
-    }
+    public string? Peek(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);
 
     public string? Read(int numberOfCharacters)
     {
+        var readCharacters = PeekOrReadMultipleCharacters(numberOfCharacters);
+
+        //did we have any characters read...if so then it was successful and we need to fast forward
+        if (readCharacters != null)
+        {
+            //need to fast forward the index. This way its sitting at the character we are up to after the read x amount of characters
+            Index += numberOfCharacters;
+        }
+
+        return readCharacters;
+    }
+
+    private string? PeekOrReadMultipleCharacters(int numberOfCharactersToScan)
+    {
         if (!HasMoreCharacters())
         {
             return null;
         }
 
-        var stringToReturn = new string(DontHaveEnoughCharactersLeft(numberOfCharacters) ?
+        return new string((Index + numberOfCharactersToScan) > StringToParse.Length ?
                                     StringToParse[Index..] :
-                                    StringToParse.Slice(Index, numberOfCharacters));
-
-        //need to fast forward the index. This way its sitting at the character we are up to after the read x amount of characters
-        Index += numberOfCharacters;
-
-        return stringToReturn;
+                                    StringToParse.Slice(Index, numberOfCharactersToScan));
     }
-
-    private bool DontHaveEnoughCharactersLeft(int numberOfCharactersToScan) => (Index + numberOfCharactersToScan) > StringToParse.Length;
 }
