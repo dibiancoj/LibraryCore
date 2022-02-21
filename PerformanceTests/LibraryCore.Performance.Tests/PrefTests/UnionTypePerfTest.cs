@@ -2,7 +2,7 @@
 using LibraryCore.Core.DataTypes.Unions;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests;
 
 [SimpleJob]
 [MemoryDiagnoser]

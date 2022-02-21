@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests;
 
 [SimpleJob]
 [MemoryDiagnoser]

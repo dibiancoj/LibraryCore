@@ -6,7 +6,7 @@ using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests.RuleParser;
 
 [SimpleJob]
 [MemoryDiagnoser]

@@ -47,4 +47,21 @@ public ref struct StringSpanReader
                                     StringToParse[Index..] :
                                     StringToParse.Slice(Index, numberOfCharactersToScan));
     }
+
+    public string? ReadUntilCharacter(string characterToLookFor, StringComparison stringComparison)
+    {
+        var tryToFindIndex = StringToParse.IndexOf(characterToLookFor, stringComparison);
+
+        if(tryToFindIndex == -1)
+        {
+            return null;
+        }
+
+        var tempResult = new string(StringToParse.Slice(Index, tryToFindIndex));
+        
+        //fast forward the index
+        Index = tryToFindIndex;
+
+        return tempResult;
+    }
 }

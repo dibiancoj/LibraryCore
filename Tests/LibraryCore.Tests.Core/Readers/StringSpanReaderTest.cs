@@ -84,4 +84,23 @@ public class StringSpanReaderTest
 
     private static void PassStruct2(ref StringSpanReader reader) => Assert.Equal('c', reader.Read());
 
+    [Fact]
+    public void ReadUntilCharacterWhenFound()
+    {
+        var reader = new StringSpanReader("1 == 1 && 2 == 2");
+
+        var result = reader.ReadUntilCharacter("&&", StringComparison.OrdinalIgnoreCase);
+
+        Assert.Equal("1 == 1 ", result);
+        Assert.Equal('&', reader.Peek());
+    }
+
+    [Fact]
+    public void ReadUntilCharacterWhenNotFound()
+    {
+        var reader = new StringSpanReader("1 == 1 && 2 == 2");
+
+        Assert.Null(reader.ReadUntilCharacter("abc", StringComparison.OrdinalIgnoreCase));
+    }
+
 }

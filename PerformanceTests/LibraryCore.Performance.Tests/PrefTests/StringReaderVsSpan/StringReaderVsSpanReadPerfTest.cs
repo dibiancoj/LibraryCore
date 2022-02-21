@@ -3,13 +3,13 @@ using LibraryCore.Core.Readers;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests;
 
 [SimpleJob]
 [MemoryDiagnoser]
 public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 {
-    public string CommandName => "StringReaderVsSpanRead";
+    public string CommandName => "StringReaderVsSpan.GeneralTest";
     public string Description => "Read a string and determine if a string reader or a span slice if faster";
 
     [Params("1 == 1",
@@ -56,7 +56,7 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
         while (reader.Peek() != -1)
         {
             reader.Peek();
-            sb.Append((char)reader.Read());
+            sb.Append(reader.Read());
         }
 
         return sb.ToString();
