@@ -2,7 +2,7 @@
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Collections.Immutable;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests;
 
 [SimpleJob]
 [MemoryDiagnoser]

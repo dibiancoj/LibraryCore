@@ -2,7 +2,7 @@
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 
-namespace LibraryCore.Performance.Tests.Tests;
+namespace LibraryCore.Performance.Tests.PrefTests;
 
 [SimpleJob]
 [MemoryDiagnoser]
