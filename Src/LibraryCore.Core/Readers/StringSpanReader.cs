@@ -52,13 +52,13 @@ public ref struct StringSpanReader
     {
         var tryToFindIndex = StringToParse.IndexOf(characterToLookFor, stringComparison);
 
-        if(tryToFindIndex == -1)
+        if (tryToFindIndex == -1)
         {
             return null;
         }
 
         var tempResult = new string(StringToParse.Slice(Index, tryToFindIndex));
-        
+
         //fast forward the index
         Index = tryToFindIndex;
 
