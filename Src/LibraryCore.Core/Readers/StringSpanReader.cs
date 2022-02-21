@@ -4,6 +4,7 @@
 /// This a strict ensure you pass a ref value into any methods otherwise, the Index get's copied resulting in weird issues.
 /// This is faster by a string reader by 2x.
 /// </summary>
+/// <remarks>See StringReaderVsSpanReadPerfTest for the performance test</remarks>
 public ref struct StringSpanReader
 {
     public StringSpanReader(string stringToParse)
@@ -16,8 +17,8 @@ public ref struct StringSpanReader
     private int Index { get; set; }
 
     public bool HasMoreCharacters() => Index < StringToParse.Length;
-    public char? Peek() => HasMoreCharacters() ? StringToParse[Index] : null;
-    public char? Read() => HasMoreCharacters() ? StringToParse[Index++] : null;
+    public char Peek() => StringToParse[Index];
+    public char Read() => StringToParse[Index++];
 
     public string? Peek(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);
 

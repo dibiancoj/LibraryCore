@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using LibraryCore.Core.Readers;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 
@@ -11,10 +12,8 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
     public string CommandName => "StringReaderVsSpanRead";
     public string Description => "Read a string and determine if a string reader or a span slice if faster";
 
-
     [Params("1 == 1",
             "'one' =asdf asdf asdffasd fasdf asdasdf asdfasasdfasddfasdfasd= 'one'",
-            "1 == 1 && 2 == 2 && true == true asdfasdfasd assd fasd fasdf asdf asdf asdf asdf asdf asdfasdfasddf asdf asdf asdf",
             "1 == 1 && 2 == 2 && true == true asdfasdfasd assd fasd fasdf asdf asdf asdf asdf asdf asdfasdfasddf asdf asdf asdf == true asdfasdfasd assd fasd fasdf asdf asdf asdf asdf asdf asdfasdfasddf asdf asdf asdf")]
     public string CodeToParse { get; set; }
 
@@ -26,6 +25,7 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 
         while (reader.Peek() != -1)
         {
+            reader.Peek();
             sb.Append((char)reader.Read());
         }
 
@@ -40,6 +40,7 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 
         while (reader.Peek() != -1)
         {
+            reader.Peek();
             sb.Append((char)reader.Read());
         }
 
@@ -54,6 +55,7 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 
         while (reader.Peek() != -1)
         {
+            reader.Peek();
             sb.Append((char)reader.Read());
         }
 
@@ -68,7 +70,23 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 
         while (reader.Peek() != -1)
         {
+            reader.Peek();
             sb.Append((char)reader.Read());
+        }
+
+        return sb.ToString();
+    }
+
+    [Benchmark]
+    public string StructSpanStringReaderInLibrary()
+    {
+        var sb = new StringBuilder();
+        var reader = new StringSpanReader(CodeToParse);
+
+        while (reader.HasMoreCharacters())
+        {
+            reader.Peek();
+            sb.Append(reader.Read());
         }
 
         return sb.ToString();
@@ -134,10 +152,6 @@ public ref struct StructSpanStringReader
 
     public int Read()
     {
-        var text = StringToRead[Index];
-
-        Index++;
-
-        return text;
+        return StringToRead[Index++];
     }
 }
