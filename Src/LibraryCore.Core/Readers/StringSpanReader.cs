@@ -17,7 +17,7 @@ public ref struct StringSpanReader
     private int Index { get; set; }
 
     public bool HasMoreCharacters() => Index < StringToParse.Length;
-    public char Peek() => StringToParse[Index];
+    public char? Peek() => HasMoreCharacters() ? StringToParse[Index] : null;
     public char Read() => StringToParse[Index++];
 
     public string? Peek(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);

@@ -32,50 +32,50 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
         return sb.ToString();
     }
 
-    [Benchmark]
-    public string RawStringReader()
-    {
-        var sb = new StringBuilder();
-        var reader = new RawStringReader(CodeToParse);
+    //[Benchmark]
+    //public string RawStringReader()
+    //{
+    //    var sb = new StringBuilder();
+    //    var reader = new RawStringReader(CodeToParse);
 
-        while (reader.Peek() != -1)
-        {
-            reader.Peek();
-            sb.Append((char)reader.Read());
-        }
+    //    while (reader.Peek() != -1)
+    //    {
+    //        reader.Peek();
+    //        sb.Append((char)reader.Read());
+    //    }
 
-        return sb.ToString();
-    }
+    //    return sb.ToString();
+    //}
 
-    [Benchmark]
-    public string ClassSpanStringReader()
-    {
-        var sb = new StringBuilder();
-        var reader = new ClassSpanStringReader(CodeToParse);
+    //[Benchmark]
+    //public string ClassSpanStringReader()
+    //{
+    //    var sb = new StringBuilder();
+    //    var reader = new ClassSpanStringReader(CodeToParse);
 
-        while (reader.Peek() != -1)
-        {
-            reader.Peek();
-            sb.Append(reader.Read());
-        }
+    //    while (reader.Peek() != -1)
+    //    {
+    //        reader.Peek();
+    //        sb.Append(reader.Read());
+    //    }
 
-        return sb.ToString();
-    }
+    //    return sb.ToString();
+    //}
 
-    [Benchmark]
-    public string StructSpanStringReader()
-    {
-        var sb = new StringBuilder();
-        var reader = new StructSpanStringReader(CodeToParse);
+    //[Benchmark]
+    //public string StructSpanStringReader()
+    //{
+    //    var sb = new StringBuilder();
+    //    var reader = new StructSpanStringReader(CodeToParse);
 
-        while (reader.Peek() != -1)
-        {
-            reader.Peek();
-            sb.Append((char)reader.Read());
-        }
+    //    while (reader.Peek() != -1)
+    //    {
+    //        reader.Peek();
+    //        sb.Append((char)reader.Read());
+    //    }
 
-        return sb.ToString();
-    }
+    //    return sb.ToString();
+    //}
 
     [Benchmark]
     public string StructSpanStringReaderInLibrary()
@@ -83,7 +83,7 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
         var sb = new StringBuilder();
         var reader = new StringSpanReader(CodeToParse);
 
-        while (reader.HasMoreCharacters())
+        while (reader.HasMoreCharacters)
         {
             reader.Peek();
             sb.Append(reader.Read());

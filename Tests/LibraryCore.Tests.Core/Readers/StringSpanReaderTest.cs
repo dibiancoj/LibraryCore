@@ -37,6 +37,7 @@ public class StringSpanReaderTest
         Assert.Equal('b', reader.Read());
         Assert.Equal('c', reader.Peek());
         Assert.Equal('c', reader.Read());
+        Assert.Null(reader.Peek()); //shouldn't throw as we check if its the end of the string
     }
 
     [Fact]
