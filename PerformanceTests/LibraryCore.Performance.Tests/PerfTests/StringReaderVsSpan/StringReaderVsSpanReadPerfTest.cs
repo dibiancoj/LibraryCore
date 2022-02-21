@@ -3,7 +3,7 @@ using LibraryCore.Core.Readers;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 
-namespace LibraryCore.Performance.Tests.PrefTests;
+namespace LibraryCore.Performance.Tests.PerfTests.StringReaderVsSpan;
 
 [SimpleJob]
 [MemoryDiagnoser]
