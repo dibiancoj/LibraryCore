@@ -12,7 +12,6 @@ public class StringSpanReaderTest
         Assert.Equal('A', reader.Read());
         Assert.Equal('b', reader.Read());
         Assert.Equal('c', reader.Read());
-        Assert.Null(reader.Read());
     }
 
     [Fact]
@@ -38,7 +37,6 @@ public class StringSpanReaderTest
         Assert.Equal('b', reader.Read());
         Assert.Equal('c', reader.Peek());
         Assert.Equal('c', reader.Read());
-        Assert.Null(reader.Peek());
     }
 
     [Fact]
