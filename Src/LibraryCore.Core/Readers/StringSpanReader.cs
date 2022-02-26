@@ -50,18 +50,21 @@ public ref struct StringSpanReader
 
     public string? ReadUntilCharacter(string characterToLookFor, StringComparison stringComparison)
     {
-        var tryToFindIndex = StringToParse.IndexOf(characterToLookFor, stringComparison);
+        //we could be in the middle of the reader. So we need to start from the index on
+        var stringFromIndexToEnd = StringToParse[Index..];
+
+        var tryToFindIndex = stringFromIndexToEnd.IndexOf(characterToLookFor, stringComparison);
 
         if (tryToFindIndex == -1)
         {
             return null;
         }
 
-        var tempResult = new string(StringToParse.Slice(Index, tryToFindIndex));
+        var tempResult = stringFromIndexToEnd.Slice(0,tryToFindIndex);
 
         //fast forward the index
         Index = tryToFindIndex;
 
-        return tempResult;
+        return new string(tempResult);
     }
 }
