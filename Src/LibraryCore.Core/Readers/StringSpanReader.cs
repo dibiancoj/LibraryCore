@@ -60,7 +60,8 @@ public ref struct StringSpanReader
             return null;
         }
 
-        var tempResult = stringFromIndexToEnd.Slice(0,tryToFindIndex);
+        //start from the first character and read until the index
+        var tempResult = stringFromIndexToEnd[..tryToFindIndex];
 
         //fast forward the index
         Index = tryToFindIndex;
