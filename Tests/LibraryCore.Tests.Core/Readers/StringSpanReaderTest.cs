@@ -64,6 +64,9 @@ public class StringSpanReaderTest
 
         //now make sure we are up to c
         Assert.Equal('c', reader.Peek());
+
+        //read some more
+        Assert.Equal("cd", reader.Read(2));
     }
 
     [Fact]
@@ -94,6 +97,19 @@ public class StringSpanReaderTest
 
         Assert.Equal("1 == 1 ", result);
         Assert.Equal('&', reader.Peek());
+    }
+
+    [Fact]
+    public void ReadUntilCharacterWhenFoundAndInMiddleOfString()
+    {
+        var reader = new StringSpanReader("1 == 1 && 2 == 2");
+
+        //skip until the second ==
+        Assert.Equal("1 ==", reader.Read(4));
+
+        var result = reader.ReadUntilCharacter("&&", StringComparison.OrdinalIgnoreCase);
+
+        Assert.Equal(" 1 ", result);
     }
 
     [Fact]
