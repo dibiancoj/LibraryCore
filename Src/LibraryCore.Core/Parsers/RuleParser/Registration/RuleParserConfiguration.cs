@@ -42,7 +42,6 @@ public class RuleParserConfiguration
     {
         //data types
         serviceDescriptors.AddSingleton<ITokenFactory, BooleanFactory>();
-        serviceDescriptors.AddSingleton<ITokenFactory, BooleanFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, StringFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, NumberFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, DateFactory>();
