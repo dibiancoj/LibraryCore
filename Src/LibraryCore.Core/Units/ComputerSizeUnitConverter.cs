@@ -13,32 +13,11 @@ public static class ComputerSizeUnitConverter
     /// </summary>
     public enum ComputerSizeUnit : int
     {
-
-        /// <summary>
-        /// Bytes 
-        /// </summary>
         Byte = 1,
-
-        /// <summary>
-        /// KiloBytes (KB)
-        /// </summary>
         Kilobyte = 2,
-
-        /// <summary>
-        /// MegaBytes (MB)
-        /// </summary>
         Megabyte = 3,
-
-        /// <summary>
-        /// GigaBytes (GB)
-        /// </summary>
         Gigabyte = 4,
-
-        /// <summary>
-        /// Terabytes (TB)
-        /// </summary>
         Terabyte = 5
-
     }
 
     #endregion
