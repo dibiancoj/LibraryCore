@@ -15,7 +15,7 @@ public class ParameterPropertyFactory : ITokenFactory
 
         while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
         {
-            text.Append((char)stringReader.Read());
+            text.Append(stringReader.ReadCharacter());
         }
 
         var finalValue = text.ToString();
