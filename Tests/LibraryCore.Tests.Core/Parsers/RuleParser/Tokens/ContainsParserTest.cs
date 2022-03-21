@@ -31,8 +31,8 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
-    [InlineData("[1,2,3] contains $Survey.SurgeryCount", false)]
-    [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount", true)]
+    [InlineData("[1,2,3] contains $Survey.SurgeryCount$", false)]
+    [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount$", true)]
     [Theory]
     public void ArrayContainsInt(string code, bool expectedResult)
     {
@@ -44,8 +44,8 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
-    [InlineData("['John', 'Bob'] contains $Survey.Name", false)]
-    [InlineData("['Jacob DeGrom', 'Johnny Bench'] contains $Survey.Name", true)]
+    [InlineData("['John', 'Bob'] contains $Survey.Name$", false)]
+    [InlineData("['Jacob DeGrom', 'Johnny Bench'] contains $Survey.Name$", true)]
     [Theory]
     public void ArrayContainsString(string code, bool expectedResult)
     {

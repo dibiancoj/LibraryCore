@@ -7,16 +7,21 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class ParameterPropertyFactory : ITokenFactory
 {
-    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '$';
+    private const char TokenIdentifier = '$';
+
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
 
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
+        while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != TokenIdentifier)
         {
             text.Append((char)stringReader.Read());
         }
+
+        //eat the closing $
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, TokenIdentifier);
 
         var finalValue = text.ToString();
 

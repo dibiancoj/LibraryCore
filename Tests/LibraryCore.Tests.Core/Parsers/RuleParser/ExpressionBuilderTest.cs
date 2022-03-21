@@ -1,4 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
+﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
@@ -39,7 +39,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void TwoParameterTest()
     {
         var tokens = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.SurgeryCount == 24 && $Size.SurgeryCount == 12")
+                                            .ParseString("$Survey.SurgeryCount$ == 24 && $Size.SurgeryCount$ == 12")
                                             .CompilationTokenResult;
 
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey, Survey>(tokens, "Survey", "Size");
@@ -57,7 +57,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void TwoParameterTestWithCompilationResult()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.SurgeryCount == 24 && $Size.SurgeryCount == 12")
+                                            .ParseString("$Survey.SurgeryCount$ == 24 && $Size.SurgeryCount$ == 12")
                                             .BuildExpression<Survey, Survey>("Survey", "Size")
                                             .Compile();
 
@@ -74,7 +74,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void ThreeParameterTest()
     {
         var tokens = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.SurgeryCount == 30 && $Size.SurgeryCount == 12 && $Color.SurgeryCount == 15")
+                                            .ParseString("$Survey.SurgeryCount$ == 30 && $Size.SurgeryCount$ == 12 && $Color.SurgeryCount$ == 15")
                                             .CompilationTokenResult;
 
         var expression = RuleParserExpressionBuilder.BuildExpression<Survey, Survey, Survey>(tokens, "Survey", "Size", "Color");
@@ -96,7 +96,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void ThreeParameterTestWithCompilationResult()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.SurgeryCount == 30 && $Size.SurgeryCount == 12 && $Color.SurgeryCount == 15")
+                                            .ParseString("$Survey.SurgeryCount$ == 30 && $Size.SurgeryCount$ == 12 && $Color.SurgeryCount$ == 15")
                                             .BuildExpression<Survey, Survey, Survey>("Survey", "Size", "Color")
                                             .Compile();
 

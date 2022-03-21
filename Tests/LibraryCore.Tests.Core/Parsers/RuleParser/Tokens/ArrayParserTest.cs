@@ -51,27 +51,27 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ArrayInValidSyntax()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == []"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id$ == []"));
 
         Assert.Equal("ArrayFactory Has Blank Array Or Is Not Able To Parse The Value", result.Message);
     }
 
     //regular doubles
-    [InlineData("[1d,2d,3d, 9.99d] contains $Survey.PriceOfSurgery", true, null, null)]
-    [InlineData("[1d,2d,3d] contains $Survey.PriceOfSurgery", false, null, null)]
+    [InlineData("[1d,2d,3d, 9.99d] contains $Survey.PriceOfSurgery$", true, null, null)]
+    [InlineData("[1d,2d,3d] contains $Survey.PriceOfSurgery$", false, null, null)]
 
     //nullable doubles
-    [InlineData("[1d?,2d?,3d?, 9.99d?] contains $Survey.NumberOfBoats", true, 3, null)]
-    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats", false, null, null)]
-    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats", false, 30, null)]
+    [InlineData("[1d?,2d?,3d?, 9.99d?] contains $Survey.NumberOfBoats$", true, 3, null)]
+    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats$", false, null, null)]
+    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats$", false, 30, null)]
 
     //regular ints
-    [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount", true, null, null)]
-    [InlineData("[1,2,3] contains $Survey.SurgeryCount", false, null, null)]
+    [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount$", true, null, null)]
+    [InlineData("[1,2,3] contains $Survey.SurgeryCount$", false, null, null)]
 
     //nullable ints
-    [InlineData("[1?,2?,3?, 5?] contains $Survey.NumberOfMotorcyles", false, null, 50)]
-    [InlineData("[1?,2?,3?] contains $Survey.NumberOfMotorcyles", true, null, 3)]
+    [InlineData("[1?,2?,3?, 5?] contains $Survey.NumberOfMotorcyles$", false, null, 50)]
+    [InlineData("[1?,2?,3?] contains $Survey.NumberOfMotorcyles$", true, null, 3)]
     [Theory]
     public void NullableArrayContains(string statementToTest, bool expectedResult, double? numberOfBoats, int? numberOfMotorcycles)
     {
@@ -86,8 +86,8 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
                                                                     .Value));
     }
 
-    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles", 80, true)]
-    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles", 79, false)]
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles$", 80, true)]
+    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles$", 79, false)]
     [Theory]
     public void NullableArrayContainsFromMethod(string statementToTest, int? numberToSet, bool expectedResult)
     {

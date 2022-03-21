@@ -17,10 +17,27 @@ public class StringFactory : ITokenFactory
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
+        int numberOfSubTokens = 0;
+        var subTokens = new List<IToken>();
 
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != TokenIdentifier)
         {
-            text.Append(stringReader.ReadCharacter());
+            var currentCharacter = stringReader.ReadCharacter();
+
+            //to support logging we are going to allow formatters in a string. ie: 'MedicationId = {$Parameter.MedicationId}'
+            if (currentCharacter == '{')
+            {
+                subTokens.Add(ResolveInnerTokens(stringReader, tokenFactoryProvider));
+
+                //turn into a format syntax..{0}, {1}
+                text.Append('{').Append(numberOfSubTokens).Append('}');
+
+                numberOfSubTokens++;
+            }
+            else
+            {
+                text.Append(currentCharacter);
+            }
         }
 
         //did we ever find a closing bracket?
@@ -32,25 +49,27 @@ public class StringFactory : ITokenFactory
         //read the closing '
         RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, TokenIdentifier);
 
-        var textToString = text.ToString();
+        return new StringToken(text.ToString(), subTokens);
+    }
 
-        var innerTokens = new List<IToken>();
-
-        //do we have inner expression?
-        if (textToString.Contains('{'))
+    private static IToken ResolveInnerTokens(StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    {
+        while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != '}')
         {
-            ///********** NEED TO LOOP THROUGH THE {....}
+            var characterRead = stringReader.ReadCharacter();
+            var characterPeeked = stringReader.PeekCharacter();
 
-            var toSpan = textToString.AsSpan();
+            var factoryFound = tokenFactoryProvider.ResolveTokenFactory(characterRead, characterPeeked, new string(new[] { characterRead, characterPeeked }));
 
-            var sliced = toSpan.Slice(toSpan.IndexOf('{') + 1, toSpan.IndexOf('}') - toSpan.IndexOf('{') - 1);
+            var token = factoryFound.CreateToken(characterRead, stringReader, tokenFactoryProvider);
 
-            var innerFactory = tokenFactoryProvider.ResolveTokenFactory(sliced[0], sliced[1], new string(sliced.Slice(1, 2)));
+            //kill the closing }
+            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '}');
 
-            innerTokens.Add(innerFactory.CreateToken(sliced[0], new StringReader(new string(sliced)), tokenFactoryProvider));
+            return token;
         }
 
-        return new StringToken(textToString, innerTokens);
+        throw new Exception("String Inner Token Not Parsed");
     }
 
 }
@@ -60,19 +79,23 @@ public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToke
 {
     public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
-        var t = InnerTokens.First().CreateExpression(parameters);
+        return InnerTokens.HasNoneWithNullCheck() ?
+            Expression.Constant(Value) :
+            CreateExpressionWithInnerFormats(parameters);
+    }
 
-        var stringConcat = typeof(string).GetMethod("Concat", new[] { typeof(string), typeof(string) });
+    private Expression CreateExpressionWithInnerFormats(IList<ParameterExpression> parameters)
+    {
+        //create an object[] with the correct number of parameters. ie: {0}  {1}...we would end up with object[1]
+        var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();
 
-        ParameterExpression variableExpr = Expression.Variable(typeof(int), "sampleVar");
+        //grab the format with the correct number of items
+        var stringFormat = typeof(string).GetMethod(nameof(string.Format), new[] { typeof(string) }.Concat(stringFormatObjectTypes).ToArray());
 
-        Expression assignExpr = Expression.Assign(
-            variableExpr,
-            t
-            );
+        //create all the parameters
+        IEnumerable<Expression> tokens = InnerTokens.Select(x => Expression.Convert(x.CreateExpression(parameters), typeof(object)));
 
-        //return Expression.Call(stringConcat!, Expression.Constant(Value), Expression.Call(toString!, t));
-
-        return Expression.Constant(Value);
+        //return the string.format call
+        return Expression.Call(stringFormat!, tokens.Prepend(Expression.Constant(Value)));
     }
 }

@@ -31,9 +31,9 @@ public class GreaterThenParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new GreaterThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
-    [InlineData("$PriceOfSurgery > 9.99d", false)]
-    [InlineData("$PriceOfSurgery > 8.25d", true)]
-    [InlineData("$PriceOfSurgery > 60d", false)]
+    [InlineData("$PriceOfSurgery$ > 9.99d", false)]
+    [InlineData("$PriceOfSurgery$ > 8.25d", true)]
+    [InlineData("$PriceOfSurgery$ > 60d", false)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool expectedResult)
     {

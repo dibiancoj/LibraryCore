@@ -42,14 +42,14 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     //string
-    [InlineData("$Name == 'John Portal' && $Name == 'Bob'", false)]
-    [InlineData("$Name == 'John Portal' && $Name == 'Jacob DeGrom'", false)]
-    [InlineData("$Name == 'Jacob DeGrom' && $SurgeryCount == 100", false)]
-    [InlineData("$Name == 'Jacob DeGrom' && $SurgeryCount == 10", true)]
+    [InlineData("$Name$ == 'John Portal' && $Name$ == 'Bob'", false)]
+    [InlineData("$Name$ == 'John Portal' && $Name$ == 'Jacob DeGrom'", false)]
+    [InlineData("$Name$ == 'Jacob DeGrom' && $SurgeryCount$ == 100", false)]
+    [InlineData("$Name$ == 'Jacob DeGrom' && $SurgeryCount$ == 10", true)]
 
     //numbers
-    [InlineData("$SurgeryCount == 50 && $SurgeryCount == 10", false)]
-    [InlineData("$SurgeryCount == 10 && $PriceOfSurgery == 9.99d", true)]
+    [InlineData("$SurgeryCount$ == 50 && $SurgeryCount$ == 10", false)]
+    [InlineData("$SurgeryCount$ == 10 && $PriceOfSurgery$ == 9.99d", true)]
 
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
