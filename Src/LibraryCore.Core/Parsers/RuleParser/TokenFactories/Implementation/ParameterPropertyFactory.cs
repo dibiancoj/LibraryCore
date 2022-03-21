@@ -42,9 +42,9 @@ public record ParameterPropertyToken(string? ParameterName, string PropertyName)
     public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
-        //A property off of a single parameter which is an object. ie: $MyParameter.Age
+        //A property off of a single parameter which is an object. ie: $MyParameter.Age$
         //A property which is an int (non-object). ie: $MyInt
-        //Multiple parameters. ie: $Parameter1.Age and we have a $Parameter2
+        //Multiple parameters. ie: $Parameter1.Age and we have a $Parameter2$
 
         int howManyParameters = parameters.Count;
 
