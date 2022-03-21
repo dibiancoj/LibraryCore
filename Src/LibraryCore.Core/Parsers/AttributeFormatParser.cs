@@ -6,6 +6,9 @@ namespace LibraryCore.Core.Parsers;
 public static class AttributeFormatParser
 {
 
+    //"'Add Immunization => Description = {$Parameter.Description} | Provider = {$Parameter.Provider}'"
+
+
     /// <summary>
     /// Parse a string format when you can't pass objects in. You would enter somethign like: "Add Immunization => Description = {0} | Provider = {1}", "immunizationSaveRequest.Description", "immunizationSaveRequest.Provider". Method Parameters would pass in immunizationSaveRequest
     /// </summary>
