@@ -7,16 +7,21 @@ namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class ParameterPropertyFactory : ITokenFactory
 {
-    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '$';
+    private const char TokenIdentifier = '$';
+
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
     {
         var text = new StringBuilder();
 
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
+        while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != TokenIdentifier)
         {
             text.Append(stringReader.ReadCharacter());
         }
+
+        //eat the closing $
+        RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, TokenIdentifier);
 
         var finalValue = text.ToString();
 
@@ -37,9 +42,9 @@ public record ParameterPropertyToken(string? ParameterName, string PropertyName)
     public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
-        //A property off of a single parameter which is an object. ie: $MyParameter.Age
+        //A property off of a single parameter which is an object. ie: $MyParameter.Age$
         //A property which is an int (non-object). ie: $MyInt
-        //Multiple parameters. ie: $Parameter1.Age and we have a $Parameter2
+        //Multiple parameters. ie: $Parameter1.Age and we have a $Parameter2$
 
         int howManyParameters = parameters.Count;
 

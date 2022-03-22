@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 
@@ -20,9 +21,20 @@ public class RuleParserCompilationResult
     public Expression<Func<bool>> BuildExpression() => RuleParserExpressionBuilder.BuildExpression(CompilationTokenResult);
 
     public Expression<Func<T1, bool>> BuildExpression<T1>(string parameter1Name) => RuleParserExpressionBuilder.BuildExpression<T1>(CompilationTokenResult, parameter1Name);
-    public Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(string parameter1Name, string parameter2Name) => 
+    public Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(string parameter1Name, string parameter2Name) =>
                     RuleParserExpressionBuilder.BuildExpression<T1, T2>(CompilationTokenResult, parameter1Name, parameter2Name);
 
     public Expression<Func<T1, T2, T3, bool>> BuildExpression<T1, T2, T3>(string parameter1Name, string parameter2Name, string parameter3Name) =>
                     RuleParserExpressionBuilder.BuildExpression<T1, T2, T3>(CompilationTokenResult, parameter1Name, parameter2Name, parameter3Name);
+
+    /// <summary>
+    /// Try to cache the compiled expression if this is used for a log 
+    /// </summary>
+    public Expression<Func<string>> BuildStringExpression() => StringOutputExpressionBuilder.BuildExpression(CompilationTokenResult);
+
+    /// <summary>
+    /// Try to cache the compiled expression if this is used for a log 
+    /// </summary>
+    public Expression<Func<T1, string>> BuildStringExpression<T1>(string parameter1Name) => StringOutputExpressionBuilder.BuildExpression<T1>(CompilationTokenResult, parameter1Name);
+
 }

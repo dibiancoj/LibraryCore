@@ -34,15 +34,32 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void ParseTestWithInnerFormatter()
+    {
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc {@GetANumberWithNoParameters()}'");
+
+        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
+
+        var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
+
+        Assert.Equal("abc {0}", firstStringToken.Value);
+
+        //compile it
+        Assert.Equal("abc 24", result.BuildStringExpression().Compile().Invoke());
+    }
+
+    [Fact]
     public void StringWithNoClosingBracket()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name == 'noclosingbracket"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name$ == 'noclosingbracket"));
 
         Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);
     }
 
-    [InlineData("$Name == 'John Portal'", false)]
-    [InlineData("$Name == 'Jacob DeGrom'", true)]
+    [InlineData("$Name$ == 'John Portal'", false)]
+    [InlineData("$Name$ == 'Jacob DeGrom'", true)]
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
@@ -58,7 +75,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     public void ExpressionInLinq()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Name == 'Jacob DeGrom'")
+                                            .ParseString("$Name$ == 'Jacob DeGrom'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();
 

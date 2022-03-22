@@ -2,7 +2,7 @@
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Linq.Expressions;
 
-namespace LibraryCore.Core.Parsers.RuleParser;
+namespace LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 
 public static class RuleParserExpressionBuilder
 {
@@ -86,8 +86,8 @@ public static class RuleParserExpressionBuilder
                 //combiner would be && , ||
                 workingExpression = combiner == null ?
                         currentWorkingExpression :
-                        combiner.CreateBinaryOperatorExpression(workingExpression ?? throw new NullReferenceException($"{nameof(workingExpression)} Is Null"), 
-                                                                currentWorkingExpression ?? throw new NullReferenceException($"{nameof(currentWorkingExpression)} is null")); 
+                        combiner.CreateBinaryOperatorExpression(workingExpression ?? throw new NullReferenceException($"{nameof(workingExpression)} Is Null"),
+                                                                currentWorkingExpression ?? throw new NullReferenceException($"{nameof(currentWorkingExpression)} is null"));
 
                 left = null;
                 operation = null;

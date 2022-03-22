@@ -14,7 +14,7 @@ public class RuleParserEngine
     private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //Types:
-    //SomeValue == 'some text'          <-- string
+    //SomeValue == 'some text'          <-- string --> You can also add formatter tags in a string because of the logger code. ie: 'Medication Id = {$Request.MedicationId$}
     //SomeValue == true                 <-- boolean
     //SomeValue == 24                   <-- int
     //SomeValue == 24?                  <-- nullable int
@@ -29,7 +29,7 @@ public class RuleParserEngine
     //['a1','a2'] contains 'a2'         <-- array of strings
 
     //Parameter / Methods Calls
-    //$ParameterName.PropertyName Of a property passed in
+    //$ParameterName.PropertyName$ Of a property passed in
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
 
     //Comparison
@@ -39,7 +39,7 @@ public class RuleParserEngine
     //>=
     //<
     //<=
-    //contains ie: [1,2,3] contains $Parameter.Age or @MethodWithArray contains $Parameter.Age
+    //contains ie: [1,2,3] contains $Parameter.Age$ or @MethodWithArray contains $Parameter.Age
     //like ie: 'tester' like 'test'
 
     //Combiners

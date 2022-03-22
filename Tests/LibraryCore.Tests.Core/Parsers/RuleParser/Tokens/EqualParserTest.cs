@@ -31,11 +31,11 @@ public class EqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new EqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
-    [InlineData("$PriceOfSurgery == 9.99d", true)]
-    [InlineData("$PriceOfSurgery == 8.25d", false)]
-    [InlineData("$PriceOfSurgery == 60d", false)]
-    [InlineData("$Name == 'Jacob DeGrom'", true)]
-    [InlineData("$Name == 'Tommy'", false)]
+    [InlineData("$PriceOfSurgery$ == 9.99d", true)]
+    [InlineData("$PriceOfSurgery$ == 8.25d", false)]
+    [InlineData("$PriceOfSurgery$ == 60d", false)]
+    [InlineData("$Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Name$ == 'Tommy'", false)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool expectedResult)
     {

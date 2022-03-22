@@ -18,7 +18,7 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     public void ParseTest(bool canDrive)
     {
         var result = RuleParserFixture.ResolveRuleParserEngine()
-                            .ParseString($"$Survey.CanDrive == {canDrive.ToString().ToLower()}")
+                            .ParseString($"$Survey.CanDrive$ == {canDrive.ToString().ToLower()}")
                             .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
@@ -36,16 +36,16 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void TrueStartsValidButEntireWordNotPresent()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id == trNOT"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id$ == trNOT"));
 
         Assert.Equal("Character Read N Is Not Expected. Expected Character = U or u", result.Message);
     }
 
     //non nullable
-    [InlineData("$Survey.CanDrive == true", true, true)]
-    [InlineData("$Survey.CanDrive == false", true, false)]
-    [InlineData("$Survey.CanDrive == true", false, false)]
-    [InlineData("$Survey.CanDrive == false", false, true)]
+    [InlineData("$Survey.CanDrive$ == true", true, true)]
+    [InlineData("$Survey.CanDrive$ == false", true, false)]
+    [InlineData("$Survey.CanDrive$ == true", false, false)]
+    [InlineData("$Survey.CanDrive$ == false", false, true)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, bool canDriveToSet, bool expectedResult)
     {
@@ -60,12 +60,12 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
     }
 
     //nullable
-    [InlineData("$Survey.HasAccount == true?", true, true)]
-    [InlineData("$Survey.HasAccount == false?", true, false)]
-    [InlineData("$Survey.HasAccount == true?", false, false)]
-    [InlineData("$Survey.HasAccount == false?", false, true)]
-    [InlineData("$Survey.HasAccount == false?", null, false)]
-    [InlineData("$Survey.HasAccount == true?", null, false)]
+    [InlineData("$Survey.HasAccount$ == true?", true, true)]
+    [InlineData("$Survey.HasAccount$ == false?", true, false)]
+    [InlineData("$Survey.HasAccount$ == true?", false, false)]
+    [InlineData("$Survey.HasAccount$ == false?", false, true)]
+    [InlineData("$Survey.HasAccount$ == false?", null, false)]
+    [InlineData("$Survey.HasAccount$ == true?", null, false)]
     [Theory]
     public void ExpressionsToTestWithNullables(string expressionToTest, bool? hasAccount, bool expectedResult)
     {
