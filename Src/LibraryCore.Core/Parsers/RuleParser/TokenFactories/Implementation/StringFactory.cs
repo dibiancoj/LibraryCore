@@ -90,12 +90,14 @@ public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToke
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();
 
         //grab the format with the correct number of items
-        var stringFormat = typeof(string).GetMethod(nameof(string.Format), new[] { typeof(string) }.Concat(stringFormatObjectTypes).ToArray());
+        var stringFormat = typeof(string).GetMethod(nameof(string.Format), new[] { typeof(string) }
+                                                        .Concat(stringFormatObjectTypes)
+                                                        .ToArray()) ?? throw new Exception("Can't Find String.Format Method Info");
 
         //create all the parameters
         IEnumerable<Expression> tokens = InnerTokens.Select(x => Expression.Convert(x.CreateExpression(parameters), typeof(object)));
 
         //return the string.format call
-        return Expression.Call(stringFormat!, tokens.Prepend(Expression.Constant(Value)));
+        return Expression.Call(stringFormat, tokens.Prepend(Expression.Constant(Value)));
     }
 }
