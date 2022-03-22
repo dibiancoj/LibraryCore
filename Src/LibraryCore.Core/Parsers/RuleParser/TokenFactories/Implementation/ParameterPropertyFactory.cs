@@ -17,7 +17,7 @@ public class ParameterPropertyFactory : ITokenFactory
 
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != TokenIdentifier)
         {
-            text.Append((char)stringReader.Read());
+            text.Append(stringReader.ReadCharacter());
         }
 
         //eat the closing $
