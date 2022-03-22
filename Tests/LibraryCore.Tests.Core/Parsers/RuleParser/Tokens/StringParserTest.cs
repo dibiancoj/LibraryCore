@@ -34,6 +34,23 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void ParseTestWithInnerFormatter()
+    {
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc {@GetANumberWithNoParameters()}'");
+
+        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
+
+        var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
+
+        Assert.Equal("abc {0}", firstStringToken.Value);
+
+        //compile it
+        Assert.Equal("abc 24", result.BuildStringExpression().Compile().Invoke());
+    }
+
+    [Fact]
     public void StringWithNoClosingBracket()
     {
         var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Name$ == 'noclosingbracket"));
