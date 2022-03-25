@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Running;
 using LibraryCore.Core.Reflection;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.CommandLineUtils;
@@ -60,6 +61,14 @@ namespace LibraryCore.Performance.Tests
                         return 0;
                     });
                 });
+            }
+        }
+
+        public class Config : ManualConfig
+        {
+            public Config()
+            {
+                SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithRatioStyle(BenchmarkDotNet.Columns.RatioStyle.Trend); //value is the other basic one
             }
         }
     }

@@ -1,10 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Collections.Immutable;
+using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests;
 
 [SimpleJob]
+[Config(typeof(Config))]
 [MemoryDiagnoser]
 public class ImmutableListBuilderPerfTest : IPerformanceTest
 {

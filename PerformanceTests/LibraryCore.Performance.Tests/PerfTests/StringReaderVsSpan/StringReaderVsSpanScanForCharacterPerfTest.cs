@@ -2,10 +2,12 @@
 using LibraryCore.Core.Readers;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
+using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests.StringReaderVsSpan;
 
 [SimpleJob]
+[Config(typeof(Config))]
 [MemoryDiagnoser]
 public class StringReaderVsSpanScanForCharacterPerfTest : IPerformanceTest
 {
