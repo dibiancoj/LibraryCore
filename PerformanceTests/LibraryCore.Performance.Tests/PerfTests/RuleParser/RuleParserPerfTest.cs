@@ -5,10 +5,12 @@ using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
+using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests.RuleParser;
 
 [SimpleJob]
+[Config(typeof(Config))]
 [MemoryDiagnoser]
 public class RuleParserPerfTest : IPerformanceTest
 {

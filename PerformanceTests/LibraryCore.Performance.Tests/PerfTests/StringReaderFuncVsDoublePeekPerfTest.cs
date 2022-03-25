@@ -1,9 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
+using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests;
 
 [SimpleJob]
+[Config(typeof(Config))]
 [MemoryDiagnoser]
 public class StringReaderFuncVsDoublePeekPerfTest : IPerformanceTest
 {
