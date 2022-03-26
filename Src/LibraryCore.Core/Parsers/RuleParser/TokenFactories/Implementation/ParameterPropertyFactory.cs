@@ -27,7 +27,7 @@ public class ParameterPropertyFactory : ITokenFactory
     }
 }
 
-[DebuggerDisplay("Parameter Property Name = {ParameterName}.{PropertyName}")]
+[DebuggerDisplay("Parameter Property Path = {DebuggerDisplay()}")]
 public record ParameterPropertyToken(IList<string> PropertyPath) : IToken
 {
     public Expression CreateExpression(IList<ParameterExpression> parameters)
@@ -40,11 +40,14 @@ public record ParameterPropertyToken(IList<string> PropertyPath) : IToken
         //loop through each level and keep grabbing the next level
         Expression workingExpression = parameters.Single(x => x.Name == PropertyPath[0]);
 
-        foreach(var propertyLevel in PropertyPath.Skip(1))
+        foreach (var propertyLevel in PropertyPath.Skip(1))
         {
             workingExpression = Expression.PropertyOrField(workingExpression, propertyLevel);
         }
 
         return workingExpression;
     }
+
+    private string DebuggerDisplay() => string.Join('.', PropertyPath);
+
 }
