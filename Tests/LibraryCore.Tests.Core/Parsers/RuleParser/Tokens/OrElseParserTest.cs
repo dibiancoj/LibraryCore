@@ -42,15 +42,15 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new OrElseToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     //string
-    [InlineData("$Name$ == 'John Portal' || $Name$ == 'Bob'", false)]
-    [InlineData("$Name$ == 'John Portal' || $Name$ == 'Jacob DeGrom'", true)]
-    [InlineData("$SurgeryCount$ == 50 || $SurgeryCount$ == 100", false)]
+    [InlineData("$Survey.Name$ == 'John Portal' || $Survey.Name$ == 'Bob'", false)]
+    [InlineData("$Survey.Name$ == 'John Portal' || $Survey.Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Survey.SurgeryCount$ == 50 || $Survey.SurgeryCount$ == 100", false)]
 
     //int
-    [InlineData("$SurgeryCount$ == 10 || $Name$ == 'Bob'", true)]
-    [InlineData("$SurgeryCount$ == 100 || $Name$ == 'Jacob DeGrom'", true)]
-    [InlineData("$SurgeryCount$ == 50 || $SurgeryCount$ == 10", true)]
-    [InlineData("$SurgeryCount$ == 50 || $SurgeryCount$ == 100 || $SurgeryCount$ == 10", true)]
+    [InlineData("$Survey.SurgeryCount$ == 10 || $Survey.Name$ == 'Bob'", true)]
+    [InlineData("$Survey.SurgeryCount$ == 100 || $Survey.Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Survey.SurgeryCount$ == 50 || $Survey.SurgeryCount$ == 10", true)]
+    [InlineData("$Survey.SurgeryCount$ == 50 || $Survey.SurgeryCount$ == 100 || $Survey.SurgeryCount$ == 10", true)]
 
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)

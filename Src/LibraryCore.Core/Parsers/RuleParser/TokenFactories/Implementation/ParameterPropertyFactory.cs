@@ -54,11 +54,15 @@ public record ParameterPropertyToken(string? ParameterName, string PropertyName)
             return parameters[0];
         }
 
+        //if this is not an object ie: $MyInt$....then just use the parameters
+        if (ParameterName.IsNullOrEmpty())
+        {
+            return parameters.Single(x => x.Name?.Equals(PropertyName, StringComparison.OrdinalIgnoreCase) ?? throw new Exception("Property Name Not Found"));
+        }
+
         //if there is 1 parameter then we know which parameter they want so they can just do $Age and we know its off of $MyParameter. 
         //if there is more then 1 we need to search for that parameter
-        var parameterExpression = howManyParameters == 1 ?
-                                                        parameters[0] :
-                                                        parameters.SingleOrDefault(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception($"Parameter Name Not Found: {ParameterName}");
+        var parameterExpression = parameters.Single(x => x.Name.HasValue() && x.Name.Equals(ParameterName, StringComparison.OrdinalIgnoreCase));
 
         return Expression.PropertyOrField(parameterExpression, PropertyName);
     }

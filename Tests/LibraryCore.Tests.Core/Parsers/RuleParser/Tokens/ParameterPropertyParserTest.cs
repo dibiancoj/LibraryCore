@@ -32,28 +32,8 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal("PatientName", firstParameterToken.PropertyName);
     }
 
-    [Fact]
-    public void ParseParameterWithShortHandParameterTest()
-    {
-        var result = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$PatientName$ == 1")
-                                            .CompilationTokenResult;
-
-        Assert.Equal(5, result.Count);
-        Assert.IsType<ParameterPropertyToken>(result[0]);
-        Assert.IsType<WhiteSpaceToken>(result[1]);
-        Assert.IsType<EqualsToken>(result[2]);
-        Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken<int>>(result[4]);
-
-        var firstParameterToken = (ParameterPropertyToken)result[0];
-
-        Assert.Null(firstParameterToken.ParameterName);
-        Assert.Equal("PatientName", firstParameterToken.PropertyName);
-    }
-
-    [InlineData("$Name$ == 'John Portal'", false)]
-    [InlineData("$Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Survey.Name$ == 'John Portal'", false)]
+    [InlineData("$Survey.Name$ == 'Jacob DeGrom'", true)]
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
     {
@@ -69,7 +49,7 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     public void NonObjectParameter()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Size$ == 25")
+                                            .ParseString("$Survey.Size$ == 25")
                                             .BuildExpression<int>("Size")
                                             .Compile();
 
@@ -91,7 +71,7 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     public void PropertyNameWithOneParameterWhichIsNotSpecifiedPositiveRule()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$SurgeryCount$ == 10")
+                                            .ParseString("$Survey.SurgeryCount$ == 10")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();
 
@@ -102,7 +82,7 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     public void EqualExpressionInLinq()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Name$ == 'Jacob DeGrom'")
+                                            .ParseString("$Survey.Name$ == 'Jacob DeGrom'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();
 

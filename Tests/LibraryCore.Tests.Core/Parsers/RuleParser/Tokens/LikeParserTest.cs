@@ -32,9 +32,9 @@ public class LikeParserTest : IClassFixture<RuleParserFixture>
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LikeToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
 
-    [InlineData("$Name$ like 'John'", false)]
-    [InlineData("$Name$ like 'John' || $SurgeryCount$ == 10", true)]
-    [InlineData("$Name$ like 'Jacob'", true)]
+    [InlineData("$Survey.Name$ like 'John'", false)]
+    [InlineData("$Survey.Name$ like 'John' || $Survey.SurgeryCount$ == 10", true)]
+    [InlineData("$Survey.Name$ like 'Jacob'", true)]
     [Theory]
     public void LikeTest(string expressionToTest, bool expectedResult)
     {

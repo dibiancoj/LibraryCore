@@ -65,18 +65,18 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void DoubleNotParseable()
     {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id$ == 12.32.23d"));
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.Id$ == 12.32.23d"));
 
         Assert.Equal("Number Factory [Double] Not Able To Parse Number. Value = 12.32.23", result.Message);
     }
 
-    [InlineData("$SurgeryCount$ >= 17", false)]
-    [InlineData("$SurgeryCount$ >= 10", true)]
-    [InlineData("$SurgeryCount$ > 10", false)]
-    [InlineData("$SurgeryCount$ <= 10", true)]
-    [InlineData("$SurgeryCount$ < 10", false)]
-    [InlineData("$SurgeryCount$ == 5", false)]
-    [InlineData("$SurgeryCount$ == 10", true)]
+    [InlineData("$Survey.SurgeryCount$ >= 17", false)]
+    [InlineData("$Survey.SurgeryCount$ >= 10", true)]
+    [InlineData("$Survey.SurgeryCount$ > 10", false)]
+    [InlineData("$Survey.SurgeryCount$ <= 10", true)]
+    [InlineData("$Survey.SurgeryCount$ < 10", false)]
+    [InlineData("$Survey.SurgeryCount$ == 5", false)]
+    [InlineData("$Survey.SurgeryCount$ == 10", true)]
     [Theory]
     public void IntExpressionsToTest(string expressionToTest, bool expectedResult)
     {
@@ -88,15 +88,15 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
-    [InlineData("$PriceOfSurgery$ >= 17d", false)]
-    [InlineData("$PriceOfSurgery$ >= 10d", false)]
-    [InlineData("$PriceOfSurgery$ >= 9.99d", true)]
-    [InlineData("$PriceOfSurgery$ > 10d", false)]
-    [InlineData("$PriceOfSurgery$ <= 10d", true)]
-    [InlineData("$PriceOfSurgery$ < 10d", true)]
-    [InlineData("$PriceOfSurgery$ == 5d", false)]
-    [InlineData("$PriceOfSurgery$ == 10d", false)]
-    [InlineData("$PriceOfSurgery$ == 9.99d", true)]
+    [InlineData("$Survey.PriceOfSurgery$ >= 17d", false)]
+    [InlineData("$Survey.PriceOfSurgery$ >= 10d", false)]
+    [InlineData("$Survey.PriceOfSurgery$ >= 9.99d", true)]
+    [InlineData("$Survey.PriceOfSurgery$ > 10d", false)]
+    [InlineData("$Survey.PriceOfSurgery$ <= 10d", true)]
+    [InlineData("$Survey.PriceOfSurgery$ < 10d", true)]
+    [InlineData("$Survey.PriceOfSurgery$ == 5d", false)]
+    [InlineData("$Survey.PriceOfSurgery$ == 10d", false)]
+    [InlineData("$Survey.PriceOfSurgery$ == 9.99d", true)]
     [Theory]
     public void DoubleExpressionsToTest(string expressionToTest, bool expectedResult)
     {
@@ -112,7 +112,7 @@ public class NumberParserTest : IClassFixture<RuleParserFixture>
     public void ExpressionInLinq()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                               .ParseString("$SurgeryCount$ == 10 || $PriceOfSurgery$ == 9.95d")
+                                               .ParseString("$Survey.SurgeryCount$ == 10 || $Survey.PriceOfSurgery$ == 9.95d")
                                                .BuildExpression<Survey>("Survey")
                                                .Compile();
 

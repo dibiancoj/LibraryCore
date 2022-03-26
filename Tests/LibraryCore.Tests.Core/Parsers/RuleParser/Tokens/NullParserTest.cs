@@ -27,10 +27,10 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<NullToken>(result[4]);
     }
 
-    [InlineData("$Name$ == null", null, true)]
-    [InlineData("$Name$ == null", "abc", false)]
-    [InlineData("$Name$ != null", null, false)]
-    [InlineData("$Name$ != null", "abc", true)]
+    [InlineData("$Survey.Name$ == null", null, true)]
+    [InlineData("$Survey.Name$ == null", "abc", false)]
+    [InlineData("$Survey.Name$ != null", null, false)]
+    [InlineData("$Survey.Name$ != null", "abc", true)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
     {
@@ -48,7 +48,7 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
     public void ExpressionInLinq()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Name$ == null || $Name$ == 'Jacob'")
+                                            .ParseString("$Survey.Name$ == null || $Survey.Name$ == 'Jacob'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();
 

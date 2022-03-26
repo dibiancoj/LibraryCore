@@ -31,8 +31,8 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
-    [InlineData("$Name$ != null", null, false)]
-    [InlineData("$Name$ != null", "abc", true)]
+    [InlineData("$Survey.Name$ != null", null, false)]
+    [InlineData("$Survey.Name$ != null", "abc", true)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
     {
@@ -49,7 +49,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     public void ExpressionInLinq()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Name$ != null && $Name$ != 'Jacob'")
+                                            .ParseString("$Survey.Name$ != null && $Survey.Name$ != 'Jacob'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();
 
