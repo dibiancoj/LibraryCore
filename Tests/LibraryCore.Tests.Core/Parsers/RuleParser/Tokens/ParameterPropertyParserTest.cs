@@ -28,8 +28,8 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
 
         var firstParameterToken = (ParameterPropertyToken)result[0];
 
-        Assert.Equal("Survey", firstParameterToken.ParameterName);
-        Assert.Equal("PatientName", firstParameterToken.PropertyName);
+        Assert.Equal("Survey", firstParameterToken.PropertyPath[0]);
+        Assert.Equal("PatientName", firstParameterToken.PropertyPath[1]);
     }
 
     [InlineData("$Survey.Name$ == 'John Portal'", false)]
@@ -49,7 +49,7 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     public void NonObjectParameter()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.Size$ == 25")
+                                            .ParseString("$Size$ == 25")
                                             .BuildExpression<int>("Size")
                                             .Compile();
 
@@ -90,6 +90,26 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
                                 new SurveyModelBuilder(),
                                 new SurveyModelBuilder()
                                     .WithName("John"));
+
+        Assert.Single(records.Where(expression));
+    }
+
+    [Fact]
+    public void MultipleObjectDeep()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                             //guard against the null because the first item in the array will be null (good test)
+                                            .ParseString("$Survey.InnerSurvey$ != null && $Survey.InnerSurvey.Name$ == 'Bob'")
+                                            .BuildExpression<Survey>("Survey")
+                                            .Compile();
+
+        var records = SurveyModelBuilder.CreateArrayOfRecords(
+                                new SurveyModelBuilder(),
+                                new SurveyModelBuilder()
+                                    .WithName("Jason")
+                                    .WithInnerSurveyObject(new SurveyModelBuilder()
+                                                                       .WithName("Bob")
+                                                                       .Value));
 
         Assert.Single(records.Where(expression));
     }
