@@ -50,7 +50,7 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("$Survey.Size$ == 25")
-                                            .BuildExpression<int>("Size")
+                                            .BuildExpression<int>("Survey")
                                             .Compile();
 
         Assert.True(expression.Invoke(25));
