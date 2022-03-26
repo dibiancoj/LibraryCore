@@ -112,4 +112,14 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2)) } }));
     }
+
+    [Fact]
+    public void MultipleParameterBuildExpression()
+    {
+        Assert.Equal("Parameter 1 = Value1 | Parameter 2 = Value2", RuleParserFixture.ResolveRuleParserEngine()
+                                                         .ParseString("'Parameter 1 = {$P1$} | Parameter 2 = {$P2$}'")
+                                                         .BuildStringExpression<string, string>("P1", "P2")
+                                                         .Compile()
+                                                         .Invoke("Value1", "Value2"));
+    }
 }
