@@ -49,8 +49,8 @@ public class ParameterPropertyParserTest : IClassFixture<RuleParserFixture>
     public void NonObjectParameter()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.Size$ == 25")
-                                            .BuildExpression<int>("Survey")
+                                            .ParseString("$Size$ == 25")
+                                            .BuildExpression<int>("Size")
                                             .Compile();
 
         Assert.True(expression.Invoke(25));
