@@ -7,13 +7,26 @@ namespace LibraryCore.IntegrationTests.Fixtures;
 
 public class SqlServerTestFixture : IAsyncLifetime
 {
+
+#if DEBUG
+    public const string SkipReason = "Don't want to run database integration test locally for now.";
+#else
+    private const string SkipReason = "";
+#endif
+
     public string ConnectionString { get; private set; } = null!;
-    private bool CanConnect { get; set; }
 
     internal SqlDataProvider CreateDataProvider() => new(ConnectionString);
 
+    private static bool RunUnitTest() => string.IsNullOrEmpty(SkipReason);
+
     public async Task InitializeAsync()
     {
+        if (!RunUnitTest())
+        {
+            return;
+        }
+
         //so we can debug it in visual studio. Complete hack
         if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Db_ConnectionString")))
         {
@@ -21,29 +34,22 @@ public class SqlServerTestFixture : IAsyncLifetime
             Environment.SetEnvironmentVariable("Db_ConnectionString", "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
         }
 
-        var ct = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-
         using var dbContext = new IntegrationTestDbContext();
+        await dbContext.Database.MigrateAsync();
 
-        //handle skipped tests. If we can't connect then just short circuit. If we run the test and its null - the test would still fail
-        //#if DEBUG in SqlDataProviderIntegrationTest line 15
-        CanConnect = await dbContext.Database.CanConnectAsync(cancellationToken: ct.Token);
-
-        if (CanConnect)
-        {
-            await dbContext.Database.MigrateAsync();
-            ConnectionString = dbContext.Database.GetConnectionString() ?? throw new Exception("Null Connection String)");
-        }
+        ConnectionString = dbContext.Database.GetConnectionString() ?? throw new Exception("Null Connection String)");
     }
 
     public async Task DisposeAsync()
     {
-        if (CanConnect)
+        if (!RunUnitTest())
         {
-            using var dbContext = new IntegrationTestDbContext();
-
-            await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE States;");
-            //await dbContext.Database.EnsureDeletedAsync();
+            return;
         }
+
+        using var dbContext = new IntegrationTestDbContext();
+
+        await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE States;");
+        //await dbContext.Database.EnsureDeletedAsync();
     }
 }

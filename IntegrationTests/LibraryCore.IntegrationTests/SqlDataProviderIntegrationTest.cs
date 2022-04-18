@@ -12,11 +12,6 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
     }
 
     private SqlServerTestFixture SqlServerTestFixture { get; }
-#if DEBUG
-    private const string SkipReason = "Don't want to run database integration test locally for now.";
-#else
-    private const string SkipReason = "";
-#endif
 
     #region Framework
 
@@ -35,7 +30,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
 
     #endregion
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task CanConnectToDatabase()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -43,7 +38,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.True(await dataProvider.CanConnectToDatabaseAsync());
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DatatableTest()
     {
 
@@ -62,7 +57,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(DatatableTest), dataTable.Rows[0]["Description"]);
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DataSetTest()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -80,7 +75,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(DataSetTest), dataSet.Tables[0].Rows[0]["Description"]);
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DataReaderTest()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -103,7 +98,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         await reader.CloseAsync();
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task XmlQueryTypes()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -129,7 +124,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(XmlQueryTypes), rowElement.Element("Description")!.Value);
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task ScalarUnTypedTests()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -146,7 +141,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound?.ToString());
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task ScalarTypedTests()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -163,7 +158,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(ScalarTypedTests), descriptionFound?.ToString());
     }
 
-    [Fact(Skip = SkipReason)]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task BulkInsert()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
