@@ -33,7 +33,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
                                                              });
     }
 
-#endregion
+    #endregion
 
     [Fact(Skip = SkipReason)]
     public async Task CanConnectToDatabase()
