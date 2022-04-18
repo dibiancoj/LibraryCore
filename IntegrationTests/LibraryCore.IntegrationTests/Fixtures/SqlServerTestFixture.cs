@@ -26,6 +26,7 @@ public class SqlServerTestFixture : IAsyncLifetime
         using var dbContext = new IntegrationTestDbContext();
 
         //handle skipped tests. If we can't connect then just short circuit. If we run the test and its null - the test would still fail
+        //#if DEBUG in SqlDataProviderIntegrationTest line 15
         CanConnect = await dbContext.Database.CanConnectAsync(cancellationToken: ct.Token);
 
         if (CanConnect)

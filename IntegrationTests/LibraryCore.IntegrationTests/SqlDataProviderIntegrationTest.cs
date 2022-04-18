@@ -12,7 +12,11 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
     }
 
     private SqlServerTestFixture SqlServerTestFixture { get; }
+#if DEBUG
+    private const string SkipReason = "Don't want to run database integration test locally for now.";
+#else
     private const string SkipReason = "";//"Don't want to run database integration test locally for now.";
+#endif
 
     #region Framework
 
@@ -29,7 +33,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
                                                              });
     }
 
-    #endregion
+#endregion
 
     [Fact(Skip = SkipReason)]
     public async Task CanConnectToDatabase()
