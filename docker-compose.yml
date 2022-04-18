@@ -19,7 +19,9 @@ services:
       [
         "dotnet",
         "test",
-        "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj"
+        "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
+        "-c",
+        "release"
       ]
     depends_on:
       - sql-server

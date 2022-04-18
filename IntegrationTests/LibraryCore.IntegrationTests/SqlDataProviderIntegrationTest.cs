@@ -30,7 +30,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
 
     #endregion
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task CanConnectToDatabase()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -38,7 +38,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.True(await dataProvider.CanConnectToDatabaseAsync());
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DatatableTest()
     {
 
@@ -57,7 +57,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(DatatableTest), dataTable.Rows[0]["Description"]);
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DataSetTest()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -75,7 +75,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(DataSetTest), dataSet.Tables[0].Rows[0]["Description"]);
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DataReaderTest()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -98,7 +98,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         await reader.CloseAsync();
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task XmlQueryTypes()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -124,7 +124,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(XmlQueryTypes), rowElement.Element("Description")!.Value);
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task ScalarUnTypedTests()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -141,7 +141,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(ScalarUnTypedTests), descriptionFound?.ToString());
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task ScalarTypedTests()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
@@ -158,7 +158,7 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
         Assert.Equal(nameof(ScalarTypedTests), descriptionFound?.ToString());
     }
 
-    [Fact]
+    [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task BulkInsert()
     {
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
