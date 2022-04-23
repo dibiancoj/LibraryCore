@@ -6,8 +6,6 @@ namespace LibraryCore.Core.IcsCalendar;
 public static class IcsCalendarCreator
 {
 
-    #region Constants
-
     /// <summary>
     /// Mime type for the ics file
     /// </summary>
@@ -24,18 +22,10 @@ public static class IcsCalendarCreator
     /// </summary>
     private const string FormatSpecificDateTimeForFullDayAppointment = "yyyyMMdd";
 
-    #endregion
-
-    #region Enum
-
     public enum IcsTimeZoneEnum
     {
         NewYork
     }
-
-    #endregion
-
-    #region Public Methods
 
     /// <summary>
     /// Creates an .ics file which creates an event in outlook, google calendar, etc.
@@ -82,19 +72,13 @@ public static class IcsCalendarCreator
         var timeZoneFactoryToUse = CreateTimeZone(icsTimeZone);
 
         //we will use a string builder to write everything. use a default capacity. All the static text below is 166-ish plus the dates.
-        var icsWriter = new StringBuilder(185);
-
         //there are basically 5 fields tht we need to fill in...start date, end date, summary, location, and the body.
-
-        //let's add the first couple of lines that are static and won't change
-        icsWriter.AppendLine("BEGIN:VCALENDAR");
-        icsWriter.AppendLine("VERSION:2.0");
-        icsWriter.AppendLine("PRODID:-//hacksw/handcal//NONSGML v1.0//EN");
-
-        //add the time zone definition
-        icsWriter.AppendLine(timeZoneFactoryToUse.TimeZoneDefinitionOutput);
-
-        icsWriter.AppendLine("BEGIN:VEVENT");
+        var icsWriter = new StringBuilder(185)
+            .AppendLine("BEGIN:VCALENDAR")
+            .AppendLine("VERSION:2.0")
+            .AppendLine("PRODID:-//hacksw/handcal//NONSGML v1.0//EN")
+            .AppendLine(timeZoneFactoryToUse.TimeZoneDefinitionOutput)
+            .AppendLine("BEGIN:VEVENT");
 
         //We basically need for specific times
         //"DTSTART:Date:TheFormattedDateNow"
@@ -121,42 +105,20 @@ public static class IcsCalendarCreator
             icsWriter.Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}").Append(Environment.NewLine);
         }
 
-        //add the summary
-        icsWriter.Append($"SUMMARY:{summaryOfAppointment}").Append(Environment.NewLine);
-
-        //add the location
-        icsWriter.Append($"LOCATION:{locationOfAppointment}").Append(Environment.NewLine);
-
-        //add the description
-        icsWriter.Append($"DESCRIPTION:{bodyOfReminder}").Append(Environment.NewLine);
-
-        //add the closing brackets
-        icsWriter.AppendLine("END:VEVENT");
-
-        //add the end calendar
-        icsWriter.AppendLine("END:VCALENDAR");
-
-        //let's go return the results
-        return icsWriter.ToString();
+        //add the summary and return
+        return icsWriter.Append($"SUMMARY:{summaryOfAppointment}").Append(Environment.NewLine)
+                 .Append($"LOCATION:{locationOfAppointment}").Append(Environment.NewLine)
+                 .Append($"DESCRIPTION:{bodyOfReminder}").Append(Environment.NewLine)
+                 .AppendLine("END:VEVENT")
+                 .AppendLine("END:VCALENDAR")
+                 .ToString();
     }
 
-    #endregion
-
-    #region Internal Methods
-
     /// <summary>
-    /// Return the formatted time that an ics file expects
+    /// Return the formatted time that an ics file expects.
     /// </summary>
     /// <param name="dateToBuild">Date to build up</param>
     /// <returns>the formatted time in a string</returns>
-    private static string GetFormattedDateTime(DateTime dateToBuild)
-    {
-        //just make sure if number is 1 digit, then we make it ie 09.
-
-        //return it in the format they want. Make sure this is in local time
-        return dateToBuild.ToString(FormatSpecificDateTime);
-    }
-
-    #endregion
+    private static string GetFormattedDateTime(DateTime dateToBuild) => dateToBuild.ToString(FormatSpecificDateTime);
 
 }
