@@ -6,14 +6,12 @@ Create: NuGet.Config
      <add key="github" value="https://nuget.pkg.github.com/dibiancoj/index.json" />
   </packageSources>
   <packageSourceCredentials>
-<github>
-   <add key="Username" value="dibiancoj" />
-<add key="ClearTextPassword" value="{{personal access key}}" />
-</github>
+    <github>
+       <add key="Username" value="dibiancoj" />
+       <add key="ClearTextPassword" value="{{personal access key}}" />
+    </github>
   </packageSourceCredentials>
 </configuration>
-
-
 
 
 *{{personal access key}}
