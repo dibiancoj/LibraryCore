@@ -30,7 +30,7 @@ public class RuleParserEngine
 
     //Parameter / Methods Calls
     //$ParameterName.PropertyName$ Of a property passed in
-    //$MyBooleanParameter if the parameter is not an object. ie: $MyBooleanParameter == true
+    //$MyBooleanParameter$ if the parameter is not an object. ie: $MyBooleanParameter == true
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
 
     //Comparison
