@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Core.Parsers.RuleParser;
+﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.Registration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,11 +10,11 @@ public class RuleParserFixture
     {
         ServiceProvider = new ServiceCollection()
            .AddRuleParserWithConfiguration()
-               .WithRegisterMethod("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
-               .WithRegisterMethod("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
-               .WithRegisterMethod("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
-               .WithRegisterMethod("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!)
-               .WithRegisterMethod("ExtractFromDictionary", typeof(RuleParserFixture).GetMethod(nameof(ExtractFromDictionary))!)
+               .WithRegisteredMethod("MyMethod1", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerId))!)
+               .WithRegisteredMethod("GetAnswerArray", typeof(RuleParserFixture).GetMethod(nameof(GetAnswerArray))!)
+               .WithRegisteredMethod("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
+               .WithRegisteredMethod("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!)
+               .WithRegisteredMethod("ExtractFromDictionary", typeof(RuleParserFixture).GetMethod(nameof(ExtractFromDictionary))!)
            .BuildRuleParser()
 
            .BuildServiceProvider();

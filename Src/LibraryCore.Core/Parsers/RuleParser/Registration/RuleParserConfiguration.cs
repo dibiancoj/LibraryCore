@@ -16,7 +16,7 @@ public class RuleParserConfiguration
     private IServiceCollection ServiceDescriptors { get; }
     private Dictionary<string, MethodInfo> RegisteredMethods { get; }
 
-    public RuleParserConfiguration WithRegisterMethod(string key, MethodInfo methodInfo)
+    public RuleParserConfiguration WithRegisteredMethod(string key, MethodInfo methodInfo)
     {
         RegisteredMethods.Add(key, methodInfo);
         return this;
