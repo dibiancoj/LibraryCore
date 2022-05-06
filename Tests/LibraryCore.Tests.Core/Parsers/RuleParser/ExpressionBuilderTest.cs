@@ -35,6 +35,19 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
         Assert.False(expression.Invoke());
     }
 
+    [InlineData(5, false)]
+    [InlineData(30, true)]
+    [Theory]
+    public void SimpleParameterTest(int age, bool expectedResult)
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString($"$Age$ > 15")
+                                                .BuildExpression<int>("Age")
+                                                .Compile();
+
+        Assert.Equal(expectedResult, expression.Invoke(age));
+    }
+
     [Fact]
     public void TwoParameterTest()
     {
