@@ -1,46 +1,13 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Linq.Expressions;
+using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 
-public static class RuleParserExpressionBuilder
+internal static class RuleParserExpressionBuilder
 {
-    public static Expression<Func<bool>> BuildExpression(IEnumerable<IToken> tokens)
-    {
-        var parametersToUse = Array.Empty<ParameterExpression>();
-
-        return Expression.Lambda<Func<bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
-    }
-
-    public static Expression<Func<T1, bool>> BuildExpression<T1>(IEnumerable<IToken> tokens, string parameterOneName)
-    {
-        var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
-        var parametersToUse = new[] { parameter1 };
-
-        return Expression.Lambda<Func<T1, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
-    }
-
-    public static Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(IEnumerable<IToken> tokens, string parameterOneName, string parameterTwoName)
-    {
-        var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
-        var parameter2 = Expression.Parameter(typeof(T2), parameterTwoName);
-        var parametersToUse = new[] { parameter1, parameter2 };
-
-        return Expression.Lambda<Func<T1, T2, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
-    }
-
-    public static Expression<Func<T1, T2, T3, bool>> BuildExpression<T1, T2, T3>(IEnumerable<IToken> tokens, string parameterOneName, string parameterTwoName, string parameterThreeName)
-    {
-        var parameter1 = Expression.Parameter(typeof(T1), parameterOneName);
-        var parameter2 = Expression.Parameter(typeof(T2), parameterTwoName);
-        var parameter3 = Expression.Parameter(typeof(T3), parameterThreeName);
-        var parametersToUse = new[] { parameter1, parameter2, parameter3 };
-
-        return Expression.Lambda<Func<T1, T2, T3, bool>>(CreateExpression(tokens, parametersToUse), parametersToUse);
-    }
-
-    private static Expression CreateExpression(IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateExpression(IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
     {
         Expression? workingExpression = null;
 
@@ -97,5 +64,42 @@ public static class RuleParserExpressionBuilder
         }
 
         return workingExpression ?? throw new Exception("No Expressions Found");
+    }
+
+    internal static Expression CreateRuleExpression<TScoreResult, T1>(ScoringMode scoringMode, IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    {
+        var workingExpressions = new List<Expression>();
+
+        var returnTarget = Expression.Label();
+        var resultVariable = Expression.Variable(typeof(TScoreResult));
+
+        var firstScoreWins = scoringMode == ScoringMode.FirstTrueRuleWins;
+
+        foreach (var rule in tokens.Cast<ScoreCriteriaToken<TScoreResult>>())
+        {
+            Expression scoreTallyExpression = firstScoreWins ?
+                                            Expression.Constant(rule.ScoreValue) :
+                                            Expression.Add(resultVariable, Expression.Constant(rule.ScoreValue));
+
+            var conditionToRun = CreateExpression(rule.ScoreCriteriaTokens, parametersToUse);
+            var assignExpression = Expression.Assign(resultVariable, scoreTallyExpression);
+
+            //first score wins
+            //set variable, return methoid
+
+            //accumulator
+            //set variable
+
+            Expression expressionBasedOnScoreType = firstScoreWins ?
+                                Expression.Block(assignExpression, Expression.Return(returnTarget)) :
+                                assignExpression;
+
+            workingExpressions.Add(Expression.IfThen(conditionToRun, expressionBasedOnScoreType));
+        }
+
+        workingExpressions.Add(Expression.Label(returnTarget));
+        workingExpressions.Add(resultVariable);
+
+        return Expression.Block(new[] { resultVariable }, workingExpressions);
     }
 }

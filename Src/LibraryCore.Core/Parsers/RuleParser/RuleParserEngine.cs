@@ -1,6 +1,8 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Collections.Immutable;
+using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Core.Parsers.RuleParser;
 
@@ -66,5 +68,12 @@ public class RuleParserEngine
         }
 
         return new RuleParserCompilationResult(tokens.ToImmutableList());
+    }
+
+    public record ScoringCriteriaParameter<TScoreType>(TScoreType ScoreValueIfTrue, string ScoreTruthCriteria);
+
+    public RuleParserCompilationResult<TScoreType> ParseScoreNew<TScoreType>(params ScoringCriteriaParameter<TScoreType>[] scoreCriteria)
+    {
+        return new RuleParserCompilationResult<TScoreType>(scoreCriteria.Select(t => (IToken)new ScoreCriteriaToken<TScoreType>(t.ScoreValueIfTrue, ParseString(t.ScoreTruthCriteria).CompilationTokenResult)).ToImmutableList());
     }
 }
