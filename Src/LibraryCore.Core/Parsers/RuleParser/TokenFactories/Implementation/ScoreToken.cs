@@ -9,9 +9,11 @@ public class ScoreToken
     public enum ScoringMode
     {
         AccumulatedScore,
-        FirstTrueRuleWins
+        ShortCircuitOnFirstTrueEval
     }
 }
+
+public record ScoringCriteriaParameter<TScoreType>(TScoreType ScoreValueIfTrue, string ScoreTruthCriteria);
 
 [DebuggerDisplay("Score Value = {ScoreValue}")]
 public class ScoreCriteriaToken<TScore> : IToken

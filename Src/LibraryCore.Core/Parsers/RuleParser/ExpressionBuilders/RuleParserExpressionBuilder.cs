@@ -73,7 +73,7 @@ internal static class RuleParserExpressionBuilder
         var returnTarget = Expression.Label();
         var resultVariable = Expression.Variable(typeof(TScoreResult));
 
-        var firstScoreWins = scoringMode == ScoringMode.FirstTrueRuleWins;
+        var firstScoreWins = scoringMode == ScoringMode.ShortCircuitOnFirstTrueEval;
 
         foreach (var rule in tokens.Cast<ScoreCriteriaToken<TScoreResult>>())
         {

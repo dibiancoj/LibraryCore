@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser;
-using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
@@ -13,29 +12,92 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
         RuleParserFixture = ruleParserFixture;
     }
 
-    [Fact]
-    public void ScoreTest1()
+    public record ScoreParserModel(int Age);
+
+    public enum RiskOfHeartAttackScore
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine()
+        Low,
+        Medium,
+        High
+    }
+
+    [InlineData(-1, 3)]
+    [InlineData(25, 18)]
+    [InlineData(25, 19)]
+    [InlineData(50, 20)]
+    [Theory]
+    public void IntBasedScore_ShortCircuitOnFirstTrueEval(int expectedScore, int Age)
+    {
+        var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
                                             .ParseScoreNew<int>(
-                                            new(5, "$Survey.SurgeryCount$ <= 5"),
-                                            new(10, "$Survey.SurgeryCount$ <= 10"),
-                                            new(20, "$Survey.SurgeryCount$ <= 20"));
+                                                    new(-1, "$User.Age$ < 18"),
+                                                    new(25, "$User.Age$ >= 18 && $User.Age$ < 20"),
+                                                    new(50, "$User.Age$ >= 20"))
+                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .Compile();
 
-        var raw = result.BuildScoreExpression<Survey>(ScoreToken.ScoringMode.FirstTrueRuleWins, "Survey");
+        var result = compiledExpression(new ScoreParserModel(Age));
 
-        var compiled = raw.Compile();
+        Assert.Equal(expectedScore, result);
+    }
 
-        var result2 = compiled(new Survey("test", 6, 5, DateTime.Now, DateTime.Now, false, false, 0, 0, null!, null));
+    [InlineData(0, 3)]
+    [InlineData(1, 4)]
+    [InlineData(26, 11)]
+    [InlineData(76, 30)]
+    [InlineData(51, 101)]
+    [Theory]
+    public void IntBasedScore_AccumulatedScore(int expectedScore, int Age)
+    {
+        var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseScoreNew<int>(
+                                                    new(1, "$User.Age$ > 3"),
+                                                    new(25, "$User.Age$ > 10 && $User.Age$ < 100"),
+                                                    new(50, "$User.Age$ > 20"))
+                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.AccumulatedScore, "User")
+                                            .Compile();
 
-        Assert.Equal(10, result2);
-        //new KeyValuePair<int, string>(7, "$Survey.SurgeryCount$ > 5 && $Survey.SurgeryCount$ < 10"));
-        // new KeyValuePair<int, string>(10, "$Survey.SurgeryCount$ > 10"));
+        var result = compiledExpression(new ScoreParserModel(Age));
 
-        //var expression = result.BuildScoreExpression<Survey>("Survey");
-        //var comp = expression.Compile();
-        //var result2 = expression.Compile().Invoke(new Survey("test", 6, 5, DateTime.Now, DateTime.Now, false, false, 0, 0, null!, null));
+        Assert.Equal(expectedScore, result);
+    }
 
-        //var t = result2;
+    [InlineData(RiskOfHeartAttackScore.Low, 15)]
+    [InlineData(RiskOfHeartAttackScore.Medium, 30)]
+    [InlineData(RiskOfHeartAttackScore.High, 60)]
+    [Theory]
+    public void EnumBasedScore_ShortCircuitOnFirstTrueEval(RiskOfHeartAttackScore expectedScore, int Age)
+    {
+        var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseScoreNew<RiskOfHeartAttackScore>(
+                                                    new(RiskOfHeartAttackScore.Low, "$User.Age$ < 20"),
+                                                    new(RiskOfHeartAttackScore.Medium, "$User.Age$ >= 21 && $User.Age$ < 40"),
+                                                    new(RiskOfHeartAttackScore.High, "$User.Age$ >= 40"))
+                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .Compile();
+
+        var result = compiledExpression(new ScoreParserModel(Age));
+
+        Assert.Equal(expectedScore, result);
+    }
+
+    [InlineData(-1, 3)]
+    [InlineData(25, 18)]
+    [InlineData(25, 19)]
+    [InlineData(50, 20)]
+    [Theory]
+    public void WithMethodCall(int expectedScore, int Age)
+    {
+        var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseScoreNew<int>(
+                                                    new(-1, "@ScoreParser.GetAge() < 18"),
+                                                    new(25, "@ScoreParser.GetAge() >= 18 && @ScoreParser.GetAge() < 20"),
+                                                    new(50, "@ScoreParser.GetAge() >= 20"))
+                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .Compile();
+
+        var result = compiledExpression(new ScoreParserModel(Age));
+
+        Assert.Equal(expectedScore, result);
     }
 }

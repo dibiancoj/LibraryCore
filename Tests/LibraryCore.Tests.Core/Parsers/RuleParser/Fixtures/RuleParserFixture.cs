@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser;
 using LibraryCore.Core.Parsers.RuleParser.Registration;
 using Microsoft.Extensions.DependencyInjection;
+using static LibraryCore.Tests.Core.Parsers.RuleParser.ScoreParserTest;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
@@ -15,6 +16,7 @@ public class RuleParserFixture
                .WithRegisteredMethod("GetNullableIntArray", typeof(RuleParserFixture).GetMethod(nameof(GetNullableIntArray))!)
                .WithRegisteredMethod("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!)
                .WithRegisteredMethod("ExtractFromDictionary", typeof(RuleParserFixture).GetMethod(nameof(ExtractFromDictionary))!)
+               .WithRegisteredMethod("ScoreParser.GetAge", typeof(RuleParserFixture).GetMethod(nameof(GetAgeInMethod))!)
            .BuildRuleParser()
 
            .BuildServiceProvider();
@@ -47,4 +49,6 @@ public class RuleParserFixture
 
         return tempObject;
     }
+
+    public static int GetAgeInMethod(ScoreParserModel model) => model.Age;
 }
