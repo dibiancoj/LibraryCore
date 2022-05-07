@@ -27,7 +27,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void SingleParameter()
     {
         Assert.Equal("Delete - Prescription Id = 12345", RuleParserFixture.ResolveRuleParserEngine()
-                                                            .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('PrescriptionId')}'")
+                                                            .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'PrescriptionId')}'")
                                                             .BuildStringExpression<Dictionary<string, object>>("Request")
                                                             .Compile()
                                                             .Invoke(new Dictionary<string, object> { { "PrescriptionId", 12345 } }));
@@ -37,7 +37,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void TwoSimpleParameter()
     {
         Assert.Equal("Delete - Prescription Id = 12345 | Doctor Id = 24", RuleParserFixture.ResolveRuleParserEngine()
-                                                                           .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('PrescriptionId')} | Doctor Id = {@ExtractFromDictionary('DoctorId')}'")
+                                                                           .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'PrescriptionId')} | Doctor Id = {@ExtractFromDictionary($Request$, 'DoctorId')}'")
                                                                            .BuildStringExpression<Dictionary<string, object>>("Request")
                                                                            .Compile()
                                                                            .Invoke(new Dictionary<string, object> { { "PrescriptionId", 12345 }, { "DoctorId", 24 } }));
@@ -47,7 +47,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void MultipleParameter()
     {
         Assert.Equal("Save Request - Drug Name Id = 25 | Msk Provider Id = 9876", RuleParserFixture.ResolveRuleParserEngine()
-                                                                                   .ParseString("'Save Request - Drug Name Id = {@ExtractFromDictionary('SaveRequest.Id')} | Msk Provider Id = {@ExtractFromDictionary('SaveRequest.ProviderId')}'")
+                                                                                   .ParseString("'Save Request - Drug Name Id = {@ExtractFromDictionary($Request$, 'SaveRequest.Id')} | Msk Provider Id = {@ExtractFromDictionary($Request$, 'SaveRequest.ProviderId')}'")
                                                                                    .BuildStringExpression<Dictionary<string, object>>("Request")
                                                                                    .Compile()
                                                                                    .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(25, 9876) } }));
@@ -57,7 +57,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void NullablePropertyWithValueOnObject()
     {
         Assert.Equal("Delete - Prescription Id = 1", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NullableId')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NullableId')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, 1) } }));
@@ -67,7 +67,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void NullablePropertyWithNullValueOnObject()
     {
         Assert.Equal("Delete - Prescription Id = ", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NullableId')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NullableId')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }));
@@ -77,7 +77,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void TwoLevelNestedObjectWhenPopulated()
     {
         Assert.Equal("Delete - Prescription Id = 2", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NestedObject.Id')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NestedObject.Id')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2)) } }));
@@ -87,7 +87,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void TwoLevelNestedObjectWhenNull()
     {
         Assert.Equal("Delete - Prescription Id = ", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NestedObject.Id')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NestedObject.Id')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1) } }));
@@ -97,7 +97,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void TwoLevelNestedObjectWithNullableProperty()
     {
         Assert.Equal("Delete - Prescription Id = 22", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NestedObject.NullableId')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NestedObject.NullableId')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2, 22)) } }));
@@ -107,7 +107,7 @@ public class AttributeFormatParserTest : IClassFixture<RuleParserFixture>
     public void TwoLevelNestedObjectWithNullablePropertyThatHasValuie()
     {
         Assert.Equal("Delete - Prescription Id = ", RuleParserFixture.ResolveRuleParserEngine()
-                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary('SaveRequest.NestedObject.NullableId')}'")
+                                                         .ParseString("'Delete - Prescription Id = {@ExtractFromDictionary($Request$, 'SaveRequest.NestedObject.NullableId')}'")
                                                          .BuildStringExpression<Dictionary<string, object>>("Request")
                                                          .Compile()
                                                          .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(1, 1, NestedObject: new MockSaveRequest(2, 2)) } }));

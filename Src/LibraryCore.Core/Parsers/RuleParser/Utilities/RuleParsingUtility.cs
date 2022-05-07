@@ -2,7 +2,7 @@
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using System.Text;
 
-namespace LibraryCore.Core.Parsers.RuleParser;
+namespace LibraryCore.Core.Parsers.RuleParser.Utilities;
 
 public static class RuleParsingUtility
 {

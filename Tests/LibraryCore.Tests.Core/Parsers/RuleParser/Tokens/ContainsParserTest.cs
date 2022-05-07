@@ -57,8 +57,8 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
-    [InlineData("@GetAnswerArray() contains 20", false)]
-    [InlineData("@GetAnswerArray() contains 2", true)]
+    [InlineData("@GetAnswerArray($Survey$) contains 20", false)]
+    [InlineData("@GetAnswerArray($Survey$) contains 2", true)]
     [Theory]
     public void ContainsFromMethod(string code, bool expectedResult)
     {

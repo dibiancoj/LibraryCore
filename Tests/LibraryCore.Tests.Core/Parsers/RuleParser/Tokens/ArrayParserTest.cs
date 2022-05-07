@@ -86,8 +86,8 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
                                                                     .Value));
     }
 
-    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles$", 80, true)]
-    [InlineData("@GetNullableIntArray() contains $Survey.NumberOfMotorcyles$", 79, false)]
+    [InlineData("@GetNullableIntArray($Survey$) contains $Survey.NumberOfMotorcyles$", 80, true)]
+    [InlineData("@GetNullableIntArray($Survey$) contains $Survey.NumberOfMotorcyles$", 79, false)]
     [Theory]
     public void NullableArrayContainsFromMethod(string statementToTest, int? numberToSet, bool expectedResult)
     {

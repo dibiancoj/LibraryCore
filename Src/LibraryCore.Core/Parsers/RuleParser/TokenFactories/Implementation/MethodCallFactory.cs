@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
+using LibraryCore.Core.Parsers.RuleParser.Utilities;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -74,14 +75,8 @@ public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<ITok
     public Expression CreateExpression(IList<ParameterExpression> parameters)
     {
         //convert all the additional parameters to an expression
-        var additionalParameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();
+        var parameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();
 
-        IEnumerable<Expression> parametersToPassIn = RegisteredMethodToUse.GetParameters().Any() ?
-                                                    parameters.Concat(additionalParameterExpression) :
-                                                    Enumerable.Empty<Expression>();
-
-        //parameters = The overall method parameters that was created
-        //additional parameters = is whatever we want to call this method with
-        return Expression.Call(RegisteredMethodToUse, parametersToPassIn);
+        return Expression.Call(RegisteredMethodToUse, parameterExpression);
     }
 }

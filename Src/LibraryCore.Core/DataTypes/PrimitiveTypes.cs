@@ -33,4 +33,13 @@ public static class PrimitiveTypes
                 typeof(decimal),
                 typeof(decimal?) });
 
+    public static ISet<Type> NumberTypesSelect() => new HashSet<Type>(new Type[] {
+        typeof(short),
+        typeof(int),
+        typeof(long),
+        typeof(double),
+        typeof(float),
+        typeof(decimal)
+    });
+
 }
