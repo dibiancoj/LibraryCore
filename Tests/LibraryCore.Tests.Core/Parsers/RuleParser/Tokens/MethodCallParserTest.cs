@@ -43,6 +43,20 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
     }
 
+    [InlineData(true, 24)]
+    [InlineData(false, 25)]
+    [Theory]
+    public void NoParameterMethod(bool expectedResult, int valueToVerifyFromResultOfMethod)
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString($"@GetANumberWithNoParameters() == {valueToVerifyFromResultOfMethod}")
+                                               .BuildExpression<Survey>("Survey")
+                                               .Compile();
+
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
+        
+    }
+
     [InlineData(true, "@MyMethod1($Survey$, 1) == 'Yes'")]
     [InlineData(false, "@MyMethod1($Survey$, 1) == 'No'")]
     [InlineData(false, "@MyMethod1($Survey$, 1) != 'Yes'")]
