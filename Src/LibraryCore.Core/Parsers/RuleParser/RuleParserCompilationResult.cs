@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
+﻿using LibraryCore.Core.DataTypes;
+using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
@@ -102,9 +103,24 @@ public class RuleParserCompilationResult<TResult>
 
     public Expression<Func<T1, TResult>> BuildScoreExpression<T1>(ScoringMode scoringMode, string parameter1Name)
     {
+        if (!IsValidScoringMode(scoringMode))
+        {
+            throw new ArgumentOutOfRangeException(nameof(scoringMode), "AccumulatedScore Is Only Valid For Number Like Scoring Values (int16, int, int64, decimal)");
+        }
+
         var parameter1 = Expression.Parameter(typeof(T1), parameter1Name);
         var parametersToUse = new[] { parameter1 };
 
         return Expression.Lambda<Func<T1, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult, T1>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
+    }
+
+    private static bool IsValidScoringMode(ScoringMode scoringMode)
+    {
+        if (scoringMode == ScoringMode.ShortCircuitOnFirstTrueEval)
+        {
+            return true;
+        }
+
+        return PrimitiveTypes.NumberTypesSelect().Contains(typeof(TResult));
     }
 }

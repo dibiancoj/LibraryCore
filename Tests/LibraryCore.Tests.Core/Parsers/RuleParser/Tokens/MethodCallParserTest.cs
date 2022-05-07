@@ -43,14 +43,14 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
     }
 
-    [InlineData(true, "@MyMethod1(1) == 'Yes'")]
-    [InlineData(false, "@MyMethod1(1) == 'No'")]
-    [InlineData(false, "@MyMethod1(1) != 'Yes'")]
-    [InlineData(true, "@MyMethod1(2) == 'No'")]
-    [InlineData(true, "@MyMethod1(1) == 'Yes' && @MyMethod1(2) == 'No'")]
-    [InlineData(false, "@MyMethod1(1) == 'No' && @MyMethod1(2) == 'No'")]
-    [InlineData(true, "@MyMethod1(1) == 'No' || @MyMethod1(2) == 'No'")]
-    [InlineData(false, "@MyMethod1(1) == 'abc' || @MyMethod1(2) == 'def'")]
+    [InlineData(true, "@MyMethod1($Survey$, 1) == 'Yes'")]
+    [InlineData(false, "@MyMethod1($Survey$, 1) == 'No'")]
+    [InlineData(false, "@MyMethod1($Survey$, 1) != 'Yes'")]
+    [InlineData(true, "@MyMethod1($Survey$, 2) == 'No'")]
+    [InlineData(true, "@MyMethod1($Survey$, 1) == 'Yes' && @MyMethod1($Survey$, 2) == 'No'")]
+    [InlineData(false, "@MyMethod1($Survey$, 1) == 'No' && @MyMethod1($Survey$, 2) == 'No'")]
+    [InlineData(true, "@MyMethod1($Survey$, 1) == 'No' || @MyMethod1($Survey$, 2) == 'No'")]
+    [InlineData(false, "@MyMethod1($Survey$, 1) == 'abc' || @MyMethod1($Survey$, 2) == 'def'")]
     [Theory]
     public void BasicMethodCallPositive(bool expectedResult, string clauseToTest)
     {
