@@ -30,16 +30,16 @@ public class RuleParserCompilationResult
     /// <summary>
     /// Try to cache the compiled expression if this is used for a log 
     /// </summary>
-    public Expression<Func<string>> BuildStringExpression() => StringOutputExpressionBuilder.BuildExpression(CompilationTokenResult);
+    public Expression<Func<string>> BuildStringExpression() => OutputExpressionBuilder.BuildExpression<string>(CompilationTokenResult);
 
     /// <summary>
     /// Try to cache the compiled expression if this is used for a log 
     /// </summary>
-    public Expression<Func<T1, string>> BuildStringExpression<T1>(string parameter1Name) => StringOutputExpressionBuilder.BuildExpression<T1>(CompilationTokenResult, parameter1Name);
+    public Expression<Func<T1, string>> BuildStringExpression<T1>(string parameter1Name) => OutputExpressionBuilder.BuildExpression<T1, string>(CompilationTokenResult, parameter1Name);
 
     /// <summary>
     /// Try to cache the compiled expression if this is used for a log 
     /// </summary>
-    public Expression<Func<T1, T2, string>> BuildStringExpression<T1, T2>(string parameter1Name, string parameter2Name) => StringOutputExpressionBuilder.BuildExpression<T1, T2>(CompilationTokenResult, parameter1Name, parameter2Name);
+    public Expression<Func<T1, T2, string>> BuildStringExpression<T1, T2>(string parameter1Name, string parameter2Name) => OutputExpressionBuilder.BuildExpression<T1, T2, string>(CompilationTokenResult, parameter1Name, parameter2Name);
 
 }
