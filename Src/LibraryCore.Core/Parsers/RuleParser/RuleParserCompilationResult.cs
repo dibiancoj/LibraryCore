@@ -111,7 +111,21 @@ public class RuleParserCompilationResult<TResult>
         var parameter1 = Expression.Parameter(typeof(T1), parameter1Name);
         var parametersToUse = new[] { parameter1 };
 
-        return Expression.Lambda<Func<T1, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult, T1>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
+        return Expression.Lambda<Func<T1, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
+    }
+
+    public Expression<Func<T1, T2, TResult>> BuildScoreExpression<T1, T2>(ScoringMode scoringMode, string parameter1Name, string parameter2Name)
+    {
+        if (!IsValidScoringMode(scoringMode))
+        {
+            throw new ArgumentOutOfRangeException(nameof(scoringMode), "AccumulatedScore Is Only Valid For Number Like Scoring Values (int16, int, int64, decimal)");
+        }
+
+        var parameter1 = Expression.Parameter(typeof(T1), parameter1Name);
+        var parameter2 = Expression.Parameter(typeof(T2), parameter2Name);
+        var parametersToUse = new[] { parameter1, parameter2 };
+
+        return Expression.Lambda<Func<T1, T2, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
     private static bool IsValidScoringMode(ScoringMode scoringMode)

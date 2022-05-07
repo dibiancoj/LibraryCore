@@ -66,7 +66,7 @@ internal static class RuleParserExpressionBuilder
         return workingExpression ?? throw new Exception("No Expressions Found");
     }
 
-    internal static Expression CreateRuleExpression<TScoreResult, T1>(ScoringMode scoringMode, IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
     {
         var workingExpressions = new List<Expression>();
 

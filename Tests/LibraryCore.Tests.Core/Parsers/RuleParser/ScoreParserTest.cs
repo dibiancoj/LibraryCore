@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -133,6 +134,24 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
+
+        Assert.Equal(expectedScore, result);
+    }
+
+    [InlineData(0, 25, 200)]
+    [InlineData(25, 18, 149)]
+    [InlineData(50, 18, 200)]
+    [Theory]
+    public void MultiParameterTest(int expectedScore, int Age, int WeightInLbs)
+    {
+        var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseScoreNew<int>(
+                                                    new(25, "$User.Age$ == 18 && $Weight$ < 150"),
+                                                    new(50, "$User.Age$ == 18 && $Weight$ > 150"))
+                                            .BuildScoreExpression<ScoreParserModel, int>(ScoringMode.ShortCircuitOnFirstTrueEval, "User", "Weight")
+                                            .Compile();
+
+        var result = compiledExpression(new ScoreParserModel(Age), WeightInLbs);
 
         Assert.Equal(expectedScore, result);
     }
