@@ -128,13 +128,5 @@ public class RuleParserCompilationResult<TResult>
         return Expression.Lambda<Func<T1, T2, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
-    private static bool IsValidScoringMode(ScoringMode scoringMode)
-    {
-        if (scoringMode == ScoringMode.ShortCircuitOnFirstTrueEval)
-        {
-            return true;
-        }
-
-        return PrimitiveTypes.NumberTypesSelect().Contains(typeof(TResult));
-    }
+    private static bool IsValidScoringMode(ScoringMode scoringMode) => scoringMode == ScoringMode.ShortCircuitOnFirstTrueEval || PrimitiveTypes.NumberTypesSelect().Contains(typeof(TResult));
 }
