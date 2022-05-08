@@ -28,7 +28,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
             _ = RuleParserFixture.ResolveRuleParserEngine()
-                                          .ParseScoreNew<string>(
+                                          .ParseScore<string>(
                                                   new("a", "$User.Age$ < 18"),
                                                   new("b", "$User.Age$ >= 18 && $User.Age$ < 20"),
                                                   new("c", "$User.Age$ >= 20"))
@@ -45,7 +45,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void IntBasedScore_ShortCircuitOnFirstTrueEval(int expectedScore, int Age)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<int>(
+                                            .ParseScore<int>(
                                                     new(-1, "$User.Age$ < 18"),
                                                     new(25, "$User.Age$ >= 18 && $User.Age$ < 20"),
                                                     new(50, "$User.Age$ >= 20"))
@@ -66,7 +66,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void IntBasedScore_AccumulatedScore(int expectedScore, int Age)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<int>(
+                                            .ParseScore<int>(
                                                     new(1, "$User.Age$ > 3"),
                                                     new(25, "$User.Age$ > 10 && $User.Age$ < 100"),
                                                     new(50, "$User.Age$ > 20"))
@@ -86,7 +86,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void StringBasedScore_ShortCircuitOnFirstTrueEval(string expectedScore, int Age)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<string>(
+                                            .ParseScore<string>(
                                                     new("A", "$User.Age$ == 10"),
                                                     new("B", "$User.Age$ == 20"),
                                                     new("C", "$User.Age$ == 30"),
@@ -106,7 +106,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void EnumBasedScore_ShortCircuitOnFirstTrueEval(RiskOfHeartAttackScore expectedScore, int Age)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<RiskOfHeartAttackScore>(
+                                            .ParseScore<RiskOfHeartAttackScore>(
                                                     new(RiskOfHeartAttackScore.Low, "$User.Age$ < 20"),
                                                     new(RiskOfHeartAttackScore.Medium, "$User.Age$ >= 21 && $User.Age$ < 40"),
                                                     new(RiskOfHeartAttackScore.High, "$User.Age$ >= 40"))
@@ -126,7 +126,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void WithMethodCall(int expectedScore, int Age)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<int>(
+                                            .ParseScore<int>(
                                                     new(-1, "@ScoreParser.GetAge($User$) < 18"),
                                                     new(25, "@ScoreParser.GetAge($User$) >= 18 && @ScoreParser.GetAge($User$) < 20"),
                                                     new(50, "@ScoreParser.GetAge($User$) >= 20"))
@@ -145,7 +145,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
     public void MultiParameterTest(int expectedScore, int Age, int WeightInLbs)
     {
         var compiledExpression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseScoreNew<int>(
+                                            .ParseScore<int>(
                                                     new(25, "$User.Age$ == 18 && $Weight$ < 150"),
                                                     new(50, "$User.Age$ == 18 && $Weight$ > 150"))
                                             .BuildScoreExpression<ScoreParserModel, int>(ScoringMode.ShortCircuitOnFirstTrueEval, "User", "Weight")
