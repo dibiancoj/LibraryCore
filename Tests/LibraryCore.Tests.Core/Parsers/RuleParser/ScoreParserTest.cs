@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
-using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
