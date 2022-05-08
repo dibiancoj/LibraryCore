@@ -32,7 +32,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                   new("a", "$User.Age$ < 18"),
                                                   new("b", "$User.Age$ >= 18 && $User.Age$ < 20"),
                                                   new("c", "$User.Age$ >= 20"))
-                                          .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.AccumulatedScore, "User")
+                                          .BuildScoreExpression<ScoreParserModel>(ScoringMode.AccumulatedScore, "User")
                                           .Compile();
         });
     }
@@ -49,7 +49,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                     new(-1, "$User.Age$ < 18"),
                                                     new(25, "$User.Age$ >= 18 && $User.Age$ < 20"),
                                                     new(50, "$User.Age$ >= 20"))
-                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .BuildScoreExpression<ScoreParserModel>(ScoringMode.ShortCircuitOnFirstTrueEval, "User")
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
@@ -70,7 +70,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                     new(1, "$User.Age$ > 3"),
                                                     new(25, "$User.Age$ > 10 && $User.Age$ < 100"),
                                                     new(50, "$User.Age$ > 20"))
-                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.AccumulatedScore, "User")
+                                            .BuildScoreExpression<ScoreParserModel>(ScoringMode.AccumulatedScore, "User")
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
@@ -91,7 +91,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                     new("B", "$User.Age$ == 20"),
                                                     new("C", "$User.Age$ == 30"),
                                                     new("D", "$User.Age$ == 40"))
-                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .BuildScoreExpression<ScoreParserModel>(ScoringMode.ShortCircuitOnFirstTrueEval, "User")
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
@@ -110,7 +110,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                     new(RiskOfHeartAttackScore.Low, "$User.Age$ < 20"),
                                                     new(RiskOfHeartAttackScore.Medium, "$User.Age$ >= 21 && $User.Age$ < 40"),
                                                     new(RiskOfHeartAttackScore.High, "$User.Age$ >= 40"))
-                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .BuildScoreExpression<ScoreParserModel>(ScoringMode.ShortCircuitOnFirstTrueEval, "User")
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
@@ -130,7 +130,7 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
                                                     new(-1, "@ScoreParser.GetAge($User$) < 18"),
                                                     new(25, "@ScoreParser.GetAge($User$) >= 18 && @ScoreParser.GetAge($User$) < 20"),
                                                     new(50, "@ScoreParser.GetAge($User$) >= 20"))
-                                            .BuildScoreExpression<ScoreParserModel>(ScoreToken.ScoringMode.ShortCircuitOnFirstTrueEval, "User")
+                                            .BuildScoreExpression<ScoreParserModel>(ScoringMode.ShortCircuitOnFirstTrueEval, "User")
                                             .Compile();
 
         var result = compiledExpression(new ScoreParserModel(Age));
