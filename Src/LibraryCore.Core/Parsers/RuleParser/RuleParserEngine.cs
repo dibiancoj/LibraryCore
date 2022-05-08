@@ -70,7 +70,7 @@ public class RuleParserEngine
         return new RuleParserCompilationResult(tokens.ToImmutableList());
     }
 
-    public RuleParserCompilationResult<TScoreType> ParseScoreNew<TScoreType>(params ScoringCriteriaParameter<TScoreType>[] scoreCriteria)
+    public RuleParserCompilationResult<TScoreType> ParseScore<TScoreType>(params ScoringCriteriaParameter<TScoreType>[] scoreCriteria)
     {
         return new RuleParserCompilationResult<TScoreType>(scoreCriteria.Select(t => (IToken)new ScoreCriteriaToken<TScoreType>(t.ScoreValueIfTrue, ParseString(t.ScoreTruthCriteria).CompilationTokenResult)).ToImmutableList());
     }
