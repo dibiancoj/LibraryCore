@@ -2,7 +2,6 @@
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Collections.Immutable;
-using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Core.Parsers.RuleParser;
 
