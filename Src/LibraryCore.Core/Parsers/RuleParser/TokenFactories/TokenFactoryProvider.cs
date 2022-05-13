@@ -13,4 +13,10 @@ public class TokenFactoryProvider
     {
         return TokenFactories.FirstOrDefault(x => x.IsToken(currentCharacterRead, peekedCharacter, readAndPeakedCharacters)) ?? throw new Exception($"No Token Found For Value = {currentCharacterRead}{peekedCharacter}");
     }
+
+    public ITokenFactory ResolveSpecificFactory<TFactoryType>()
+        where TFactoryType: ITokenFactory
+    {
+        return TokenFactories.OfType<TFactoryType>().First();
+    }
 }

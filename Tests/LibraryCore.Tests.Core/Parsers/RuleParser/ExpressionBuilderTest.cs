@@ -12,6 +12,16 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void BlaRegularInstanceMethod()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$str$.ToUpper() == 'TEST'")
+                                               .BuildExpression<string>("str");
+
+        Assert.True(expression.Compile().Invoke("test"));
+    }
+
+    [Fact]
     public void Bla()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
