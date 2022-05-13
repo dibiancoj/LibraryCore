@@ -9,7 +9,7 @@ public class BooleanFactory : ITokenFactory
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "fa", StringComparison.OrdinalIgnoreCase) ||
                                                                                                      string.Equals(readAndPeakedCharacters, "tr", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         //set the value if its true / false.
         bool valueToUse = characterRead == 't' || characterRead == 'T';

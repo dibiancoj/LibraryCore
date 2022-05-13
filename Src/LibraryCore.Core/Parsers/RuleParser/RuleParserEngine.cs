@@ -63,7 +63,7 @@ public class RuleParserEngine
 
             var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 
-            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider));
+            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider, this));
         }
 
         return new RuleParserCompilationResult(tokens.ToImmutableList());

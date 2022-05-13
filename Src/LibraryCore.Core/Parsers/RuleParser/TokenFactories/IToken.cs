@@ -21,6 +21,11 @@ public interface IBinaryExpressionCombiner : IBinaryOperator
 {
 }
 
+public interface IInstanceOperator
+{
+    public Expression CreateInstanceExpression(IList<ParameterExpression> parameters, Expression instance);
+}
+
 public interface IBinaryOperator
 {
     Expression CreateBinaryOperatorExpression(Expression left, Expression right);

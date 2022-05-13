@@ -30,6 +30,12 @@ internal static class RuleParserExpressionBuilder
                 //AndAlso OrElse
                 combiner = tempBinaryExpressionCombiner;
             }
+            else if (token is IInstanceOperator instanceOperator)
+            {
+                var expressionToModify = left ?? right ?? throw new Exception();
+                left = null;
+                temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModify);
+            }
             else
             {
                 //normal clause

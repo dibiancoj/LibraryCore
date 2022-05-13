@@ -49,7 +49,7 @@ public class RegistrationTest
 
     public class CustomTokenFactory : ITokenFactory
     {
-        public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider) => new CustomToken();
+        public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine) => new CustomToken();
         public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '!';
     }
 

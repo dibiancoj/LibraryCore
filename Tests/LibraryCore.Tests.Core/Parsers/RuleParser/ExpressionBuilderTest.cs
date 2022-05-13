@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
-using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -13,12 +12,73 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void Bla()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("[1,2,3].Any($t$ => $t$ == 200 || $t$ == 3) == true")
+                                               .BuildExpression();
+
+        Assert.True(expression.Compile().Invoke());
+    }
+
+    [Fact]
+    public void Bla2()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("@GetAnswerArray($Survey$).Any($x$ => $x$ == 200 || $x$ == 3) == true")
+                                               .BuildExpression<Survey>("Survey");
+
+        Assert.True(expression.Compile().Invoke(null!));
+    }
+
+    [Fact]
+    public void Bla3()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Lst$.Any($x$ => $x$ == 200 || $x$ == 3) == true")
+                                               .BuildExpression<Survey, IEnumerable<int>>("Survey", "Lst");
+
+        Assert.True(expression.Compile().Invoke(null!, new int[] { 1, 2, 3 }));
+    }
+
+
+    [Fact]
+    public void Bla4()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Any($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2') == true")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        Assert.True(expression.Compile().Invoke(new List<Survey> { new Survey("MySurvey", 24, default, default, default, default, default, default, default, default!, default) }));
+    }
+
+    [Fact]
+    public void BlaCount1()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Count($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2') >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        Assert.True(expression.Compile().Invoke(new List<Survey> { new Survey("MySurvey", 24, default, default, default, default, default, default, default, default!, default) }));
+    }
+
+    [Fact]
+    public void BlaChain()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Where($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2').Count($x$ => true == true) >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        Assert.True(expression.Compile().Invoke(new List<Survey> { new Survey("MySurvey", 24, default, default, default, default, default, default, default, default!, default) }));
+    }
+
+    [Fact]
     public void NoParameterTest()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("1 == 2")
                                                 .BuildExpression();
- 
+
         Assert.False(expression.Compile().Invoke());
     }
 

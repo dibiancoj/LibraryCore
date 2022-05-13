@@ -3,7 +3,6 @@ using LibraryCore.Core.Parsers.RuleParser.Utilities;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -22,12 +21,12 @@ public class MethodCallFactory : ITokenFactory
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
         {
             //need to determine the method name so we walk 
-            var methodName = WalkTheMethodName(stringReader);
+            var methodName = RuleParsingUtility.WalkUntil(stringReader, '(');
 
             if (!RegisterdMethods.TryGetValue(methodName, out var tryToGetMethodInfoResult))
             {
@@ -41,7 +40,7 @@ public class MethodCallFactory : ITokenFactory
 
             var parameterGroup = hasNoParameters ?
                                         Enumerable.Empty<IToken>() :
-                                        RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
+                                        RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')', ruleParserEngine).ToArray();
 
             if (hasNoParameters)
             {
@@ -54,19 +53,6 @@ public class MethodCallFactory : ITokenFactory
 
         throw new Exception("MethodCallFactory Not Able To Parse Information");
     }
-
-    private static string WalkTheMethodName(StringReader reader)
-    {
-        var text = new StringBuilder();
-
-        while (reader.HasMoreCharacters() && reader.PeekCharacter() != '(')
-        {
-            text.Append(reader.ReadCharacter());
-        }
-
-        return text.ToString();
-    }
-
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
