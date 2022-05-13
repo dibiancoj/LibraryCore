@@ -23,35 +23,14 @@ public class MethodCallFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
+        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine);
+
+        if (!RegisterdMethods.TryGetValue(methodInfoSignature.MethodName, out var tryToGetMethodInfoResult))
         {
-            //need to determine the method name so we walk 
-            var methodName = RuleParsingUtility.WalkUntil(stringReader, '(');
-
-            if (!RegisterdMethods.TryGetValue(methodName, out var tryToGetMethodInfoResult))
-            {
-                throw new Exception($"Method Name = {methodName} Is Not Registered In MethodCallFactory. Call {nameof(RegisterNewMethodAlias)} To Register The Method");
-            }
-
-            //eat the opening (
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '(');
-
-            bool hasNoParameters = stringReader.PeekCharacter() == ')';
-
-            var parameterGroup = hasNoParameters ?
-                                        Enumerable.Empty<IToken>() :
-                                        RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')', ruleParserEngine).ToArray();
-
-            if (hasNoParameters)
-            {
-                //closing )
-                RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, ')');
-            }
-
-            return new MethodCallToken(tryToGetMethodInfoResult, parameterGroup);
+            throw new Exception($"Method Name = {methodInfoSignature.MethodName} Is Not Registered In MethodCallFactory. Call {nameof(RegisterNewMethodAlias)} To Register The Method");
         }
 
-        throw new Exception("MethodCallFactory Not Able To Parse Information");
+        return new MethodCallToken(tryToGetMethodInfoResult, methodInfoSignature.Parameters);
     }
 }
 

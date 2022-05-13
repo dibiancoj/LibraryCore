@@ -2,6 +2,7 @@
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -11,7 +12,7 @@ public static class RuleParsingUtility
 {
     internal const char NullableDataTypeIdentifier = '?';
 
-    public record MethodParsingResult(string MethodName, IEnumerable<IToken> Parameters);
+    public record MethodParsingResult(string MethodName, IImmutableList<IToken> Parameters);
 
     internal static MethodParsingResult ParseMethodSignature(StringReader reader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine, char closingCharacter = ')')
     {
@@ -30,7 +31,7 @@ public static class RuleParsingUtility
         //no parameters
         if (text.Length == 0)
         {
-            return new MethodParsingResult(methodName, Array.Empty<IToken>());
+            return new MethodParsingResult(methodName, ImmutableList<IToken>.Empty);
         }
 
         var tokenList = new List<IToken>();
@@ -55,7 +56,7 @@ public static class RuleParsingUtility
             }
         }
 
-        return new MethodParsingResult(methodName, tokenList);
+        return new MethodParsingResult(methodName, tokenList.ToImmutableList());
     }
 
     internal static Type DetermineGenericType(Expression instance)

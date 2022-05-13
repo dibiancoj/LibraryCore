@@ -16,7 +16,13 @@ public class LambdaFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
-        var allParameters = RuleParsingUtility.WalkUntil(stringReader, '=').Trim().Replace("$", string.Empty).Split(',');
+        //parsing:
+        //$x$ => $x$ == 2
+
+        var allParameters = RuleParsingUtility.WalkUntil(stringReader, '=')
+                                .Trim()
+                                .Replace("$", string.Empty)
+                                .Split(',');
 
         RuleParsingUtility.EatOrThrowCharacters(stringReader, "=>");
 
@@ -38,12 +44,13 @@ public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableLis
     {
         Type genericType = RuleParsingUtility.DetermineGenericType(instance);
 
+        //x in the x => 
         var funcParameter = Expression.Parameter(genericType, MethodParameters[0]);
 
         var funcParameterArray = new[] { funcParameter };
 
-        var whereBla = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
+        var functionBodyToExecute = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
 
-        return Expression.Lambda(whereBla, funcParameterArray);
+        return Expression.Lambda(functionBodyToExecute, funcParameterArray);
     }
 }

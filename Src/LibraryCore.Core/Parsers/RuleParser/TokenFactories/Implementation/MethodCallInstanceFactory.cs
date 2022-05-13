@@ -38,7 +38,7 @@ public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult Met
         var isExtensionMethod = allMethods.Any(t => t.IsDefined(typeof(ExtensionAttribute))) ? 1 : 0;
 
         var methodInfoToCall = allMethods
-                               .First(x => x.GetParameters().Length == (isExtensionMethod + MethodInformation.Parameters.Count()));
+                               .First(x => x.GetParameters().Length == (isExtensionMethod + MethodInformation.Parameters.Count));
 
         if (methodInfoToCall.IsGenericMethod)
         {

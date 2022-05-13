@@ -1,6 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
-using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
-using System.Linq.Expressions;
+﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
 
@@ -14,38 +12,79 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
     private RuleParserFixture RuleParserFixture { get; }
 
     [Fact]
-    public void ParseTest()
+    public void ParseTestFromArrayConstant()
     {
-        Assert.False(true);
-        //var result = RuleParserFixture.ResolveRuleParserEngine()
-        //                                     .ParseString("1 == 1")
-        //                                     .CompilationTokenResult;
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("[1,2,3].Any($t$ => $t$ == 200 || $t$ == 3) == true")
+                                               .BuildExpression();
 
-        //Assert.Equal(5, result.Count);
-        //Assert.IsType<NumberToken<int>>(result[0]);
-        //Assert.IsType<WhiteSpaceToken>(result[1]);
-        //Assert.IsType<EqualsToken>(result[2]);
-        //Assert.IsType<WhiteSpaceToken>(result[3]);
-        //Assert.IsType<NumberToken<int>>(result[4]);
+        Assert.True(expression.Compile().Invoke());
     }
 
-    //[Fact]
-    //public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new EqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    [Fact]
+    public void ParseTestFromMethodResult()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("@GetAnswerArray($Survey$).Any($x$ => $x$ == 200 || $x$ == 3) == true")
+                                               .BuildExpression<Survey>("Survey");
 
-    //[InlineData("$Survey.PriceOfSurgery$ == 9.99d", true)]
-    //[InlineData("$Survey.PriceOfSurgery$ == 8.25d", false)]
-    //[InlineData("$Survey.PriceOfSurgery$ == 60d", false)]
-    //[InlineData("$Survey.Name$ == 'Jacob DeGrom'", true)]
-    //[InlineData("$Survey.Name$ == 'Tommy'", false)]
-    //[Theory]
-    //public void ExpressionsToTest(string expressionToTest, bool expectedResult)
-    //{
-    //    var expression = RuleParserFixture.ResolveRuleParserEngine()
-    //                                        .ParseString(expressionToTest)
-    //                                        .BuildExpression<Survey>("Survey")
-    //                                        .Compile();
+        Assert.True(expression.Compile().Invoke(null!));
+    }
 
-    //    Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
-    //}
+    [Fact]
+    public void ParseTestFromParameterResult()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Lst$.Any($x$ => $x$ == 200 || $x$ == 3) == true")
+                                               .BuildExpression<Survey, IEnumerable<int>>("Survey", "Lst");
+
+        Assert.True(expression.Compile().Invoke(new SurveyModelBuilder().Value, new int[] { 1, 2, 3 }));
+    }
+
+
+    [Fact]
+    public void ParseTestWithSubPropertyInsideLambda()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Any($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2') == true")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                            .WithName("MySurvey")
+                            .WithSurgeryCount(24)
+                            .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
+
+    [Fact]
+    public void ParseTestUsingCountLinqMethod()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Count($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2') >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                          .WithName("MySurvey")
+                          .WithSurgeryCount(24)
+                          .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
+
+    [Fact]
+    public void ParseTestWithChainedMethods()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Where($x$ => $x.SurgeryCount$ == 24 || $x.Name$ == 'MySurvey2').Count($x$ => true == true) >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                       .WithName("MySurvey")
+                       .WithSurgeryCount(24)
+                       .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
 }
 
