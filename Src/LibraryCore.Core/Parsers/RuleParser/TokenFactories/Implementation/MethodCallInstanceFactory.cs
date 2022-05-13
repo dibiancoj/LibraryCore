@@ -1,6 +1,5 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
-using LibraryCore.Core.Parsers.RuleParser.Utilities;
-using System.Collections.Immutable;
+﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -18,21 +17,7 @@ public class MethodCallInstanceFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
-        var result = RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine);
-
-        //string methodName = RuleParsingUtility.WalkUntil(stringReader, '(', true);
-
-        ////walk until we hit the arrow 
-        //var allParameters = RuleParsingUtility.WalkUntil(stringReader, '=').Trim().Replace("$", string.Empty).Split(',');
-
-        //RuleParsingUtility.EatOrThrowCharacters(stringReader, "=>");
-
-        ////grab the body
-        //var bodyOfMethod = RuleParsingUtility.WalkUntil(stringReader, ')', true);
-
-        //var tokensInBody = ruleParserEngine.ParseString(bodyOfMethod);
-
-        return new MethodCallInstanceToken(result);
+        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine));
     }
 }
 
@@ -43,39 +28,40 @@ public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult Met
 
     public Expression CreateInstanceExpression(IList<ParameterExpression> parameters, Expression instance)
     {
+        Type typeToFetchMethodInfoOffOf = typeof(IEnumerable).IsAssignableFrom(instance.Type) && instance.Type != typeof(string) ?
+                                                typeof(Enumerable) :
+                                                instance.Type;
 
-        throw new Exception();
+        var allMethods = typeToFetchMethodInfoOffOf.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance)
+                                .Where(x => x.Name.Equals(MethodInformation.MethodName, StringComparison.OrdinalIgnoreCase));
 
-        //var zz = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
-        //        .Where(m => m.Name == MethodName)
-        //        .ToList();
+        var isExtensionMethod = allMethods.Any(t => t.IsDefined(typeof(ExtensionAttribute))) ? 1 : 0;
 
-        //var isExtensionMethod = zz.Any(t => t.IsDefined(typeof(ExtensionAttribute))) ? 1 : 0;
+        var methodInfoToCall = allMethods
+                               .First(x => x.GetParameters().Length == (isExtensionMethod + MethodInformation.Parameters.Count()));
 
-        //var z = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
-        //   .First(m => m.Name.Equals(MethodName, StringComparison.OrdinalIgnoreCase) && 
-        //          m.GetParameters().Length == isExtensionMethod + MethodParameters.Count);
+        if (methodInfoToCall.IsGenericMethod)
+        {
+            methodInfoToCall = methodInfoToCall.MakeGenericMethod(RuleParsingUtility.DetermineGenericType(instance));
+        }
 
-        ////if (!instance.Type.IsArray || (instance.Type.IsGenericType && instance.Type.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
-        ////{
-        ////    throw new Exception("Must Be An Array To Use Linq Call");
-        ////}
+        if (methodInfoToCall.IsStatic)
+        {
+            //this would be an extension method. Or a generic extension method
+            var genericParameters = MethodInformation.Parameters.Select(x => CreateMethodParameter(instance, x, parameters));
 
-        //Type typeToUse = (instance.Type.IsGenericType ?
-        //                instance.Type.GenericTypeArguments[0] :
-        //                instance.Type.GetElementType()) ?? throw new Exception();
+            return Expression.Call(methodInfoToCall, new List<Expression> { instance }.Concat(genericParameters));
+        }
+        else
+        {
+            return Expression.Call(instance, methodInfoToCall, MethodInformation.Parameters.Select(x => CreateMethodParameter(null, x, parameters)));
+        }
+    }
 
-        //var MethodInGenericType = z.MakeGenericMethod(typeToUse);
-
-        //var funcParameter = Expression.Parameter(typeToUse, MethodParameters[0]);
-        //var funcParameterArray = new[] { funcParameter };
-
-        //var whereBla = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
-
-
-        ////var ttt = Expression.Lambda<Func<object, bool>>(whereBla, funcparameterArray);
-        //var ttt = Expression.Lambda(whereBla, funcParameterArray);
-
-        //return Expression.Call(MethodInGenericType, new[] { instance, ttt });
+    private static Expression CreateMethodParameter(Expression? instance, IToken token, IList<ParameterExpression> parameters)
+    {
+        return token is IInstanceOperator instanceOperator ?
+                    instanceOperator.CreateInstanceExpression(parameters, instance!) :
+                     token.CreateExpression(parameters);
     }
 }

@@ -22,6 +22,16 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void BlaRegularInstanceMethod2()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Survey$.InstanceMethodName(2) == 'My'")
+                                               .BuildExpression<Survey>("Survey");
+
+        Assert.True(expression.Compile().Invoke(new Survey("MySurvey", 24, default, default, default, default, default, default, default, default!, default)));
+    }
+
+    [Fact]
     public void Bla()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()

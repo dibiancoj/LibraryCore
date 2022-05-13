@@ -1,6 +1,8 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using System.Collections;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace LibraryCore.Core.Parsers.RuleParser.Utilities;
@@ -13,7 +15,7 @@ public static class RuleParsingUtility
 
     internal static MethodParsingResult ParseMethodSignature(StringReader reader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine, char closingCharacter = ')')
     {
-        var methodName = WalkUntil(reader, '(');
+        var methodName = WalkUntil(reader, '(', true);
         var text = new StringBuilder();
 
         //eat until the end of the method
@@ -26,7 +28,7 @@ public static class RuleParsingUtility
         ThrowIfCharacterNotExpected(reader, closingCharacter);
 
         //no parameters
-        if (text.Length == 1)
+        if (text.Length == 0)
         {
             return new MethodParsingResult(methodName, Array.Empty<IToken>());
         }
@@ -54,6 +56,21 @@ public static class RuleParsingUtility
         }
 
         return new MethodParsingResult(methodName, tokenList);
+    }
+
+    internal static Type DetermineGenericType(Expression instance)
+    {
+        if (instance.Type.IsGenericType)
+        {
+            return instance.Type.GenericTypeArguments[0];
+        }
+
+        if (typeof(IEnumerable).IsAssignableFrom(instance.Type))
+        {
+            return instance.Type.GetElementType() ?? throw new Exception("GetElementType Is Null");
+        }
+
+        return instance.Type;
     }
 
     /// <summary>

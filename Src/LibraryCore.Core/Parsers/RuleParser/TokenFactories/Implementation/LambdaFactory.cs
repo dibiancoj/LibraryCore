@@ -1,12 +1,8 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
+﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -40,37 +36,14 @@ public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableLis
 
     public Expression CreateInstanceExpression(IList<ParameterExpression> parameters, Expression instance)
     {
-        throw new Exception();
-        //var zz = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
-        //        .Where(m => m.Name == MethodName)
-        //        .ToList();
+        Type genericType = RuleParsingUtility.DetermineGenericType(instance);
 
-        //var isExtensionMethod = zz.Any(t => t.IsDefined(typeof(ExtensionAttribute))) ? 1 : 0;
+        var funcParameter = Expression.Parameter(genericType, MethodParameters[0]);
 
-        //var z = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
-        //   .First(m => m.Name.Equals(MethodName, StringComparison.OrdinalIgnoreCase) && 
-        //          m.GetParameters().Length == isExtensionMethod + MethodParameters.Count);
+        var funcParameterArray = new[] { funcParameter };
 
-        ////if (!instance.Type.IsArray || (instance.Type.IsGenericType && instance.Type.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
-        ////{
-        ////    throw new Exception("Must Be An Array To Use Linq Call");
-        ////}
+        var whereBla = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
 
-        //Type typeToUse = (instance.Type.IsGenericType ?
-        //                instance.Type.GenericTypeArguments[0] :
-        //                instance.Type.GetElementType()) ?? throw new Exception();
-
-        //var MethodInGenericType = z.MakeGenericMethod(typeToUse);
-
-        //var funcParameter = Expression.Parameter(typeToUse, MethodParameters[0]);
-        //var funcParameterArray = new[] { funcParameter };
-
-        //var whereBla = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
-
-
-        ////var ttt = Expression.Lambda<Func<object, bool>>(whereBla, funcparameterArray);
-        //var ttt = Expression.Lambda(whereBla, funcParameterArray);
-
-        //return Expression.Call(MethodInGenericType, new[] { instance, ttt });
+        return Expression.Lambda(whereBla, funcParameterArray);
     }
 }
