@@ -22,6 +22,16 @@ public class MethodCallInstanceParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void ParseTestWithBaseDataTypeOnRightHandSide()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("'TEST' == $str$.ToUpper()")
+                                               .BuildExpression<string>("str");
+
+        Assert.True(expression.Compile().Invoke("TeSt"));
+    }
+
+    [Fact]
     public void ParseTestWithCustomDataType()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()

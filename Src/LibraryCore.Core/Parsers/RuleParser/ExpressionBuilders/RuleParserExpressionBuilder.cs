@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
@@ -7,7 +8,7 @@ namespace LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 
 internal static class RuleParserExpressionBuilder
 {
-    internal static Expression CreateExpression(IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateExpression(IImmutableList<IToken> tokens, ParameterExpression[] parametersToUse)
     {
         Expression? workingExpression = null;
 
@@ -16,9 +17,11 @@ internal static class RuleParserExpressionBuilder
         IBinaryComparisonToken? operation = null;
         IBinaryExpressionCombiner? combiner = null;
 
-        foreach (var token in tokens.Where(x => x is not WhiteSpaceToken))
+        for (int i = 0; i < tokens.Count; i++)
         {
+            var token = tokens[i];
             Expression temp = null!;
+            bool isWhitespace = token is WhiteSpaceToken;
 
             if (token is IBinaryComparisonToken tempBinaryComparisonToken)
             {
@@ -33,10 +36,17 @@ internal static class RuleParserExpressionBuilder
             else if (token is IInstanceOperator instanceOperator)
             {
                 var expressionToModify = left ?? right ?? throw new Exception();
-                left = null;
+                if (right != null)
+                {
+                    right = null;
+                }
+                else
+                {
+                    left = null;
+                }
                 temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModify);
             }
-            else
+            else if (!isWhitespace)
             {
                 //normal clause
                 temp = token.CreateExpression(parametersToUse);
@@ -51,7 +61,8 @@ internal static class RuleParserExpressionBuilder
                 right = temp;
             }
 
-            if (left != null && right != null && operation != null)
+            //is whitespace or we are at the last token
+            if (left != null && right != null && operation != null && (isWhitespace || i == tokens.Count - 1))
             {
                 //at this point we have an operator because we have a left and a right
                 var currentWorkingExpression = operation.CreateBinaryOperatorExpression(left, right);
