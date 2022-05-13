@@ -50,7 +50,7 @@ public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult Met
             //this would be an extension method. Or a generic extension method
             var genericParameters = MethodInformation.Parameters.Select(x => CreateMethodParameter(instance, x, parameters));
 
-            return Expression.Call(methodInfoToCall, new List<Expression> { instance }.Concat(genericParameters));
+            return Expression.Call(methodInfoToCall, new Expression[] { instance }.Concat(genericParameters));
         }
         else
         {
