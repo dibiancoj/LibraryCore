@@ -33,6 +33,7 @@ internal static class RuleParserExpressionBuilder
 
     private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
+        //The expression statement queue will load lazily. It won't get added to the queue until we hit the Combiner Expression...Or the tokens loop is done and their is stuff in the working variables
         var expressionStatements = new Queue<Expression>();
         var combinerStatements = new Queue<IBinaryExpressionCombiner>();
 
@@ -40,61 +41,61 @@ internal static class RuleParserExpressionBuilder
         Expression? statementRight = null;
         IBinaryComparisonToken? operation = null;
 
-        foreach (var token in tokens)
+        foreach (var token in tokens.Where(x => x is not WhiteSpaceToken))
         {
             Expression temp = null!;
-            var isWhiteSpace = token is WhiteSpaceToken;
 
-            if (!isWhiteSpace)
+            if (token is IBinaryComparisonToken tempBinaryComparisonToken)
             {
-                if (token is IBinaryComparisonToken tempBinaryComparisonToken)
+                //==, !=, >, >=, <=
+                operation = tempBinaryComparisonToken;
+                continue;
+            }
+            else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
+            {
+                if (operation == null || statementLeft == null || statementRight == null)
                 {
-                    //==, !=, >, >=, <=
-                    operation = tempBinaryComparisonToken;
-                    continue;
+                    throw new NullReferenceException("Operation || StatementLeft || Statement Right Is Null In IBinaryExpressionCombiner");
                 }
-                else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
-                {
-                    combinerStatements.Enqueue(tempBinaryExpressionCombiner);
 
-                    statementLeft = null;
+                //since we lazy loaded the last statement..we load it in here now.
+                expressionStatements.Enqueue(operation.CreateBinaryOperatorExpression(statementLeft, statementRight));
+
+                //add the combiner statement now
+                combinerStatements.Enqueue(tempBinaryExpressionCombiner);
+
+                statementLeft = null;
+                statementRight = null;
+                operation = null;
+                continue;
+            }
+            else if (token is IInstanceOperator instanceOperator)
+            {
+                var expressionToModifyBeforeClearing = statementLeft ?? statementRight ?? throw new Exception();
+
+                if (statementRight != null)
+                {
                     statementRight = null;
-                    operation = null;
-                    continue;
-                }
-                else if (token is IInstanceOperator instanceOperator)
-                {
-                    var expressionToModifyBeforeClearing = statementLeft ?? statementRight ?? throw new Exception();
-
-                    if (statementRight != null)
-                    {
-                        statementRight = null;
-                    }
-                    else
-                    {
-                        statementLeft = null;
-                    }
-                    temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModifyBeforeClearing);
                 }
                 else
                 {
-                    //normal clause
-                    temp = token.CreateExpression(parametersToUse);
+                    statementLeft = null;
                 }
-
-                if (statementLeft == null)
-                {
-                    statementLeft = temp;
-                }
-                else if (statementRight == null)
-                {
-                    statementRight = temp;
-                }
+                temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModifyBeforeClearing);
+            }
+            else
+            {
+                //normal clause
+                temp = token.CreateExpression(parametersToUse);
             }
 
-            if (statementLeft != null && statementRight != null && isWhiteSpace)
+            if (statementLeft == null)
             {
-                expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
+                statementLeft = temp;
+            }
+            else if (statementRight == null)
+            {
+                statementRight = temp;
             }
         }
 
