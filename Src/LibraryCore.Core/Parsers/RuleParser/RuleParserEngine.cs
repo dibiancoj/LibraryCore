@@ -36,8 +36,8 @@ public class RuleParserEngine
 
     //instance method calls and linq (you can chain the calls together too)
     //$myString$.ToUpper() == 'HIGH'
-    //[1,2,3].Any($x$ => $x$ > 3)
-    //@MethodCallToGetArray().Count($x$ => $x$ == 3)
+    //[1,2,3].Any($x$ => $x$ > 3) == true
+    //@MethodCallToGetArray().Count($x$ => $x$ == 3) > 2
 
     //Comparison
     //== Equal
