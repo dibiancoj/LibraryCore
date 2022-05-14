@@ -40,62 +40,69 @@ internal static class RuleParserExpressionBuilder
         Expression? statementRight = null;
         IBinaryComparisonToken? operation = null;
 
-        foreach (var token in tokens)
+        foreach (var token in tokens.Where(x => x is not WhiteSpaceToken))
         {
             Expression temp = null!;
-            var isWhiteSpace = token is WhiteSpaceToken;
 
-            if (!isWhiteSpace)
+            if (token is IBinaryComparisonToken tempBinaryComparisonToken)
             {
-                if (token is IBinaryComparisonToken tempBinaryComparisonToken)
+                //==, !=, >, >=, <=
+                operation = tempBinaryComparisonToken;
+                continue;
+            }
+            else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
+            {
+                if (operation == null || statementLeft == null || statementRight == null)
                 {
-                    //==, !=, >, >=, <=
-                    operation = tempBinaryComparisonToken;
-                    continue;
+                    throw new NullReferenceException("Operation || StatementLeft || Statement Right Is Null In IBinaryExpressionCombiner");
                 }
-                else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
-                {
-                    combinerStatements.Enqueue(tempBinaryExpressionCombiner);
 
-                    statementLeft = null;
+                //since we lazy loaded the last statement..we load it in here now.
+                expressionStatements.Enqueue(operation.CreateBinaryOperatorExpression(statementLeft, statementRight));
+
+                //add the combiner statement now
+                combinerStatements.Enqueue(tempBinaryExpressionCombiner);
+
+                statementLeft = null;
+                statementRight = null;
+                operation = null;
+                continue;
+            }
+            else if (token is IInstanceOperator instanceOperator)
+            {
+                var expressionToModifyBeforeClearing = statementLeft ?? statementRight ?? throw new Exception();
+
+                if (statementRight != null)
+                {
                     statementRight = null;
-                    operation = null;
-                    continue;
-                }
-                else if (token is IInstanceOperator instanceOperator)
-                {
-                    var expressionToModifyBeforeClearing = statementLeft ?? statementRight ?? throw new Exception();
-
-                    if (statementRight != null)
-                    {
-                        statementRight = null;
-                    }
-                    else
-                    {
-                        statementLeft = null;
-                    }
-                    temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModifyBeforeClearing);
                 }
                 else
                 {
-                    //normal clause
-                    temp = token.CreateExpression(parametersToUse);
+                    statementLeft = null;
                 }
-
-                if (statementLeft == null)
-                {
-                    statementLeft = temp;
-                }
-                else if (statementRight == null)
-                {
-                    statementRight = temp;
-                }
+                temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModifyBeforeClearing);
             }
-
-            if (statementLeft != null && statementRight != null && isWhiteSpace)
+            else
             {
-                expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
+                //normal clause
+                temp = token.CreateExpression(parametersToUse);
             }
+
+            if (statementLeft == null)
+            {
+                statementLeft = temp;
+            }
+            else if (statementRight == null)
+            {
+                statementRight = temp;
+            }
+
+            //if (statementLeft != null && statementRight != null)
+            //{
+            //    expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
+            //    statementLeft = null;
+            //    statementRight = null;
+            //}
         }
 
         //handle the last statement in the tree. It would never get created because it doesn't hit && or || and there is no whitespace at the end
