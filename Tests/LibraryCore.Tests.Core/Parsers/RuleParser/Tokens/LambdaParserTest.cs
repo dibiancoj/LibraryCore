@@ -126,7 +126,6 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
 
         var model = new SurveyModelBuilder()
                           .WithName("MySurvey")
-                          .WithSurgeryCount(24)
                           .Value;
 
         Assert.True(expression.Compile().Invoke(new[] { model }));
