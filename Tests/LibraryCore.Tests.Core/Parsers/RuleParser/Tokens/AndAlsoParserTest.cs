@@ -62,8 +62,12 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
-    //3 and statements
+    //3 and 4 statements to handle larger items
     [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie'", false)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$.ToUpper() == 'Jacob DeGrom'", false)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$.ToUpper() == 'JACOB DEGROM'", true)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' && $Survey.Name$ == 'Charlie' && $Survey.Name$.ToUpper() == 'JACOB DEGROM'", false)]
     [Theory]
     public void ThreeEqualStatments(string expressionToTest, bool expectedResult)
     {
