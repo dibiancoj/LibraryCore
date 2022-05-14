@@ -19,14 +19,31 @@ public static class RuleParsingUtility
         var methodName = WalkUntil(reader, '(', true);
         var text = new StringBuilder();
 
-        //eat until the end of the method
-        while (reader.HasMoreCharacters() && reader.PeekCharacter() != closingCharacter)
-        {
-            text.Append(reader.ReadCharacter());
-        }
+        //could have a func with a .Any(x => x.Upper() == 'Test')
+        //start with 1 because its the opening bracket. Then when we hit the opening bracket we should be at 2
+        int openingBrackets = 1;
 
-        //eat the closing )
-        ThrowIfCharacterNotExpected(reader, closingCharacter);
+        //eat until the end of the method
+        while (reader.HasMoreCharacters())
+        {
+            var characterRead = reader.ReadCharacter();
+
+            if (characterRead == '(')
+            {
+                openingBrackets++;
+            }
+            else if (characterRead == ')')
+            {
+                openingBrackets--;
+            }
+
+            if (characterRead == closingCharacter && openingBrackets == 0)
+            {
+                break;
+            }
+
+            text.Append(characterRead);
+        }
 
         //no parameters
         if (text.Length == 0)

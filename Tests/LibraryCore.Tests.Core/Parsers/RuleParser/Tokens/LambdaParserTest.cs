@@ -86,5 +86,20 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
 
         Assert.True(expression.Compile().Invoke(new[] { model }));
     }
+
+    [Fact]
+    public void MultipleClosingBracketsInLambda()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Count($x$ => $x.Name$.ToUpper() == 'MYSURVEY') >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                          .WithName("MySurvey")
+                          .WithSurgeryCount(24)
+                          .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
 }
 
