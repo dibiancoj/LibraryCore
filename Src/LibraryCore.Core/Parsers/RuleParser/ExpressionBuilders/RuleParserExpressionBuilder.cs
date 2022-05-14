@@ -33,6 +33,7 @@ internal static class RuleParserExpressionBuilder
 
     private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
+        //The expression statement queue will load lazily. It won't get added to the queue until we hit the Combiner Expression...Or the tokens loop is done and their is stuff in the working variables
         var expressionStatements = new Queue<Expression>();
         var combinerStatements = new Queue<IBinaryExpressionCombiner>();
 
@@ -96,13 +97,6 @@ internal static class RuleParserExpressionBuilder
             {
                 statementRight = temp;
             }
-
-            //if (statementLeft != null && statementRight != null)
-            //{
-            //    expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
-            //    statementLeft = null;
-            //    statementRight = null;
-            //}
         }
 
         //handle the last statement in the tree. It would never get created because it doesn't hit && or || and there is no whitespace at the end
