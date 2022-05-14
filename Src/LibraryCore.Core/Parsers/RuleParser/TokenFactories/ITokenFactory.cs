@@ -3,6 +3,6 @@
 public interface ITokenFactory
 {
     bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters);
-    IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider);
+    IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine);
 }
 

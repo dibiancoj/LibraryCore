@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
@@ -15,7 +16,7 @@ public class StringFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         var text = new StringBuilder();
         int numberOfSubTokens = 0;
@@ -28,7 +29,7 @@ public class StringFactory : ITokenFactory
             //to support logging we are going to allow formatters in a string. ie: 'MedicationId = {$Parameter.MedicationId}'
             if (currentCharacter == '{')
             {
-                subTokens.Add(ResolveInnerTokens(stringReader, tokenFactoryProvider));
+                subTokens.Add(ResolveInnerTokens(stringReader, tokenFactoryProvider, ruleParserEngine));
 
                 //turn into a format syntax..{0}, {1}
                 text.Append('{').Append(numberOfSubTokens).Append('}');
@@ -53,7 +54,7 @@ public class StringFactory : ITokenFactory
         return new StringToken(text.ToString(), subTokens);
     }
 
-    private static IToken ResolveInnerTokens(StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    private static IToken ResolveInnerTokens(StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != '}')
         {
@@ -62,7 +63,7 @@ public class StringFactory : ITokenFactory
 
             var factoryFound = tokenFactoryProvider.ResolveTokenFactory(characterRead, characterPeeked, new string(new[] { characterRead, characterPeeked }));
 
-            var token = factoryFound.CreateToken(characterRead, stringReader, tokenFactoryProvider);
+            var token = factoryFound.CreateToken(characterRead, stringReader, tokenFactoryProvider, ruleParserEngine);
 
             //kill the closing }
             RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '}');
@@ -78,14 +79,14 @@ public class StringFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         return InnerTokens.HasNoneWithNullCheck() ?
             Expression.Constant(Value) :
             CreateExpressionWithInnerFormats(parameters);
     }
 
-    private Expression CreateExpressionWithInnerFormats(IList<ParameterExpression> parameters)
+    private Expression CreateExpressionWithInnerFormats(IImmutableList<ParameterExpression> parameters)
     {
         //create an object[] with the correct number of parameters. ie: {0}  {1}...we would end up with object[1]
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();

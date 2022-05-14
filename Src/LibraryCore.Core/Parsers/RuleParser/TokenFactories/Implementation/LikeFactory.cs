@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,7 +12,7 @@ public class LikeFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "li", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         //read the l...ike
         RuleParsingUtility.EatOrThrowCharacters(stringReader, "IKE");
@@ -23,7 +24,7 @@ public class LikeFactory : ITokenFactory
 [DebuggerDisplay("Like")]
 public record LikeToken() : IToken, IBinaryComparisonToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     private static MethodInfo CachedStringContains => typeof(string).GetMethods()
                                                       .First(x => x.Name == nameof(string.Contains) && x.GetParameters().Length == 1);

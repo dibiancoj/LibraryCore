@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -29,7 +30,7 @@ public class LessThenParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LessThenToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new LessThenToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
     [InlineData("$Survey.PriceOfSurgery$ < 9.99d", false)]
     [InlineData("$Survey.PriceOfSurgery$ < 10d", true)]

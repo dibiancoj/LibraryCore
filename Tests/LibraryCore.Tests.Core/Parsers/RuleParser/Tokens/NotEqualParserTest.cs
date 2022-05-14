@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -29,7 +30,7 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
     [InlineData("$Survey.Name$ != null", null, false)]
     [InlineData("$Survey.Name$ != null", "abc", true)]

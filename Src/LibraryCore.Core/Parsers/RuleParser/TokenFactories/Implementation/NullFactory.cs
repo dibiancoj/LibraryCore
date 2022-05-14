@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -10,7 +11,7 @@ public class NullFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "nu", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         //read the ull
         RuleParsingUtility.EatOrThrowCharacters(stringReader, "ULL");
@@ -22,5 +23,5 @@ public class NullFactory : ITokenFactory
 [DebuggerDisplay("null")]
 public record NullToken() : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(null);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(null);
 }

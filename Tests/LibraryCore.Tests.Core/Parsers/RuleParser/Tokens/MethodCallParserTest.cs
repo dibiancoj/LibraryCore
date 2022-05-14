@@ -35,14 +35,6 @@ public class MethodCallParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal("Method Name = MethodNotRegistered Is Not Registered In MethodCallFactory. Call RegisterNewMethodAlias To Register The Method", result.Message);
     }
 
-    [Fact]
-    public void MethodCallInvalidSyntax()
-    {
-        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Id$ == @"));
-
-        Assert.Equal("MethodCallFactory Not Able To Parse Information", result.Message);
-    }
-
     [InlineData(true, 24)]
     [InlineData(false, 25)]
     [Theory]

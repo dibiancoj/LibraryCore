@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using static LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
@@ -7,66 +8,106 @@ namespace LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 
 internal static class RuleParserExpressionBuilder
 {
-    internal static Expression CreateExpression(IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateExpression(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
-        Expression? workingExpression = null;
+        var (expressionStatements, expressionCombiners) = SortTree(tokens, parametersToUse);
 
-        Expression? left = null;
-        Expression? right = null;
+        //only 1 statement. Just return it
+        if (expressionStatements.Count == 1)
+        {
+            return expressionStatements.Dequeue();
+        }
+
+        Expression? finalExpression = null;
+
+        while (expressionStatements.Count > 0)
+        {
+            var left = finalExpression ?? expressionStatements.Dequeue();
+            var right = expressionStatements.Dequeue();
+
+            finalExpression = expressionCombiners.Dequeue().CreateBinaryOperatorExpression(left, right);
+        }
+
+        return finalExpression ?? throw new Exception("Working Expression Is Null");
+    }
+
+    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    {
+        var expressionStatements = new Queue<Expression>();
+        var combinerStatements = new Queue<IBinaryExpressionCombiner>();
+
+        Expression? statementLeft = null;
+        Expression? statementRight = null;
         IBinaryComparisonToken? operation = null;
-        IBinaryExpressionCombiner? combiner = null;
 
-        foreach (var token in tokens.Where(x => x is not WhiteSpaceToken))
+        foreach (var token in tokens)
         {
             Expression temp = null!;
+            var isWhiteSpace = token is WhiteSpaceToken;
 
-            if (token is IBinaryComparisonToken tempBinaryComparisonToken)
+            if (!isWhiteSpace)
             {
-                //==, !=, >, >=, <=
-                operation = tempBinaryComparisonToken;
-            }
-            else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
-            {
-                //AndAlso OrElse
-                combiner = tempBinaryExpressionCombiner;
-            }
-            else
-            {
-                //normal clause
-                temp = token.CreateExpression(parametersToUse);
+                if (token is IBinaryComparisonToken tempBinaryComparisonToken)
+                {
+                    //==, !=, >, >=, <=
+                    operation = tempBinaryComparisonToken;
+                    continue;
+                }
+                else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
+                {
+                    combinerStatements.Enqueue(tempBinaryExpressionCombiner);
+
+                    statementLeft = null;
+                    statementRight = null;
+                    operation = null;
+                    continue;
+                }
+                else if (token is IInstanceOperator instanceOperator)
+                {
+                    var expressionToModifyBeforeClearing = statementLeft ?? statementRight ?? throw new Exception();
+
+                    if (statementRight != null)
+                    {
+                        statementRight = null;
+                    }
+                    else
+                    {
+                        statementLeft = null;
+                    }
+                    temp = instanceOperator.CreateInstanceExpression(parametersToUse, expressionToModifyBeforeClearing);
+                }
+                else
+                {
+                    //normal clause
+                    temp = token.CreateExpression(parametersToUse);
+                }
+
+                if (statementLeft == null)
+                {
+                    statementLeft = temp;
+                }
+                else if (statementRight == null)
+                {
+                    statementRight = temp;
+                }
             }
 
-            if (left == null)
+            if (statementLeft != null && statementRight != null && isWhiteSpace)
             {
-                left = temp;
-            }
-            else if (right == null)
-            {
-                right = temp;
-            }
-
-            if (left != null && right != null && operation != null)
-            {
-                //at this point we have an operator because we have a left and a right
-                var currentWorkingExpression = operation.CreateBinaryOperatorExpression(left, right);
-
-                //combiner would be && , ||
-                workingExpression = combiner == null ?
-                        currentWorkingExpression :
-                        combiner.CreateBinaryOperatorExpression(workingExpression ?? throw new NullReferenceException($"{nameof(workingExpression)} Is Null"),
-                                                                currentWorkingExpression ?? throw new NullReferenceException($"{nameof(currentWorkingExpression)} is null"));
-
-                left = null;
-                operation = null;
-                right = null;
-                combiner = null;
+                expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
             }
         }
 
-        return workingExpression ?? throw new Exception("No Expressions Found");
+        //handle the last statement in the tree. It would never get created because it doesn't hit && or || and there is no whitespace at the end
+        if (statementLeft != null && statementRight != null)
+        {
+            expressionStatements.Enqueue(operation!.CreateBinaryOperatorExpression(statementLeft, statementRight));
+        }
+
+        return (expressionStatements, combinerStatements);
     }
 
-    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
         var workingExpressions = new List<Expression>();
 

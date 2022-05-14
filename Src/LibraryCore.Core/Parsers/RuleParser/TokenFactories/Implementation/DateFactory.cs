@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
@@ -12,7 +13,7 @@ public class DateFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == DateTimeIdentifier;
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         var text = new StringBuilder();
 
@@ -63,5 +64,5 @@ public class DateFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
 public record DateToken(DateTime Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

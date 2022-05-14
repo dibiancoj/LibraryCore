@@ -34,6 +34,11 @@ public class RuleParserEngine
     //$MyBooleanParameter$ if the parameter is not an object. ie: $MyBooleanParameter == true
     //@MethodCall(1,true, 'sometext') <-- need to register the method in MethodCallFactory.RegisterNewMethodAlias. That says "MethodCall" goes to this method in this namespace
 
+    //instance method calls and linq (you can chain the calls together too)
+    //$myString$.ToUpper() == 'HIGH'
+    //[1,2,3].Any($x$ => $x$ > 3) == true
+    //@MethodCallToGetArray().Count($x$ => $x$ == 3) > 2
+
     //Comparison
     //== Equal
     //!= Does Not Equal
@@ -63,7 +68,7 @@ public class RuleParserEngine
 
             var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 
-            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider));
+            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider, this));
         }
 
         return new RuleParserCompilationResult(tokens.ToImmutableList());

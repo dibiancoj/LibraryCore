@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
@@ -12,7 +13,7 @@ public class ParameterPropertyFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         var text = new StringBuilder();
 
@@ -31,7 +32,7 @@ public class ParameterPropertyFactory : ITokenFactory
 [DebuggerDisplay("Parameter Property Path = {DebuggerDisplay()}")]
 public record ParameterPropertyToken(IList<string> PropertyPath) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
         //A property off of a single parameter which is an object. ie: $MyParameter.Age$

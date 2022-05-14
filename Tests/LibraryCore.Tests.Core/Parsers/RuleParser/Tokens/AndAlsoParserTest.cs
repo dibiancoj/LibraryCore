@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -39,10 +40,10 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
     //string
-    [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Bob'", false)]
+    [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Bob'", false)] 
     [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Jacob DeGrom'", false)]
     [InlineData("$Survey.Name$ == 'Jacob DeGrom' && $Survey.SurgeryCount$ == 100", false)]
     [InlineData("$Survey.Name$ == 'Jacob DeGrom' && $Survey.SurgeryCount$ == 10", true)]
@@ -53,6 +54,23 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
 
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                            .ParseString(expressionToTest)
+                            .BuildExpression<Survey>("Survey")
+                            .Compile();
+
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
+    }
+
+    //3 and 4 statements to handle larger items
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie'", false)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$ == 'Jacob DeGrom'", true)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$.ToUpper() == 'Jacob DeGrom'", false)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie' || $Survey.Name$.ToUpper() == 'JACOB DEGROM'", true)]
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' && $Survey.Name$ == 'Charlie' && $Survey.Name$.ToUpper() == 'JACOB DEGROM'", false)]
+    [Theory]
+    public void ThreeEqualStatments(string expressionToTest, bool expectedResult)
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
                             .ParseString(expressionToTest)

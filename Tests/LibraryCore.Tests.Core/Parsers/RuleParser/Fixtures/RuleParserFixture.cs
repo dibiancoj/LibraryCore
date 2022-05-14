@@ -17,6 +17,7 @@ public class RuleParserFixture
                .WithRegisteredMethod("GetANumberWithNoParameters", typeof(RuleParserFixture).GetMethod(nameof(GetANumberWithNoParameters))!)
                .WithRegisteredMethod("ExtractFromDictionary", typeof(RuleParserFixture).GetMethod(nameof(ExtractFromDictionary))!)
                .WithRegisteredMethod("ScoreParser.GetAge", typeof(RuleParserFixture).GetMethod(nameof(GetAgeInMethod))!)
+               .WithRegisteredMethod("GetNameWithParameter", typeof(RuleParserFixture).GetMethod(nameof(GetNameWithParameter))!)
            .BuildRuleParser()
 
            .BuildServiceProvider();
@@ -26,6 +27,7 @@ public class RuleParserFixture
     public RuleParserEngine ResolveRuleParserEngine() => ServiceProvider.GetRequiredService<RuleParserEngine>();
 
     public static int GetANumberWithNoParameters() => 24;
+    public static string GetNameWithParameter(Survey surveyModel) => surveyModel.Name;
     public static string GetAnswerId(Survey surveyModel, int questionId) => surveyModel.Answers[questionId];
     public static IEnumerable<int> GetAnswerArray(Survey surveyModel) => new[] { 1, 2, 3 };
     public static IEnumerable<int?> GetNullableIntArray(Survey surveyModel) => new List<int?> { 1, 2, 3, 80 };

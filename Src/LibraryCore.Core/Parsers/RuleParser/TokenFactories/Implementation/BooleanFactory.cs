@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -9,7 +10,7 @@ public class BooleanFactory : ITokenFactory
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "fa", StringComparison.OrdinalIgnoreCase) ||
                                                                                                      string.Equals(readAndPeakedCharacters, "tr", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
         //set the value if its true / false.
         bool valueToUse = characterRead == 't' || characterRead == 'T';
@@ -24,5 +25,5 @@ public class BooleanFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value}")]
 public record BooleanToken(bool Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

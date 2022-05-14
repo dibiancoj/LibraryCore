@@ -1,5 +1,4 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
-using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
 
@@ -18,7 +17,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
         var expression = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("1 == 2")
                                                 .BuildExpression();
- 
+
         Assert.False(expression.Compile().Invoke());
     }
 

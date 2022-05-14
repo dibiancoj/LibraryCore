@@ -1,6 +1,9 @@
 ﻿namespace LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
 
-public record Survey(string Name, int SurgeryCount, double PriceOfSurgery, DateTime DateOfBirth, DateTime? LastLogin, bool CanDrive, bool? HasAccount, int? NumberOfMotorcyles, double? NumberOfBoats, IDictionary<int, string> Answers, Survey? InnerSurvey);
+public record Survey(string Name, int SurgeryCount, double PriceOfSurgery, DateTime DateOfBirth, DateTime? LastLogin, bool CanDrive, bool? HasAccount, int? NumberOfMotorcyles, double? NumberOfBoats, IDictionary<int, string> Answers, Survey? InnerSurvey)
+{
+    public string InstanceMethodName(int howManyCharacters) => Name[..howManyCharacters];
+}
 
 public class SurveyModelBuilder
 {

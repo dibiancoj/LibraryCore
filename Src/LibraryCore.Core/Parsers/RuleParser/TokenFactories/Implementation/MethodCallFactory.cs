@@ -1,9 +1,9 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -22,57 +22,23 @@ public class MethodCallFactory : ITokenFactory
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider)
+    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
     {
-        while (stringReader.HasMoreCharacters() && !char.IsWhiteSpace(stringReader.PeekCharacter()))
+        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine);
+
+        if (!RegisterdMethods.TryGetValue(methodInfoSignature.MethodName, out var tryToGetMethodInfoResult))
         {
-            //need to determine the method name so we walk 
-            var methodName = WalkTheMethodName(stringReader);
-
-            if (!RegisterdMethods.TryGetValue(methodName, out var tryToGetMethodInfoResult))
-            {
-                throw new Exception($"Method Name = {methodName} Is Not Registered In MethodCallFactory. Call {nameof(RegisterNewMethodAlias)} To Register The Method");
-            }
-
-            //eat the opening (
-            RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '(');
-
-            bool hasNoParameters = stringReader.PeekCharacter() == ')';
-
-            var parameterGroup = hasNoParameters ?
-                                        Enumerable.Empty<IToken>() :
-                                        RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ')').ToArray();
-
-            if (hasNoParameters)
-            {
-                //closing )
-                RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, ')');
-            }
-
-            return new MethodCallToken(tryToGetMethodInfoResult, parameterGroup);
+            throw new Exception($"Method Name = {methodInfoSignature.MethodName} Is Not Registered In MethodCallFactory. Call {nameof(RegisterNewMethodAlias)} To Register The Method");
         }
 
-        throw new Exception("MethodCallFactory Not Able To Parse Information");
+        return new MethodCallToken(tryToGetMethodInfoResult, methodInfoSignature.Parameters);
     }
-
-    private static string WalkTheMethodName(StringReader reader)
-    {
-        var text = new StringBuilder();
-
-        while (reader.HasMoreCharacters() && reader.PeekCharacter() != '(')
-        {
-            text.Append(reader.ReadCharacter());
-        }
-
-        return text.ToString();
-    }
-
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
 public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<IToken> AdditionalParameters) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         //convert all the additional parameters to an expression
         var parameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();

@@ -51,6 +51,8 @@ public class RuleParserConfiguration
         serviceDescriptors.AddSingleton<ITokenFactory, ParameterPropertyFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, WhiteSpaceFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, ArrayFactory>();
+        serviceDescriptors.AddSingleton<ITokenFactory, LambdaFactory>();
+        serviceDescriptors.AddSingleton<ITokenFactory, MethodCallInstanceFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, MethodCallFactory>(x =>
         {
             var instance = new MethodCallFactory();
