@@ -101,5 +101,35 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
 
         Assert.True(expression.Compile().Invoke(new[] { model }));
     }
+
+    [Fact]
+    public void WithStaticMethodCallInside()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Count($x$ => @GetANumberWithNoParameters() == 24) >= 1")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                          .WithName("MySurvey")
+                          .WithSurgeryCount(24)
+                          .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
+
+    [Fact]
+    public void WithStaticMethodCallInsideAdvanced()
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                               .ParseString("$Surveys$.Any($x$ => @GetNameWithParameter($x$) == 'MySurvey') == true")
+                                               .BuildExpression<IEnumerable<Survey>>("Surveys");
+
+        var model = new SurveyModelBuilder()
+                          .WithName("MySurvey")
+                          .WithSurgeryCount(24)
+                          .Value;
+
+        Assert.True(expression.Compile().Invoke(new[] { model }));
+    }
 }
 
