@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -39,7 +40,7 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
     //string
     [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Bob'", false)] 

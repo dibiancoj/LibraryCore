@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
@@ -112,5 +113,5 @@ public class NumberFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value} | Type = {NumberType.Name}")]
 public record NumberToken<T>(T Value, Type NumberType) : IToken, INumberToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, NumberType);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, NumberType);
 }

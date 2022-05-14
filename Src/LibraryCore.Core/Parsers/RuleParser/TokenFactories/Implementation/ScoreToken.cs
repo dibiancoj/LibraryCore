@@ -27,5 +27,5 @@ public class ScoreCriteriaToken<TScore> : IToken
     public TScore ScoreValue { get; }
     public IImmutableList<IToken> ScoreCriteriaTokens { get; }
 
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

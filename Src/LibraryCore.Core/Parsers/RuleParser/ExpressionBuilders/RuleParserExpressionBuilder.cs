@@ -8,7 +8,7 @@ namespace LibraryCore.Core.Parsers.RuleParser.ExpressionBuilders;
 
 internal static class RuleParserExpressionBuilder
 {
-    internal static Expression CreateExpression(IImmutableList<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateExpression(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
         var (expressionStatements, expressionCombiners) = SortTree(tokens, parametersToUse);
 
@@ -31,7 +31,7 @@ internal static class RuleParserExpressionBuilder
         return finalExpression ?? throw new Exception("Working Expression Is Null");
     }
 
-    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, ParameterExpression[] parametersToUse)
+    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
         var expressionStatements = new Queue<Expression>();
         var combinerStatements = new Queue<IBinaryExpressionCombiner>();
@@ -107,7 +107,7 @@ internal static class RuleParserExpressionBuilder
         return (expressionStatements, combinerStatements);
     }
 
-    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, ParameterExpression[] parametersToUse)
+    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
     {
         var workingExpressions = new List<Expression>();
 

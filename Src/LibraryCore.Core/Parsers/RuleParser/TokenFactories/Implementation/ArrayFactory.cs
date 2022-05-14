@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -28,7 +29,7 @@ public class ArrayFactory : ITokenFactory
 [DebuggerDisplay("{Values}")]
 public record ArrayToken(IEnumerable<IToken> Values) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         var type = DetermineType();
 

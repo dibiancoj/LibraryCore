@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -32,7 +33,7 @@ public record ContainsToken() : IToken, IBinaryComparisonToken
         return Expression.Call(null, containsMethodInfo, left, right);
     }
 
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     private static MethodInfo EnumerableContains => typeof(Enumerable).GetMethods()
                                                     .Where(x => x.Name == nameof(Enumerable.Contains) && x.IsGenericMethod && x.GetParameters().Length == 2)

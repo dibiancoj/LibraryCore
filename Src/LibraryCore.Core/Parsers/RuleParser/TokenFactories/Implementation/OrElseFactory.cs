@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -22,7 +23,7 @@ public class OrElseFactory : ITokenFactory
 [DebuggerDisplay("||")]
 public record OrElseToken() : IToken, IBinaryExpressionCombiner
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.OrElse(left, right);
 }

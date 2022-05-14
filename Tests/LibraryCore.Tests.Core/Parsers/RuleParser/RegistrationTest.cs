@@ -2,6 +2,7 @@
 using LibraryCore.Core.Parsers.RuleParser.Registration;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser;
@@ -55,7 +56,7 @@ public class RegistrationTest
 
     public class CustomToken : IToken
     {
-        public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(99.99, typeof(double));
+        public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(99.99, typeof(double));
     }
 }
 

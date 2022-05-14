@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -22,5 +23,5 @@ public class NullFactory : ITokenFactory
 [DebuggerDisplay("null")]
 public record NullToken() : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(null);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(null);
 }

@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
@@ -78,14 +79,14 @@ public class StringFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters)
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         return InnerTokens.HasNoneWithNullCheck() ?
             Expression.Constant(Value) :
             CreateExpressionWithInnerFormats(parameters);
     }
 
-    private Expression CreateExpressionWithInnerFormats(IList<ParameterExpression> parameters)
+    private Expression CreateExpressionWithInnerFormats(IImmutableList<ParameterExpression> parameters)
     {
         //create an object[] with the correct number of parameters. ie: {0}  {1}...we would end up with object[1]
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();

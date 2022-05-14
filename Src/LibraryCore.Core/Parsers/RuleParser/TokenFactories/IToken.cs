@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Immutable;
+using System.Linq.Expressions;
 
 namespace LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 
 public interface IToken
 {
-    Expression CreateExpression(IList<ParameterExpression> parameters);
+    Expression CreateExpression(IImmutableList<ParameterExpression> parameters);
 }
 
 /// <summary>
@@ -23,7 +24,7 @@ public interface IBinaryExpressionCombiner : IBinaryOperator
 
 public interface IInstanceOperator
 {
-    public Expression CreateInstanceExpression(IList<ParameterExpression> parameters, Expression instance);
+    public Expression CreateInstanceExpression(IImmutableList<ParameterExpression> parameters, Expression instance);
 }
 
 public interface IBinaryOperator

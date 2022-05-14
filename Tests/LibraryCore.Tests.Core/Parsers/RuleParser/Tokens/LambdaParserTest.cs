@@ -18,7 +18,7 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ThrowsOnCreateExpression()
     {
-        Assert.Throws<NotImplementedException>(() => new LambdaToken(ImmutableList<string>.Empty, ImmutableList<IToken>.Empty).CreateExpression(Array.Empty<ParameterExpression>()));
+        Assert.Throws<NotImplementedException>(() => new LambdaToken(ImmutableList<string>.Empty, ImmutableList<IToken>.Empty).CreateExpression(ImmutableList<ParameterExpression>.Empty));
     }
 
     [Fact]

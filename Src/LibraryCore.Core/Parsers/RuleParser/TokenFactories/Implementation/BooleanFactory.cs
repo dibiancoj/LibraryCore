@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -24,5 +25,5 @@ public class BooleanFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value}")]
 public record BooleanToken(bool Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

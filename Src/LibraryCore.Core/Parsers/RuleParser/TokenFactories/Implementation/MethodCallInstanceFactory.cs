@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.Utilities;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -24,9 +25,9 @@ public class MethodCallInstanceFactory : ITokenFactory
 [DebuggerDisplay("Method Name = {MethodInformation.MethodName}")]
 public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult MethodInformation) : IToken, IInstanceOperator
 {
-    public Expression CreateExpression(IList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 
-    public Expression CreateInstanceExpression(IList<ParameterExpression> parameters, Expression instance)
+    public Expression CreateInstanceExpression(IImmutableList<ParameterExpression> parameters, Expression instance)
     {
         Type typeToFetchMethodInfoOffOf = typeof(IEnumerable).IsAssignableFrom(instance.Type) && instance.Type != typeof(string) ?
                                                 typeof(Enumerable) :
@@ -58,7 +59,7 @@ public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult Met
         }
     }
 
-    private static Expression CreateMethodParameter(Expression? instance, IToken token, IList<ParameterExpression> parameters)
+    private static Expression CreateMethodParameter(Expression? instance, IToken token, IImmutableList<ParameterExpression> parameters)
     {
         return token is IInstanceOperator instanceOperator ?
                     instanceOperator.CreateInstanceExpression(parameters, instance!) :

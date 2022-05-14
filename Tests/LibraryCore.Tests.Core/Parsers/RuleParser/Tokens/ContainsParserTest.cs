@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
@@ -29,7 +30,7 @@ public class ContainsParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
-    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(Array.Empty<ParameterExpression>()));
+    public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new ContainsToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
     [InlineData("[1,2,3] contains $Survey.SurgeryCount$", false)]
     [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount$", true)]

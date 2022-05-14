@@ -19,7 +19,7 @@ public class MethodCallInstanceParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void ThrowsOnCreateExpression()
     {
-        Assert.Throws<NotImplementedException>(() => new MethodCallInstanceToken(new RuleParsingUtility.MethodParsingResult("UnitTest", ImmutableList<IToken>.Empty)).CreateExpression(Array.Empty<ParameterExpression>()));
+        Assert.Throws<NotImplementedException>(() => new MethodCallInstanceToken(new RuleParsingUtility.MethodParsingResult("UnitTest", ImmutableList<IToken>.Empty)).CreateExpression(ImmutableList<ParameterExpression>.Empty));
     }
 
     [Fact]
