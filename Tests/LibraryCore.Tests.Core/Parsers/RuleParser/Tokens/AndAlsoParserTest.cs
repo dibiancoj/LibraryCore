@@ -42,7 +42,7 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new AndAlsoToken().CreateExpression(Array.Empty<ParameterExpression>()));
 
     //string
-    [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Bob'", false)]
+    [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Bob'", false)] 
     [InlineData("$Survey.Name$ == 'John Portal' && $Survey.Name$ == 'Jacob DeGrom'", false)]
     [InlineData("$Survey.Name$ == 'Jacob DeGrom' && $Survey.SurgeryCount$ == 100", false)]
     [InlineData("$Survey.Name$ == 'Jacob DeGrom' && $Survey.SurgeryCount$ == 10", true)]
@@ -53,6 +53,19 @@ public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
 
     [Theory]
     public void EqualExpression(string expressionToTest, bool expectedResult)
+    {
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                            .ParseString(expressionToTest)
+                            .BuildExpression<Survey>("Survey")
+                            .Compile();
+
+        Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
+    }
+
+    //3 and statements
+    [InlineData("$Survey.Name$ == 'Alex' && $Survey.Name$ == 'Bob' || $Survey.Name$ == 'Charlie'", false)]
+    [Theory]
+    public void ThreeEqualStatments(string expressionToTest, bool expectedResult)
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
                             .ParseString(expressionToTest)
