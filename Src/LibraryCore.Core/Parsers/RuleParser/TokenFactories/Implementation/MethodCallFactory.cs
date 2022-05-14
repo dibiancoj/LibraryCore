@@ -36,7 +36,7 @@ public class MethodCallFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
-public record MethodCallToken(MethodInfo RegisteredMethodToUse, IEnumerable<IToken> AdditionalParameters) : IToken
+public record MethodCallToken(MethodInfo RegisteredMethodToUse, IImmutableList<IToken> AdditionalParameters) : IToken
 {
     public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
