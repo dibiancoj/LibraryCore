@@ -1,4 +1,8 @@
-﻿using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Tests.Core.Parsers.RuleParser.Fixtures;
+using System.Collections.Immutable;
+using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Core.Parsers.RuleParser.Tokens;
 
@@ -10,6 +14,12 @@ public class LambdaParserTest : IClassFixture<RuleParserFixture>
     }
 
     private RuleParserFixture RuleParserFixture { get; }
+
+    [Fact]
+    public void ThrowsOnCreateExpression()
+    {
+        Assert.Throws<NotImplementedException>(() => new LambdaToken(ImmutableList<string>.Empty, ImmutableList<IToken>.Empty).CreateExpression(Array.Empty<ParameterExpression>()));
+    }
 
     [Fact]
     public void ParseTestFromArrayConstant()
