@@ -134,4 +134,27 @@ public class ObjectExtensionMethodTest
 
     #endregion
 
+    #region Throw If Null
+
+    [Fact]
+    public void ThrowIfNull_IsNotNull()
+    {
+        var test = new DummyObject();
+
+        Assert.Equal(1, test.ThrowIfNull().Id);
+    }
+
+    [Fact]
+    public void ThrowIfNull_IsNull()
+    {
+        Assert.Throws<NullReferenceException>(() =>
+        {
+            DummyObject? nullObject = null;
+
+            _ = nullObject.ThrowIfNull();
+        });
+    }
+
+    #endregion
+
 }

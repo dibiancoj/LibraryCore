@@ -1,4 +1,7 @@
-﻿namespace LibraryCore.Core.ExtensionMethods;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
+namespace LibraryCore.Core.ExtensionMethods;
 
 public static class ObjectExtensionMethods
 {
@@ -54,6 +57,23 @@ public static class ObjectExtensionMethods
     /// <param name="itemToPutInArray">Item To Push Into The IEnumerable</param>
     /// <returns>IList Of That Object Type, With The Item In The IList</returns>
     public static IList<T> ToIList<T>(this T itemToPutInArray) => new List<T> { itemToPutInArray };
+
+    #endregion
+
+    #region Throw If Null
+
+    public static T ThrowIfNull<T>(this T? objectToVerify, [CallerArgumentExpression("objectToVerify")] string? expression = null)
+    {
+        if (objectToVerify == null)
+        {
+            ThrowIfNullException(expression);
+        }
+
+        return objectToVerify;
+    }
+
+    [DoesNotReturn]
+    private static void ThrowIfNullException(string? expression) => throw new NullReferenceException($"{expression} must be string that is not null or empty");
 
     #endregion
 
