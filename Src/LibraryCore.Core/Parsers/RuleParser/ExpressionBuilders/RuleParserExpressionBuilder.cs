@@ -29,7 +29,7 @@ internal static class RuleParserExpressionBuilder
             finalExpression = expressionCombiners.Dequeue().CreateBinaryOperatorExpression(left, right);
         }
 
-        return finalExpression ?? throw new Exception("Working Expression Is Null");
+        return finalExpression.ThrowIfNull();
     }
 
     private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)

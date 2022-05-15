@@ -73,7 +73,7 @@ public static class ObjectExtensionMethods
     }
 
     [DoesNotReturn]
-    private static void ThrowIfNullException(string? expression) => throw new NullReferenceException($"{expression} must be string that is not null or empty");
+    private static void ThrowIfNullException(string? expression) => throw new NullReferenceException($"{expression} Is Null. Validation Caused An Exception With Expected A Non Null Value.");
 
     #endregion
 
