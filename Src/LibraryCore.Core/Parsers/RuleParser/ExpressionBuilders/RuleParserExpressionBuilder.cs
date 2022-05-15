@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
+﻿using LibraryCore.Core.ExtensionMethods;
+using LibraryCore.Core.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Core.Parsers.RuleParser.TokenFactories.Implementation;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
@@ -28,7 +29,7 @@ internal static class RuleParserExpressionBuilder
             finalExpression = expressionCombiners.Dequeue().CreateBinaryOperatorExpression(left, right);
         }
 
-        return finalExpression ?? throw new Exception("Working Expression Is Null");
+        return finalExpression.ThrowIfNull();
     }
 
     private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
@@ -53,13 +54,8 @@ internal static class RuleParserExpressionBuilder
             }
             else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
             {
-                if (operation == null || statementLeft == null || statementRight == null)
-                {
-                    throw new NullReferenceException("Operation || StatementLeft || Statement Right Is Null In IBinaryExpressionCombiner");
-                }
-
                 //since we lazy loaded the last statement..we load it in here now.
-                expressionStatements.Enqueue(operation.CreateBinaryOperatorExpression(statementLeft, statementRight));
+                expressionStatements.Enqueue(operation.ThrowIfNull().CreateBinaryOperatorExpression(statementLeft.ThrowIfNull(), statementRight.ThrowIfNull()));
 
                 //add the combiner statement now
                 combinerStatements.Enqueue(tempBinaryExpressionCombiner);

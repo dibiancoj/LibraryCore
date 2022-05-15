@@ -134,4 +134,29 @@ public class ObjectExtensionMethodTest
 
     #endregion
 
+    #region Throw If Null
+
+    [Fact]
+    public void ThrowIfNull_IsNotNull()
+    {
+        var test = new DummyObject();
+
+        Assert.Equal(1, test.ThrowIfNull().Id);
+    }
+
+    [Fact]
+    public void ThrowIfNull_IsNull()
+    {
+        var exception = Assert.Throws<NullReferenceException>(() =>
+        {
+            DummyObject? nullObject = null;
+
+            _ = nullObject.ThrowIfNull();
+        });
+
+        Assert.Equal("nullObject Is Null. Validation Caused An Exception With Expected A Non Null Value.", exception.Message);
+    }
+
+    #endregion
+
 }
