@@ -63,7 +63,7 @@ public class RenderService : IRenderService
     /// <returns>Task which will return a string</returns>
     public async Task<string> RenderToStringAsync(string fullpathToViewOrPartial, object? model, ModelStateDictionary? modelStateDictionary, RouteData? routeData, ActionDescriptor? actionDescriptor)
     {
-        var actionContext = new ActionContext(Accessor.HttpContext, routeData ?? new RouteData(), actionDescriptor ?? new ActionDescriptor());
+        var actionContext = new ActionContext(Accessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor"), routeData ?? new RouteData(), actionDescriptor ?? new ActionDescriptor());
 
         using var outputWriter = new StringWriter();
 
