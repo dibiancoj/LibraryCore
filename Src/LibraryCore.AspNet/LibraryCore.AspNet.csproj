@@ -1,26 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
-	<ImplicitUsings>enable</ImplicitUsings>
-    <Authors>Jason DiBianco</Authors>
-    <Company>Jason DiBianco</Company>
-    <Description>AspNet Core Common Library</Description>
-    <RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Version>4.0.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Jason DiBianco</Authors>
+		<Company>Jason DiBianco</Company>
+		<Description>AspNet Core Common Library</Description>
+		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Version>4.1.0</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
 </Project>
