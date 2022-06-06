@@ -29,13 +29,13 @@ public class CustomAttributeTest
     [Fact]
     public void CustomAttributeIsDefined()
     {
-        Assert.True(CustomAttributes.CustomAttributeIsDefined<MyTestAttribute>(new ControllerActionDescriptor { MethodInfo = typeof(TestController).GetMethod(nameof(TestController.IndexWithAttribute)) }));
+        Assert.True(CustomAttributes.CustomAttributeIsDefined<MyTestAttribute>(new ControllerActionDescriptor { MethodInfo = typeof(TestController).GetMethod(nameof(TestController.IndexWithAttribute)) ?? throw new Exception("Can't Find Method") }));
     }
 
     [Fact]
     public void CustomAttributeIsNotDefined()
     {
-        Assert.False(CustomAttributes.CustomAttributeIsDefined<MyTestAttribute>(new ControllerActionDescriptor { MethodInfo = typeof(TestController).GetMethod(nameof(TestController.Index)) }));
+        Assert.False(CustomAttributes.CustomAttributeIsDefined<MyTestAttribute>(new ControllerActionDescriptor { MethodInfo = typeof(TestController).GetMethod(nameof(TestController.Index)) ?? throw new Exception("Can't Find Method") }));
     }
 
     [Fact]
