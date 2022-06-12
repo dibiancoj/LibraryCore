@@ -18,12 +18,7 @@ public class PastDateValidationAttribute : ValidationAttribute
             return !Required;
         }
 
-        if (DateTime.TryParse(value.ToString(), out DateTime userGivenDate) && userGivenDate.Date <= DateTime.Today)
-        {
-            return true;
-        }
-
-        return false;
+        return DateTime.TryParse(value.ToString(), out DateTime userGivenDate) && userGivenDate.Date <= DateTime.Today;
     }
 
 }
