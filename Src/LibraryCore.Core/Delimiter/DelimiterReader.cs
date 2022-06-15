@@ -51,9 +51,9 @@ public static class DelimiterReader
             if (currentCharacter == '"')
             {
                 //walk word
-                columnsParsed.Add(WalkColumnWord(reader, quoteCharacter, delimiter));
+                columnsParsed.Add(WalkColumnWord(reader, quoteCharacter));
             }
-            else if (currentCharacter == delimiter && reader.Peek() == -1)
+            else if (currentCharacter == delimiter && !reader.HasMoreCharacters())
             {
                 //blank word at the end of the file
                 columnsParsed.Add(string.Empty);
@@ -68,7 +68,7 @@ public static class DelimiterReader
         return columnsParsed;
     }
 
-    private static string WalkColumnWord(StringReader reader, char quoteCharacter, char delimiter)
+    private static string WalkColumnWord(StringReader reader, char quoteCharacter)
     {
         var columnBuilder = new StringBuilder();
 
