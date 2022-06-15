@@ -12,7 +12,7 @@ public class DelimiterBuilder
     /// Constructor when you dont want to add column headers
     /// </summary>
     /// <param name="delimiterBetweenColumns">Delimiter To Use Between Columns</param>
-    public DelimiterBuilder(string delimiterBetweenColumns)
+    public DelimiterBuilder(char delimiterBetweenColumns)
         : this(null, delimiterBetweenColumns)
     {
     }
@@ -22,7 +22,7 @@ public class DelimiterBuilder
     /// </summary>
     /// <param name="columnHeaders">Headers To Add To The Csv. Will Be The First Row Outputted</param>
     /// <param name="delimiterBetweenColumns">Delimiter To Use Between Columns</param>
-    public DelimiterBuilder(IList<string?>? columnHeaders, string delimiterBetweenColumns)
+    public DelimiterBuilder(IList<string?>? columnHeaders, char delimiterBetweenColumns)
     {
         //create the string builder
         WorkingOutputWriter = new StringBuilder();
@@ -44,7 +44,28 @@ public class DelimiterBuilder
     /// <summary>
     /// Holds a row of data for the delimiter namespace. Shared between the creator and parser
     /// </summary>
-    public record DelimiterRow(IList<string?> ColumnData);
+    public record DelimiterRow(IList<string?> ColumnData)
+    {
+        public T? Value<T>(int columnIndex)
+        {
+            var rawValue = ColumnData[columnIndex];
+
+            if (rawValue.IsNullOrEmpty())
+            {
+                return default;
+            }
+
+            var typeOfT = typeof(T);
+
+            Type typeToUse = Nullable.GetUnderlyingType(typeOfT) ?? typeOfT;
+
+            var convertedTemp = Convert.ChangeType(rawValue, typeToUse);
+
+            return convertedTemp == null ?
+                default :
+                convertedTemp.Cast<T>();
+        }
+    }
 
     #endregion
 
@@ -58,7 +79,7 @@ public class DelimiterBuilder
     /// <summary>
     /// Delimiter to use between columns
     /// </summary>
-    private string ColumnDelimiter { get; }
+    private char ColumnDelimiter { get; }
 
     #endregion
 
@@ -139,7 +160,7 @@ public class DelimiterBuilder
             if (columnToWrite.HasValue())
             {
                 //add the column data
-                WorkingOutputWriter.Append(columnToWrite.Replace(ColumnDelimiter, string.Empty));
+                WorkingOutputWriter.Append($@"""{columnToWrite}""");
             }
 
             //add the delimiter even if its null.
