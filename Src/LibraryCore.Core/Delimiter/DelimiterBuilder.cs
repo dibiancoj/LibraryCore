@@ -57,13 +57,7 @@ public class DelimiterBuilder
 
             var typeOfT = typeof(T);
 
-            Type typeToUse = Nullable.GetUnderlyingType(typeOfT) ?? typeOfT;
-
-            var convertedTemp = Convert.ChangeType(rawValue, typeToUse);
-
-            return convertedTemp == null ?
-                default :
-                convertedTemp.Cast<T>();
+            return Convert.ChangeType(rawValue, Nullable.GetUnderlyingType(typeOfT) ?? typeOfT).Cast<T>();
         }
     }
 
