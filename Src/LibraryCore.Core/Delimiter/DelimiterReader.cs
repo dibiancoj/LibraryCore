@@ -48,7 +48,7 @@ public static class DelimiterReader
         {
             var currentCharacter = reader.ReadCharacter();
 
-            if (currentCharacter == '"')
+            if (currentCharacter == quoteCharacter)
             {
                 //walk word
                 columnsParsed.Add(WalkColumnWord(reader, quoteCharacter));
