@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.Delimiter;
+using LibraryCore.Core.ExtensionMethods;
 
 namespace LibraryCore.Tests.Core.Delimiter;
 
@@ -7,10 +8,10 @@ public class DelimiterReaderTest
 
     private static void AssertColumnCount(IEnumerable<DelimiterBuilder.DelimiterRow> result, int expectedColumnCount)
     {
-        foreach (var row in result)
+        result.ForEach(row =>
         {
             Assert.Equal(expectedColumnCount, row.ColumnData.Count);
-        }
+        });
     }
 
     [Fact]
@@ -25,7 +26,6 @@ public class DelimiterReaderTest
         Assert.Equal("cde", result[0].Value<string>(1));
         Assert.Equal("fgh", result[0].Value<string>(2));
 
-        Assert.Equal(3, result[1].ColumnData.Count);
         Assert.Equal(111, result[1].Value<int>(0));
         Assert.Equal(222, result[1].Value<int>(1));
         Assert.Equal(333, result[1].Value<int>(2));
