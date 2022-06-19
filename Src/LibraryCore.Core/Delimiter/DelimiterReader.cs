@@ -22,7 +22,7 @@ public static class DelimiterReader
         using var reader = new StringReader(contentToParse);
 
         //loop until we are done
-        while (reader.Peek() != -1)
+        while (reader.HasMoreCharacters())
         {
             var lineToRead = reader.ReadLine();
 
