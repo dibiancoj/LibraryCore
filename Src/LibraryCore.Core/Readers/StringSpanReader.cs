@@ -1,8 +1,7 @@
 ﻿namespace LibraryCore.Core.Readers;
 
 /// <summary>
-/// This a strict ensure you pass a ref value into any methods otherwise, the Index get's copied resulting in weird issues.
-/// This is faster by a string reader by 2x.
+/// This is faster by a string reader by 2x. Always pass this into a method by ref to avoid copy cost. Always benchmark this over string reader but is faster based on tests
 /// </summary>
 /// <remarks>See StringReaderVsSpanReadPerfTest for the performance test</remarks>
 public ref struct StringSpanReader
@@ -60,12 +59,10 @@ public ref struct StringSpanReader
             return null;
         }
 
+        //fast forward the index (because we are working with just the index on...we need to += to fast forward from the index plus whatever the smaller string we are scanning)
+        Index+= tryToFindIndex;
+
         //start from the first character and read until the index
-        var tempResult = stringFromIndexToEnd[..tryToFindIndex];
-
-        //fast forward the index
-        Index = tryToFindIndex;
-
-        return new string(tempResult);
+        return new string(stringFromIndexToEnd[..tryToFindIndex]);
     }
 }

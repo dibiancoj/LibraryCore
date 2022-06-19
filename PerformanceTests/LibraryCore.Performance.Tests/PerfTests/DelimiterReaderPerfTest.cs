@@ -1,23 +1,41 @@
-﻿using LibraryCore.Core.ExtensionMethods;
+﻿using BenchmarkDotNet.Attributes;
+using LibraryCore.Core.Delimiter;
+using LibraryCore.Core.ExtensionMethods;
+using LibraryCore.Core.Readers;
+using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 using static LibraryCore.Core.Delimiter.DelimiterBuilder;
+using static LibraryCore.Performance.Tests.Program;
 
-namespace LibraryCore.Core.Delimiter;
+namespace LibraryCore.Performance.Tests.PerfTests;
 
-//Notes: DelimiterReaderPerfTest shows that the span reader is faster 1.09x. However, its not enough to go with that approach. Rather the simpler approach for moderate gains
-
-public static class DelimiterReader
+[SimpleJob]
+[Config(typeof(Config))]
+[MemoryDiagnoser]
+public class DelimiterReaderPerfTest : IPerformanceTest
 {
-    public static IEnumerable<DelimiterRow> ParseFromLinesLazy(IEnumerable<string> linesOfContent, char delimiter) => linesOfContent.Select(x => new DelimiterRow(ParseLineIntoColumns(x, delimiter)));
+    public string CommandName => "CsvReader";
+    public string Description => "String reader csv parser vs struct span csv parser";
 
-    /// <summary>
-    /// Parse The File From A Text String
-    /// </summary>
-    /// <param name="contentToParse">All the lines of content that we are want to parse</param>
-    /// <param name="delimiter">Delimiter That Each Column Is Seperated By</param>
-    /// <returns>IEnumerable ParseRowResult. Holds each of the rows. Inside that object holds the columns for that row</returns> 
-    /// <remarks>Method is lazy loaded. File will be locked until method is complete. Call ToArray() To Push To List</remarks>
-    public static IEnumerable<DelimiterRow> ParseFromTextLinesLazy(string contentToParse, char delimiter)
+    [Params(@"""abc""|""cde""|""fgh""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""")]
+    public string TextToParse { get; set; }
+
+    [Benchmark(Baseline = true)]
+    public List<DelimiterRow> WithStringReader()
+    {
+        return DelimiterReader.ParseFromTextLinesLazy(TextToParse, '|').ToList();
+    }
+
+    [Benchmark]
+    public List<DelimiterRow> WithStructSpanReader()
+    {
+        return WithStructSpan.ParseFromTextLinesLazyNew(TextToParse, '|').ToList();
+    }
+}
+
+public static class WithStructSpan
+{
+    public static IEnumerable<DelimiterRow> ParseFromTextLinesLazyNew(string contentToParse, char delimiter)
     {
         //i profiled this and its faster and more memory efficient to use a string reader for each row. To do this for every column had to allocate to much.
         //the current implementation is best for reducing memory
@@ -36,13 +54,13 @@ public static class DelimiterReader
         }
     }
 
-    private static IList<string?> ParseLineIntoColumns(string lineToRead, char delimiter)
+    private static IList<string> ParseLineIntoColumns(string lineToRead, char delimiter)
     {
         const char quoteCharacter = '"';
-        var columnsParsed = new List<string?>();
-        string? workingColumnParsed = null;
+        var columnsParsed = new List<string>();
+        string workingColumnParsed = null;
 
-        using var reader = new StringReader(lineToRead);
+        var reader = new StringSpanReader(lineToRead);
 
         //"field 1","field 2","canbe""3"
         //, "field2", "field 3"
@@ -59,7 +77,7 @@ public static class DelimiterReader
             if (currentCharacter == quoteCharacter)
             {
                 //walk word. This will eat everything from quote to quote - including the quote
-                workingColumnParsed = WalkColumnWord(reader, quoteCharacter);
+                workingColumnParsed = WalkColumnWord(ref reader, quoteCharacter);
             }
             else if (currentCharacter == delimiter)
             {
@@ -70,7 +88,7 @@ public static class DelimiterReader
             else
             {
                 //normal word without quotes...walk it and return the entire column. The delimiter after the work will be left
-                workingColumnParsed = WalkColumnWordWithoutQuotes(reader, currentCharacter, delimiter);
+                workingColumnParsed = WalkColumnWordWithoutQuotes(ref reader, currentCharacter, delimiter);
             }
         }
 
@@ -80,19 +98,20 @@ public static class DelimiterReader
         return columnsParsed;
     }
 
-    private static string WalkColumnWordWithoutQuotes(StringReader reader, char currentCharacterRead, char delimiter)
+    private static string WalkColumnWordWithoutQuotes(ref StringSpanReader reader, char currentCharacterRead, char delimiter)
     {
-        var columnBuilder = new StringBuilder().Append(currentCharacterRead);
+        return string.Concat(currentCharacterRead, reader.ReadUntilCharacter(new string(new[] { delimiter }), StringComparison.OrdinalIgnoreCase));
+        //var columnBuilder = new StringBuilder().Append(currentCharacterRead);
 
-        while (reader.PeekCharacter() != delimiter && reader.HasMoreCharacters())
-        {
-            columnBuilder.Append(reader.ReadCharacter());
-        }
+        //while (reader.PeekCharacter() != delimiter && reader.HasMoreCharacters())
+        //{
+        //    columnBuilder.Append(reader.ReadCharacter());
+        //}
 
-        return columnBuilder.ToString();
+        //return columnBuilder.ToString();
     }
 
-    private static string WalkColumnWord(StringReader reader, char quoteCharacter)
+    private static string WalkColumnWord(ref StringSpanReader reader, char quoteCharacter)
     {
         var columnBuilder = new StringBuilder();
 
@@ -112,7 +131,7 @@ public static class DelimiterReader
             else if (currentCharacter == quoteCharacter && peakedCharacter == quoteCharacter)
             {
                 //eat 1 of the quotes
-                reader.Read();
+                reader.ReadCharacter();
             }
 
             columnBuilder.Append(currentCharacter);
@@ -120,5 +139,4 @@ public static class DelimiterReader
 
         return columnBuilder.ToString();
     }
-
 }

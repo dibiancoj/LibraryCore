@@ -120,4 +120,21 @@ public class StringSpanReaderTest
         Assert.Null(reader.ReadUntilCharacter("abc", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void ReadUntilCharacterWhenMultipleCharactersAreFound()
+    {
+        var reader = new StringSpanReader("111,222,333");
+
+        //move until we are in the middle of the string
+        reader.ReadCharacter(6);
+
+        var readUntilLastComma = reader.ReadUntilCharacter(",", StringComparison.OrdinalIgnoreCase);
+
+        //it shouldn't pick the 111
+        Assert.Equal("2", readUntilLastComma);
+
+        //the reader should be at the , now...not 1
+        Assert.Equal(',', reader.ReadCharacter());
+    }
+
 }
