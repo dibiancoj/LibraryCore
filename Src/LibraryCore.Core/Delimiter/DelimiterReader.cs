@@ -4,7 +4,8 @@ using static LibraryCore.Core.Delimiter.DelimiterBuilder;
 
 namespace LibraryCore.Core.Delimiter;
 
-//Notes: DelimiterReaderPerfTest shows that the span reader is faster 1.09x. However, its not enough to go with that approach. Rather the simpler approach for moderate gains
+//Notes: DelimiterReaderPerfTest shows that the span reader is faster 1.50x - 2.0xx. However, its not enough to go with that approach. Rather the simpler approach for moderate gains.
+//If necessary re-use the string builders so we don't keep re-allocating it. That helps a bit but would rather go with the cleaner code for now.
 
 public static class DelimiterReader
 {
