@@ -87,8 +87,8 @@ public class StringReaderVsSpanReadPerfTest : IPerformanceTest
 
         while (reader.HasMoreCharacters())
         {
-            reader.Peek();
-            sb.Append(reader.Read());
+            reader.PeekCharacter();
+            sb.Append(reader.ReadCharacter());
         }
 
         return sb.ToString();
