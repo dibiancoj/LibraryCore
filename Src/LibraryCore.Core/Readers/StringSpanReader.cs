@@ -17,12 +17,12 @@ public ref struct StringSpanReader
     private int Index { get; set; }
 
     public bool HasMoreCharacters() => Index < StringToParse.Length;
-    public char? Peek() => HasMoreCharacters() ? StringToParse[Index] : null;
-    public char Read() => StringToParse[Index++];
+    public char? PeekCharacter() => HasMoreCharacters() ? StringToParse[Index] : null;
+    public char ReadCharacter() => StringToParse[Index++];
 
-    public string? Peek(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);
+    public string? PeekCharacter(int numberOfCharacters) => PeekOrReadMultipleCharacters(numberOfCharacters);
 
-    public string? Read(int numberOfCharacters)
+    public string? ReadCharacter(int numberOfCharacters)
     {
         var readCharacters = PeekOrReadMultipleCharacters(numberOfCharacters);
 
