@@ -3,7 +3,7 @@ using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Collections.Immutable;
 using static LibraryCore.Performance.Tests.Program;
 
-namespace LibraryCore.Performance.Tests.PerfTests;
+namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 
 [SimpleJob]
 [Config(typeof(Config))]
