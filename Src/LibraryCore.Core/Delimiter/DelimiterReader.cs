@@ -36,36 +36,58 @@ public static class DelimiterReader
 
     private static IList<string?> ParseLineIntoColumns(string lineToRead, char delimiter)
     {
-        var columnsParsed = new List<string?>();
         const char quoteCharacter = '"';
+        var columnsParsed = new List<string?>();
+        string? workingColumnParsed = null;
 
         using var reader = new StringReader(lineToRead);
 
         //"field 1","field 2","canbe""3"
         //, "field2", "field 3"
         //"1","2",,
+        //field 1, field 2
+        //"field 1", field2
         while (reader.HasMoreCharacters())
         {
+            //this method should loop through the characters and each the specific columns.
+            //the delimiter will be eaten here.
+
             var currentCharacter = reader.ReadCharacter();
 
             if (currentCharacter == quoteCharacter)
             {
-                //walk word
-                columnsParsed.Add(WalkColumnWord(reader, quoteCharacter));
-            }
-            else if (currentCharacter == delimiter && !reader.HasMoreCharacters())
-            {
-                //blank word at the end of the file
-                columnsParsed.Add(string.Empty);
-                columnsParsed.Add(string.Empty);
+                //walk word. This will eat everything from quote to quote - including the quote
+                workingColumnParsed = WalkColumnWord(reader, quoteCharacter);
             }
             else if (currentCharacter == delimiter)
             {
-                columnsParsed.Add(string.Empty);
+                //push the working column into the list
+                columnsParsed.Add(workingColumnParsed);
+                workingColumnParsed = null;
+            }
+            else
+            {
+                //normal word without quotes...walk it and return the entire column. The delimiter after the work will be left
+                workingColumnParsed = WalkColumnWordWithoutQuotes(reader, currentCharacter, delimiter);
             }
         }
 
+        //add the last column to the list
+        columnsParsed.Add(workingColumnParsed);
+
         return columnsParsed;
+    }
+
+    private static string WalkColumnWordWithoutQuotes(StringReader reader, char currentCharacterRead, char delimiter)
+    {
+        var columnBuilder = new StringBuilder().Append(currentCharacterRead);
+
+        while (reader.PeekCharacter() != delimiter && reader.HasMoreCharacters())
+        {
+            columnBuilder.Append(reader.ReadCharacter());
+        }
+
+        return columnBuilder.ToString();
     }
 
     private static string WalkColumnWord(StringReader reader, char quoteCharacter)
@@ -92,12 +114,6 @@ public static class DelimiterReader
             }
 
             columnBuilder.Append(currentCharacter);
-        }
-
-        //eat the comma
-        if (reader.HasMoreCharacters())
-        {
-            reader.Read();
         }
 
         return columnBuilder.ToString();
