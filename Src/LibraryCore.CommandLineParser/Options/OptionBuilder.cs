@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using LibraryCore.CommandLineParser.DefaultCommands;
+using static LibraryCore.CommandLineParser.Options.CommandBuilder;
 
 namespace LibraryCore.CommandLineParser.Options;
 
@@ -18,23 +19,34 @@ public class OptionBuilder
         Commands = new List<CommandBuilder>();
     }
 
-    private List<CommandBuilder> Commands { get; }
+    private List<CommandBuilder> Commands { get; set; }
 
-    public CommandBuilder AddCommand(Func<int> invoker, string commandName, string commandHelp)
+    public CommandBuilder AddCommand(Func<InvokeParameters, int> invoker, string commandName, string commandHelp, int? index = null)
     {
         var command = new CommandBuilder(this, invoker, commandName, commandHelp);
-        Commands.Add(command);
+
+        if (index.HasValue)
+        {
+            Commands.Insert(index.Value, command);
+        }
+        else
+        {
+            Commands.Add(command);
+        }
+
         return command;
     }
 
     public int Run(string[] commandArgs)
     {
-        var baseCommand = commandArgs[0];
+        HelpCommand.AddHelpCommand(this, Commands);
 
-        if (baseCommand == "?")
+        var baseCommand = commandArgs.ElementAtOrDefault(0);
+
+        if (string.IsNullOrEmpty(baseCommand))
         {
-            Console.WriteLine(HelpMenu());
-            return 0;
+            Console.WriteLine("No Command Specified In Input Args");
+            return 1;
         }
 
         var commandToRun = Commands.SingleOrDefault(x => baseCommand.Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
@@ -42,19 +54,40 @@ public class OptionBuilder
         if (commandToRun == null)
         {
             Console.WriteLine("No Command Found For {0}", baseCommand);
-            Console.WriteLine(HelpMenu());
+            var helpCommand = Commands.Single(x => "?".Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
+            helpCommand.Invoker(new InvokeParameters(ParseToRequiredArguments(commandArgs, helpCommand)));
 
             return 1;
         }
 
-        return commandToRun.Invoker();
+        return commandToRun.Invoker(new InvokeParameters(ParseToRequiredArguments(commandArgs, commandToRun)));
     }
 
-    public string HelpMenu()
+    private static IDictionary<string, string> ParseToRequiredArguments(string[] commandArgs, CommandBuilder commandToRun)
     {
-        return new StringBuilder()
-            .AppendLine("Help Menu")
-            .ToString();
+        var parameters = new Dictionary<string, string>();
+        var commandArgsAfterInitialCommand = commandArgs.Skip(1).ToArray();
+
+        //always be 1 because the first is the command
+        if (commandArgsAfterInitialCommand.Length == 0)
+        {
+            return parameters;
+        }
+
+        if (commandArgsAfterInitialCommand.Length < commandToRun.RequiredArguments.Count)
+        {
+            throw new Exception("Missing Required Arguments");
+        }
+
+        int i = 0;
+
+        foreach (var requiredParameter in commandToRun.RequiredArguments)
+        {
+            parameters.Add(requiredParameter.CommandName, commandArgsAfterInitialCommand[i]);
+            i++;
+        }
+
+        return parameters;
     }
 
 }
