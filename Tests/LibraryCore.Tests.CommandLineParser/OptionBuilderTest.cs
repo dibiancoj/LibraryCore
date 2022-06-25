@@ -1,6 +1,7 @@
 using LibraryCore.CommandLineParser;
 using LibraryCore.CommandLineParser.Options;
 using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
+using static LibraryCore.CommandLineParser.Runner;
 
 namespace LibraryCore.Tests.CommandLineParser;
 
@@ -65,7 +66,7 @@ v - verbose
 
 ";
 
-        Assert.Equal(0, await Runner.RunAsync(new[] { "NotFoundCommand" }, optionBuilder));
+        Assert.Equal(0, await RunAsync(new[] { "NotFoundCommand" }, optionBuilder));
         Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
     }
 
@@ -76,7 +77,7 @@ v - verbose
                                     .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
                                     .BuildCommand();
 
-        Assert.Equal(24, await Runner.RunAsync(new[] { "RunReport" }, optionBuilder));
+        Assert.Equal(24, await RunAsync(new[] { "RunReport" }, optionBuilder));
     }
 
     [Fact]
@@ -109,7 +110,7 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                     .AddCommand("RunReport", "Run this command to generate the report", async x => await InvokerAsyncMethod(x))
                                     .BuildCommand();
 
-        Assert.Equal(99, await Runner.RunAsync(new[] { "RunReport" }, optionBuilder));
+        Assert.Equal(99, await RunAsync(new[] { "RunReport" }, optionBuilder));
     }
 
     [InlineData("RunReport1", 24)]
@@ -123,7 +124,7 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                                 .AddCommand("RunReport2", "Help Report 2", x => Task.FromResult(25))
                                                 .BuildCommand();
 
-        Assert.Equal(expectedResult, await Runner.RunAsync(new[] { commandToRun }, optionBuilder));
+        Assert.Equal(expectedResult, await RunAsync(new[] { commandToRun }, optionBuilder));
     }
 
     [Fact]
@@ -141,8 +142,23 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                                 .WithRequiredArgument("ReportName", "Report name to run")
                                                 .BuildCommand();
 
-        Assert.Equal(1, await Runner.RunAsync(new[] { "RunReport", "24" }, optionBuilder));
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", "24" }, optionBuilder));
         Assert.Equal(24, reportIdToRun);
+    }
+
+    [Fact]
+    public async Task CommandWithRequiredArgsThatIsMissing()
+    {
+        var optionBuilder = new OptionsBuilder().AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(1))
+                                                .WithRequiredArgument("ReportName", "Report name to run")
+                                                .BuildCommand();
+
+        var resultException = await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            await RunAsync(new[] { "RunReport" }, optionBuilder);
+        });
+
+        Assert.Equal("Missing Required Arguments", resultException.Message);
     }
 
 }

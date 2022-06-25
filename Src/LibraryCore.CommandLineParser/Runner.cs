@@ -1,6 +1,5 @@
 ﻿using LibraryCore.CommandLineParser.Options;
 using System.Collections.Immutable;
-using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
 
 namespace LibraryCore.CommandLineParser;
 
@@ -16,8 +15,7 @@ public static class Runner
             return 1;
         }
 
-        bool isVerboseMode = commandArgs.Any(x => x == "-v" || x == "-V");
-        Action<string> verboseModeWriter = isVerboseMode ?
+        Action<string> verboseModeWriter = commandArgs.Any(x => x == "-v" || x == "-V") ?
                                                 message => Console.WriteLine(message) :
                                                 message => { };
 
@@ -30,7 +28,12 @@ public static class Runner
         }
 
         //Environment.Exit(code);
-        return await commandToRun.Invoker(new InvokeParameters(configuration.Commands.ToImmutableList(), ParseToRequiredArguments(commandArgs, commandToRun, verboseModeWriter), verboseModeWriter));
+        return await commandToRun.Invoker(new InvokeParameters
+        {
+            ConfiguredCommands = configuration.Commands.ToImmutableList(),
+            RequiredParameters = ParseToRequiredArguments(commandArgs, commandToRun, verboseModeWriter),
+            MessagePump = verboseModeWriter
+        });
     }
 
     private static IDictionary<string, string> ParseToRequiredArguments(string[] commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
@@ -40,28 +43,30 @@ public static class Runner
 
         verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
 
-        //always be 1 because the first is the command
-        if (commandArgsAfterInitialCommand.Length == 0)
-        {
-            return parameters;
-        }
-
-        if (commandArgsAfterInitialCommand.Length < commandToRun.RequiredArguments.Count)
+        if (commandToRun.RequiredArguments.Count > 0 && commandArgsAfterInitialCommand.Length < commandToRun.RequiredArguments.Count)
         {
             throw new Exception("Missing Required Arguments");
         }
 
-        int i = 0;
-
-        foreach (var requiredParameter in commandToRun.RequiredArguments)
+        for (int i = 0; i < commandToRun.RequiredArguments.Count; i++)
         {
-            var value = commandArgsAfterInitialCommand[i];
+            var commandArgFoundInBootup = commandArgsAfterInitialCommand[i];
+            var requiredParameter = commandToRun.RequiredArguments[i];
 
-            verboseModeWriter($"Required Parameter Name = {requiredParameter.CommandName} | Value = {value}");
-            parameters.Add(requiredParameter.CommandName, value);
-            i++;
+            verboseModeWriter($"Required Parameter Name = {requiredParameter.CommandName} | Value = {commandArgFoundInBootup}");
+
+            parameters.Add(requiredParameter.CommandName, commandArgFoundInBootup);
         }
 
         return parameters;
+    }
+
+    public record InvokeParameters
+    {
+        public IImmutableList<CommandConfiguration> ConfiguredCommands { get; init; } = null!;
+        public IDictionary<string, string> RequiredParameters { private get; init; } = null!;
+        public Action<string> MessagePump { get; init; } = null!;
+
+        public T RequiredParameterToValue<T>(string key) => (T)Convert.ChangeType(RequiredParameters[key], typeof(T));
     }
 }

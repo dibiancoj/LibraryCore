@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
+using static LibraryCore.CommandLineParser.Runner;
 
 namespace LibraryCore.CommandLineParser.Options;
 
@@ -15,9 +16,11 @@ public class CommandConfiguration
     //Optional Args With No Parameter
     //Optional Args With Parameters
 
+    public record RequiredArgument(string CommandName, string Description);
+
     public CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker, OptionsBuilder optionsBuilder)
     {
-        RequiredArguments = new List<RequiredArgument>();
+        RequiredArguments = ImmutableList<RequiredArgument>.Empty;
         Invoker = invoker;
         OptionsBuilder = optionsBuilder;
         CommandName = commandName;
@@ -28,10 +31,8 @@ public class CommandConfiguration
     private OptionsBuilder OptionsBuilder { get; }
     public string CommandName { get; }
     public string CommandHelp { get; }
-    public List<RequiredArgument> RequiredArguments { get; }
     public int? OrderId { get; private set; }
-
-    //public static CommandConfiguration Create(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker) => new (commandName, commandHelp, invoker);
+    public IImmutableList<RequiredArgument> RequiredArguments { get; private set; }
 
     public CommandConfiguration WithOrderId(int orderId)
     {
@@ -41,15 +42,11 @@ public class CommandConfiguration
 
     public CommandConfiguration WithRequiredArgument(string commandName, string description)
     {
-        RequiredArguments.Add(new RequiredArgument(commandName, description));
+        //create another list because we want this to be immutable when we share it out.
+        RequiredArguments = RequiredArguments.Add(new RequiredArgument(commandName, description));
         return this;
     }
 
     public OptionsBuilder BuildCommand() => OptionsBuilder;
 
-    public record RequiredArgument(string CommandName, string Description);
-    public record InvokeParameters(IImmutableList<CommandConfiguration> ConfiguredCommands, IDictionary<string, string> RequiredParameters, Action<string> MessagePump)
-    {
-        public T RequiredParameterToValue<T>(string key) => (T)Convert.ChangeType(RequiredParameters[key], typeof(T));
-    }
 }
