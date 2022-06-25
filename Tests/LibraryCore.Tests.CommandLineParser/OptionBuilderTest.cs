@@ -56,7 +56,7 @@ v - verbose
                                     .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
                                     .BuildCommand();
 
-        const string expectedResult = @"No Command Found For NotFoundCommand
+        const string expectedResult = @"No Command Registered For NotFoundCommand
 Help Menu
 
 --- Commands ---

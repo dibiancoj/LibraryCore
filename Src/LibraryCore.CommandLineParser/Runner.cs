@@ -23,7 +23,7 @@ public static class Runner
 
         if (commandToRun == null)
         {
-            Console.WriteLine("No Command Found For {0}", baseCommand);
+            Console.WriteLine("No Command Registered For {0}", baseCommand);
             commandToRun = configuration.Commands.Single(x => "?".Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -31,14 +31,13 @@ public static class Runner
         return await commandToRun.Invoker(new InvokeParameters
         {
             ConfiguredCommands = configuration.Commands.ToImmutableList(),
-            RequiredParameters = ParseToRequiredArguments(commandArgs, commandToRun, verboseModeWriter),
+            RequiredArguments = ParseToRequiredArguments(commandArgs, commandToRun, verboseModeWriter).ToImmutableDictionary(),
             MessagePump = verboseModeWriter
         });
     }
 
     private static IDictionary<string, string> ParseToRequiredArguments(string[] commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
     {
-        var parameters = new Dictionary<string, string>();
         var commandArgsAfterInitialCommand = commandArgs.Skip(1).ToArray();
 
         verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
@@ -48,16 +47,14 @@ public static class Runner
             throw new Exception("Missing Required Arguments");
         }
 
-        for (int i = 0; i < commandToRun.RequiredArguments.Count; i++)
+        var temp = commandToRun.RequiredArguments.Select((command, i) => new
         {
-            var commandArgFoundInBootup = commandArgsAfterInitialCommand[i];
-            var requiredParameter = commandToRun.RequiredArguments[i];
+            Command = command,
+            Value = commandArgsAfterInitialCommand[i]
+        });
 
-            verboseModeWriter($"Required Parameter Name = {requiredParameter.CommandName} | Value = {commandArgFoundInBootup}");
+        verboseModeWriter(string.Join(Environment.NewLine, temp.Select(t => $"Required Parameter Name = {t.Command.CommandName} | Value = {t.Value}")));
 
-            parameters.Add(requiredParameter.CommandName, commandArgFoundInBootup);
-        }
-
-        return parameters;
+        return temp.ToDictionary(x => x.Command.CommandName, x => x.Value);
     }
 }
