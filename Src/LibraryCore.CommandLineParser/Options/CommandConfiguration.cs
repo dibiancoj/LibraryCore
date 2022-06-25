@@ -15,21 +15,23 @@ public class CommandConfiguration
     //Optional Args With No Parameter
     //Optional Args With Parameters
 
-    private CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker)
+    public CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker, OptionsBuilder optionsBuilder)
     {
         RequiredArguments = new List<RequiredArgument>();
         Invoker = invoker;
+        OptionsBuilder = optionsBuilder;
         CommandName = commandName;
         CommandHelp = commandHelp;
     }
 
     public Func<InvokeParameters, Task<int>> Invoker { get; }
+    private OptionsBuilder OptionsBuilder { get; }
     public string CommandName { get; }
     public string CommandHelp { get; }
     public List<RequiredArgument> RequiredArguments { get; }
     public int? OrderId { get; private set; }
 
-    public static CommandConfiguration Create(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker) => new (commandName, commandHelp, invoker);
+    //public static CommandConfiguration Create(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker) => new (commandName, commandHelp, invoker);
 
     public CommandConfiguration WithOrderId(int orderId)
     {
@@ -42,6 +44,8 @@ public class CommandConfiguration
         RequiredArguments.Add(new RequiredArgument(commandName, description));
         return this;
     }
+
+    public OptionsBuilder BuildCommand() => OptionsBuilder;
 
     public record RequiredArgument(string CommandName, string Description);
     public record InvokeParameters(IImmutableList<CommandConfiguration> ConfiguredCommands, IDictionary<string, string> RequiredParameters, Action<string> MessagePump)

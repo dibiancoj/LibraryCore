@@ -1,4 +1,5 @@
 ﻿using LibraryCore.CommandLineParser.DefaultCommands;
+using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
 
 namespace LibraryCore.CommandLineParser.Options;
 
@@ -17,16 +18,17 @@ public class OptionsBuilder
     {
         Commands = new List<CommandConfiguration>
         {
-            HelpCommand.AddHelpCommand()
+            HelpCommand.AddHelpCommand(this)
         };
     }
 
     internal List<CommandConfiguration> Commands { get; set; }
 
-    public OptionsBuilder AddCommand(CommandConfiguration commandConfiguration)
-    {
-        Commands.Add(commandConfiguration);
-        return this;
+    public CommandConfiguration AddCommand(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker)
+    { 
+        var command = new CommandConfiguration(commandName, commandHelp, invoker, this);
+        Commands.Add(command);
+        return command;
     }
 
 }

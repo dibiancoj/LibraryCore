@@ -5,12 +5,10 @@ namespace LibraryCore.CommandLineParser.DefaultCommands;
 
 public static class HelpCommand
 {
-    internal static CommandConfiguration AddHelpCommand()
+    internal static CommandConfiguration AddHelpCommand(OptionsBuilder optionsBuilder)
     {
-        const string commandName = "?";
-
-        return CommandConfiguration.Create(commandName, "Help Menu", parameters => HelpMenu(parameters.ConfiguredCommands))
-                   .WithOrderId(1);
+        return new CommandConfiguration("?", "Help Menu", parameters => HelpMenu(parameters.ConfiguredCommands), optionsBuilder)
+                        .WithOrderId(1);
     }
 
     private static Task<int> HelpMenu(IEnumerable<CommandConfiguration> commands)
