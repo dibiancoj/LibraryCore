@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
-using static LibraryCore.CommandLineParser.Runner;
 
 namespace LibraryCore.CommandLineParser.Options;
 

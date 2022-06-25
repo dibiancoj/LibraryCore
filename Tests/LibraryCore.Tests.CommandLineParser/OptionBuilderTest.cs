@@ -24,7 +24,7 @@ public class OptionBuilderTest
                      .AddCommand("ImportFile", "Import file json", x => Task.FromResult(24))
                      .BuildCommand();
 
-        Assert.Equal(0, await Runner.RunAsync(new[] { "?" }, optionBuilder));
+        Assert.Equal(0, await RunAsync(new[] { "?" }, optionBuilder));
 
         const string expectedResult = @"Help Menu
 
@@ -46,7 +46,7 @@ v - verbose
                                     .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
                                     .BuildCommand();
 
-        Assert.Equal(1, await Runner.RunAsync(Array.Empty<string>(), optionBuilder));
+        Assert.Equal(1, await RunAsync(Array.Empty<string>(), optionBuilder));
     }
 
     [Fact]
@@ -88,7 +88,7 @@ v - verbose
                                 .WithRequiredArgument("JsonPath", "Json Path To Use")
                                 .BuildCommand();
 
-        Assert.Equal(24, await Runner.RunAsync(new[] { "RunReport", "jsonpath123", "-v" }, optionBuilder));
+        Assert.Equal(24, await RunAsync(new[] { "RunReport", "jsonpath123", "-v" }, optionBuilder));
 
         const string expectedOutput = @"Command To Invoke = RunReport
 Required Parameter Name = JsonPath | Value = jsonpath123

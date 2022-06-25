@@ -1,6 +1,5 @@
 ﻿using LibraryCore.CommandLineParser.DefaultCommands;
-using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
-using static LibraryCore.CommandLineParser.Runner;
+using System.Collections.Immutable;
 
 namespace LibraryCore.CommandLineParser.Options;
 
@@ -17,18 +16,15 @@ public class OptionsBuilder
 
     public OptionsBuilder()
     {
-        Commands = new List<CommandConfiguration>
-        {
-            HelpCommand.AddHelpCommand(this)
-        };
+        Commands = new[] { HelpCommand.AddHelpCommand(this) }.ToImmutableList();
     }
 
-    internal List<CommandConfiguration> Commands { get; set; }
+    internal IImmutableList<CommandConfiguration> Commands { get; set; }
 
     public CommandConfiguration AddCommand(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker)
-    { 
+    {
         var command = new CommandConfiguration(commandName, commandHelp, invoker, this);
-        Commands.Add(command);
+        Commands = Commands.Add(command);
         return command;
     }
 
