@@ -1,5 +1,6 @@
+using LibraryCore.CommandLineParser;
 using LibraryCore.CommandLineParser.Options;
-using static LibraryCore.CommandLineParser.Options.CommandBuilder;
+using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
 
 namespace LibraryCore.Tests.CommandLineParser;
 
@@ -13,25 +14,24 @@ public class OptionBuilderTest
     private StringWriter Writer { get; set; } = new();
 
     [Fact]
-    public void RunHelp()
+    public async Task RunHelp()
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
 
-        static int RunCommand(InvokeParameters parameters) => 24;
+        static Task<int> RunCommandAsync(InvokeParameters parameters) => Task.FromResult(24);
 
-        optionBuilder.AddCommand(RunCommand, "RunReport", "Run this command to generate the report")
-                     .CreateCommand()
-                     .AddCommand(RunCommand, "ImportFile", "Import file json")
-                  .CreateCommand();
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommandAsync))
+                     .AddCommand(Create("ImportFile", "Import file json", RunCommandAsync));
 
-        Assert.Equal(0, optionBuilder.Run(new[] { "?" }));
+        Assert.Equal(0, await Runner.RunAsync(new[] { "?" }, optionBuilder));
 
         const string expectedResult = @"Help Menu
 
 --- Commands ---
 ? - Help Menu
-RunReport - Run this command to generate the report
 ImportFile - Import file json
+RunReport - Run this command to generate the report
+v - verbose
 
 ";
 
@@ -39,27 +39,25 @@ ImportFile - Import file json
     }
 
     [Fact]
-    public void NoCommandArgsFound()
+    public async Task NoCommandArgsFound()
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
 
-        static int RunCommand(InvokeParameters parameters) => 24;
+        static Task<int> RunCommandAsync(InvokeParameters parameters) => Task.FromResult(24);
 
-        optionBuilder.AddCommand(RunCommand, "RunReport", "Run this command to generate the report")
-                     .CreateCommand();
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommandAsync));
 
-        Assert.Equal(1, optionBuilder.Run(Array.Empty<string>()));
+        Assert.Equal(1, await Runner.RunAsync(Array.Empty<string>(), optionBuilder));
     }
 
     [Fact]
-    public void NoCommandFoundTest()
+    public async Task NoCommandFoundTest()
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
 
-        static int RunCommand(InvokeParameters parameters) => 24;
+        static Task<int> RunCommandAsync(InvokeParameters parameters) => Task.FromResult(24);
 
-        optionBuilder.AddCommand(RunCommand, "RunReport", "Run this command to generate the report")
-                     .CreateCommand();
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommandAsync));
 
         const string expectedResult = @"No Command Found For NotFoundCommand
 Help Menu
@@ -67,62 +65,77 @@ Help Menu
 --- Commands ---
 ? - Help Menu
 RunReport - Run this command to generate the report
+v - verbose
 
 ";
 
-        Assert.Equal(1, optionBuilder.Run(new[] { "NotFoundCommand" }));
+        Assert.Equal(0, await Runner.RunAsync(new[] { "NotFoundCommand" }, optionBuilder));
         Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
     }
 
     [Fact]
-    public void BasicOneCommandTest()
+    public async Task BasicOneCommandTest()
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
 
-        static int RunCommand(InvokeParameters parameters) => 24;
+        static Task<int> RunCommandAsync(InvokeParameters parameters) => Task.FromResult(24);
 
-        optionBuilder.AddCommand(RunCommand, "RunReport", "Run this command to generate the report")
-                     .CreateCommand();
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommandAsync));
 
-        Assert.Equal(24, optionBuilder.Run(new[] { "RunReport" }));
+        Assert.Equal(24, await Runner.RunAsync(new[] { "RunReport" }, optionBuilder));
+    }
+
+    [Fact]
+    public async Task BasicOneCommandWithVerboseTest()
+    {
+        var optionBuilder = new OptionsBuilder();
+
+        static Task<int> RunCommandAsync(InvokeParameters parameters) => Task.FromResult(24);
+
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommandAsync)
+                                .WithRequiredArgument("JsonPath", "Json Path To Use"));
+
+        Assert.Equal(24, await Runner.RunAsync(new[] { "RunReport", "jsonpath123", "-v" }, optionBuilder));
+
+        const string expectedOutput = @"Command To Invoke = RunReport
+Required Parameter Name = JsonPath | Value = jsonpath123
+";
+
+        Assert.Equal(expectedOutput, Writer.GetStringBuilder().ToString());
     }
 
     [InlineData("RunReport1", 24)]
     [InlineData("RunReport2", 25)]
     [Theory]
-    public void BasicTwoCommandTest(string commandToRun, int expectedResult)
+    public async Task BasicTwoCommandTest(string commandToRun, int expectedResult)
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
 
-        static int RunCommand1(InvokeParameters parameters) => 24;
-        static int RunCommand2(InvokeParameters parameters) => 25;
+        static Task<int> RunCommand1(InvokeParameters parameters) => Task.FromResult(24);
+        static Task<int> RunCommand2(InvokeParameters parameters) => Task.FromResult(25);
 
-        optionBuilder.AddCommand(RunCommand1, "RunReport1", "Help Report 1")
-                     .CreateCommand()
+        optionBuilder.AddCommand(Create("RunReport1", "Help Report 1", RunCommand1))
+                     .AddCommand(Create("RunReport2", "Help Report 2", RunCommand2));
 
-                     .AddCommand(RunCommand2, "RunReport2", "Help Report 2")
-                     .CreateCommand();
-
-        Assert.Equal(expectedResult, optionBuilder.Run(new[] { commandToRun }));
+        Assert.Equal(expectedResult, await Runner.RunAsync(new[] { commandToRun }, optionBuilder));
     }
 
     [Fact]
-    public void CommandWithRequiredArgs()
+    public async Task CommandWithRequiredArgs()
     {
-        var optionBuilder = new OptionBuilder();
+        var optionBuilder = new OptionsBuilder();
         int reportIdToRun = 0;
 
-        int RunCommand(InvokeParameters parameters)
+        Task<int> RunCommand(InvokeParameters parameters)
         {
             reportIdToRun = parameters.RequiredParameterToValue<int>("ReportName");
-            return 1;
+            return Task.FromResult(1);
         };
 
-        optionBuilder.AddCommand(RunCommand, "RunReport", "Run this command to generate the report")
-                     .WithRequiredArgument("ReportName", "Report name to run")
-                     .CreateCommand();
+        optionBuilder.AddCommand(Create("RunReport", "Run this command to generate the report", RunCommand)
+                                 .WithRequiredArgument("ReportName", "Report name to run"));
 
-        Assert.Equal(1, optionBuilder.Run(new[] { "RunReport", "24" }));
+        Assert.Equal(1, await Runner.RunAsync(new[] { "RunReport", "24" }, optionBuilder));
         Assert.Equal(24, reportIdToRun);
     }
 

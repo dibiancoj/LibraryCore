@@ -1,33 +1,37 @@
 ﻿using LibraryCore.CommandLineParser.Options;
 using System.Text;
-using static LibraryCore.CommandLineParser.Options.CommandBuilder;
 
 namespace LibraryCore.CommandLineParser.DefaultCommands;
 
-public class HelpCommand
+public static class HelpCommand
 {
-    internal static void AddHelpCommand(OptionBuilder optionBuilder, List<CommandBuilder> commands)
+    internal static CommandConfiguration AddHelpCommand()
     {
-        optionBuilder.AddCommand((InvokeParameters parameters) => HelpMenu(commands), "?", "Help Menu", 0);
+        const string commandName = "?";
+
+        return CommandConfiguration.Create(commandName, "Help Menu", parameters => HelpMenu(parameters.ConfiguredCommands))
+                   .WithOrderId(1);
     }
 
-    private static int HelpMenu(IEnumerable<CommandBuilder> commands)
+    private static Task<int> HelpMenu(IEnumerable<CommandConfiguration> commands)
     {
         Console.WriteLine(HelpMenuText(commands));
-        return 0;
+        return Task.FromResult(0);
     }
 
-    private static string HelpMenuText(IEnumerable<CommandBuilder> commands)
+    private static string HelpMenuText(IEnumerable<CommandConfiguration> commands)
     {
         var builder = new StringBuilder("Help Menu");
 
         builder.AppendLine(Environment.NewLine);
         builder.AppendLine("--- Commands ---");
 
-        foreach (var command in commands)
+        foreach (var command in commands.OrderBy(x => x.OrderId ?? int.MaxValue).ThenBy(x => x.CommandName))
         {
             builder.AppendLine($"{command.CommandName} - {command.CommandHelp}");
         }
+
+        builder.AppendLine("v - verbose");
 
         return builder.ToString();
     }
