@@ -27,22 +27,54 @@ public static class Runner
             commandToRun = configuration.Commands.Single(x => "?".Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
         }
 
+        verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
+
+        //need to skip the first argument which is the base command
+        var argumentsSpecifiedAtRunTimeByUser = commandArgs.Skip(1).ToImmutableList();
+
         //Environment.Exit(code);
         return await commandToRun.Invoker(new InvokeParameters
         {
             ConfiguredCommands = configuration.Commands.ToImmutableList(),
-            RequiredArguments = ParseToRequiredArguments(commandArgs, commandToRun, verboseModeWriter).ToImmutableDictionary(),
+            RequiredArguments = ParseToRequiredArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(),
+            OptionalArguments = ParseOptionalArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(),
             MessagePump = verboseModeWriter
         });
     }
 
-    private static IDictionary<string, string> ParseToRequiredArguments(string[] commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
+    private static IDictionary<string, string?> ParseOptionalArguments(ImmutableList<string> commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
     {
-        var commandArgsAfterInitialCommand = commandArgs.Skip(1).ToArray();
+        if (commandToRun.OptionalArguments.Count == 0)
+        {
+            return ImmutableDictionary<string, string?>.Empty;
+        }
 
-        verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
+        var returnValue = new Dictionary<string, string?>();
 
-        if (commandToRun.RequiredArguments.Count > 0 && commandArgsAfterInitialCommand.Length < commandToRun.RequiredArguments.Count)
+        foreach (var optionalArgRegistered in commandToRun.OptionalArguments)
+        {
+            var indexOfCommand = commandArgs.FindIndex(x => string.Equals(x, optionalArgRegistered.Flag, StringComparison.OrdinalIgnoreCase));
+
+            if (indexOfCommand > -1)
+            {
+                if (optionalArgRegistered.ArgumentRequiresParameterAfterFlag)
+                {
+                    //if has command after check if the we can grab it with index +=1 ...
+                }
+                else
+                {
+                    //no command after this...just say its here
+                    returnValue.Add(optionalArgRegistered.Flag, null);
+                }
+            }
+        }
+
+        return returnValue;
+    }
+
+    private static IDictionary<string, string> ParseToRequiredArguments(IImmutableList<string> commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
+    {
+        if (commandToRun.RequiredArguments.Count > 0 && commandArgs.Count < commandToRun.RequiredArguments.Count)
         {
             throw new Exception("Missing Required Arguments");
         }
@@ -50,7 +82,7 @@ public static class Runner
         var temp = commandToRun.RequiredArguments.Select((command, i) => new
         {
             Command = command,
-            Value = commandArgsAfterInitialCommand[i]
+            Value = commandArgs[i]
         });
 
         verboseModeWriter(string.Join(Environment.NewLine, temp.Select(t => $"Required Parameter Name = {t.Command.CommandName} | Value = {t.Value}")));

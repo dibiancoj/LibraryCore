@@ -16,10 +16,12 @@ public class CommandConfiguration
     //Optional Args With Parameters
 
     public record RequiredArgument(string CommandName, string Description);
+    public record OptionalArgument(string Flag, string Description, bool ArgumentRequiresParameterAfterFlag);
 
     public CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker, OptionsBuilder optionsBuilder)
     {
         RequiredArguments = ImmutableList<RequiredArgument>.Empty;
+        OptionalArguments = ImmutableList<OptionalArgument>.Empty;
         Invoker = invoker;
         OptionsBuilder = optionsBuilder;
         CommandName = commandName;
@@ -32,6 +34,7 @@ public class CommandConfiguration
     public string CommandHelp { get; }
     public int? OrderId { get; private set; }
     public IImmutableList<RequiredArgument> RequiredArguments { get; private set; }
+    public IImmutableList<OptionalArgument> OptionalArguments { get; private set; }
 
     public CommandConfiguration WithOrderId(int orderId)
     {
@@ -43,6 +46,13 @@ public class CommandConfiguration
     {
         //create another list because we want this to be immutable when we share it out.
         RequiredArguments = RequiredArguments.Add(new RequiredArgument(commandName, description));
+        return this;
+    }
+
+    public CommandConfiguration WithOptionalArgument(string flag, string description, bool argumentRequiresParameterAfterFlag)
+    {
+        //create another list because we want this to be immutable when we share it out.
+        OptionalArguments = OptionalArguments.Add(new OptionalArgument(flag, description, argumentRequiresParameterAfterFlag));
         return this;
     }
 

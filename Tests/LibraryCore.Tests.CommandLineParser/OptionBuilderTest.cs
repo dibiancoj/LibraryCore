@@ -161,4 +161,45 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         Assert.Equal("Missing Required Arguments", resultException.Message);
     }
 
+    [Fact]
+    public async Task OptionalArgumentWithNoCommandAfterFlag()
+    {
+        string? connectionStringPassedIn = null;
+
+        Task<int> RunCommand(InvokeParameters parameters)
+        {
+            connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-c").ValueIfSpecified;
+            return Task.FromResult(1);
+        };
+
+        var optionBuilder = new OptionsBuilder()
+                                    .AddCommand("RunReport", "Run this command to generate the report", RunCommand)
+                                    .WithOptionalArgument("-c", "Connection String", false)
+                                    .BuildCommand();
+
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", "-c" }, optionBuilder));
+
+        Assert.Null(connectionStringPassedIn);
+    }
+
+    [Fact]
+    public async Task OptionalArgumentWithCommandAfterFlag()
+    {
+        string? connectionStringPassedIn = null;
+
+        Task<int> RunCommand(InvokeParameters parameters)
+        {
+            connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-c").ValueIfSpecified;
+            return Task.FromResult(1);
+        };
+
+        var optionBuilder = new OptionsBuilder()
+                                    .AddCommand("RunReport", "Run this command to generate the report", RunCommand)
+                                    .WithOptionalArgument("-c", "Connection String", true)
+                                    .BuildCommand();
+
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", "-c", "MyConnectionString" }, optionBuilder));
+        Assert.Equal("MyConnectionString", connectionStringPassedIn);
+    }
+
 }
