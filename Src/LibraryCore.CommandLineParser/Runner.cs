@@ -1,5 +1,6 @@
 ﻿using LibraryCore.CommandLineParser.DefaultCommands;
 using LibraryCore.CommandLineParser.Options;
+using LibraryCore.Core.ExtensionMethods;
 using System.Collections.Immutable;
 
 namespace LibraryCore.CommandLineParser;
@@ -33,7 +34,7 @@ public static class Runner
         verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
 
         //sub command help
-        if (FindIndex(commandArgs.Skip(1), x => x == helpCommand) > -1)
+        if (commandArgs.Skip(1).FirstIndexOfElement(x => x == helpCommand).HasValue)
         {
             Console.WriteLine(HelpCommand.HelpMenuTextForSubCommand(commandToRun));
             return 0;
@@ -63,7 +64,7 @@ public static class Runner
 
         foreach (var optionalArgRegistered in commandToRun.OptionalArguments)
         {
-            var indexOfCommand = FindIndex(commandArgs, x => string.Equals(x, optionalArgRegistered.Flag, StringComparison.OrdinalIgnoreCase));
+            var indexOfCommand = commandArgs.FirstIndexOfElement(x => string.Equals(x, optionalArgRegistered.Flag, StringComparison.OrdinalIgnoreCase)) ?? -1;
 
             if (indexOfCommand > -1)
             {
@@ -106,22 +107,5 @@ public static class Runner
         verboseModeWriter(string.Join(Environment.NewLine, temp.Select(t => $"Required Parameter Name = {t.Command.CommandName} | Value = {t.Value}")));
 
         return temp.ToDictionary(x => x.Command.CommandName, x => x.Value);
-    }
-
-    private static int FindIndex<T>(IEnumerable<T> listOfT, Func<T, bool> predicate)
-    {
-        int i = 0;
-
-        foreach (var item in listOfT)
-        {
-            if (predicate(item))
-            {
-                return i;
-            }
-
-            i++;
-        }
-
-        return -1;
     }
 }
