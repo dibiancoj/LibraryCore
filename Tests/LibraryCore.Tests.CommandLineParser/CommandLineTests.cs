@@ -39,6 +39,28 @@ v - verbose
     }
 
     [Fact]
+    public async Task RunHelpForSubCommand()
+    {
+        var optionBuilder = new OptionsBuilder()
+                     .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
+                     .WithOptionalArgument("-c", "Connection String To Set", true)
+                     .BuildCommand();
+
+        Assert.Equal(0, await RunAsync(new[] { "RunReport", "?" }, optionBuilder));
+
+        const string expectedResult = @"Help Menu
+
+--- Commands ---
+Run Report
+-c Connection String To Set
+-v verbose
+
+";
+
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+    }
+
+    [Fact]
     public async Task NoCommandArgsFound()
     {
         var optionBuilder = new OptionsBuilder()
