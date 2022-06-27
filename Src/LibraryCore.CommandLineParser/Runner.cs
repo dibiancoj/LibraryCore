@@ -36,8 +36,8 @@ public static class Runner
         return await commandToRun.Invoker(new InvokeParameters
         {
             ConfiguredCommands = configuration.Commands.ToImmutableList(),
-            RequiredArguments = ParseToRequiredArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(),
-            OptionalArguments = ParseOptionalArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(),
+            RequiredArguments = ParseToRequiredArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
+            OptionalArguments = ParseOptionalArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
             MessagePump = verboseModeWriter
         });
     }
@@ -60,6 +60,14 @@ public static class Runner
                 if (optionalArgRegistered.ArgumentRequiresParameterAfterFlag)
                 {
                     //if has command after check if the we can grab it with index +=1 ...
+                    if (indexOfCommand + 1 >= commandArgs.Count)
+                    {
+                        throw new Exception($"Optional Argument Name = {optionalArgRegistered.Flag} | Has Missing Optional Arguments");
+                    }
+                    else
+                    {
+                        returnValue.Add(optionalArgRegistered.Flag, commandArgs[indexOfCommand + 1]);
+                    }
                 }
                 else
                 {

@@ -1,13 +1,12 @@
 using LibraryCore.CommandLineParser;
 using LibraryCore.CommandLineParser.Options;
-using static LibraryCore.CommandLineParser.Options.CommandConfiguration;
 using static LibraryCore.CommandLineParser.Runner;
 
 namespace LibraryCore.Tests.CommandLineParser;
 
-public class OptionBuilderTest
+public class CommandLineTests
 {
-    public OptionBuilderTest()
+    public CommandLineTests()
     {
         Console.SetOut(Writer);
     }
@@ -182,14 +181,16 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         Assert.Null(connectionStringPassedIn);
     }
 
-    [Fact]
-    public async Task OptionalArgumentWithCommandAfterFlag()
+    [InlineData("-C")]
+    [InlineData("-c")]
+    [Theory]
+    public async Task OptionalArgumentWithCommandAfterFlag(string flagValueToPassIn)
     {
         string? connectionStringPassedIn = null;
 
         Task<int> RunCommand(InvokeParameters parameters)
         {
-            connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-c").ValueIfSpecified;
+            connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-C").ValueIfSpecified;
             return Task.FromResult(1);
         };
 
@@ -198,8 +199,22 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                     .WithOptionalArgument("-c", "Connection String", true)
                                     .BuildCommand();
 
-        Assert.Equal(1, await RunAsync(new[] { "RunReport", "-c", "MyConnectionString" }, optionBuilder));
-        Assert.Equal("MyConnectionString", connectionStringPassedIn);
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", flagValueToPassIn, "My Connection String" }, optionBuilder));
+        Assert.Equal("My Connection String", connectionStringPassedIn);
+    }
+
+    [Fact]
+    public async Task OptionalArgumentWithCommandThatIsMissing()
+    {
+        var error = await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            var optionBuilder = new OptionsBuilder()
+                                    .AddCommand("RunReport", "Run this command to generate the report", (x) => Task.FromResult(2))
+                                    .WithOptionalArgument("-c", "Connection String", true)
+                                    .BuildCommand();
+
+            Assert.Equal(2, await RunAsync(new[] { "RunReport", "-c" }, optionBuilder));
+        });
     }
 
 }
