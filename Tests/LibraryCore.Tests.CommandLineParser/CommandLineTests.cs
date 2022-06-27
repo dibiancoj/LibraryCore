@@ -241,4 +241,31 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         });
     }
 
+    [Fact]
+    public async Task OptionalArgumentTryToResolveButIsNotPassedIn()
+    {
+        string? connectionStringPassedIn = null;
+        bool parameterIsSpecified = true;
+
+        Task<int> RunCommand(InvokeParameters parameters)
+        {
+            var (IsSpecified, ValueIfSpecified) = parameters.OptionalParameterToValue<string>("-c");
+
+            connectionStringPassedIn = ValueIfSpecified;
+            parameterIsSpecified = IsSpecified;
+
+            return Task.FromResult(1);
+        };
+
+        var optionBuilder = new OptionsBuilder()
+                                    .AddCommand("RunReport", "Run this command to generate the report", RunCommand)
+                                    .WithOptionalArgument("-c", "Connection String", false)
+                                    .BuildCommand();
+
+        Assert.Equal(1, await RunAsync(new[] { "RunReport" }, optionBuilder));
+
+        Assert.Null(connectionStringPassedIn);
+        Assert.False(parameterIsSpecified);
+    }
+
 }
