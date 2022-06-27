@@ -10,3 +10,6 @@ core:
 
 aspnet:
 - Src/LibraryCore.AspNet/**/*
+
+commandline:
+- Src/LibraryCore.CommandLineParser/**/*
