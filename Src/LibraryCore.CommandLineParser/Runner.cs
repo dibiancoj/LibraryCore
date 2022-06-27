@@ -1,4 +1,5 @@
-﻿using LibraryCore.CommandLineParser.Options;
+﻿using LibraryCore.CommandLineParser.DefaultCommands;
+using LibraryCore.CommandLineParser.Options;
 using System.Collections.Immutable;
 
 namespace LibraryCore.CommandLineParser;
@@ -7,6 +8,8 @@ public static class Runner
 {
     public static async Task<int> RunAsync(string[] commandArgs, OptionsBuilder configuration)
     {
+        const string helpCommand = "?";
+
         var baseCommand = commandArgs.ElementAtOrDefault(0);
 
         if (string.IsNullOrEmpty(baseCommand))
@@ -24,10 +27,17 @@ public static class Runner
         if (commandToRun == null)
         {
             Console.WriteLine("No Command Registered For {0}", baseCommand);
-            commandToRun = configuration.Commands.Single(x => "?".Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
+            commandToRun = configuration.Commands.Single(x => helpCommand.Equals(x.CommandName, StringComparison.OrdinalIgnoreCase));
         }
 
         verboseModeWriter($"Command To Invoke = {commandToRun.CommandName}");
+
+        //sub command help
+        if (FindIndex(commandArgs.Skip(1), x => x == helpCommand) > -1)
+        {
+            Console.WriteLine(HelpCommand.HelpMenuTextForSubCommand(commandToRun));
+            return 0;
+        }
 
         //need to skip the first argument which is the base command
         var argumentsSpecifiedAtRunTimeByUser = commandArgs.Skip(1).ToImmutableList();
@@ -42,7 +52,7 @@ public static class Runner
         });
     }
 
-    private static IDictionary<string, string?> ParseOptionalArguments(ImmutableList<string> commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
+    private static IDictionary<string, string?> ParseOptionalArguments(IImmutableList<string> commandArgs, CommandConfiguration commandToRun, Action<string> verboseModeWriter)
     {
         if (commandToRun.OptionalArguments.Count == 0)
         {
@@ -53,7 +63,7 @@ public static class Runner
 
         foreach (var optionalArgRegistered in commandToRun.OptionalArguments)
         {
-            var indexOfCommand = commandArgs.FindIndex(x => string.Equals(x, optionalArgRegistered.Flag, StringComparison.OrdinalIgnoreCase));
+            var indexOfCommand = FindIndex(commandArgs, x => string.Equals(x, optionalArgRegistered.Flag, StringComparison.OrdinalIgnoreCase));
 
             if (indexOfCommand > -1)
             {
@@ -96,5 +106,22 @@ public static class Runner
         verboseModeWriter(string.Join(Environment.NewLine, temp.Select(t => $"Required Parameter Name = {t.Command.CommandName} | Value = {t.Value}")));
 
         return temp.ToDictionary(x => x.Command.CommandName, x => x.Value);
+    }
+
+    private static int FindIndex<T>(IEnumerable<T> listOfT, Func<T, bool> predicate)
+    {
+        int i = 0;
+
+        foreach (var item in listOfT)
+        {
+            if (predicate(item))
+            {
+                return i;
+            }
+
+            i++;
+        }
+
+        return -1;
     }
 }

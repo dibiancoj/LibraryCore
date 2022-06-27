@@ -29,7 +29,25 @@ public static class HelpCommand
             builder.AppendLine($"{command.CommandName} - {command.CommandHelp}");
         }
 
-        builder.AppendLine("v - verbose");
+        builder.AppendLine("-v - verbose");
+
+        return builder.ToString();
+    }
+
+    internal static string HelpMenuTextForSubCommand(CommandConfiguration command)
+    {
+        var builder = new StringBuilder("Help Menu");
+
+        builder.AppendLine(Environment.NewLine);
+        builder.AppendLine("--- Command ---");
+        builder.AppendLine(command.CommandName);
+
+        foreach (var subCommand in command.OptionalArguments.OrderBy(x => x.Flag))
+        {
+            builder.AppendLine($"{subCommand.Flag} - {subCommand.Description}");
+        }
+
+        builder.AppendLine("-v - verbose");
 
         return builder.ToString();
     }

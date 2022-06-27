@@ -31,7 +31,7 @@ public class CommandLineTests
 ? - Help Menu
 ImportFile - Import file json
 RunReport - Run this command to generate the report
-v - verbose
+-v - verbose
 
 ";
 
@@ -44,16 +44,18 @@ v - verbose
         var optionBuilder = new OptionsBuilder()
                      .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
                      .WithOptionalArgument("-c", "Connection String To Set", true)
+                     .WithOptionalArgument("-t", "Tag to use", false)
                      .BuildCommand();
 
-        Assert.Equal(0, await RunAsync(new[] { "RunReport", "?" }, optionBuilder));
+        Assert.Equal(0, await RunAsync(new[] { "RunReport", "-c", "?" }, optionBuilder));
 
         const string expectedResult = @"Help Menu
 
---- Commands ---
-Run Report
--c Connection String To Set
--v verbose
+--- Command ---
+RunReport
+-c - Connection String To Set
+-t - Tag to use
+-v - verbose
 
 ";
 
@@ -83,7 +85,7 @@ Help Menu
 --- Commands ---
 ? - Help Menu
 RunReport - Run this command to generate the report
-v - verbose
+-v - verbose
 
 ";
 
