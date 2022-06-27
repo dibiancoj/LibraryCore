@@ -13,4 +13,8 @@
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
+	</ItemGroup>
+
 </Project>
