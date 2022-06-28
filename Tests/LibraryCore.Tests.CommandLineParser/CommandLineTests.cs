@@ -1,5 +1,5 @@
-using LibraryCore.CommandLineParser;
 using LibraryCore.CommandLineParser.Options;
+using LibraryCore.CommandLineParser.RunnerModels;
 using static LibraryCore.CommandLineParser.Runner;
 
 namespace LibraryCore.Tests.CommandLineParser;
@@ -176,12 +176,8 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                                 .WithRequiredArgument("ReportName", "Report name to run")
                                                 .BuildCommand();
 
-        var resultException = await Assert.ThrowsAsync<Exception>(async () =>
-        {
-            await RunAsync(new[] { "RunReport" }, optionBuilder);
-        });
-
-        Assert.Equal("Missing Required Arguments", resultException.Message);
+        Assert.Equal(1, await RunAsync(new[] { "RunReport" }, optionBuilder));
+        Assert.Equal("Missing Required Arguments" + Environment.NewLine, Writer.GetStringBuilder().ToString());
     }
 
     [Fact]
@@ -201,7 +197,6 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                     .BuildCommand();
 
         Assert.Equal(1, await RunAsync(new[] { "RunReport", "-c" }, optionBuilder));
-
         Assert.Null(connectionStringPassedIn);
     }
 
@@ -230,15 +225,13 @@ Required Parameter Name = JsonPath | Value = jsonpath123
     [Fact]
     public async Task OptionalArgumentWithCommandThatIsMissing()
     {
-        var error = await Assert.ThrowsAsync<Exception>(async () =>
-        {
-            var optionBuilder = new OptionsBuilder()
-                                    .AddCommand("RunReport", "Run this command to generate the report", (x) => Task.FromResult(2))
-                                    .WithOptionalArgument("-c", "Connection String", true)
-                                    .BuildCommand();
+        var optionBuilder = new OptionsBuilder()
+                                   .AddCommand("RunReport", "Run this command to generate the report", (x) => Task.FromResult(2))
+                                   .WithOptionalArgument("-c", "Connection String", true)
+                                   .BuildCommand();
 
-            Assert.Equal(2, await RunAsync(new[] { "RunReport", "-c" }, optionBuilder));
-        });
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", "-c" }, optionBuilder));
+        Assert.Equal("Optional Argument Name = -c | Has Missing Optional Arguments" + Environment.NewLine, Writer.GetStringBuilder().ToString());
     }
 
     [Fact]
