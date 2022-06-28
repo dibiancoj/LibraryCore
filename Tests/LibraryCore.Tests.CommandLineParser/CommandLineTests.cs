@@ -169,6 +169,38 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         Assert.Equal(24, reportIdToRun);
     }
 
+    private record TestParameters(int ReportId, string ReportName, DateTime DateToRun, bool OnlyActiveReports);
+
+    [Fact]
+    public async Task RequiredParameterWithMultiplValueTypes()
+    {
+        TestParameters? FoundParameters = null;
+
+        Task<int> RunCommand(InvokeParameters parameters)
+        {
+            FoundParameters = new TestParameters(parameters.RequiredParameterToValue<int>("ReportId"),
+                                                 parameters.RequiredParameterToValue<string>("ReportName"),
+                                                 parameters.RequiredParameterToValue<DateTime>("DateToRun"),
+                                                 parameters.RequiredParameterToValue<bool>("OnlyActiveReports"));
+
+            return Task.FromResult(1);
+        };
+
+        var optionBuilder = new OptionsBuilder().AddCommand("RunReport", "Run this command to generate the report", RunCommand)
+                                                .WithRequiredArgument("ReportId", "Report Id To Run")
+                                                .WithRequiredArgument("ReportName", "Report name To Run")
+                                                .WithRequiredArgument("DateToRun", "Report Date To Run")
+                                                .WithRequiredArgument("OnlyActiveReports", "Show Only Active Report")
+                                                .BuildCommand();
+
+        var dateToUse = DateTime.Now;
+
+        Assert.Equal(1, await RunAsync(new[] { "RunReport", "24", "MyReport", dateToUse.ToShortDateString().ToString(), true.ToString() }, optionBuilder));
+        Assert.Equal(24, FoundParameters?.ReportId);
+        Assert.Equal("MyReport", FoundParameters?.ReportName);
+        Assert.Equal(dateToUse.ToShortDateString(), FoundParameters?.DateToRun.ToShortDateString());
+    }
+
     [Fact]
     public async Task CommandWithRequiredArgsThatIsMissing()
     {
