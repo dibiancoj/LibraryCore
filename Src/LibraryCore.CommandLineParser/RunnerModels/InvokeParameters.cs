@@ -1,7 +1,7 @@
 ﻿using LibraryCore.CommandLineParser.Options;
 using System.Collections.Immutable;
 
-namespace LibraryCore.CommandLineParser;
+namespace LibraryCore.CommandLineParser.RunnerModels;
 
 public record InvokeParameters
 {
