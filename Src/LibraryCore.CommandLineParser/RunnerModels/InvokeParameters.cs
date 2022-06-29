@@ -3,13 +3,11 @@ using System.Collections.Immutable;
 
 namespace LibraryCore.CommandLineParser.RunnerModels;
 
-public record InvokeParameters
-{
-    public IImmutableList<CommandConfiguration> ConfiguredCommands { get; init; } = null!;
-    public IImmutableDictionary<string, string> RequiredArguments { get; init; } = null!;
-    public IImmutableDictionary<string, string?> OptionalArguments { get; init; } = null!;
-    public Action<string> MessagePump { get; init; } = null!;
-
+public record InvokeParameters(IImmutableList<CommandConfiguration> ConfiguredCommands,
+                               IImmutableDictionary<string, string> RequiredArguments,
+                               IImmutableDictionary<string, string?> OptionalArguments,
+                               Action<string> MessagePump)
+{ 
     public T RequiredParameterToValue<T>(string key) => (T)Convert.ChangeType(RequiredArguments[key], typeof(T));
     public (bool IsSpecified, T? ValueIfSpecified) OptionalParameterToValue<T>(string key)
     {

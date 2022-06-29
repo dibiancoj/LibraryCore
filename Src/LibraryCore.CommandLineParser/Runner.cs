@@ -64,12 +64,12 @@ public static class Runner
 
             //Environment.Exit(code);
             return await commandToRun.Invoker(new InvokeParameters
-            {
-                ConfiguredCommands = configuration.Commands.ToImmutableList(),
-                RequiredArguments = ParseToRequiredArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
-                OptionalArguments = ParseOptionalArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
-                MessagePump = verboseModeWriter
-            });
+            (
+                configuration.Commands.ToImmutableList(),
+                ParseToRequiredArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
+                ParseOptionalArguments(argumentsSpecifiedAtRunTimeByUser, commandToRun, verboseModeWriter).ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
+                verboseModeWriter
+            ));
         }
         catch (CommandLineParserException ex)
         {
