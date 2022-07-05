@@ -38,7 +38,7 @@ public static class Runner
                 return 1;
             }
 
-            Action<string> verboseModeWriter = commandArgs.Any(x => x == "-v" || x == "-V") ?
+            Action<string> verboseModeWriter = commandArgs.Any(x => x.Equals("-v", StringComparison.OrdinalIgnoreCase)) ?
                                                     message => Console.WriteLine(message) :
                                                     message => { };
 
@@ -112,6 +112,8 @@ public static class Runner
                 }
             }
         }
+
+        verboseModeWriter(string.Join(Environment.NewLine, returnValue.Select(t => $"Optional Parameter Name = {t.Key} | Value = {t.Value ?? "Not Set"}")));
 
         return returnValue;
     }

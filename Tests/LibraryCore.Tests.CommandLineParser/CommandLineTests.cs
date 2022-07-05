@@ -267,6 +267,25 @@ Required Parameter Name = JsonPath | Value = jsonpath123
     }
 
     [Fact]
+    public async Task OptionalArgumentWithVerboseMode()
+    {
+        var optionBuilder = new OptionsBuilder()
+                                   .AddCommand("RunReport", "Run this command to generate the report", (x) => Task.FromResult(2))
+                                   .WithOptionalArgument("-c", "Connection String", true)
+                                   .WithOptionalArgument("-l", "Level To Use", false)
+                                   .BuildCommand();
+
+        const string expectedResult = @"Command To Invoke = RunReport
+
+Optional Parameter Name = -c | Value = MyConnectionString
+Optional Parameter Name = -l | Value = Not Set
+";
+
+        Assert.Equal(2, await RunAsync(new[] { "RunReport", "-v", "-c", "MyConnectionString", "-l" }, optionBuilder));
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+    }
+
+    [Fact]
     public async Task OptionalArgumentTryToResolveButIsNotPassedIn()
     {
         string? connectionStringPassedIn = null;

@@ -1,6 +1,8 @@
 name: Update-Nuget-Packages
 
 on:
+  push:
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
