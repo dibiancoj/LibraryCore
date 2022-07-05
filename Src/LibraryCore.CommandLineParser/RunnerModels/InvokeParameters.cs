@@ -15,10 +15,10 @@ public record InvokeParameters(IImmutableList<CommandConfiguration> ConfiguredCo
         {
             //null if a command after argument is not required
             return string.IsNullOrEmpty(tryToGetValue) ?
-                                       (true, default(T)) :
+                                       (true, default) :
                                        (true, (T)Convert.ChangeType(tryToGetValue, typeof(T)));
         }
 
-        return (false, default(T));
+        return (false, default);
     }
 }
