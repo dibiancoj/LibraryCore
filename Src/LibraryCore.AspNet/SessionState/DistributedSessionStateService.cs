@@ -112,12 +112,7 @@ public class DistributedSessionStateService : ISessionStateService
     {
         if (useAutoTypeHandling)
         {
-            var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, JsonSerializationOption);
-
-            if (temp == null)
-            {
-                return default;
-            }
+            var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, JsonSerializationOption) ?? throw new Exception("Temp should never be null here even with a null value that got serialized. Null will serialize 'null' string");
 
             Type typeToDeserialize = CachedAutoTypeLookup.GetOrAdd(temp.FullTypePath, (path) => Type.GetType(path) ?? throw new Exception("Type Not Found: " + temp.FullTypePath));
 
