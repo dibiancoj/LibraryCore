@@ -11,12 +11,8 @@
 		<Description>AspNet Core Common Library</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>4.1.0</Version>
+		<Version>4.2.0</Version>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />

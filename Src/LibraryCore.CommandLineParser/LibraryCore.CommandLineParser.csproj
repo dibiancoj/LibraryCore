@@ -8,13 +8,9 @@
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<Authors>Jason DiBianco</Authors>
 		<Description>Command Line Parser</Description>
-		<Version>0.0.5</Version>
+		<Version>0.0.6</Version>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
-	</ItemGroup>
 
 </Project>
