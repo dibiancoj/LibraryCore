@@ -1,67 +1,43 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
+using LibraryCore.CommandLineParser;
+using LibraryCore.CommandLineParser.Options;
 using LibraryCore.Core.Reflection;
 using LibraryCore.Performance.Tests.TestHarnessProvider;
-using Microsoft.Extensions.CommandLineUtils;
 
 namespace LibraryCore.Performance.Tests
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //example to run:
-            //dotnet run -c release Union
-
-            var app = new CommandLineApplication()
-            {
-                Name = "Library Core Performance Tests"
-            };
-
-            app.HelpOption("-?|-h|--help");
-            app.VersionOption("--version", "1.0.0");
+            //dotnet run -c release CsvReader
 
             var allTestsInAssembly = ReflectionUtility.ScanForAllInstancesOfType<IPerformanceTest>();
 
-            //go setup the tests in the command line utils
-            BuildUpPerformanceTestListCommand(app, allTestsInAssembly);
+            var result = await Runner.RunAsync(args, BuildUpPerformanceTestListCommand(allTestsInAssembly));
 
-            // Executed when no commands are specified
-            app.OnExecute(() =>
-            {
-                app.ShowHelp();
-                return 0;
-            });
-
-            try
-            {
-                app.Execute(args);
-            }
-            catch (CommandParsingException ex)
-            {
-                Console.WriteLine(ex.Message);
-                app.ShowHelp();
-            }
+            Environment.Exit(result);
         }
 
-        private static void BuildUpPerformanceTestListCommand(CommandLineApplication app, IEnumerable<Type> testsFoundInAssessmbly)
+        private static OptionsBuilder BuildUpPerformanceTestListCommand(IEnumerable<Type> testsFoundInAssessmbly)
         {
+            var options = new OptionsBuilder();
+
             foreach (var testType in testsFoundInAssessmbly)
             {
                 var instanceOfTest = (IPerformanceTest)Activator.CreateInstance(testType);
 
-                app.Command(instanceOfTest.CommandName, command =>
+                options.AddCommand(instanceOfTest.CommandName, instanceOfTest.Description, args =>
                 {
-                    command.Description = instanceOfTest.Description;
+                    _ = BenchmarkRunner.Run(testType);
 
-                    command.OnExecute(() =>
-                    {
-                        _ = BenchmarkRunner.Run(testType);
-
-                        return 0;
-                    });
+                    return Task.FromResult(0);
                 });
             }
+
+            return options;
         }
 
         public class Config : ManualConfig
