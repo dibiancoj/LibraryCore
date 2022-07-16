@@ -5,10 +5,9 @@ namespace LibraryCore.Tests.AspNet.SessionState;
 
 public class DistributedSessionStateServiceTest
 {
-
     public DistributedSessionStateServiceTest()
     {
-        SessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, null);
+        SessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object);
     }
 
     private DistributedSessionStateService SessionStateServiceToUse { get; }
