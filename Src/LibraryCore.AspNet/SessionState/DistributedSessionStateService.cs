@@ -133,7 +133,7 @@ public class DistributedSessionStateService : ISessionStateService
 
     private HttpContext ResolveHttpContextOrThrow() => HttpContextAccessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor");
 
-    public class AutoTypeHandling
+    private class AutoTypeHandling
     {
         public string FullTypePath { get; set; } = null!;
         public byte[] ValueInBytes { get; set; } = default!;
