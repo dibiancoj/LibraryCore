@@ -8,7 +8,7 @@ public class DistributedSessionStateServiceTest
 
     public DistributedSessionStateServiceTest()
     {
-        SessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, Array.Empty<System.Text.Json.Serialization.JsonConverter>());
+        SessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, null);
     }
 
     private DistributedSessionStateService SessionStateServiceToUse { get; }
@@ -70,15 +70,61 @@ public class DistributedSessionStateServiceTest
 
         await SessionStateServiceToUse.SetObjectAsync(key, model, true);
 
-        //back with a try get
         var result = await SessionStateServiceToUse.TryGetObjectAsync<BaseClass>(key, true);
 
         Assert.True(result.GetItemIfFoundInSession(out var itemFoundInSession));
-
         Assert.Equal(24, itemFoundInSession!.Id);
-
-        //use the get
         Assert.Equal(24, (await SessionStateServiceToUse.GetObjectAsync<BaseClass>(key, true))!.Id);
+    }
+
+    [Fact]
+    public async Task SerializeAndDeserializeInterface()
+    {
+        var keyA = nameof(SerializeAndDeserializeInterface) + "_a";
+        var keyB = nameof(SerializeAndDeserializeInterface) + "_B";
+        var aModel = new SessionTestA();
+        var bModel = new SessionTestB();
+
+        await SessionStateServiceToUse.SetObjectAsync(keyA, aModel, true);
+        await SessionStateServiceToUse.SetObjectAsync(keyB, bModel, true);
+
+        var resultA = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(keyA, true);
+        var resultB = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(keyB, true);
+
+        Assert.True(resultA.FoundInSession);
+        Assert.True(resultB.FoundInSession);
+        Assert.Equal(24, resultA.ItemInSessionIfFound!.Result);
+        Assert.Equal(25, resultB.ItemInSessionIfFound!.Result);
+    }
+
+    [Fact]
+    public async Task SerializeAndDeserializeInterfaceWithNull()
+    {
+        var key = nameof(SerializeAndDeserializeInterfaceWithNull);
+
+        SessionTestA? model = null;
+
+        await SessionStateServiceToUse.SetObjectAsync(key, model, true);
+
+        var result = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(key, true);
+
+        Assert.True(result.FoundInSession);
+        Assert.Null(result.ItemInSessionIfFound);
+    }
+
+    public interface ISessionTest
+    {
+        public int Result { get; }
+    }
+
+    public class SessionTestA : ISessionTest
+    {
+        public int Result => 24;
+    }
+
+    public class SessionTestB : ISessionTest
+    {
+        public int Result => 25;
     }
 
     public abstract class BaseClass

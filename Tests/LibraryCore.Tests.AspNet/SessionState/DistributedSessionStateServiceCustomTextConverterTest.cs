@@ -46,11 +46,11 @@ public class DistributedSessionStateServiceCustomTextConverterTest
     [Fact]
     public async Task JsonConverterInConstructorTest()
     {
-        var sessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object,
-                                                                          new List<System.Text.Json.Serialization.JsonConverter>
-        {
-                new CustomJsonConverter()
-        });
+        var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
+        jsonOptions.Converters.Add(new CustomJsonConverter());
+
+        var sessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, jsonOptions);
 
         await sessionStateServiceToUse.SetObjectAsync("test", new CustomConverterModel { Id = "Test123" });
 
