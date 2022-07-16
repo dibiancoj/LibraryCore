@@ -1,4 +1,20 @@
-Create: NuGet.Config
+
+dotnet nuget add source "https://nuget.pkg.github.com/dibiancoj/index.json" --name "githubfeed" --username "dibiancoj@gmail.com" --password "MyPersonalAccessTokenToReadPackages"
+
+
+*{{MyPersonalAccessTokenToReadPackages}}
+1. Profile picture, settings
+2. Developer Settings
+3. Personal Access Token
+4. Create token to read
+
+
+------------------------------------------------------------------------------------------
+
+
+If you don't care about clear text (the solution above is what always should be used put this here for testing purposes or troubleshooting)
+
+Create: NuGet.Config in the solution root foler
 
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
@@ -12,10 +28,3 @@ Create: NuGet.Config
     </github>
   </packageSourceCredentials>
 </configuration>
-
-
-*{{personal access key}}
-1. Profile picture, settings
-2. Developer Settings
-3. Personal Access Token
-4. Create token to read
