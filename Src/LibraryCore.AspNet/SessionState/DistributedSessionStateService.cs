@@ -116,7 +116,7 @@ public class DistributedSessionStateService : ISessionStateService
 
             Type typeToDeserialize = CachedAutoTypeLookup.GetOrAdd(temp.FullTypePath, (path) => Type.GetType(path) ?? throw new Exception("Type Not Found: " + temp.FullTypePath));
 
-            var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize);
+            var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize, JsonSerializationOption);
 
             return tempBeforeCast == null ?
                         default :
