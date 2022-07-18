@@ -8,9 +8,9 @@ namespace LibraryCore.Performance.Tests.PerfTests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class JsonDeSerializerByteVsJson : IPerformanceTest
+public class JsonDeserializerByteVsJson : IPerformanceTest
 {
-    public string CommandName => "JsonDeSerializerByteVsJson";
+    public string CommandName => "JsonDeserializerByteVsJson";
     public string Description => "Does System.Text.Json deserialize a byte array faster then a string";
 
     [GlobalSetup]
