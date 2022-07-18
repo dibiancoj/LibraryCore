@@ -100,10 +100,10 @@ public class DistributedSessionStateService : ISessionStateService
         return useAutoTypeHandling ?
 
                     JsonSerializer.SerializeToUtf8Bytes(new AutoTypeHandling
-                    {
-                        FullTypePath = typeof(T).AssemblyQualifiedName ?? throw new Exception("Assembly Qualified Name Null"),
-                        ValueInBytes = JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: JsonSerializationOption)
-                    }, options: JsonSerializationOption) :
+                    (
+                        typeof(T).AssemblyQualifiedName ?? throw new Exception("Assembly Qualified Name Null"),
+                        JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: JsonSerializationOption)
+                    ), options: JsonSerializationOption) :
 
                     JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: JsonSerializationOption);
     }
@@ -128,10 +128,6 @@ public class DistributedSessionStateService : ISessionStateService
 
     private HttpContext ResolveHttpContextOrThrow() => HttpContextAccessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor");
 
-    private class AutoTypeHandling
-    {
-        public string FullTypePath { get; set; } = null!;
-        public byte[] ValueInBytes { get; set; } = default!;
-    }
+    private record AutoTypeHandling(string FullTypePath, byte[] ValueInBytes);
 
 }
