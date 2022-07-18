@@ -110,20 +110,21 @@ public class DistributedSessionStateService : ISessionStateService
 
     private T? DeserializeItem<T>(byte[] bytesToDeserialize, bool useAutoTypeHandling)
     {
-        if (useAutoTypeHandling)
+        //regular serialization and not an interface or derived class
+        if (!useAutoTypeHandling)
         {
-            var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, JsonSerializationOption) ?? throw new Exception("Temp should never be null here even with a null value that got serialized. Null will serialize 'null' string");
-
-            Type typeToDeserialize = CachedAutoTypeLookup.GetOrAdd(temp.FullTypePath, (path) => Type.GetType(path) ?? throw new Exception("Type Not Found: " + temp.FullTypePath));
-
-            var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize, JsonSerializationOption);
-
-            return tempBeforeCast == null ?
-                        default :
-                        (T)tempBeforeCast;
+            return JsonSerializer.Deserialize<T>(bytesToDeserialize, JsonSerializationOption);
         }
 
-        return JsonSerializer.Deserialize<T>(bytesToDeserialize, JsonSerializationOption);
+        var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, JsonSerializationOption) ?? throw new Exception("Temp should never be null here even with a null value that got serialized. Null will serialize 'null' string");
+
+        Type typeToDeserialize = CachedAutoTypeLookup.GetOrAdd(temp.FullTypePath, (path) => Type.GetType(path) ?? throw new Exception("Type Not Found: " + temp.FullTypePath));
+
+        var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize, JsonSerializationOption);
+
+        return tempBeforeCast == null ?
+                    default :
+                    (T)tempBeforeCast;
     }
 
     private HttpContext ResolveHttpContextOrThrow() => HttpContextAccessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor");
