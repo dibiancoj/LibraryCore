@@ -48,6 +48,19 @@ public class FluentRequestTest
     }
 
     [Fact]
+    public void AddMultipleQueryStringsAtOnce()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                .AddQueryStrings(new Dictionary<string, string>
+                                {
+                                    { "id", "4" },
+                                    { "id2", "5" }
+                                });
+
+        Assert.Equal("https://test.api/WeatherForecast?id=4&id2=5", request.Message.RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
     public void AddQueryStringWhenUrlHasQueryString()
     {
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast?id100=100")

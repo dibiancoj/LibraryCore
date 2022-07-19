@@ -47,6 +47,12 @@ public class FluentRequest
         return this;
     }
 
+    public FluentRequest AddQueryStrings(IDictionary<string, string> queryStringsToAdd)
+    {
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.ToString(), queryStringsToAdd), UriKind.RelativeOrAbsolute);
+        return this;
+    }
+
     public FluentRequest AddAcceptType(AcceptTypeEnum acceptType)
     {
         Message.Headers.Accept.Add(RetrieveAcceptType(acceptType));
