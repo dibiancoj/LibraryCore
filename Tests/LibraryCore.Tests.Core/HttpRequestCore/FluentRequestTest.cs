@@ -47,6 +47,30 @@ public class FluentRequestTest
         Assert.Equal("https://test.api/WeatherForecast?id=4&id2=5", request.Message.RequestUri!.AbsoluteUri);
     }
 
+    [InlineData("https://test.api/WeatherForecast/Usa/NewYork?id=10", "NewYork")]
+    [InlineData("https://test.api/WeatherForecast/Usa/NewYork/NJ?id=10", "NewYork", "NJ")]
+    [Theory]
+    public void AddPath(string expectedResult, params string[] pathsToAdd)
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast/Usa?id=10");
+
+        foreach (var pathToAdd in pathsToAdd)
+        {
+            request = request.AddUrlPath(pathToAdd);
+        }
+
+        Assert.Equal(expectedResult, request.Message.RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
+    public void AddPaths()
+    {
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast/Usa?id=10")
+                            .AddUrlPaths("NewYork", "New Jersey");
+
+        Assert.Equal("https://test.api/WeatherForecast/Usa/NewYork/New%20Jersey?id=10", request.Message.RequestUri!.AbsoluteUri);
+    }
+
     [Fact]
     public void AddMultipleQueryStringsAtOnce()
     {
