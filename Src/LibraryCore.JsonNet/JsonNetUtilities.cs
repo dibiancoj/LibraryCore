@@ -69,7 +69,17 @@ public static class JsonNetUtilities
     /// <param name="jsonSerializer">Serializer if you have special settings</param>
     /// <returns>Stream to consume. This stream will be closed stream which you can call Encoding.UTF8.GetString(createdStream.ToArray() on</returns>
     /// <remarks>Be sure to dispose of the stream when done by the calling code</remarks>
-    public static JsonToStreamResult SerializeToStream<T>(T? modelToSerialize, JsonSerializer jsonSerializer) => JsonToStreamResult.SerializeToStream(modelToSerialize, jsonSerializer);
+    public static JsonToStreamResult SerializeToStream<T>(T? modelToSerialize, JsonSerializer jsonSerializer)
+    {
+        var streamToUse = new MemoryStream();
+        var result = new JsonToStreamResult(streamToUse);
+
+        jsonSerializer.Serialize(result.JsonTextWriterToUse, modelToSerialize);
+        result.JsonTextWriterToUse.Flush();
+        result.StreamWriterToUse.Flush();
+
+        return result;
+    }
 
     public static byte[] SerializeToUtf8Bytes<T>(T? modelToSerialize, JsonSerializer jsonSerializer) => SerializeToStream(modelToSerialize, jsonSerializer).ToByteArray();
 

@@ -145,7 +145,7 @@ public class JsonNetTest
     {
         using var createdStream = JsonNetUtilities.SerializeToStream((TestObject?)null, JsonSerializer.CreateDefault());
 
-        Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream()));
+        Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()));
     }
 
     [Fact]
@@ -167,10 +167,20 @@ public class JsonNetTest
 
         using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
 
-        var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.RewindAndConsumeStream()) ?? throw new Exception("Not Able To Deserialize Model");
+        var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()) ?? throw new Exception("Not Able To Deserialize Model");
 
         Assert.Equal(modelToSerialize.Id, deserializedObject.Id);
         Assert.Equal(modelToSerialize.Text, deserializedObject.Text);
+    }
+
+    [Fact]
+    public void MultipleConsumesOnStreamIsNotSupported()
+    {
+        using var createdStream = JsonNetUtilities.SerializeToStream(new TestObject(), JsonSerializer.CreateDefault());
+
+        _ = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()) ?? throw new Exception("Not Able To Deserialize Model");
+
+        Assert.Throws<ObjectDisposedException>(() => _ = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()) ?? throw new Exception("Not Able To Deserialize Model"));
     }
 
     #endregion
