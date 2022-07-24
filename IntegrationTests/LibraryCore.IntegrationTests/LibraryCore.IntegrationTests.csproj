@@ -44,7 +44,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
 	  <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
-	  <ProjectReference Include="..\..\Src\LibraryCore.JsonNet\LibraryCore.JsonNet.csproj" />
 	  <ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj" />
 	</ItemGroup>
 	<ItemGroup>
