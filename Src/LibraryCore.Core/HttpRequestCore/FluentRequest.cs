@@ -47,6 +47,33 @@ public class FluentRequest
         return this;
     }
 
+    public FluentRequest AddQueryStrings(IDictionary<string, string> queryStringsToAdd)
+    {
+        Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.ToString(), queryStringsToAdd), UriKind.RelativeOrAbsolute);
+        return this;
+    }
+
+    public FluentRequest AddUrlPath(string pathToAdd)
+    {
+        var builder = new UriBuilder(Message.RequestUri!);
+
+        builder.Path = $"{builder.Path.TrimEnd('/')}/{pathToAdd}";
+
+        Message.RequestUri = builder.Uri;
+
+        return this;
+    }
+
+    public FluentRequest AddUrlPaths(params string[] pathsToAdd)
+    {
+        foreach(var pathToAdd in pathsToAdd)
+        {
+            AddUrlPath(pathToAdd);
+        }
+
+        return this;
+    }
+
     public FluentRequest AddAcceptType(AcceptTypeEnum acceptType)
     {
         Message.Headers.Accept.Add(RetrieveAcceptType(acceptType));

@@ -75,6 +75,22 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     }
 
     [Fact]
+    public async Task QueryStringsTest()
+    {
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/QueryStringTest")
+                                                                                        .AddQueryStrings(new Dictionary<string,string>
+                                                                                        {
+                                                                                            { "Q1", "One" },
+                                                                                            { "Q2", "Two" }
+                                                                                        }));
+
+        var result = await response.EnsureSuccessStatusCode()
+                                .Content.ReadAsStringAsync();
+
+        Assert.Equal("One:Two", result);
+    }
+
+    [Fact]
     public async Task SimpleJsonPayload()
     {
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayload"));
