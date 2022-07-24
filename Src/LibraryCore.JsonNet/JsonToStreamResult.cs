@@ -4,36 +4,28 @@ namespace LibraryCore.JsonNet;
 
 public class JsonToStreamResult : IDisposable
 {
-    internal JsonToStreamResult()
+    internal JsonToStreamResult(MemoryStream memoryStream)
     {
-        StreamToWriteInto = new MemoryStream();
+        StreamToWriteInto = memoryStream;
         StreamWriterToUse = new StreamWriter(StreamToWriteInto);
         JsonTextWriterToUse = new JsonTextWriter(StreamWriterToUse);
     }
 
-    private MemoryStream StreamToWriteInto { get; }
-    private StreamWriter StreamWriterToUse { get; }
-    private JsonTextWriter JsonTextWriterToUse { get; }
+    internal MemoryStream StreamToWriteInto { get; }
+    internal StreamWriter StreamWriterToUse { get; }
+    internal JsonTextWriter JsonTextWriterToUse { get; }
     private bool Disposed { get; set; }
-
-    public MemoryStream RewindAndConsumeStream()
+    
+    /// <summary>
+    /// This is only meant to be consumed once. Multiple consumes on the same stream is not supported.
+    /// </summary>
+    public MemoryStream ToStream()
     {
         StreamToWriteInto.Position = 0;
         return StreamToWriteInto;
     }
 
     public byte[] ToByteArray() => StreamToWriteInto.ToArray();
-
-    public static JsonToStreamResult SerializeToStream<T>(T modelToSerialize, JsonSerializer jsonSerializer)
-    {
-        var result = new JsonToStreamResult();
-
-        jsonSerializer.Serialize(result.JsonTextWriterToUse, modelToSerialize);
-        result.JsonTextWriterToUse.Flush();
-        result.StreamWriterToUse.Flush();
-
-        return result;
-    }
 
     #region Dispose Method
 
