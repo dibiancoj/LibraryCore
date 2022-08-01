@@ -16,23 +16,23 @@ public class JsonNetTest
     #region Serialize To Byte Array And Back
 
     [Fact]
-    public void JsonSerializeToByteArrayWithEmptyArray()
+    public async Task JsonSerializeToByteArrayWithEmptyArray()
     {
         var settings = JsonSerializer.CreateDefault();
         TestObject? nullInstance = null;
 
-        var serializedBytes = JsonNetUtilities.SerializeToUtf8Bytes(nullInstance, settings);
+        var serializedBytes = await JsonNetUtilities.SerializeToUtf8BytesAsync(nullInstance, settings);
 
         Assert.Null(JsonNetUtilities.DeserializeFromByteArray<TestObject>(serializedBytes, settings));
     }
 
     [Fact]
-    public void JsonSerializeToByteArrayAndBack()
+    public async Task JsonSerializeToByteArrayAndBack()
     {
         var modelToSerialize = new TestObject();
         var settings = JsonSerializer.CreateDefault();
 
-        var serializedBytes = JsonNetUtilities.SerializeToUtf8Bytes(modelToSerialize, settings);
+        var serializedBytes = await JsonNetUtilities.SerializeToUtf8BytesAsync(modelToSerialize, settings);
 
         var deserializedBackToModel = JsonNetUtilities.DeserializeFromByteArray<TestObject>(serializedBytes, settings) ?? throw new Exception("Not Able To Deserialize");
 
@@ -141,31 +141,31 @@ public class JsonNetTest
     #region Serialize To Stream
 
     [Fact]
-    public void JsonSerializeToStreamWithNullObject()
+    public async Task JsonSerializeToStreamWithNullObject()
     {
-        using var createdStream = JsonNetUtilities.SerializeToStream((TestObject?)null, JsonSerializer.CreateDefault());
+        using var createdStream = await JsonNetUtilities.SerializeToStreamAsync((TestObject?)null, JsonSerializer.CreateDefault());
 
         Assert.Null(JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()));
     }
 
     [Fact]
-    public void JsonSerializeToStream()
+    public async Task JsonSerializeToStream()
     {
         var modelToSerialize = new TestObject();
 
         var expectedResult = JsonConvert.SerializeObject(modelToSerialize);
 
-        using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
+        using var createdStream = await JsonNetUtilities.SerializeToStreamAsync(modelToSerialize, JsonSerializer.CreateDefault());
 
         Assert.Equal(expectedResult, Encoding.UTF8.GetString(createdStream.ToByteArray()));
     }
 
     [Fact]
-    public void JsonSerializeAndDeserializeToStream()
+    public async Task JsonSerializeAndDeserializeToStream()
     {
         var modelToSerialize = new TestObject();
 
-        using var createdStream = JsonNetUtilities.SerializeToStream(modelToSerialize, JsonSerializer.CreateDefault());
+        using var createdStream = await JsonNetUtilities.SerializeToStreamAsync(modelToSerialize, JsonSerializer.CreateDefault());
 
         var deserializedObject = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()) ?? throw new Exception("Not Able To Deserialize Model");
 
@@ -174,9 +174,9 @@ public class JsonNetTest
     }
 
     [Fact]
-    public void MultipleConsumesOnStreamIsNotSupported()
+    public async Task MultipleConsumesOnStreamIsNotSupported()
     {
-        using var createdStream = JsonNetUtilities.SerializeToStream(new TestObject(), JsonSerializer.CreateDefault());
+        using var createdStream = await JsonNetUtilities.SerializeToStreamAsync(new TestObject(), JsonSerializer.CreateDefault());
 
         _ = JsonNetUtilities.DeserializeFromStream<TestObject>(createdStream.ToStream()) ?? throw new Exception("Not Able To Deserialize Model");
 
