@@ -61,9 +61,9 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
     [InlineData("[1d,2d,3d] contains $Survey.PriceOfSurgery$", false, null, null)]
 
     //nullable doubles
-    [InlineData("[1d?,2d?,3d?, 9.99d?] contains $Survey.NumberOfBoats$", true, 3, null)]
+    [InlineData("[1d?,2d?,3d?, 9.99d?] contains $Survey.NumberOfBoats$", true, 3d, null)]
     [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats$", false, null, null)]
-    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats$", false, 30, null)]
+    [InlineData("[1d?,2d?,3d?] contains $Survey.NumberOfBoats$", false, 30d, null)]
 
     //regular ints
     [InlineData("[1,2,3, 10] contains $Survey.SurgeryCount$", true, null, null)]
