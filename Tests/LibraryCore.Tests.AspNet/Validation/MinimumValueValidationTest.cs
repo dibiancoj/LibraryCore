@@ -5,10 +5,10 @@ namespace LibraryCore.Tests.AspNet.Validation;
 public class MinimumValueValidationTest
 {
     [InlineData(null, false)] //default value
-    [InlineData(0, false)]
-    [InlineData(.01, true)]
-    [InlineData(1.25, true)]
-    [InlineData(1.5, true)]
+    [InlineData(0d, false)]
+    [InlineData(.01d, true)]
+    [InlineData(1.25d, true)]
+    [InlineData(1.5d, true)]
     [Theory]
     public void MinValueValidation(double? valueToValidate, bool isValidExpectedResult)
     {
