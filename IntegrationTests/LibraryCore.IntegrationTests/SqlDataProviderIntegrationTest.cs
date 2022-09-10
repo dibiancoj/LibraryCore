@@ -41,7 +41,6 @@ public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture
     [Fact(Skip = SqlServerTestFixture.SkipReason)]
     public async Task DatatableTest()
     {
-
         await using var dataProvider = SqlServerTestFixture.CreateDataProvider();
 
         var testId = Guid.NewGuid();
