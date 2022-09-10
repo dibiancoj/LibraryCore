@@ -49,6 +49,7 @@ public class FluentRequestTest
 
     [InlineData("https://test.api/WeatherForecast/Usa/NewYork?id=10", "NewYork")]
     [InlineData("https://test.api/WeatherForecast/Usa/NewYork/NJ?id=10", "NewYork", "NJ")]
+    [InlineData("https://test.api/WeatherForecast/Usa/New%20York/NJ?id=10", "New York", "NJ")] //make sure its encoded
     [Theory]
     public void AddPath(string expectedResult, params string[] pathsToAdd)
     {
