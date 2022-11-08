@@ -9,7 +9,7 @@ public class FullMockIDistributedCache : IDistributedCache
 
     public byte[] Get(string key) => CacheStore.GetValueOrDefault(key)!;
 
-    public Task<byte[]> GetAsync(string key, CancellationToken token = default) => Task.FromResult(CacheStore.GetValueOrDefault(key))!;
+    public Task<byte[]?> GetAsync(string key, CancellationToken token = default) => Task.FromResult(CacheStore.GetValueOrDefault(key))!;
 
     public void Refresh(string key) => throw new NotImplementedException();
 
