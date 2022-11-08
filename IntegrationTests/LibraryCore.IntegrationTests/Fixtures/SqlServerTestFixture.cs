@@ -49,7 +49,7 @@ public class SqlServerTestFixture : IAsyncLifetime
 
         using var dbContext = new IntegrationTestDbContext();
 
-        await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE States;");
+        await dbContext.States.Where(x => true).ExecuteDeleteAsync();
         //await dbContext.Database.EnsureDeletedAsync();
     }
 }
