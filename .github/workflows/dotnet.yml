@@ -30,6 +30,6 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
       with:
-        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.opencover.xml,./Tests/LibraryCore.Tests.Core/coverage.opencover.xml,./Tests/LibraryCore.Tests.AspNet/coverage.opencover.xml,./Tests/LibraryCore.Tests.CommandLineParser/coverage.opencover.xml # optional
+        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.json,./Tests/LibraryCore.Tests.Core/coverage.json,./Tests/LibraryCore.Tests.AspNet/coverage.json,./Tests/LibraryCore.Tests.CommandLineParser/coverage.json # optional
         fail_ci_if_error: true # optional (default = false)
 
