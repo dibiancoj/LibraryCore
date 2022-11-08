@@ -30,8 +30,8 @@ public class InMemoryCacheService
         //try to eagerly grab the cache item without taking a lock
         if (MemoryCache.TryGetValue<TItem>(key, out var tryToGetItemOptimistic))
         {
-            //we have it in our cache...return it
-            return tryToGetItemOptimistic;
+            //we have it in our cache...return it. 
+            return tryToGetItemOptimistic!; //ignoring nulls because we really shouldn't be storing nulls in cache.
         }
 
         //so we couldn't find it on our first shot. we need to take a lock now
@@ -45,7 +45,7 @@ public class InMemoryCacheService
 
             //if we were waiting for a lock to be released by another thread then most likely its in the cache now. We will try to grab the item again.
             //that is why we are doing a GetOrCreate. this way we try to fetch it on more time before we create it and put it in the cache.
-            return await MemoryCache.GetOrCreateAsync(key, factory);
+            return (await MemoryCache.GetOrCreateAsync(key, factory))!; //ignoring nulls because we really shouldn't be storing nulls in cache.
         }
         finally
         {
