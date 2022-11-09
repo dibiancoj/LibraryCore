@@ -20,19 +20,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.x
+        dotnet-version: 6.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --filter FullyQualifiedName!~LibraryCore.IntegrationTests --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-      env: 
-        CollectCoverage: true
-        CoverletOutputFormat: opencover
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
       with:
-        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.json,./Tests/LibraryCore.Tests.Core/coverage.json,./Tests/LibraryCore.Tests.AspNet/coverage.json,./Tests/LibraryCore.Tests.CommandLineParser/coverage.json # optional
+        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.opencover.xml,./Tests/LibraryCore.Tests.Core/coverage.opencover.xml,./Tests/LibraryCore.Tests.AspNet/coverage.opencover.xml,./Tests/LibraryCore.Tests.CommandLineParser/coverage.opencover.xml # optional
         fail_ci_if_error: true # optional (default = false)
-
