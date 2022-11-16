@@ -2,6 +2,7 @@
 using LibraryCore.Core.HttpRequestCore;
 using LibraryCore.Tests.Core.GlobalMocks;
 using System.Net;
+using static LibraryCore.Core.ExtensionMethods.HttpClientExtensionMethods;
 using static LibraryCore.Tests.Core.GlobalMocks.HttpRequestSetup;
 
 namespace LibraryCore.Tests.Core.ExtensionMethods;
@@ -83,5 +84,33 @@ public class HttpClientExtensionMethodTest
         Assert.Equal("Test", result.Name);
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+    }
+
+    [Fact]
+    public async Task TokenFetch()
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new Token("my_token_type", "Abcdef", "test_scope", 3600, now));
+
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Post &&
+                                                           req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
+
+
+        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync(new Uri("https://mygateway/token"),
+                                                                           "MyToken",
+                                                                           "MySecret",
+                                                                           grantType: "test_credentials",
+                                                                           scope: "test_scope"))!;
+
+        Assert.Equal("my_token_type", result.TokenType);
+        Assert.Equal("Abcdef", result.AccessToken);
+        Assert.Equal("test_scope", result.Scope);
+        Assert.Equal(3600, result.ExpiresIn);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(now).ToLocalTime().AddSeconds(3600), result.ExpiresLocalTime);
+
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Post &&
+                                                                 req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
     }
 }
