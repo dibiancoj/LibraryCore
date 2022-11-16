@@ -21,4 +21,4 @@ jobs:
     - name: Push The Nuget Build
       env:
         MY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run:  dotnet nuget push "**/*.nupkg" --source "https://nuget.pkg.github.com/dibiancoj/index.json" --api-key ${{ secrets.MY_GITHUB_TOKEN }} --skip-duplicate
+      run:  dotnet nuget push "**/*.nupkg" --source "https://nuget.pkg.github.com/dibiancoj/index.json" --api-key $MY_GITHUB_TOKEN --skip-duplicate
