@@ -22,7 +22,7 @@ jobs:
       run:  dotnet pack --configuration Release
 
     - name: Prep Auth For NuGet
-      run: dotnet nuget add source --username dibiancoj@gmail.com --password ${{ secrets.GITHUB_TOKEN }} --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+      run: dotnet nuget add source --username dibiancoj@gmail.com --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
 
     - name: Push The Nuget Build
       run:  dotnet nuget push "**/*.nupkg" --source "github" --api-key ${GITHUB_TOKEN} --skip-duplicate
