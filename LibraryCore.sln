@@ -46,9 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests.Framework.Api", "IntegrationTests\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj", "{960A9427-5FC1-41C5-980F-A2A2430791D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.CommandLineParser", "Src\LibraryCore.CommandLineParser\LibraryCore.CommandLineParser.csproj", "{776282B2-5A68-412E-88D7-1C6F9D9392CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.CommandLineParser", "Src\LibraryCore.CommandLineParser\LibraryCore.CommandLineParser.csproj", "{776282B2-5A68-412E-88D7-1C6F9D9392CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.Tests.CommandLineParser", "Tests\LibraryCore.Tests.CommandLineParser\LibraryCore.Tests.CommandLineParser.csproj", "{639E11CF-B792-4F2C-B767-E3B7055DCE8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.CommandLineParser", "Tests\LibraryCore.Tests.CommandLineParser\LibraryCore.Tests.CommandLineParser.csproj", "{639E11CF-B792-4F2C-B767-E3B7055DCE8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
