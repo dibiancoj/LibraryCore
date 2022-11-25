@@ -14,7 +14,7 @@ public class FluentHttpRequestController : ControllerBase
     public class ResultModel
     {
         public int Id { get; set; }
-        public string Text { get; set; } = null!;
+        public required string Text { get; set; }
     }
 
     public class XmlRoot
