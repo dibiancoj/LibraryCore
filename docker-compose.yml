@@ -19,11 +19,11 @@ services:
       [
         "dotnet",
         "test",
+        "-f",
+        "net${Dotnet_Version}",
         "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
         "-c",
-        "release",
-        "-f",
-        "net${Dotnet_Version}"
+        "release"
       ]
     depends_on:
       - sql-server
