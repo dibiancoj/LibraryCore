@@ -3,12 +3,23 @@ using System.Text.RegularExpressions;
 
 namespace LibraryCore.Core.RegularExpressionUtilities;
 
-public static class RegularExpressionUtility
+public static partial class RegularExpressionUtility
 {
 
     #region Private Helper Methods
 
-    private static TimeSpan DefaultTimeOut() => new(0, 0, 3);
+    private static TimeSpan DefaultTimeOut { get; } = new(0, 0, 3);
+    private const int DefaultTimeOutInMilliSeconds = 3000;
+
+    #endregion
+
+    #region Source Generators For Faster Perf
+
+    [GeneratedRegex(@"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
+    public static partial Regex ParseRawUrlIntoHyperLinkSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
+
+    [GeneratedRegex(@"[\d-]", RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
+    public static partial Regex ParseStringAndLeaveOnlyNumbersSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
 
     #endregion
 
@@ -21,12 +32,9 @@ public static class RegularExpressionUtility
     /// <returns>converted html</returns>
     public static string? ParseRawUrlIntoHyperLink(string? htmlToParse)
     {
-        if (htmlToParse.IsNullOrEmpty())
-        {
-            return htmlToParse;
-        }
-
-        return Regex.Replace(htmlToParse, @"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", "<a target='_blank' href='$1'>$1</a>", RegexOptions.Compiled, DefaultTimeOut());
+        return htmlToParse.IsNullOrEmpty() ?
+                htmlToParse :
+                ParseRawUrlIntoHyperLinkSourceGenerator().Replace(htmlToParse, "<a target='_blank' href='$1'>$1</a>");
     }
 
     #endregion
@@ -57,7 +65,7 @@ public static class RegularExpressionUtility
                                  RegexOptions.IgnoreCase :
                                  RegexOptions.None;
 
-        var regExToRun = new Regex(searchPhrasePattern, options | RegexOptions.Compiled, DefaultTimeOut());
+        var regExToRun = new Regex(searchPhrasePattern, options | RegexOptions.Compiled, DefaultTimeOut);
 
         return regExToRun.Replace(stringToInspect, $"{beginningReplacementTag}$0{endReplacementTag}");
     }
@@ -74,7 +82,7 @@ public static class RegularExpressionUtility
     /// <returns>string with only numbers found in the original string</returns>
     public static string ParseStringAndLeaveOnlyNumbers(string stringToParse, string replaceValue)
     {
-        return new Regex(@"[\d-]", RegexOptions.Compiled, DefaultTimeOut()).Replace(stringToParse, replaceValue);
+        return ParseStringAndLeaveOnlyNumbersSourceGenerator().Replace(stringToParse, replaceValue);
     }
 
     #endregion
