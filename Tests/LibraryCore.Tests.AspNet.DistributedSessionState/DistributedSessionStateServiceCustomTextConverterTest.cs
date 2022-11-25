@@ -1,8 +1,8 @@
 ﻿using LibraryCore.AspNet.SessionState;
-using LibraryCore.Tests.AspNet.Framework;
+using LibraryCore.Tests.AspNet.DistributedSessionState.Framework;
 using System.Text.Json;
 
-namespace LibraryCore.Tests.AspNet.SessionState;
+namespace LibraryCore.Tests.AspNet.DistributedSessionState;
 
 public class DistributedSessionStateServiceCustomTextConverterTest
 {

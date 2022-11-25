@@ -1,7 +1,7 @@
 ﻿using LibraryCore.AspNet.SessionState;
-using LibraryCore.Tests.AspNet.Framework;
+using LibraryCore.Tests.AspNet.DistributedSessionState.Framework;
 
-namespace LibraryCore.Tests.AspNet.SessionState;
+namespace LibraryCore.Tests.AspNet.DistributedSessionState;
 
 public class DistributedSessionStateServiceTest
 {
