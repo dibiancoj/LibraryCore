@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace LibraryCore.Tests.AspNet.Framework;
+namespace LibraryCore.Tests.AspNet.DistributedSessionState.Framework;
 
 public record MockWithSessionResult(Mock<IHttpContextAccessor> MockContextAccessor, Mock<HttpContext> MockContext, Mock<ISession> FullSessionStateMock);
 
