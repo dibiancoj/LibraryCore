@@ -9,7 +9,7 @@ services:
         - "1433:1433"
   integration-tests:
     container_name: integration-tests
-    image: mcr.microsoft.com/dotnet/sdk:7.0
+    image: mcr.microsoft.com/dotnet/sdk:${Dotnet_Version}
     environment:
       - Db_ConnectionString=Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true
     volumes:
@@ -21,7 +21,9 @@ services:
         "test",
         "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
         "-c",
-        "release"
+        "release",
+        "-f",
+        "net${Dotnet_Version}"
       ]
     depends_on:
       - sql-server

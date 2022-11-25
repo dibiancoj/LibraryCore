@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>net7.0</TargetFramework>
-	  <IsPackable>false</IsPackable>
-	  <LangVersion>latest</LangVersion>
-	  <ImplicitUsings>enable</ImplicitUsings>
-	  <Nullable>enable</Nullable>
-	  <WarningsAsErrors>nullable</WarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net7.0</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Using Include="Xunit" />
@@ -17,15 +17,23 @@
 	<ItemGroup>
 		<None Remove="coverage.opencover.xml" />
 	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="coverlet.msbuild" Version="3.2.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
@@ -42,12 +50,13 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
-	  <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
-	  <ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj" />
+		<ProjectReference Include="..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
+		<ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
+		<ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="DatabaseModels\" />
-	  <Folder Include="Database\" />
+		<Folder Include="DatabaseModels\" />
+		<Folder Include="Database\" />
 	</ItemGroup>
 </Project>
+

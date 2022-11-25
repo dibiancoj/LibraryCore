@@ -17,12 +17,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 7.x
-    - name: IntegrationTests
+
+    #- name: IntegrationTests_netcore6
+    #  working-directory: ./IntegrationTests
+    #  run: docker-compose up --exit-code-from integration-tests integration-tests
+    #  env: 
+    #    DB_PW: ${{secrets.IntegrationTestSqlPw}}
+    #    Dotnet_Version: "6.0"
+
+    - name: IntegrationTests_netcore7
       working-directory: ./IntegrationTests
       run: docker-compose up --exit-code-from integration-tests integration-tests
       env: 
         DB_PW: ${{secrets.IntegrationTestSqlPw}}
+        Dotnet_Version: "7.0"
