@@ -9,7 +9,7 @@ services:
         - "1433:1433"
   integration-tests:
     container_name: integration-tests
-    image: mcr.microsoft.com/dotnet/sdk:6.0
+    image: mcr.microsoft.com/dotnet/sdk:${Dotnet_Version}
     environment:
       - Db_ConnectionString=Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true
     volumes:
