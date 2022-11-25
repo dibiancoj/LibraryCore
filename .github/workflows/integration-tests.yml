@@ -24,14 +24,14 @@ jobs:
 
     - name: IntegrationTests_netcore6
       working-directory: ./IntegrationTests
-      run: docker-compose -f docker-compose-netcore6.yml up --exit-code-from integration-tests integration-tests
+      run: docker-compose up --exit-code-from integration-tests integration-tests
       env: 
         DB_PW: ${{secrets.IntegrationTestSqlPw}}
         Dotnet_Version: "6.0"
 
     - name: IntegrationTests_netcore7
       working-directory: ./IntegrationTests
-      run: docker-compose -f docker-compose-netcore7.yml up --exit-code-from integration-tests integration-tests
+      run: docker-compose up --exit-code-from integration-tests integration-tests
       env: 
         DB_PW: ${{secrets.IntegrationTestSqlPw}}
         Dotnet_Version: "7.0"
