@@ -37,8 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Src\LibraryCore.AspNet.DistributedSessionState\LibraryCore.AspNet.DistributedSessionState.csproj" />
-		<ProjectReference Include="..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
+		<ProjectReference Include="..\..\Src\LibraryCore.AspNet.HtmlRendering\LibraryCore.AspNet.HtmlRendering.csproj" />
 	</ItemGroup>
 
 </Project>

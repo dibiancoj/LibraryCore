@@ -1,4 +1,4 @@
-﻿using LibraryCore.AspNet.SessionState;
+﻿using LibraryCore.AspNet.DistributedSessionState;
 using LibraryCore.Tests.AspNet.DistributedSessionState.Framework;
 
 namespace LibraryCore.Tests.AspNet.DistributedSessionState;
