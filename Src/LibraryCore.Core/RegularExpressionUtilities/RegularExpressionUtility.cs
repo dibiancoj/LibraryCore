@@ -9,17 +9,31 @@ public static partial class RegularExpressionUtility
     #region Private Helper Methods
 
     private static TimeSpan DefaultTimeOut { get; } = new(0, 0, 3);
-    private const int DefaultTimeOutInMilliSeconds = 3000;
 
     #endregion
 
     #region Source Generators For Faster Perf
 
-    [GeneratedRegex(@"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
-    public static partial Regex ParseRawUrlIntoHyperLinkSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
+    private const string UrlIntoHyperLinkPattern = @"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)";
+    private const string ParseStringAndLeaveOnlyNumbersPattern = @"[\d-]";
 
-    [GeneratedRegex(@"[\d-]", RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
-    public static partial Regex ParseStringAndLeaveOnlyNumbersSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
+#if NET6_0
+
+    private static Regex ParseRawUrlIntoHyperLinkSourceGenerator() => new (UrlIntoHyperLinkPattern, RegexOptions.Compiled, DefaultTimeOut);
+    private static Regex ParseStringAndLeaveOnlyNumbersSourceGenerator() => new(ParseStringAndLeaveOnlyNumbersPattern, RegexOptions.Compiled, DefaultTimeOut);
+
+#else
+
+    private const int DefaultTimeOutInMilliSeconds = 3000;
+
+    //uses source generators which is alot faster
+    [GeneratedRegex(UrlIntoHyperLinkPattern, RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
+    private static partial Regex ParseRawUrlIntoHyperLinkSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
+
+    [GeneratedRegex(ParseStringAndLeaveOnlyNumbersPattern, RegexOptions.Compiled, DefaultTimeOutInMilliSeconds)]
+    private static partial Regex ParseStringAndLeaveOnlyNumbersSourceGenerator(); //  <-- Declare the partial method, which will be implemented by the source generator
+
+#endif
 
     #endregion
 
