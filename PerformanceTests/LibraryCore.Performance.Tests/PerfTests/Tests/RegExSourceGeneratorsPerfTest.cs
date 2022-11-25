@@ -36,7 +36,7 @@ public partial class SourceGeneratorVersion
     [GeneratedRegex(@"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", RegexOptions.Compiled, 3000)] //3 second timeout
     public static partial Regex MyRegex(); //  <-- Declare the partial method, which will be implemented by the source generator
 
-    public static string ParseRawUrlIntoHyperLink(string? htmlToParse)
+    public static string ParseRawUrlIntoHyperLink(string htmlToParse)
     {
         if (htmlToParse.IsNullOrEmpty())
         {
