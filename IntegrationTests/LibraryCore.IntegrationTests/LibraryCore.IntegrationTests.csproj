@@ -17,16 +17,20 @@
 	<ItemGroup>
 		<None Remove="coverage.opencover.xml" />
 	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="coverlet.msbuild" Version="3.2.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0" Condition="'$(TargetFrameworkVersion)' == 'NET6_0'"  />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" Condition="'$(TargetFrameworkVersion)' == 'NET7_0'" />
-
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -55,3 +59,4 @@
 		<Folder Include="Database\" />
 	</ItemGroup>
 </Project>
+
