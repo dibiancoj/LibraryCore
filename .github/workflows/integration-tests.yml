@@ -22,11 +22,6 @@ jobs:
       with:
         dotnet-version: 7.x
 
-    - name: Setup .NET 6.x
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.x
-
     - name: IntegrationTests
       working-directory: ./IntegrationTests
       run: docker-compose up --exit-code-from integration-tests integration-tests
