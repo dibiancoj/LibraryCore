@@ -23,7 +23,7 @@ services:
         "-c",
         "release",
         "-f",
-        "net7.0"
+        "net${Dotnet_Version}"
       ]
     depends_on:
       - sql-server
