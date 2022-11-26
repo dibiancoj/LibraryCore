@@ -28,7 +28,7 @@ services:
         "--name",
         "github",
         "https://nuget.pkg.github.com/dibiancoj/index.json",
-
+        "&&",
         "dotnet",
         "test",
         "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
