@@ -25,9 +25,40 @@ jobs:
     #    DB_PW: ${{secrets.IntegrationTestSqlPw}}
     #    Dotnet_Version: "6.0"
 
-    - name: IntegrationTests_netcore7
+    #docker build -t inttest -f IntegrationTests/LibraryCore.IntegrationTests//Dockerfile .
+
+    - name: Setup .NET 7.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.x
+
+    #- name: Setup .NET 6.x
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: 6.x
+
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+
+    - name: Docker Compose Up
       working-directory: ./IntegrationTests
-      run: docker-compose up --exit-code-from integration-tests integration-tests
+      run: docker-compose up -d --remove-orphans
+      env:
+         DB_PW: ${{secrets.IntegrationTestSqlPw}}
+
+    - name: Test
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj -f net7.0 -c release
       env: 
-        DB_PW: ${{secrets.IntegrationTestSqlPw}}
-        Dotnet_Version: "7.0"
+         Db_ConnectionString: Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=${{secrets.IntegrationTestSqlPw}};trustServerCertificate=true
+
+    - name: Docker Compose Down
+      working-directory: ./IntegrationTests
+      run: docker-compose down
+
+    #- name: IntegrationTests_netcore7
+    #  working-directory: ./IntegrationTests
+    #  run: docker-compose up --exit-code-from integration-tests integration-tests
+    #  env: 
+    #    DB_PW: ${{secrets.IntegrationTestSqlPw}}
+    #    Dotnet_Version: "7.0"
+    #    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

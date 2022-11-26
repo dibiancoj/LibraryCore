@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
@@ -14,7 +14,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="LibraryCore.Core" Version="5.0.0" />
+		<PackageReference Include="LibraryCore.Core" Version="5.0.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 
 </Project>

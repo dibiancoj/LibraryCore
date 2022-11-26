@@ -7,23 +7,23 @@ services:
         - ACCEPT_EULA=Y
       ports:
         - "1433:1433"
-  integration-tests:
-    container_name: integration-tests
-    image: mcr.microsoft.com/dotnet/sdk:${Dotnet_Version}
-    environment:
-      - Db_ConnectionString=Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true
-    volumes:
-      - .:/Src
-    working_dir: /Src
-    command:
-      [
-        "dotnet",
-        "test",
-        "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
-        "-c",
-        "release",
-        "-f",
-        "net${Dotnet_Version}"
-      ]
-    depends_on:
-      - sql-server
+  #integration-tests:
+  #  container_name: integration-tests
+  #  image: mcr.microsoft.com/dotnet/sdk:${Dotnet_Version}
+  #  environment:
+  #    - Db_ConnectionString=Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true
+  #  volumes:
+  #    - .:/Src
+  #  working_dir: /Src
+  #  command:
+  #    #[
+  #    #  "dotnet",
+  #    #  "test",
+  #    #  "./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj",
+  #    #  "-c",
+  #    #  "release",
+  #    #  "-f",
+  #    #  "net${Dotnet_Version}"
+  #    #]
+  #  depends_on:
+  #    - sql-server
