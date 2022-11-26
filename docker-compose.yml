@@ -23,7 +23,7 @@ services:
         "--username",
         "dibiancoj@gmail.com",
         "--password",
-        "${{GH_TOKEN}}",
+        "${GH_TOKEN}",
         "--store-password-in-clear-text",
         "--name",
         "github",
