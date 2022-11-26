@@ -18,9 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Prep Auth For NuGet
-      run: dotnet nuget add source --username dibiancoj@gmail.com --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
-
     #- name: IntegrationTests_netcore6
     #  working-directory: ./IntegrationTests
     #  run: docker-compose up --exit-code-from integration-tests integration-tests
