@@ -1,6 +1,6 @@
-﻿using LibraryCore.Core.XmlSerialization;
+﻿using LibraryCore.XmlSerialization;
 
-namespace LibraryCore.Tests.Core.XmlSerialization;
+namespace LIbraryCore.Tests.XmlSerialization;
 
 public class XmlSerializerHelperTest
 {

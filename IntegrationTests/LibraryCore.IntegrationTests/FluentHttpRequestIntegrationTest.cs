@@ -1,4 +1,5 @@
 ﻿using LibraryCore.ApiClient;
+using LibraryCore.ApiClient.ExtensionMethods;
 using LibraryCore.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
 using static LibraryCore.ApiClient.ContentTypeLookup;

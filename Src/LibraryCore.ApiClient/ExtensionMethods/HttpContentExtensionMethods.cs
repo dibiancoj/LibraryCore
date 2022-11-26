@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace LibraryCore.ApiClient;
+namespace LibraryCore.ApiClient.ExtensionMethods;
 
 public static class HttpContentExtensionMethods
 {
