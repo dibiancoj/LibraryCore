@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="LibraryCore.Core" Version="5.0.0" />
+	  <PackageReference Include="LibraryCore.Core" Version="5.0.3" />
 	</ItemGroup>
 
 </Project>

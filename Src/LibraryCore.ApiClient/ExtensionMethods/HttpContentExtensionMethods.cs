@@ -1,4 +1,4 @@
-﻿using System.Xml.Serialization;
+﻿using LibraryCore.XmlSerialization;
 
 namespace LibraryCore.ApiClient.ExtensionMethods;
 
@@ -14,7 +14,7 @@ public static class HttpContentExtensionMethods
     {
         using var stream = await httpContent.ReadAsStreamAsync(cancellationToken);
 
-        return (T)(new XmlSerializer(typeof(T)).Deserialize(stream) ?? throw new Exception("Deserializing A Null Xml Document"));
+        return XMLSerializationHelper.DeserializeObject<T>(stream) ?? throw new Exception("Deserializing A Null Xml Document");
     }
 }
 
