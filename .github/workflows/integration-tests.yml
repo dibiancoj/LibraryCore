@@ -34,3 +34,4 @@ jobs:
       env: 
         DB_PW: ${{secrets.IntegrationTestSqlPw}}
         Dotnet_Version: "7.0"
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
