@@ -1,9 +1,8 @@
-﻿using LibraryCore.Core.Cache;
-using LibraryCore.Tests.Core.GlobalMocks;
+﻿using LibraryCore.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
-namespace LibraryCore.Tests.Core.Cache;
+namespace LibraryCore.Tests.Caching;
 
 public class DistributedCacheTest
 {

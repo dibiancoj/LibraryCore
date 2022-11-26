@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Primitives;
 using System.Collections.Concurrent;
 
-namespace LibraryCore.Core.Cache;
+namespace LibraryCore.Caching;
 
 public class InMemoryCacheService
 {

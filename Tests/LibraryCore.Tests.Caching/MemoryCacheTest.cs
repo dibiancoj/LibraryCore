@@ -1,8 +1,8 @@
-﻿using LibraryCore.Core.Cache;
+﻿using LibraryCore.Caching;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-namespace LibraryCore.Tests.Core.Cache;
+namespace LibraryCore.Tests.Caching;
 
 public class MemoryCacheTest
 {
