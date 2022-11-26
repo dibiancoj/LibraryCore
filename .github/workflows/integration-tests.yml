@@ -49,6 +49,8 @@ jobs:
     - name: IntegrationTests_netcore7
       working-directory: ./IntegrationTests
       run: docker-compose up -d
+      env:
+         Db_ConnectionString: "Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true"
 
     - name: Test
       run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj -f net7.0 -c Release
@@ -56,8 +58,7 @@ jobs:
     - name: IntegrationTests_netcore7
       working-directory: ./IntegrationTests
       run: docker-compose down
-      env:
-         Db_ConnectionString: "Data Source=sql-server;Initial Catalog=IntegrationTest;User Id=sa;Password=${DB_PW};trustServerCertificate=true"
+
 
     #- name: IntegrationTests_netcore7
     #  working-directory: ./IntegrationTests
