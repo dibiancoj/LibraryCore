@@ -48,7 +48,7 @@ jobs:
 
     - name: Docker Compose Up
       working-directory: ./IntegrationTests
-      run: docker-compose up -d
+      run: docker-compose up -d --remove-orphans
       env:
          DB_PW: ${{secrets.IntegrationTestSqlPw}}
 
