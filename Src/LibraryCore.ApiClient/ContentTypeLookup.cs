@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace LibraryCore.Core.ContentType;
+namespace LibraryCore.ApiClient;
 
 public static class ContentTypeLookup
 {

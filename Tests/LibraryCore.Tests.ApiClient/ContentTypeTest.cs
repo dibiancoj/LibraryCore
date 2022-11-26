@@ -1,6 +1,6 @@
-﻿using LibraryCore.Core.ContentType;
+﻿using LibraryCore.ApiClient;
 
-namespace LibraryCore.Tests.Core.ContentType;
+namespace LibraryCore.Tests.ApiClient;
 
 public class ContentTypeTest
 {

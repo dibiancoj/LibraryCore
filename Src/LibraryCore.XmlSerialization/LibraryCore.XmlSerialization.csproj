@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Jason DiBianco</Authors>
+		<Description>.NetCore Common Library For Xml Serialization</Description>
+		<Version>5.0.1</Version>
+		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+	
+</Project>

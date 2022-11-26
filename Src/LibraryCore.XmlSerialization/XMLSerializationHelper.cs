@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace LibraryCore.Core.XmlSerialization;
+namespace LibraryCore.XmlSerialization;
 
 public class XMLSerializationHelper
 {

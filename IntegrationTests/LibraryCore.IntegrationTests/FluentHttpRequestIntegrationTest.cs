@@ -1,8 +1,8 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Core.HttpRequestCore;
+﻿using LibraryCore.ApiClient;
+using LibraryCore.ApiClient.ExtensionMethods;
 using LibraryCore.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
-using static LibraryCore.Core.ContentType.ContentTypeLookup;
+using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.IntegrationTests;
 
