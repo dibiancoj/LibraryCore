@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace LibraryCore.Core.Cache;
+namespace LibraryCore.Caching;
 
 public class DistributedCacheService
 {

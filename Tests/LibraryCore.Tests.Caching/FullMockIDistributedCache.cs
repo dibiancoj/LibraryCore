@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Concurrent;
 
-namespace LibraryCore.Tests.Core.GlobalMocks;
+namespace LibraryCore.Tests.Caching;
 
 public class FullMockIDistributedCache : IDistributedCache
 {
