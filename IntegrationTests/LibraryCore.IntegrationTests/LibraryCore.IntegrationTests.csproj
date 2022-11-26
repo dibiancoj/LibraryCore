@@ -50,6 +50,7 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\Src\LibraryCore.ApiClient\LibraryCore.ApiClient.csproj" />
 		<ProjectReference Include="..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
 		<ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
 		<ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Api\LibraryCore.IntegrationTests.Framework.Api.csproj" />

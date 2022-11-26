@@ -1,8 +1,7 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using System.Globalization;
 using System.Net.Http.Json;
-using static LibraryCore.Core.ContentType.ContentTypeLookup;
+using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.ApiClient;
 
@@ -114,13 +113,20 @@ public class FluentRequest
     {
         var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
+        static string SurroundWithQuotes(string value)
+        {
+            const string stringLiteral = "\"";
+
+            return $"{stringLiteral}{value}{stringLiteral}";
+        }
+
         //portal svc has a few checks. we need file name to have quotes "jason.jpg" around it. .net default does not include quotes
         foreach (var fileStreamToAdd in filesToUpload)
         {
             //always reset / rewind the stream to the beginning incase there was some reads on it
             fileStreamToAdd.Value.Seek(0, SeekOrigin.Begin);
 
-            content.Add(new StreamContent(fileStreamToAdd.Value), parameterName.SurroundWithQuotes(), fileStreamToAdd.Key.SurroundWithQuotes());
+            content.Add(new StreamContent(fileStreamToAdd.Value), SurroundWithQuotes(parameterName), SurroundWithQuotes(fileStreamToAdd.Key));
         }
 
         //return it

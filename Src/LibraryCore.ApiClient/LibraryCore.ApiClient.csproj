@@ -15,7 +15,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LibraryCore.Core" Version="5.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
 	</ItemGroup>
 
