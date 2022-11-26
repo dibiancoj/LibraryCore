@@ -40,12 +40,6 @@ jobs:
     - name: Prep Auth For NuGet
       run: dotnet nuget add source --username dibiancoj@gmail.com --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
 
-    #- name: Restore dependencies
-    #  run: dotnet restore
-
-    #- name: Build
-    #  run: dotnet build --no-restore
-
     - name: Docker Compose Up
       working-directory: ./IntegrationTests
       run: docker-compose up -d --remove-orphans
@@ -60,7 +54,6 @@ jobs:
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
       run: docker-compose down
-
 
     #- name: IntegrationTests_netcore7
     #  working-directory: ./IntegrationTests
