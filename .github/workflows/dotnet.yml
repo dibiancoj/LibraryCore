@@ -45,16 +45,14 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v3.1.1
       with:
-        #files: "**/*.coverage.net7.0.opencover.xml"
-        #haven't been able to get the blob pattern working correctly
-        files: |
-            ./Tests/LibraryCore.Tests.JsonNet/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.Core/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.Caching/coverage.net7.0.opencover.xml
+        #files: |
+        #    ./Tests/LibraryCore.Tests.JsonNet/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.Core/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml,
+        #    ./Tests/LibraryCore.Tests.Caching/coverage.net7.0.opencover.xml
 
         fail_ci_if_error: true # optional (default = false)
 
