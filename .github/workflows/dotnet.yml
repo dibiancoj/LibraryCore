@@ -50,7 +50,8 @@ jobs:
             ./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,
             ./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,
             ./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,
-            ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml # optional
+            ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.Caching/coverage.net7.0.opencover.xml
 
         fail_ci_if_error: true # optional (default = false)
 
