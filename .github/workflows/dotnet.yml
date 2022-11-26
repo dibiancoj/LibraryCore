@@ -44,6 +44,13 @@ jobs:
       with:
         #files: "**/*.coverage.net7.0.opencover.xml"
         #haven't been able to get the blob pattern correct
-        files: ./Tests/LibraryCore.Tests.JsonNet/coverage.net7.0.opencover.xml,./Tests/LibraryCore.Tests.Core/coverage.net7.0.opencover.xml,./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml # optional
+        files: |
+            ./Tests/LibraryCore.Tests.JsonNet/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.Core/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,
+            ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml # optional
+
         fail_ci_if_error: true # optional (default = false)
 
