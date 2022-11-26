@@ -15,8 +15,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Src\LibraryCore.CommandLineParser\LibraryCore.CommandLineParser.csproj" />
-		<ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
-		<ProjectReference Include="..\..\Src\LibraryCore.Parsers\LibraryCore.Parsers.csproj" />
 		<ProjectReference Include="..\..\Tests\LibraryCore.Tests.Parsers\LibraryCore.Tests.Parsers.csproj" />
 	</ItemGroup>
 
