@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Core.HttpRequestCore;
 using LibraryCore.Tests.Core.GlobalMocks;
 using System.Net;
 using static LibraryCore.Core.ExtensionMethods.HttpClientExtensionMethods;

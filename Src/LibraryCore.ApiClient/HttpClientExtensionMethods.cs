@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
-namespace LibraryCore.Core.ExtensionMethods;
+namespace LibraryCore.ApiClient;
 
 public static class HttpClientExtensionMethods
 {

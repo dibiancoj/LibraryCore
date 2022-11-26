@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Net.Http.Json;
 using static LibraryCore.Core.ContentType.ContentTypeLookup;
 
-namespace LibraryCore.Core.HttpRequestCore;
+namespace LibraryCore.ApiClient;
 
 public class FluentRequest
 {
@@ -66,7 +66,7 @@ public class FluentRequest
 
     public FluentRequest AddUrlPaths(params string[] pathsToAdd)
     {
-        foreach(var pathToAdd in pathsToAdd)
+        foreach (var pathToAdd in pathsToAdd)
         {
             AddUrlPath(pathToAdd);
         }

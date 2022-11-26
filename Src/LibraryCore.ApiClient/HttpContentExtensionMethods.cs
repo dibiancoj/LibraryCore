@@ -1,4 +1,4 @@
-﻿namespace LibraryCore.Core.ExtensionMethods;
+﻿namespace LibraryCore.ApiClient;
 
 public static class HttpContentExtensionMethods
 {
