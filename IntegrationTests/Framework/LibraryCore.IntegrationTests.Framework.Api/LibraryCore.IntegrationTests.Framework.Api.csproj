@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Src\LibraryCore.AspNet.HtmlRendering\LibraryCore.AspNet.HtmlRendering.csproj" />
 	  <ProjectReference Include="..\..\..\Src\LibraryCore.AspNet\LibraryCore.AspNet.csproj" />
 	</ItemGroup>
 
