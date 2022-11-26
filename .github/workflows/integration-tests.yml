@@ -50,12 +50,12 @@ jobs:
       working-directory: ./IntegrationTests
       run: docker-compose up -d
       env:
-         Db_ConnectionString: "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=${secrets.IntegrationTestSqlPw};trustServerCertificate=true"
+         DB_PW: ${{secrets.IntegrationTestSqlPw}}
 
     - name: Test
       run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj -f net7.0 -c release
       env: 
-         DB_PW: ${{secrets.IntegrationTestSqlPw}}
+         Db_ConnectionString: "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=${secrets.IntegrationTestSqlPw};trustServerCertificate=true"
 
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
