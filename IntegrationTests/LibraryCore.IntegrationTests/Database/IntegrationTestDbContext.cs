@@ -25,7 +25,7 @@ namespace LibraryCore.IntegrationTests.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //Console.WriteLine(dbConnectionStringFromEnvVariable);
+                Console.WriteLine("ConnectionString: " + Environment.GetEnvironmentVariable("Db_ConnectionString"));
                 optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("Db_ConnectionString") ?? "No Connection String Found From Env Variable. Using Default Value For Integration Test");
             }
         }
