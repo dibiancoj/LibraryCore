@@ -16,8 +16,6 @@ services:
   #    - .:/Src
   #  working_dir: /Src
   #  command:
-  #    - echo "jason"
-  #    - echo "jason2"
   #    #[
   #    #  "dotnet",
   #    #  "test",
