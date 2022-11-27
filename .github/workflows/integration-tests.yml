@@ -46,10 +46,15 @@ jobs:
       env:
          DB_PW: ${{secrets.IntegrationTestSqlPw}}
 
-    - name: Test
+    - name: Core Integration Tests
       run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj -f net7.0 -c release
       env: 
          Db_ConnectionString: Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=${{secrets.IntegrationTestSqlPw}};trustServerCertificate=true
+
+    - name: Mongo Integration Tests
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests.Mongo/LibraryCore.IntegrationTests.Mongo.csproj -f net7.0 -c release
+      env: 
+         Db_ConnectionString: "mongodb://root:${{secrets.IntegrationTestSqlPw}}@localhost:27017"
 
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
