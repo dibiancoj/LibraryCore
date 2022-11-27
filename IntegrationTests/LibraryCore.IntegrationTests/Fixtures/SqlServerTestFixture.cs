@@ -31,7 +31,7 @@ public class SqlServerTestFixture : IAsyncLifetime
         if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Db_ConnectionString")))
         {
             Console.WriteLine("No DbConnection String Found In Env Variables. Setting Connection String In " + nameof(SqlServerTestFixture));
-            Environment.SetEnvironmentVariable("Db_ConnectionString", "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass@word;trustServerCertificate=true");
+            Environment.SetEnvironmentVariable("Db_ConnectionString", "Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=Pass!word;trustServerCertificate=true");
         }
 
         using var dbContext = new IntegrationTestDbContext();

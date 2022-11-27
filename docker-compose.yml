@@ -8,13 +8,13 @@ services:
       ports:
         - "1433:1433"
 
-  #mongodb:
-  #  image: mongo
-  #  environment:
-  #    MONGO_INITDB_ROOT_USERNAME: root
-  #    MONGO_INITDB_ROOT_PASSWORD: ${DB_PW}
-  #  ports:
-  #    - 27017:27017
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PW}
+    ports:
+      - 27017:27017
 
   #integration-tests:
   #  container_name: integration-tests

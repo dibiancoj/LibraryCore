@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.Mongo", "Src\Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.Tests.Mongo", "Tests\LibraryCore.Tests.Mongo\LibraryCore.Tests.Mongo.csproj", "{0D16AC12-9BB5-410A-A124-EBA827494496}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.IntegrationTests.Mongo", "IntegrationTests\LibraryCore.IntegrationTests.Mongo\LibraryCore.IntegrationTests.Mongo.csproj", "{4FE61B77-FF15-4F58-81B4-398AA839CFAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{0D16AC12-9BB5-410A-A124-EBA827494496}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D16AC12-9BB5-410A-A124-EBA827494496}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D16AC12-9BB5-410A-A124-EBA827494496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FE61B77-FF15-4F58-81B4-398AA839CFAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FE61B77-FF15-4F58-81B4-398AA839CFAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FE61B77-FF15-4F58-81B4-398AA839CFAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE61B77-FF15-4F58-81B4-398AA839CFAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -206,6 +212,7 @@ Global
 		{34B58ECE-FB4D-4C53-9C42-08DA20871C33} = {1D339B68-769A-4737-B446-6D02703CF8C4}
 		{18649A9F-3A58-4081-9737-EADF6FC281BD} = {056D9475-618C-453C-8BDF-F578E8F07945}
 		{0D16AC12-9BB5-410A-A124-EBA827494496} = {1D339B68-769A-4737-B446-6D02703CF8C4}
+		{4FE61B77-FF15-4F58-81B4-398AA839CFAA} = {647DDB3F-A7E7-4B85-93CD-61CFC477E0D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61C7767-7D12-4313-8DA2-56AE8FC5AAD5}
