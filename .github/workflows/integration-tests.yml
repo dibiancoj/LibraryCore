@@ -54,7 +54,7 @@ jobs:
     - name: Mongo Integration Tests
       run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests.Mongo/LibraryCore.IntegrationTests.Mongo.csproj -f net7.0 -c release
       env: 
-         Db_ConnectionString: "mongodb://root:${{secrets.IntegrationTestSqlPw}}@localhost:27017"
+         Db_ConnectionString: mongodb://root:${{secrets.IntegrationTestSqlPw}}@localhost:27017
 
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
