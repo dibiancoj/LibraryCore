@@ -38,7 +38,7 @@ public static class MongoCollectionExtensionMethods
     //    return new UpsertResponse(id, result.MatchedCount > 0 ? UpsertModelEnum.Updated : UpsertModelEnum.Inserted);
     //}
 
-    public record PagedData<T>(long TotalRecords, int TotalPages, int CurrentPage, IEnumerable<T> Data);
+    public record PagedData<T>(long TotalRecords, long TotalPages, int CurrentPage, IEnumerable<T> Data);
 
     public static async Task<PagedData<T>> FindAndPageItemsAsync<T>(this IMongoCollection<T> mongoCollection,
                                                                        int currentPage,
@@ -62,7 +62,7 @@ public static class MongoCollectionExtensionMethods
 
         var count = await countTask;
 
-        return new PagedData<T>(count, Pagination.CalculateTotalPages((int)count, pageSize), currentPage, await dataTask);
+        return new PagedData<T>(count, Pagination.CalculateTotalPages(count, pageSize), currentPage, await dataTask);
 
         //this method below is 1 call to mongo...but is slower in alot of scenarios. The one above is faster but results in the entire collection being scanned which results in slower performance for the more records you have.
 
