@@ -13,7 +13,7 @@ public static class Pagination
     /// <param name="howManyTotalRecordsInDataSet">Total Number Of Records (Not Just This Page But In The Entire RecordSet)</param>
     /// <param name="howManyRecordsPerPage">How Many Records Per Page</param>
     /// <returns>Number Of Pages</returns>
-    public static int CalculateTotalPages(int howManyTotalRecordsInDataSet, int howManyRecordsPerPage)
+    public static long CalculateTotalPages(long howManyTotalRecordsInDataSet, int howManyRecordsPerPage)
     {
         //calculate how many pages we have
         double conversion = (double)howManyTotalRecordsInDataSet / howManyRecordsPerPage;
@@ -22,10 +22,10 @@ public static class Pagination
         return ((conversion % 1) == 0) ?
 
           //we have an even amount
-          Convert.ToInt32(conversion) :
+          Convert.ToInt64(conversion) :
 
           //we have an uneven amount...so grab the floor then add 1
-          Convert.ToInt32(Math.Floor(conversion)) + 1;
+          Convert.ToInt64(Math.Floor(conversion)) + 1;
     }
 
 }
