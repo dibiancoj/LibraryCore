@@ -151,9 +151,9 @@ public static class StringExtensionMethods
             //zip code is null / blank...just return the string that was passed in
             return zipCode;
         }
-
+        
         //grab just the digits
-        var justDigitsInSpan = zipCode.PullDigitsFromString().AsSpan();
+        var justDigitsInSpan = new string(zipCode.PullDigitsFromString().ToArray()).AsSpan();
 
         //we check for 9 which is the 2 segment zip
         if (justDigitsInSpan.Length == 5 || justDigitsInSpan.Length != 9)
@@ -186,7 +186,7 @@ public static class StringExtensionMethods
         }
 
         //clense it and just grab all the digits
-        var phoneNumberJustDigits = phoneNumber.PullDigitsFromString().AsSpan();
+        var phoneNumberJustDigits = new string(phoneNumber.PullDigitsFromString().ToArray()).AsSpan();
 
         //is not 10 digits?
         if (phoneNumberJustDigits.Length != 10)
@@ -217,27 +217,13 @@ public static class StringExtensionMethods
 
     #region Digits
 
-    public static int NumberOfDigitsInTheString(this string stringToLookThrough)
-    {
-        return stringToLookThrough.Count(x => char.IsDigit(x));
-    }
+    public static int NumberOfDigitsInTheString(this string stringToLookThrough) => stringToLookThrough.Count(char.IsDigit);
 
     /// <summary>
     /// Grabs all the digits in the string and returns a span
     /// </summary>
     /// <returns>string with only the digits</returns>
-    public static string PullDigitsFromString(this string stringToLookThrough)
-    {
-        //this is here for performance reasons. Much faster and uses less memory then new string(phoneNumber.Where(char.IsDigit).ToArray()).AsSpan(); --> StringNumberToStringTest.cs in the perf project
-        var builder = new StringBuilder();
-
-        foreach (var characterToTest in stringToLookThrough.Where(x => char.IsDigit(x)))
-        {
-            builder.Append(characterToTest);
-        }
-
-        return builder.ToString();
-    }
+    public static IEnumerable<char> PullDigitsFromString(this string stringToLookThrough) => stringToLookThrough.Where(char.IsDigit);
 
     #endregion
 
