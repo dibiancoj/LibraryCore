@@ -129,9 +129,9 @@ public static class StringExtensionMethods
     /// <summary>
     /// Convert a base 64 encoded string back to a regular string value
     /// </summary>
-    /// <param name="stringToEncode">string to decode from base 64 encoded</param>
+    /// <param name="stringToDecode">string to decode from base 64 encoded</param>
     /// <returns>Encoded base 64 string</returns>
-    public static string ToBase64Decode(this string stringToEncode) => Encoding.UTF8.GetString(Convert.FromBase64String(stringToEncode));
+    public static string ToBase64Decode(this string stringToDecode) => Encoding.UTF8.GetString(Convert.FromBase64String(stringToDecode));
 
     #endregion
 
