@@ -1,35 +1,35 @@
-﻿using MongoDB.Bson;
+﻿using LibraryCore.Core.Paging;
 using MongoDB.Driver;
-using static LibraryCore.Mongo.UpsertResponse;
 
 namespace LibraryCore.Mongo;
 
 public static class MongoCollectionExtensionMethods
 {
-    public static async Task<UpsertResponse> MskUpsertOneAsync<TModel>(this IMongoCollection<TModel> mongoCollection,
-                                                                       ObjectId id,
-                                                                       FilterDefinition<TModel> filterExpression,
-                                                                       UpdateDefinition<TModel> updateExpression)
-    {
-        //id == null ? ObjectId.GenerateNewId() : new ObjectId(id);
+    //don't really find this abstracted enough to make it worth while to add.
+    //public static async Task<UpsertResponse> UpsertOneAsync<TModel>(this IMongoCollection<TModel> mongoCollection,
+    //                                                                ObjectId id,
+    //                                                                FilterDefinition<TModel> filterExpression,
+    //                                                                UpdateDefinition<TModel> updateExpression)
+    //{
+    //    //id == null ? ObjectId.GenerateNewId() : new ObjectId(id);
 
-        //Builders<SampleCollection>.Filter.Where(predicate => predicate.Id == objectId),
-        //                                                    Builders<SampleCollection>.Update
-        //                                                        .SetOnInsert(predicate => predicate.CreatedDate, now)
-        //                                                        .Set(predicate => predicate.LastUpdatedDate, now)
-        //                                                        .Set(predicate => predicate.FirstName, input.FirstName)
-        //                                                        .Set(predicate => predicate.LastName, input.LastName)
+    //    //Builders<SampleCollection>.Filter.Where(predicate => predicate.Id == objectId),
+    //    //                                                    Builders<SampleCollection>.Update
+    //    //                                                        .SetOnInsert(predicate => predicate.CreatedDate, now)
+    //    //                                                        .Set(predicate => predicate.LastUpdatedDate, now)
+    //    //                                                        .Set(predicate => predicate.FirstName, input.FirstName)
+    //    //                                                        .Set(predicate => predicate.LastName, input.LastName)
 
-        var result = await mongoCollection.UpdateOneAsync(filterExpression,
-                                                          updateExpression,
-                                                          new UpdateOptions { IsUpsert = true });
+    //    var result = await mongoCollection.UpdateOneAsync(filterExpression,
+    //                                                      updateExpression,
+    //                                                      new UpdateOptions { IsUpsert = true });
 
-        return new UpsertResponse(id, result.MatchedCount > 0 ? UpsertModelEnum.Updated : UpsertModelEnum.Inserted);
-    }
+    //    return new UpsertResponse(id, result.MatchedCount > 0 ? UpsertModelEnum.Updated : UpsertModelEnum.Inserted);
+    //}
 
     public record PagedData<T>(long TotalRecords, int TotalPages, int CurrentPage, IEnumerable<T> Data);
 
-    public static async Task<PagedData<T>> MskFindAndPageItemsAsync<T>(this IMongoCollection<T> mongoCollection,
+    public static async Task<PagedData<T>> FindAndPageItemsAsync<T>(this IMongoCollection<T> mongoCollection,
                                                                        int currentPage,
                                                                        int pageSize,
                                                                        FilterDefinition<T> filterExpression,
@@ -39,7 +39,6 @@ public static class MongoCollectionExtensionMethods
         //we would need to create a stateful api to deal with this which is not needed at this time.
         //ie: Find(x => x.FormType == 'MyForm' && x._id > someid).Sort
         //the db needs to skip over a ton of records which it needs to calculate and can't be index with this patter
-
 
         //with a larger dataset - the 2 query approach is much faster 130ms vs 50ms
         var countTask = mongoCollection.CountDocumentsAsync(filterExpression);
@@ -52,7 +51,7 @@ public static class MongoCollectionExtensionMethods
 
         var count = await countTask;
 
-        return new PagedData<T>(count, Pagination.CalculateTotalPages(count, pageSize), currentPage, await dataTask);
+        return new PagedData<T>(count, Pagination.CalculateTotalPages((int)count, pageSize), currentPage, await dataTask);
 
         //this method below is 1 call to mongo...but is slower in alot of scenarios. The one above is faster but results in the entire collection being scanned which results in slower performance for the more records you have.
 
@@ -86,4 +85,5 @@ public static class MongoCollectionExtensionMethods
 
         //return new PagedData<T>(count, MiscUtility.CalculateTotalPages(count, pageSize), currentPage,  data);
     }
+
 }
