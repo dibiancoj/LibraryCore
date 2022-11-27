@@ -3,6 +3,17 @@ using MongoDB.Driver;
 
 namespace LibraryCore.Mongo;
 
+//var dbClient = new MongoClient("mongodb://root:Pass!word@localhost:27017");
+//var database = dbClient.GetDatabase("JasonTest");
+//var collection = database.GetCollection<College>("College");
+//var upsertData = Enumerable.Range(0, 1000).Select(x => new College
+//{
+//    Id = ObjectId.GenerateNewId(),
+//    Name = "Boston University",
+//    State = "MA"
+//}).ToList();
+//var upsertResult = await collection.BulkWriteAsync(upsertData.Select(x => new InsertOneModel<College>(x)).ToList());
+
 public static class MongoCollectionExtensionMethods
 {
     //don't really find this abstracted enough to make it worth while to add.
