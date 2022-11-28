@@ -13,3 +13,24 @@ aspnet:
 
 commandline:
 - Src/LibraryCore.CommandLineParser/**/*
+
+xmlserializer:
+- Src/LibraryCore.XmlSerialization/**/*
+
+parsers:
+- Src/LibraryCore.Parsers/**/*
+
+mongo:
+- Src/LibraryCore.Mongo/**/*
+
+caching:
+- Src/LibraryCore.Caching/**/*
+
+htmlrendering:
+- Src/LibraryCore.AspNet.HtmlRendering/**/*
+
+sessionstate:
+- Src/LibraryCore.AspNet.DistributedSessionState/**/*
+
+apiclient:
+- Src/LibraryCore.ApiClient/**/*
