@@ -43,8 +43,8 @@ jobs:
       with:
         dotnet-version: '7.x'
       
-#    - name: Prep Auth For NuGet
-#      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
