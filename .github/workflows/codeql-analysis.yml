@@ -61,8 +61,8 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+#    - name: Autobuild
+#      uses: github/codeql-action/autobuild@v2
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -74,6 +74,15 @@ jobs:
     #- run: |
     #   make bootstrap
     #   make release
+    
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
