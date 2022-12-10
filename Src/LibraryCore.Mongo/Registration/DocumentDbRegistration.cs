@@ -7,12 +7,12 @@ namespace LibraryCore.Mongo.Registration;
 /// <summary>
 /// Helper methods to deal with document db and encrypted in transit and at reset databases
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class DocumentDbRegistration
 {
     /// <summary>
     /// For encrypted at rest databases in lambdas
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static IMongoClient RegisterInLambdaEnvironment(string mongoConnectionString)
     {
         var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
@@ -32,6 +32,7 @@ public static class DocumentDbRegistration
     /// <summary>
     /// For encrypted at rest databases in ec2, containers, or anything where you can install the certificate
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static IMongoClient RegisterInWritableEnvironment(string connectionString, StoreName storeToLoad = StoreName.Root, bool allowInsecureTlsForSshIntoAws = false)
     {
         using var localTrustStore = new X509Store(storeToLoad); //isLocalDev ? new X509Store(StoreName.My) : new X509Store(StoreName.Root);
@@ -49,6 +50,6 @@ public static class DocumentDbRegistration
     }
 
     public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary") =>
-        $"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=${readPreference}&retryWrites=false";
+        $"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}&retryWrites=false";
 
 }
