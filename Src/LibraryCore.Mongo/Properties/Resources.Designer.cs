@@ -63,9 +63,19 @@ namespace LibraryCore.Mongo.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] rds_combined_ca_bundle {
+        internal static byte[] rds_combined_ca_bundlep7b {
             get {
-                object obj = ResourceManager.GetObject("rds-combined-ca-bundle", resourceCulture);
+                object obj = ResourceManager.GetObject("rds-combined-ca-bundlep7b", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] rds_combined_ca_bundlepem {
+            get {
+                object obj = ResourceManager.GetObject("rds-combined-ca-bundlepem", resourceCulture);
                 return ((byte[])(obj));
             }
         }

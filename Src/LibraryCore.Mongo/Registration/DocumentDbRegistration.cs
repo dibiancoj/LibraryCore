@@ -1,25 +1,54 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using MongoDB.Driver;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 
 namespace LibraryCore.Mongo.Registration;
 
+/// <summary>
+/// Helper methods to deal with document db and encrypted in transit and at reset databases
+/// </summary>
 [ExcludeFromCodeCoverage]
 public static class DocumentDbRegistration
 {
-    public static void LoadAwsRdsCertForDocumentDb(StoreName storeToLoad = StoreName.Root)
+    /// <summary>
+    /// For encrypted at rest databases in lambdas
+    /// </summary>
+    public static IMongoClient RegisterInLambdaEnvironment(string mongoConnectionString)
     {
-        // string pathToCAFile = Path.Combine("AwsDbResources", "rds-combined-ca-bundle.p7b");
+        var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
 
-        //if (!File.Exists(pathToCAFile))
-        //{
-        //    Console.WriteLine("Can't find RDS Bundle. Linux is case sensitive! Path Searched = " + pathToCAFile);
-        //}
+        settings.SslSettings = new SslSettings
+        {
+            ClientCertificates = new X509Certificate[]
+            {
+                 //use the pem file here
+                 new X509Certificate(Properties.Resources.rds_combined_ca_bundlepem)
+            }
+        };
 
+        return new MongoClient(settings);
+    }
+
+    /// <summary>
+    /// For encrypted at rest databases in ec2, containers, or anything where you can install the certificate
+    /// </summary>
+    public static IMongoClient RegisterInWritableEnvironment(string connectionString, StoreName storeToLoad = StoreName.Root, bool allowInsecureTlsForSshIntoAws = false)
+    {
         using var localTrustStore = new X509Store(storeToLoad); //isLocalDev ? new X509Store(StoreName.My) : new X509Store(StoreName.Root);
         var certificateCollection = new X509Certificate2Collection();
-        certificateCollection.Import(Properties.Resources.rds_combined_ca_bundle);// pathToCAFile);
+        certificateCollection.Import(Properties.Resources.rds_combined_ca_bundlep7b);
 
         localTrustStore.Open(OpenFlags.ReadWrite);
         localTrustStore.AddRange(certificateCollection);
+
+        var settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
+
+        settings.AllowInsecureTls = allowInsecureTlsForSshIntoAws;
+
+        return new MongoClient(settings);
     }
+
+    public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary") =>
+        $"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=${readPreference}&retryWrites=false";
+
 }
