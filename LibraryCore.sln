@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Core", "Src\LibraryCore.Core\LibraryCore.Core.csproj", "{8323D1BC-B403-4056-98A3-37F901032EAC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1D339B68-769A-4737-B446-6D02703CF8C4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GeneralIntegrationTests", "GeneralIntegrationTests", "{1D339B68-769A-4737-B446-6D02703CF8C4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.Core", "Tests\LibraryCore.Tests.Core\LibraryCore.Tests.Core.csproj", "{73FA0040-3A90-4F58-AE5F-0D28ADEC7D80}"
 EndProject
