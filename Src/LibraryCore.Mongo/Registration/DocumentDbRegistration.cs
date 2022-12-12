@@ -57,11 +57,11 @@ public static class DocumentDbRegistration
 
     public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false)
     {
-        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem");
+        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true");
 
         if (!runningFromLocalHostWithSsh)
         {
-            builder.Append($"&replicaSet=rs0&readPreference={readPreference}&retryWrites=false");
+            builder.Append($"&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}&retryWrites=false");
         }
 
         return builder.ToString();
