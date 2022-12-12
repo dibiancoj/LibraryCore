@@ -10,6 +10,9 @@ namespace LibraryCore.Mongo.Registration;
 /// </summary>
 public static class DocumentDbRegistration
 {
+    //to ssh with port forwarding
+    //ssh -i "my-dev-ssh-key.pem" -L 27017:mycluster.us-east-1.docdb.amazonaws.com:27017 ec2-user@10.1.1.1 -N
+
     /// <summary>
     /// For encrypted at rest databases in lambdas
     /// </summary>
