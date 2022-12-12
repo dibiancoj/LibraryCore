@@ -16,13 +16,13 @@ public class IcsCalendarTest
     [Fact]
     public void InvalidEnumForTimeZone()
     {
-      Assert.Throws<NotImplementedException>(() => IcsCalendarCreator.CreateICSAppointment((IcsCalendarCreator.IcsTimeZoneEnum)999999,
-                                                                          new DateTime(2015, 3, 5, 3, 55, 0),
-                                                                          new DateTime(2015, 3, 10, 4, 58, 0),
-                                                                          "Test Summary 123",
-                                                                          "Location Text 123",
-                                                                          "BodyOfReminder 123",
-                                                                          false));
+        Assert.Throws<NotImplementedException>(() => IcsCalendarCreator.CreateICSAppointment((IcsCalendarCreator.IcsTimeZoneEnum)999999,
+                                                                            new DateTime(2015, 3, 5, 3, 55, 0),
+                                                                            new DateTime(2015, 3, 10, 4, 58, 0),
+                                                                            "Test Summary 123",
+                                                                            "Location Text 123",
+                                                                            "BodyOfReminder 123",
+                                                                            false));
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ END:VCALENDAR
                                                                              "BodyOfReminder 123",
                                                                              false);
 
-        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedResult, result, ignoreLineEndingDifferences: true);
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ END:VCALENDAR
                                                                              "BodyOfReminder 123",
                                                                              true);
 
-        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedResult, result, ignoreLineEndingDifferences: true);
     }
 
     #endregion
