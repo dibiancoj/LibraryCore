@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.ApiClient;
@@ -100,6 +102,19 @@ public class FluentRequest
     public FluentRequest AddFileStreamBody(string parameterName, params KeyValuePair<string, Stream>[] filesToUpload)
     {
         Message.Content = BuildMultipartForm(parameterName, filesToUpload);
+        return this;
+    }
+
+    public FluentRequest AddBasicAuthentication(string userName, string password)
+    {
+        Message.Headers.Authorization = new AuthenticationHeaderValue("Basic", BasicAuthenticationHeaderValue(userName, password));
+        return this;
+    }
+    public static string BasicAuthenticationHeaderValue(string userName, string password) => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
+
+    public FluentRequest AddBearerAuthentication(string token)
+    {
+        Message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         return this;
     }
 
