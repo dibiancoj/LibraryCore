@@ -317,6 +317,58 @@ public class FluentRequestTest
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
     }
 
+    [Fact]
+    public async Task BasicAuthentication()
+    {
+        HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/");
+
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        const string expectedAuthValue = "Basic cm9vdDpwYXNzQHdvcmQx";
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
+
+        var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
+                                         .AddBasicAuthentication("root", "pass@word1");
+
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+
+        var result = await response.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+     
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
+    }
+
+    [Fact]
+    public async Task BearerAuthentication()
+    {
+        HttpRequestMockSetup.HttpClientToUse.BaseAddress = new Uri("https://test.api/");
+
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new WeatherForecast(1, 10, "Weather 1")
+            });
+
+        const string expectedAuthValue = "Bearer abcdefg";
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
+
+        var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
+                                         .AddBearerAuthentication("abcdefg");
+
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+
+        var result = await response.EnsureSuccessStatusCode()
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+
+
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
+    }
+
     #endregion
 
 }
