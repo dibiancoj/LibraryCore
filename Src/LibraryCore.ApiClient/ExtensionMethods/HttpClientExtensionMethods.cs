@@ -25,7 +25,7 @@ public static class HttpClientExtensionMethods
         return httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
     }
 
-    public static async Task<Token?> TokenAsync(this HttpClient httpClient, Uri tokenUri, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
+    public static async Task<Token> TokenAsync(this HttpClient httpClient, Uri tokenUri, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
         var rawResponse = await httpClient.PostAsync(tokenUri.AbsoluteUri, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
         {
@@ -35,7 +35,7 @@ public static class HttpClientExtensionMethods
             new("scope", scope),
         }), cancellationToken).ConfigureAwait(false);
 
-        return await rawResponse.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<Token>(cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await rawResponse.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<Token>(cancellationToken: cancellationToken).ConfigureAwait(false) ?? throw new Exception("Can't Deserialize Token");
     }
 
     /// <summary>
