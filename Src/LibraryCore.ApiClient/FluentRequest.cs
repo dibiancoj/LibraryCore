@@ -110,6 +110,7 @@ public class FluentRequest
         Message.Headers.Authorization = new AuthenticationHeaderValue("Basic", BasicAuthenticationHeaderValue(userName, password));
         return this;
     }
+    
     public static string BasicAuthenticationHeaderValue(string userName, string password) => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
 
     public FluentRequest AddBearerAuthentication(string token)
