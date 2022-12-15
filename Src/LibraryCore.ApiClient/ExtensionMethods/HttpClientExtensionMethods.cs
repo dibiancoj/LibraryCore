@@ -27,7 +27,12 @@ public static class HttpClientExtensionMethods
 
     public static async Task<Token> TokenAsync(this HttpClient httpClient, Uri tokenUri, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
-        var rawResponse = await httpClient.PostAsync(tokenUri.AbsoluteUri, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+        return await httpClient.TokenAsync(tokenUri.AbsoluteUri, clientId, clientSecret, grantType, scope, cancellationToken);
+    }
+
+    public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
+    {
+        var rawResponse = await httpClient.PostAsync(url, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
         {
             new("client_id", clientId),
             new("client_secret", clientSecret),
