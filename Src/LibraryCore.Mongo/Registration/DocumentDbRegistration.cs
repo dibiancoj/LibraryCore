@@ -55,9 +55,9 @@ public static class DocumentDbRegistration
         return new MongoClient(settings);
     }
 
-    public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false)
+    public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false, int port = 27017)
     {
-        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:27017/?ssl=true");
+        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true");
 
         if (!runningFromLocalHostWithSsh)
         {
