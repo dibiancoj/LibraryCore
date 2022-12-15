@@ -112,4 +112,29 @@ public class HttpClientExtensionMethodTest
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Post &&
                                                                  req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
     }
+
+    [Fact]
+    public void TokenIsExpired_NotExpired()
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        var token = new Token("my_token_type", "Abcdef", "test_scope", 3600, now);
+
+        Assert.False(token.IsExpired());
+        Assert.False(token.IsExpired(new TimeSpan(0, 1, 0)));
+    }
+
+    [Fact]
+    public void TokenIsExpired_IsExpired()
+    {
+        var now = DateTimeOffset.Now.AddDays(-1).ToUnixTimeSeconds();
+
+        var token = new Token("my_token_type", "Abcdef", "test_scope", 3600, now);
+
+        Assert.True(token.IsExpired());
+        Assert.True(token.IsExpired(new TimeSpan(0, 1, 0)));
+
+        //throw a test in here to ensure if we buffer it more then it shouldn't be expired
+        Assert.False(token.IsExpired(new TimeSpan(5, 0, 0, 0)));
+    }
 }

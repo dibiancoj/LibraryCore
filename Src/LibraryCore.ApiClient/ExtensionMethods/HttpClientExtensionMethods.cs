@@ -50,5 +50,7 @@ public static class HttpClientExtensionMethods
                         [property: JsonPropertyName("consented_on")] long ConsentedOn)
     {
         public DateTimeOffset ExpiresLocalTime { get; } = DateTimeOffset.FromUnixTimeSeconds(ConsentedOn).ToLocalTime().AddSeconds(ExpiresIn);
+        public bool IsExpired(TimeSpan TimeBuffer) => DateTime.Now.Add(-TimeBuffer) >= ExpiresLocalTime;
+        public bool IsExpired() => DateTime.Now >= ExpiresLocalTime;
     }
 }
