@@ -13,7 +13,7 @@ public class MongoRegistrationTest
 
     [InlineData("sa", "password456", "mydocdbserver", false, 27017, "mongodb://sa:password456@mydocdbserver:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=primary&retryWrites=false")]
     [InlineData("root", "password123", "mydocdbserver", false, 27017, "mongodb://root:password123@mydocdbserver:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=primary&retryWrites=false")]
-    [InlineData("root", "password123", "mydocdbserver", false, 9999, "mongodb://root:password123@mydocdbserver:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=primary&retryWrites=false")]
+    [InlineData("root", "password123", "mydocdbserver", false, 9999, "mongodb://root:password123@mydocdbserver:9999/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=primary&retryWrites=false")]
     [InlineData("root", "password123", "mydocdbserver", true, 27017, "mongodb://root:password123@mydocdbserver:27017/?ssl=true")]
     [Theory]
     public void ConnectionStringWithDefaultValue(string userName, string password, string hostName, bool fromLocalHostWithSsh, int hostPort, string expectedConnectionString)
