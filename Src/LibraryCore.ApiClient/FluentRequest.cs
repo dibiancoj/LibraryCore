@@ -113,9 +113,14 @@ public class FluentRequest
     
     public static string BasicAuthenticationHeaderValue(string userName, string password) => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
 
-    public FluentRequest AddBearerAuthentication(string token)
+    /// <summary>
+    /// Add an authenticated token like "bearer" or "token"
+    /// </summary>
+    /// <param name="scheme">bearer or token or the scheme used in auth</param>
+    /// <param name="token">token value</param>
+    public FluentRequest AddAuthenticationHeader(string scheme, string token)
     {
-        Message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        Message.Headers.Authorization = new AuthenticationHeaderValue(scheme, token);
         return this;
     }
 
