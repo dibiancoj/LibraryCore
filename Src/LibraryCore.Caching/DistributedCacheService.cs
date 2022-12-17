@@ -51,7 +51,10 @@ public class DistributedCacheService
 
         try
         {
-            //grab the count in a variable. If = 1...then you are the thread that is causing the blocking
+            //grab the count in a variable. If = 1...then you are the thread that is causing the blocking.
+            //this value is the remaining threads that can enter the lock (we take the lock on the next row).
+            //1 = i'm about to take a lock.
+            //0 = Someone has a lock already
             int i = asyncLockToUse.CurrentCount;
 
             //take the lock and wait for it
@@ -59,9 +62,10 @@ public class DistributedCacheService
 
             //if we are the thread that is blocking then don't try to fetch it again. If we were waiting because of a another thread...
             //then the value should be in the cache and go fetch it (still verify its in the cache and don't assume because of contention)
+            //0 = Someone had a lock and we had to wait for them. So the item will be in the cache already
             if (i == 0)
             {
-                //since we took a lock the value might be there from another thread. so try to get 1 1 more time. 
+                //since we took a lock the value might be there from another thread. so try to get it 1 more time. 
                 var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache<TItem>(key);
 
                 //check if we have it

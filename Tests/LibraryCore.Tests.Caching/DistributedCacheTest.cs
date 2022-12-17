@@ -176,4 +176,31 @@ public class DistributedCacheTest
 
     #endregion
 
+    #region Concurrency Test
+
+    [Fact]
+    public async Task CurrencyTestThreadWaitingDoesntCallSourceAgain()
+    {
+        string key = Guid.NewGuid().ToString();
+        Guid valueToUse = Guid.NewGuid();
+
+        //don't await this...get the 2nd thread in there
+        var firstItemTakingAWhileAtDataSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => GoToDataSourceAsync(TimeSpan.FromSeconds(5), valueToUse));
+        var secondThreadNeedsToWaitButNotGoBackToSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => GoToDataSourceAsync(TimeSpan.FromSeconds(5), Guid.NewGuid()));
+
+        var finalResult = await Task.WhenAll(firstItemTakingAWhileAtDataSource, secondThreadNeedsToWaitButNotGoBackToSource);
+
+        Assert.Equal(valueToUse, finalResult[0]);
+        Assert.Equal(valueToUse, finalResult[1]);
+    }
+
+    private static async Task<Guid> GoToDataSourceAsync(TimeSpan delayToWait, Guid value)
+    {
+        await Task.Delay(Convert.ToInt32(delayToWait.TotalMilliseconds));
+
+        return value;
+    }
+
+    #endregion
+
 }
