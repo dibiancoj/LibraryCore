@@ -40,4 +40,19 @@ public class PrimitiveTypesTest
     [Theory]
     public void PrimitiveTypesTest2(Type TypeToTest) => Assert.False(PrimitiveTypes.PrimitiveTypesSelect().Contains(TypeToTest));
 
+    [Fact]
+    public void NumberTest()
+    {
+        var temp = PrimitiveTypes.NumberTypesSelect();
+
+        Assert.Equal(6, temp.Count);
+
+        Assert.Contains(typeof(short), temp);
+        Assert.Contains(typeof(int), temp);
+        Assert.Contains(typeof(long), temp);
+        Assert.Contains(typeof(double), temp);
+        Assert.Contains(typeof(float), temp);
+        Assert.Contains(typeof(decimal), temp);
+    }
+
 }
