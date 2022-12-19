@@ -154,4 +154,18 @@ public class ScoreParserTest : IClassFixture<RuleParserFixture>
 
         Assert.Equal(expectedScore, result);
     }
+
+    [Fact]
+    public void ThrowsForInvalidScoringType()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            _ = RuleParserFixture.ResolveRuleParserEngine()
+                                           .ParseScore<string>(
+                                                   new("a", "$User.Age$ == 18 && $Weight$ < 150"),
+                                                   new("b", "$User.Age$ == 18 && $Weight$ > 150"))
+                                           .BuildScoreExpression<ScoreParserModel, int>(ScoringMode.AccumulatedScore, "User", "Weight")
+                                           .Compile();
+        });
+    }
 }

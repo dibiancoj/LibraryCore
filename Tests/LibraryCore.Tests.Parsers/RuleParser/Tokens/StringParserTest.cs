@@ -51,6 +51,57 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
     }
 
     [Fact]
+    public void ParseTestWithInnerFormatterWithOneParameter()
+    {
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$}'");
+
+        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
+
+        var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
+
+        Assert.Equal("abc {0} | {1}", firstStringToken.Value);
+
+        //compile it
+        Assert.Equal("abc 24 | 25", result.BuildStringExpression<int>("param1").Compile().Invoke(25));
+    }
+
+    [Fact]
+    public void ParseTestWithInnerFormatterWithTwoParameter()
+    {
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$} | {$param2$}'");
+
+        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
+
+        var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
+
+        Assert.Equal("abc {0} | {1} | {2}", firstStringToken.Value);
+
+        //compile it
+        Assert.Equal("abc 24 | 25 | True", result.BuildStringExpression<int, bool>("param1", "param2").Compile().Invoke(25, true));
+    }
+
+    [Fact]
+    public void ParseTestWithInnerFormatterWithTwoParameterWithString()
+    {
+        var result = RuleParserFixture.ResolveRuleParserEngine()
+                                                .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$} | {$param200$}'");
+
+        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
+
+        var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
+
+        Assert.Equal("abc {0} | {1} | {2}", firstStringToken.Value);
+
+        //compile it
+        Assert.Equal("abc 24 | 25 | abcdefge", result.BuildStringExpression<int, string>("param1", "param200").Compile().Invoke(25, "abcdefge"));
+    }
+
+    [Fact]
     public void StringWithNoClosingBracket()
     {
         var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.Name$ == 'noclosingbracket"));
