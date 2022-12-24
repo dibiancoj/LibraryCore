@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Jason DiBianco</Authors>
+		<Company>Jason DiBianco</Company>
+		<Description>.NetCore Kafka Logic With Consumer Patterns</Description>
+		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Version>6.0.0</Version>
+		<Title>LibraryCore - Kafka</Title>
+	</PropertyGroup>
+	
+</Project>
