@@ -109,6 +109,22 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
         Assert.Equal("Missing closing quote on String Value. Current Value = noclosingbracket", result.Message);
     }
 
+    [Fact]
+    public void StringWithNoValueInsideInterpolation()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.Name$ == 'Test{}'"));
+
+        Assert.Equal("String Interpolation - No value found inside interpolation - {}", result.Message);
+    }
+
+    [Fact]
+    public void EofAfterStartingBracketForInterpolation()
+    {
+        var result = Assert.Throws<Exception>(() => RuleParserFixture.ResolveRuleParserEngine().ParseString("$Survey.Name$ == 'Test{"));
+
+        Assert.Equal("String Interpolation - No more characters to read after starting {", result.Message);
+    }
+
     [InlineData("$Survey.Name$ == 'John Portal'", false)]
     [InlineData("$Survey.Name$ == 'Jacob DeGrom'", true)]
     [Theory]
