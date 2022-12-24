@@ -72,7 +72,11 @@ public class StringFactory : ITokenFactory
             return token;
         }
 
-        throw new Exception("String Inner Token Not Parsed");
+        string errorMessage = !stringReader.HasMoreCharacters() ?
+                            "String Interpolation - No more characters to read after starting {" :
+                            "String Interpolation - No value found inside interpolation - {}";
+
+        throw new Exception(errorMessage);
     }
 
 }

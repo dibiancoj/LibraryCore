@@ -1,9 +1,8 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Parsers.RuleParser;
-using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -52,6 +51,7 @@ public record ParameterPropertyToken(IList<string> PropertyPath) : IToken
         return workingExpression;
     }
 
+    [ExcludeFromCodeCoverage]
     private string DebuggerDisplay() => string.Join('.', PropertyPath);
 
 }
