@@ -64,7 +64,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
                 }
 
                 //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
-                await Task.Delay(5, stoppingToken);
+                await Task.Delay(5, stoppingToken).ConfigureAwait(false);
             }
         }
         catch (Exception ex)
@@ -80,7 +80,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
         Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Node={nodeIndex}:Started");
 
         //let the other part of the hosted service bootup
-        await Task.Delay(100, stoppingToken);
+        await Task.Delay(100, stoppingToken).ConfigureAwait(false);
 
         try
         {
@@ -90,7 +90,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
                 {
                     Logger.LogInformation($"Kafka Messages Received At Node = {nodeIndex} On {DateTime.Now}");
 
-                    await ProcessMessageAsync(kafkaMessageResult, nodeIndex, stoppingToken);
+                    await ProcessMessageAsync(kafkaMessageResult, nodeIndex, stoppingToken).ConfigureAwait(false);
 
                     Consumer.StoreOffset(kafkaMessageResult);
                 }
