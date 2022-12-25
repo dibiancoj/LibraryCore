@@ -45,7 +45,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
         Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', TopicsToRead)}");
 
         //let the other part of the hosted service bootup
-        await Task.Delay(500, stoppingToken);
+        await Task.Delay(100, stoppingToken);
 
         try
         {
@@ -58,13 +58,13 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
+                    //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
+
                 }
-                else
-                {
-                    //if we have a timeout...wait a bit to let the other tasks carry on
-                    await Task.Delay(50, stoppingToken);
-                }
+
+                //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
+                await Task.Delay(5, stoppingToken);
             }
         }
         catch (Exception ex)
@@ -80,7 +80,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
         Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Node={nodeIndex}:Started");
 
         //let the other part of the hosted service bootup
-        await Task.Delay(500, stoppingToken);
+        await Task.Delay(100, stoppingToken);
 
         try
         {
