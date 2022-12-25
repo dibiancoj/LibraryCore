@@ -19,6 +19,8 @@ public class MyUnitTestHostedAgent : KafkaConsumerService<string, string>
 
     protected override int NumberOfReaders => 2;
 
+    protected override TimeSpan KafkaConsumeTimeOut => TimeSpan.FromSeconds(3);
+
     protected override async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, int nodeIndex, CancellationToken stoppingToken)
     {
         MessagesProcessed.Add(messageResult.Message.Key, (nodeIndex, messageResult.Message.Value));

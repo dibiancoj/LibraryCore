@@ -21,6 +21,7 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
 
     protected abstract IEnumerable<string> TopicsToRead { get; }
     protected abstract int NumberOfReaders { get; }
+    protected virtual TimeSpan KafkaConsumeTimeOut { get; } = new TimeSpan(0, 0, 15);
     protected abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaMessageBody> messageResult, int NodeIndex, CancellationToken stoppingToken);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,12 +53,17 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var consumeResult = Consumer.Consume(new TimeSpan(0, 0, 15));
+                var consumeResult = Consumer.Consume(KafkaConsumeTimeOut);
 
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    //if we have a timeout...wait a bit to let the other tasks carry on
+                    await Task.Delay(50, stoppingToken);
                 }
             }
         }
