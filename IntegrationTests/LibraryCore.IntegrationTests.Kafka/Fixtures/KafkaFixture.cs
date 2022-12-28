@@ -1,10 +1,5 @@
-﻿
-using Castle.Core.Logging;
-using Confluent.Kafka;
-using LibraryCore.Kafka;
-using Microsoft.AspNetCore.Builder.Extensions;
+﻿using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace LibraryCore.IntegrationTests.Kafka.Fixtures;
 
@@ -12,7 +7,7 @@ public class KafkaFixture
 {
 
 #if DEBUG
-    public const string SkipReason = "";// Don't want to run kafka integration test locally for now.";
+    public const string SkipReason = "Don't want to run kafka integration test locally for now.";
 #else
     public const string SkipReason = "";
 #endif
