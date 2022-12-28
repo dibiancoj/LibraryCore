@@ -5,6 +5,10 @@ using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
 
+//if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
+//builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
+//builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
+
 public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
     public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IConsumer<TKafkaKey, TKafkaMessageBody> consumer)
