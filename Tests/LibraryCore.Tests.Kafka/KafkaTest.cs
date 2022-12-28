@@ -1,9 +1,11 @@
 ﻿using Confluent.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.Tests.Kafka;
 
+[ExcludeFromCodeCoverage(Justification = "Coming up in code coverage report as actual code.")]
 public class KafkaTest
 {
     public KafkaTest()
