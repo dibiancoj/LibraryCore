@@ -2,9 +2,11 @@
 using LibraryCore.Kafka;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.Tests.Kafka.Framework;
 
+[ExcludeFromCodeCoverage(Justification = "Coming up in code coverage report as actual code.")]
 public class MyUnitTestHostedAgent : KafkaConsumerService<string, string>
 {
     public MyUnitTestHostedAgent(ILogger<KafkaConsumerService<string, string>> logger, IConsumer<string, string> consumer)
@@ -29,4 +31,3 @@ public class MyUnitTestHostedAgent : KafkaConsumerService<string, string>
 
     public record ProcessedItem(string Topic, Message<string, string> Message);
 }
-
