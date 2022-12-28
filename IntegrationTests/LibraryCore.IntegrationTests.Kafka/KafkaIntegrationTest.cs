@@ -1,41 +1,64 @@
 ﻿using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryCore.IntegrationTests.Kafka;
 
-public class KafkaIntegrationTest
+public class KafkaIntegrationTest : IClassFixture<KafkaFixture>
 {
+    public KafkaIntegrationTest(KafkaFixture kafkaFixture)
+    {
+        KafkaFixture = kafkaFixture;
+    }
+
+    private KafkaFixture KafkaFixture { get; }
+
     [Fact(Skip = KafkaFixture.SkipReason)]
     public async Task FullIntegrationTest()
     {
-        ////TODO:
-        ////1. need to replace with a real consumer
-        ////2. Put this in the web api project as a real hosted service
+        var producer = KafkaFixture.Provider.GetRequiredService<IProducer<string, string>>();
+        var adminClient = KafkaFixture.Provider.GetRequiredService<IAdminClient>();
+        var hostedAgentToTest = KafkaFixture.Provider.GetRequiredService<MyIntegrationHostedAgent>();
 
-        //var mockedKafkaConsumer = new Mock<IConsumer<string, string>>();
+        const string topicNameToUse = KafkaFixture.TopicToTestWith;
 
-        //mockedKafkaConsumer.Setup(x => x.Consume(It.IsAny<TimeSpan>()))
-        //    .Returns(new ConsumeResult<string, string> { Message = new Message<string, string> { Key = "key1", Value = "value1" } });
+        var metaInfo = adminClient.GetMetadata(topicNameToUse, TimeSpan.FromSeconds(10));
 
-        //var serviceProvider = new ServiceCollection()
-        //    .AddLogging()
-        //    .AddSingleton(mockedKafkaConsumer.Object)
-        //    .AddSingleton<MyIntegrationHostedAgent>()
-        //    .BuildServiceProvider();
+        if (!metaInfo.Topics.Any())
+        {
+            await adminClient.CreateTopicsAsync(new List<TopicSpecification> { new() { Name = topicNameToUse } });
+        }
 
-        //var hostedAgentToTest = serviceProvider.GetRequiredService<MyIntegrationHostedAgent>();
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(60));
 
-        //var cancellationToken = new CancellationTokenSource();
+        await hostedAgentToTest.StartAsync(cancellationToken.Token);
 
-        //await hostedAgentToTest.StartAsync(cancellationToken.Token);
+        for (int i = 0; i < 4; i++)
+        {
+            await producer.ProduceAsync(topicNameToUse, new Message<string, string> { Key = $"key{i}", Value = $"value{i}" });
+        }
 
-        //await Task.Delay(5000);
+        producer.Flush();
 
-        //await hostedAgentToTest.StopAsync(cancellationToken.Token);
+        //try to wait until the test passes...Or kill it after 5 seconds
+        var spinWaitResult = SpinWait.SpinUntil(() =>
+        {
+            return hostedAgentToTest.MessagesProcessed.Count == 4;
 
-        //var result = hostedAgentToTest.MessagesProcessed;
+        }, TimeSpan.FromSeconds(30));
 
-        //Assert.Equal(2, result.Count);
+        await hostedAgentToTest.StopAsync(cancellationToken.Token);
+
+        //make sure we spun until we found the right amount of records
+        Assert.True(spinWaitResult);
+
+        var result = hostedAgentToTest.MessagesProcessed;
+
+        Assert.Equal(4, result.Count);
+        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key0" && x.Message.Value == "value0");
+        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key1" && x.Message.Value == "value1");
+        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key2" && x.Message.Value == "value2");
+        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key3" && x.Message.Value == "value3");
     }
 }

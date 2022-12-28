@@ -8,6 +8,10 @@ namespace LibraryCore.Kafka;
 //TODO: 
 //deal with multiple consumers of the same type. Inject IConsumerProvider? Or do it in a fluent way where you specify the configuration with the topics to listen to w/ timeout options, etc.?
 
+//NOTE: If you want multiple readers or you have too much back pressure - use multiple hosted agents which will creat multiple consumer groups. 
+
+//Abstract the kafka consumer into a class. Then inject it here. This way we can run it from whever???
+
 public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
     public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IConsumer<TKafkaKey, TKafkaMessageBody> consumer)
@@ -20,24 +24,18 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
     private IConsumer<TKafkaKey, TKafkaMessageBody> Consumer { get; }
 
     protected abstract IEnumerable<string> TopicsToRead { get; }
-    protected abstract int NumberOfReaders { get; }
     protected virtual TimeSpan KafkaConsumeTimeOut { get; } = new TimeSpan(0, 0, 15);
-    protected abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaMessageBody> messageResult, int NodeIndex, CancellationToken stoppingToken);
+    protected abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaMessageBody> messageResult, CancellationToken stoppingToken);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        //background services doesn't raise exceptions based on the github issues. It uses a fire and forget. Don't have a solution other then to log it
         var channel = Channel.CreateUnbounded<ConsumeResult<TKafkaKey, TKafkaMessageBody>?>();
 
-        var readers = new List<Task>();
-
-        for (int i = 0; i < NumberOfReaders; i++)
-        {
-            readers.Add(ReadAndProcessMessageAsync(channel.Reader, i, stoppingToken));
-        }
-
+        var reader = ReadAndProcessMessageAsync(channel.Reader, stoppingToken);
         var consumeAndPublishChannel = PublishIncomingMessageAsync(channel.Writer, stoppingToken);
 
-        await Task.WhenAll(readers.Append(consumeAndPublishChannel));
+        await Task.WhenAll(consumeAndPublishChannel, reader);
     }
 
     private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
@@ -60,7 +58,6 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
                 {
                     //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
-
                 }
 
                 //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
@@ -75,9 +72,9 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
         }
     }
 
-    private async Task ReadAndProcessMessageAsync(ChannelReader<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelReader, int nodeIndex, CancellationToken stoppingToken)
+    private async Task ReadAndProcessMessageAsync(ChannelReader<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelReader, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Node={nodeIndex}:Started");
+        Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started");
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken).ConfigureAwait(false);
@@ -88,9 +85,9 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
             {
                 while (channelReader.TryRead(out var kafkaMessageResult) && kafkaMessageResult != null)
                 {
-                    Logger.LogInformation($"Kafka Messages Received At Node = {nodeIndex} On {DateTime.Now}");
+                    Logger.LogInformation($"Kafka Messages Received On {DateTime.Now}");
 
-                    await ProcessMessageAsync(kafkaMessageResult, nodeIndex, stoppingToken).ConfigureAwait(false);
+                    await ProcessMessageAsync(kafkaMessageResult, stoppingToken).ConfigureAwait(false);
 
                     Consumer.StoreOffset(kafkaMessageResult);
                 }
