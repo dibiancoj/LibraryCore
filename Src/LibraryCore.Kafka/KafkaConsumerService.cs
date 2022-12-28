@@ -5,13 +5,6 @@ using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
 
-//TODO: 
-//deal with multiple consumers of the same type. Inject IConsumerProvider? Or do it in a fluent way where you specify the configuration with the topics to listen to w/ timeout options, etc.?
-
-//NOTE: If you want multiple readers or you have too much back pressure - use multiple hosted agents which will creat multiple consumer groups. 
-
-//Abstract the kafka consumer into a class. Then inject it here. This way we can run it from whever???
-
 public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
     public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IConsumer<TKafkaKey, TKafkaMessageBody> consumer)
