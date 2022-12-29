@@ -42,7 +42,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
 
     private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
     {
-        Logger.LogInformation(LogMessage("Started", new KeyValuePair<string, string>("Topics", string.Join(',', KafkaProcessor.TopicsToRead))));
+        Logger.LogInformation(LogMessage("Started", string.Join(',', KafkaProcessor.TopicsToRead)));
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken);
@@ -107,13 +107,13 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
         }
     }
 
-    private string LogMessage(string command, KeyValuePair<string, string>? additionalInfo = null, [CallerMemberName] string methodName = "")
+    private string LogMessage(string command, string? additionalInfo = null, [CallerMemberName] string methodName = "")
     {
         string? additionalInfoOutput = additionalInfo == null ?
                                         null :
-                                        $"{additionalInfo.Value.Key}:{additionalInfo.Value.Value}";
+                                        $"({additionalInfo})";
 
-        return $"Command = {command} : Node = {NodeId} : Method = {methodName}({additionalInfoOutput}) : {DateTime.Now}";
+        return $"{command} : Node = {NodeId} : Method = {methodName}({additionalInfoOutput}) : {DateTime.Now}";
     }
 
     private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
