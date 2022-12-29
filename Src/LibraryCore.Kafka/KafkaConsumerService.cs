@@ -12,7 +12,7 @@ namespace LibraryCore.Kafka;
 
 public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
-    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor, int nodeId)
+    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor, int nodeId = 1)
     {
         Logger = logger;
         KafkaProcessor = kafkaProcessor;

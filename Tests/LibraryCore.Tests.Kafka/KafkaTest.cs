@@ -1,4 +1,5 @@
-﻿using Confluent.Kafka;
+﻿using Castle.Core.Logging;
+using Confluent.Kafka;
 using LibraryCore.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
