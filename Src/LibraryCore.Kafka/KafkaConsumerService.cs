@@ -1,7 +1,6 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
@@ -28,7 +27,11 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         //background services doesn't raise exceptions based on the github issues. It uses a fire and forget. Don't have a solution other then to log it
-        var channel = Channel.CreateUnbounded<ConsumeResult<TKafkaKey, TKafkaMessageBody>?>();
+        var channel = Channel.CreateUnbounded<ConsumeResult<TKafkaKey, TKafkaMessageBody>?>(new UnboundedChannelOptions
+        {
+            SingleReader = true,
+            SingleWriter = true
+        });
 
         var reader = ReadAndProcessMessageAsync(channel.Reader, stoppingToken);
         var consumeAndPublishChannel = PublishIncomingMessageAsync(channel.Writer, stoppingToken);

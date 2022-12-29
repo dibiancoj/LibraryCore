@@ -62,12 +62,11 @@ public static class KafkaRegistration
         .Build();
     }
 
-
     public class KafkaMessagePayloadSerializer : IDeserializer<PublishModel>, ISerializer<PublishModel>
     {
         public PublishModel Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
         {
-            return JsonSerializer.Deserialize<PublishModel>(data)!;
+            return JsonSerializer.Deserialize<PublishModel>(data) ?? throw new Exception("Can't Deserialize The Kafka Message To PublishModel");
         }
 
         public byte[] Serialize(PublishModel data, SerializationContext context)
