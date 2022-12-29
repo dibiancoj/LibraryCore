@@ -111,7 +111,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
     {
         string? additionalInfoOutput = additionalInfo == null ?
                                         null :
-                                        $":{additionalInfo.Value}:{additionalInfo.Value}";
+                                        $":{additionalInfo.Value.Key}:{additionalInfo.Value.Value}";
 
         return $"KafkaConsumerService:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:NodeId={NodeId}:Method={methodName}:Command={command}{additionalInfoOutput}";
     }
