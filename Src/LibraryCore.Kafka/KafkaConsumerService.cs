@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
@@ -41,7 +42,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
 
     private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', KafkaProcessor.TopicsToRead)}:NodeId={NodeId}");
+        Logger.LogInformation(LogMessage("Started", new KeyValuePair<string, string>("Topics", string.Join(',', KafkaProcessor.TopicsToRead))));
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken);
@@ -57,7 +58,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
-                    Logger.LogInformation($"Kafka Messages Received ({NodeId}) Received On {DateTime.Now}");
+                    Logger.LogInformation(LogMessage("KafkaMessagedReceived", new KeyValuePair<string, string>("ReceivedOn", DateTime.Now.ToString())));
 
                     //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
@@ -69,15 +70,16 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
         }
         catch (Exception ex)
         {
-            //log any critical errors. Hosted services don't bubble up well with threading like this.
-            Logger.LogCritical(ex, $"Error In Kafka Hosted Service. Service is not unstable. Method = {nameof(PublishIncomingMessageAsync)}");
-            throw;
+            if (LogExceptionAndThrow(ex, stoppingToken))
+            {
+                throw;
+            }
         }
     }
 
     private async Task ReadAndProcessMessageAsync(ChannelReader<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelReader, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:NodeId={NodeId}:Started");
+        Logger.LogInformation(LogMessage("Started"));
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken).ConfigureAwait(false);
@@ -98,10 +100,34 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
         }
         catch (Exception ex)
         {
-            //log any critical errors. Hosted services don't bubble up well with threading like this.
-            Logger.LogCritical(ex, $"Error In Kafka Hosted Service. Service is not unstable. Method = {nameof(ReadAndProcessMessageAsync)}");
-            throw;
+            if (LogExceptionAndThrow(ex, stoppingToken))
+            {
+                throw;
+            }
         }
+    }
+
+    private string LogMessage(string command, KeyValuePair<string, string>? additionalInfo = null, [CallerMemberName] string methodName = "")
+    {
+        string? additionalInfoOutput = additionalInfo == null ?
+                                        null :
+                                        $":{additionalInfo.Value}:{additionalInfo.Value}";
+
+        return $"KafkaConsumerService:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:NodeId={NodeId}:Method={methodName}:Command={command}{additionalInfoOutput}";
+    }
+
+    private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
+    {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            Logger.LogWarning(LogMessage("Cancellation Token Is Stopping", methodName: methodName));
+            return false;
+        }
+
+        //log any critical errors. Hosted services don't bubble up well with threading like this.
+        Logger.LogCritical(ex, LogMessage("Error In Kafka Hosted Service. Service is not unstable", methodName: methodName));
+
+        return true;
     }
 
 }
