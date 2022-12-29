@@ -27,8 +27,7 @@ public class MyIntegrationHostedAgent : IKafkaProcessor<string, PublishModel>
     {
         MyIntegrationHostedAgentMockDatabase.MessagesProcessed.Add(new ProcessedItem(messageResult.Topic, nodeId, messageResult.Message.Key, messageResult.Message.Value));
 
-        //throw in a wait for simulation
-        await Task.Delay(250, stoppingToken);
+        await Task.CompletedTask;
     }
 }
 
