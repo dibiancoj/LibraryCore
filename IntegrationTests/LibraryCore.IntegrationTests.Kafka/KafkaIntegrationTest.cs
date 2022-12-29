@@ -45,7 +45,7 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(60));
 
         //did it find all the records
-        Assert.True(spinWaitResult);
+        Assert.True(spinWaitResult, "Spin Until Messages Were Received Failed");
 
         var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ProcessedItem>>($"kafka?TestId={testId}") ?? throw new Exception("Value Can't Be Deserialized");
 
