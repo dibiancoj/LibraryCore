@@ -90,7 +90,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
             {
                 while (channelReader.TryRead(out var kafkaMessageResult) && kafkaMessageResult != null)
                 {
-                    Logger.LogInformation(LogMessage("Channel Message Received"));
+                    Logger.LogInformation(LogMessage("Channel Message Received", $"Key={kafkaMessageResult.Message.Key ?? default}"));
 
                     await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, NodeId, stoppingToken).ConfigureAwait(false);
 
