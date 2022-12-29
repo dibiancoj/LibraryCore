@@ -58,7 +58,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
-                    Logger.LogInformation(LogMessage("Kafka Messaged Received"));
+                    Logger.LogInformation(LogMessage("Kafka Messaged Received", $"Key={consumeResult.Message.Key ?? default}"));
 
                     //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
