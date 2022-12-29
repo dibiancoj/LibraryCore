@@ -113,7 +113,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                                         null :
                                         $"({additionalInfo})";
 
-        return $"{command} : Node = {NodeId} : Method = {methodName}({additionalInfoOutput}) : {DateTime.Now}";
+        return $"{command} : Node = {NodeId} : Method = {methodName}{additionalInfoOutput} : {DateTime.Now}";
     }
 
     private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
