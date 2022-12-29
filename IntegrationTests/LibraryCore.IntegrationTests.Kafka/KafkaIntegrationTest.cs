@@ -1,66 +1,62 @@
 ﻿using Confluent.Kafka;
-using Confluent.Kafka.Admin;
+using LibraryCore.Core.DiagnosticUtilities;
+using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
-using LibraryCore.Kafka;
-using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
+using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests.Kafka;
 
-public class KafkaIntegrationTest : IClassFixture<KafkaFixture>
+public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 {
-    public KafkaIntegrationTest(KafkaFixture kafkaFixture)
+    public KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
     {
-        KafkaFixture = kafkaFixture;
+        WebApplicationFactoryFixture = webApplicationFactoryFixture;
     }
 
-    private KafkaFixture KafkaFixture { get; }
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
-    [Fact(Skip = KafkaFixture.SkipReason)]
+    public record ProcessedItem(string Topic, int NodeId, string Key, PublishModel Value);
+    public record PublishModel(string Topic, Guid TestId, string KeyId, string Message);
+
+    [Fact(Skip = WebApplicationFactoryFixture.SkipReason)]
     public async Task FullIntegrationTest()
     {
-        var producer = KafkaFixture.Provider.GetRequiredService<IProducer<string, string>>();
-        var adminClient = KafkaFixture.Provider.GetRequiredService<IAdminClient>();
-        var hostedAgentToTest = KafkaFixture.Provider.GetRequiredService<KafkaConsumerService<string, string>>();
-        var processorToTest = (MyIntegrationHostedAgent)KafkaFixture.Provider.GetRequiredService<IKafkaProcessor<string, string>>();
+        var testId = Guid.NewGuid();
+        const int howManyRecordsToInsert = 10;
+        var topicsToTestWith = KafkaRegistration.TopicsToUse.Single();
 
-        const string topicNameToUse = KafkaFixture.TopicToTestWith;
+        var messagesToPublish = new List<PublishModel>();
 
-        var metaInfo = adminClient.GetMetadata(topicNameToUse, TimeSpan.FromSeconds(10));
-
-        if (!metaInfo.Topics.Any())
+        for (int i = 0; i < howManyRecordsToInsert; i++)
         {
-            await adminClient.CreateTopicsAsync(new List<TopicSpecification> { new() { Name = topicNameToUse } });
+            messagesToPublish.Add(new PublishModel(topicsToTestWith, testId, i.ToString(), $"message{i}"));
         }
 
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+        _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish)).EnsureSuccessStatusCode();
 
-        await hostedAgentToTest.StartAsync(cancellationToken.Token);
-
-        for (int i = 0; i < 4; i++)
-        {
-            await producer.ProduceAsync(topicNameToUse, new Message<string, string> { Key = $"key{i}", Value = $"value{i}" });
-        }
-
-        producer.Flush();
+        await Task.Delay(2000);
 
         //try to wait until the test passes...Or kill it after 5 seconds
-        var spinWaitResult = SpinWait.SpinUntil(() =>
+        var spinWaitResult = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
-            return processorToTest.MessagesProcessed.Count == 4;
+            return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}");
 
-        }, TimeSpan.FromSeconds(30));
+        }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(30));
 
-        await hostedAgentToTest.StopAsync(cancellationToken.Token);
-
-        //make sure we spun until we found the right amount of records
+        //did it find all the records
         Assert.True(spinWaitResult);
 
-        var result = processorToTest.MessagesProcessed;
+        var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ProcessedItem>>($"kafka?TestId={testId}") ?? throw new Exception("Value Can't Be Deserialized");
 
-        Assert.Equal(4, result.Count);
-        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key0" && x.Message.Value == "value0");
-        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key1" && x.Message.Value == "value1");
-        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key2" && x.Message.Value == "value2");
-        Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key3" && x.Message.Value == "value3");
+        Assert.Equal(howManyRecordsToInsert, recordsFound.Count());
+
+        //this should be spread out round robin. If this fails its not an "error"...but should be looked into why its not spreading the messages out
+        Assert.Equal(2, recordsFound.GroupBy(x => x.NodeId).Count());
+
+        foreach (var toPublish in messagesToPublish)
+        {
+             Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.Key == toPublish.KeyId && x.Value.Message == toPublish.Message);
+        }
     }
 }

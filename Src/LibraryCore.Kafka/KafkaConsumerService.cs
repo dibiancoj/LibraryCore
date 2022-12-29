@@ -1,25 +1,28 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
 
 //if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
-//builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
-//builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
+//builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
+//builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
 
 public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
-    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor)
+    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor, int nodeId)
     {
         Logger = logger;
         KafkaProcessor = kafkaProcessor;
+        NodeId = nodeId;
         KafkaConsumeTimeOut = kafkaProcessor.KafkaConsumeTimeOut();
     }
 
     private ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> Logger { get; }
     private IKafkaProcessor<TKafkaKey, TKafkaMessageBody> KafkaProcessor { get; }
+    public int NodeId { get; }
     private TimeSpan KafkaConsumeTimeOut { get; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +38,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
 
     private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', KafkaProcessor.TopicsToRead)}");
+        Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', KafkaProcessor.TopicsToRead)}:NodeId={NodeId}");
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken);
@@ -51,12 +54,14 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
+                    Logger.LogInformation($"Kafka Messages Received ({NodeId}) Received On {DateTime.Now}");
+
                     //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
                 }
 
                 //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
-                await Task.Delay(5, stoppingToken).ConfigureAwait(false);
+                await Task.Delay(10, stoppingToken).ConfigureAwait(false);
             }
         }
         catch (Exception ex)
@@ -69,7 +74,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
 
     private async Task ReadAndProcessMessageAsync(ChannelReader<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelReader, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started");
+        Logger.LogInformation($"KafkaConsumer.Read:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:NodeId={NodeId}:Started");
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken).ConfigureAwait(false);
@@ -80,9 +85,9 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
             {
                 while (channelReader.TryRead(out var kafkaMessageResult) && kafkaMessageResult != null)
                 {
-                    Logger.LogInformation($"Kafka Messages Received On {DateTime.Now}");
+                    Logger.LogInformation($"Kafka Messages ({NodeId}) Processed On {DateTime.Now}");
 
-                    await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, stoppingToken).ConfigureAwait(false);
+                    await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, NodeId, stoppingToken).ConfigureAwait(false);
 
                     KafkaProcessor.KafkaConsumer.StoreOffset(kafkaMessageResult);
                 }

@@ -21,13 +21,13 @@ public class MyUnitTestHostedAgent : IKafkaProcessor<string, string>
 
     public IEnumerable<string> TopicsToRead { get; }
 
-    public async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, CancellationToken stoppingToken)
+    public async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, int nodeId, CancellationToken stoppingToken)
     {
-        MessagesProcessed.Add(new ProcessedItem(messageResult.Topic, messageResult.Message));
+        MessagesProcessed.Add(new ProcessedItem(messageResult.Topic, nodeId, messageResult.Message));
 
         //throw in a wait for simulation
         await Task.Delay(50, stoppingToken);
     }
 
-    public record ProcessedItem(string Topic, Message<string, string> Message);
+    public record ProcessedItem(string Topic, int NodeId, Message<string, string> Message);
 }

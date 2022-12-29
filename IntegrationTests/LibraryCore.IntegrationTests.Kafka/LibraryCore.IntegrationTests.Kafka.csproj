@@ -51,7 +51,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Tests\LibraryCore.Tests.Kafka\LibraryCore.Tests.Kafka.csproj" />
+	  <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
+	  <ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Kafka\LibraryCore.IntegrationTests.Framework.Kafka.csproj" />
 	</ItemGroup>
 
 </Project>
