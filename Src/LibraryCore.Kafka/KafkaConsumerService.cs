@@ -111,9 +111,9 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
     {
         string? additionalInfoOutput = additionalInfo == null ?
                                         null :
-                                        $":{additionalInfo.Value.Key}:{additionalInfo.Value.Value}";
+                                        $"{additionalInfo.Value.Key}:{additionalInfo.Value.Value}";
 
-        return $"Command = {command} : Node = {NodeId} : Method = {methodName} : {DateTime.Now} {additionalInfoOutput}";
+        return $"Command = {command} : Node = {NodeId} : Method = {methodName}({additionalInfoOutput}) : {DateTime.Now}";
     }
 
     private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
