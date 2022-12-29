@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
+using LibraryCore.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryCore.IntegrationTests.Kafka;
@@ -19,7 +20,8 @@ public class KafkaIntegrationTest : IClassFixture<KafkaFixture>
     {
         var producer = KafkaFixture.Provider.GetRequiredService<IProducer<string, string>>();
         var adminClient = KafkaFixture.Provider.GetRequiredService<IAdminClient>();
-        var hostedAgentToTest = KafkaFixture.Provider.GetRequiredService<MyIntegrationHostedAgent>();
+        var hostedAgentToTest = KafkaFixture.Provider.GetRequiredService<KafkaConsumerService<string, string>>();
+        var processorToTest = (MyIntegrationHostedAgent)KafkaFixture.Provider.GetRequiredService<IKafkaProcessor<string, string>>();
 
         const string topicNameToUse = KafkaFixture.TopicToTestWith;
 
@@ -44,7 +46,7 @@ public class KafkaIntegrationTest : IClassFixture<KafkaFixture>
         //try to wait until the test passes...Or kill it after 5 seconds
         var spinWaitResult = SpinWait.SpinUntil(() =>
         {
-            return hostedAgentToTest.MessagesProcessed.Count == 4;
+            return processorToTest.MessagesProcessed.Count == 4;
 
         }, TimeSpan.FromSeconds(30));
 
@@ -53,7 +55,7 @@ public class KafkaIntegrationTest : IClassFixture<KafkaFixture>
         //make sure we spun until we found the right amount of records
         Assert.True(spinWaitResult);
 
-        var result = hostedAgentToTest.MessagesProcessed;
+        var result = processorToTest.MessagesProcessed;
 
         Assert.Equal(4, result.Count);
         Assert.Contains(result, x => x.Topic == topicNameToUse && x.Message.Key == "key0" && x.Message.Value == "value0");

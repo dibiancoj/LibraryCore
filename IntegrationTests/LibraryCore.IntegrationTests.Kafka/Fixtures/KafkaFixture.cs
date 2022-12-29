@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using LibraryCore.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryCore.IntegrationTests.Kafka.Fixtures;
@@ -37,6 +38,9 @@ public class KafkaFixture
 
         Provider = new ServiceCollection()
         .AddLogging()
+          .AddSingleton<KafkaConsumerService<string, string>>()
+          .AddSingleton<IKafkaProcessor<string, string>, MyIntegrationHostedAgent>()
+
           .AddSingleton(sp => new ConsumerBuilder<string, string>(new ConsumerConfig(clientConfig)
           {
               GroupId = Guid.NewGuid().ToString(),//doing this so we don't cause an inbalance and make it take alot longer and possibly timeou
@@ -48,16 +52,18 @@ public class KafkaFixture
           {
               throw new Exception(err.Reason);
           }).Build())
+
           .AddSingleton(sp => new ProducerBuilder<string, string>(new ProducerConfig(clientConfig))
           .SetErrorHandler((t, err) =>
           {
               throw new Exception(err.Reason);
           }).Build())
+
           .AddSingleton(sp => new AdminClientBuilder(new AdminClientConfig
           {
               BootstrapServers = bootstrapServer
           }).Build())
-          .AddScoped<MyIntegrationHostedAgent>()
+
           .BuildServiceProvider();
     }
 }

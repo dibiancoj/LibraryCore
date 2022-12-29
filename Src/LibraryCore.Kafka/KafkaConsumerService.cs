@@ -9,20 +9,18 @@ namespace LibraryCore.Kafka;
 //builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
 //builder.Services.AddSingleton<IHostedService>(x => new MyHostedAgent());
 
-public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
+public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
-    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IConsumer<TKafkaKey, TKafkaMessageBody> consumer)
+    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor)
     {
         Logger = logger;
-        Consumer = consumer;
+        KafkaProcessor = kafkaProcessor;
+        KafkaConsumeTimeOut = kafkaProcessor.KafkaConsumeTimeOut();
     }
 
     private ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> Logger { get; }
-    private IConsumer<TKafkaKey, TKafkaMessageBody> Consumer { get; }
-
-    protected abstract IEnumerable<string> TopicsToRead { get; }
-    protected virtual TimeSpan KafkaConsumeTimeOut { get; } = new TimeSpan(0, 0, 15);
-    protected abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaMessageBody> messageResult, CancellationToken stoppingToken);
+    private IKafkaProcessor<TKafkaKey, TKafkaMessageBody> KafkaProcessor { get; }
+    private TimeSpan KafkaConsumeTimeOut { get; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -37,18 +35,18 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
 
     private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
     {
-        Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', TopicsToRead)}");
+        Logger.LogInformation($"KafkaConsumer.IncomingProcessor:{typeof(TKafkaKey).Name}|{typeof(TKafkaMessageBody)}:Started:ReadingTopics={string.Join(',', KafkaProcessor.TopicsToRead)}");
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken);
 
         try
         {
-            Consumer.Subscribe(TopicsToRead);
+            KafkaProcessor.KafkaConsumer.Subscribe(KafkaProcessor.TopicsToRead);
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var consumeResult = Consumer.Consume(KafkaConsumeTimeOut);
+                var consumeResult = KafkaProcessor.KafkaConsumer.Consume(KafkaConsumeTimeOut);
 
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
@@ -84,9 +82,9 @@ public abstract class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : Backg
                 {
                     Logger.LogInformation($"Kafka Messages Received On {DateTime.Now}");
 
-                    await ProcessMessageAsync(kafkaMessageResult, stoppingToken).ConfigureAwait(false);
+                    await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, stoppingToken).ConfigureAwait(false);
 
-                    Consumer.StoreOffset(kafkaMessageResult);
+                    KafkaProcessor.KafkaConsumer.StoreOffset(kafkaMessageResult);
                 }
             }
         }

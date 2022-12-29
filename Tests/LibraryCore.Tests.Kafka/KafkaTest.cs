@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using LibraryCore.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
@@ -14,8 +15,9 @@ public class KafkaTest
 
         Provider = new ServiceCollection()
            .AddLogging()
+           .AddSingleton<KafkaConsumerService<string, string>>()
            .AddSingleton(MockedConsumerKafka.Object)
-           .AddSingleton<MyUnitTestHostedAgent>()
+           .AddSingleton<IKafkaProcessor<string, string>, MyUnitTestHostedAgent>()
            .BuildServiceProvider();
     }
 
@@ -47,7 +49,8 @@ public class KafkaTest
             .Returns(resultsToReturn[2])
             .Returns(resultsToReturn[3]);
 
-        var hostedAgentToTest = Provider.GetRequiredService<MyUnitTestHostedAgent>();
+        var hostedAgentToTest = Provider.GetRequiredService<KafkaConsumerService<string, string>>();
+        var processor = (MyUnitTestHostedAgent)Provider.GetRequiredService<IKafkaProcessor<string, string>>();
 
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 
@@ -56,7 +59,7 @@ public class KafkaTest
         //try to wait until the test passes...Or kill it after 5 seconds
         var spinWaitResult = SpinWait.SpinUntil(() =>
         {
-            return howManyStoreOffsetsAreCalled == 4 && hostedAgentToTest.MessagesProcessed.Count == 4;
+            return howManyStoreOffsetsAreCalled == 4 && processor.MessagesProcessed.Count == 4;
 
         }, TimeSpan.FromSeconds(10));
 
@@ -65,7 +68,7 @@ public class KafkaTest
         //make sure we spun until we found the right amount of records
         Assert.True(spinWaitResult);
 
-        var result = hostedAgentToTest.MessagesProcessed;
+        var result = processor.MessagesProcessed;
 
         Assert.Equal(4, result.Count);
         Assert.Contains(result, x => x.Topic == "Topic1" && x.Message.Key == "key1" && x.Message.Value == "value1");
