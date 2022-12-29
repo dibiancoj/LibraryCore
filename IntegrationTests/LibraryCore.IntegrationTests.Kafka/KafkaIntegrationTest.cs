@@ -42,7 +42,7 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         {
             return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}");
 
-        }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(30));
+        }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(60));
 
         //did it find all the records
         Assert.True(spinWaitResult);
