@@ -58,7 +58,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
-                    Logger.LogInformation(LogMessage("KafkaMessagedReceived", new KeyValuePair<string, string>("ReceivedOn", DateTime.Now.ToString())));
+                    Logger.LogInformation(LogMessage("Kafka Messaged Received"));
 
                     //we have a message so go publish. (would be null if it timed out)
                     await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
@@ -90,7 +90,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
             {
                 while (channelReader.TryRead(out var kafkaMessageResult) && kafkaMessageResult != null)
                 {
-                    Logger.LogInformation($"Kafka Messages ({NodeId}) Processed On {DateTime.Now}");
+                    Logger.LogInformation(LogMessage("Channel Message Received"));
 
                     await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, NodeId, stoppingToken).ConfigureAwait(false);
 
@@ -113,7 +113,7 @@ public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundServ
                                         null :
                                         $":{additionalInfo.Value.Key}:{additionalInfo.Value.Value}";
 
-        return $"KafkaConsumerService:NodeId={NodeId}:Method={methodName}:Command={command}{additionalInfoOutput}";
+        return $"Command = {command} : Node = {NodeId} : Method = {methodName} : {DateTime.Now} {additionalInfoOutput}";
     }
 
     private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
