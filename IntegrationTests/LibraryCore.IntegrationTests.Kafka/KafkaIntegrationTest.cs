@@ -1,8 +1,6 @@
-﻿using Confluent.Kafka;
-using LibraryCore.Core.DiagnosticUtilities;
+﻿using LibraryCore.Core.DiagnosticUtilities;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
-using System.Diagnostics;
 using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests.Kafka;
@@ -56,7 +54,7 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 
         foreach (var toPublish in messagesToPublish)
         {
-             Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.Key == toPublish.KeyId && x.Value.Message == toPublish.Message);
+            Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.Key == toPublish.KeyId && x.Value.Message == toPublish.Message);
         }
     }
 }
