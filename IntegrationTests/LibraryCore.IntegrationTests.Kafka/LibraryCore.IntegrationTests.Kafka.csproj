@@ -51,8 +51,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Src\LibraryCore.Core\LibraryCore.Core.csproj" />
 	  <ProjectReference Include="..\Framework\LibraryCore.IntegrationTests.Framework.Kafka\LibraryCore.IntegrationTests.Framework.Kafka.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="LibraryCore.Core" Version="6.1.0" />
 	</ItemGroup>
 
 </Project>
