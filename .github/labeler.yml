@@ -34,3 +34,6 @@ sessionstate:
 
 apiclient:
 - Src/LibraryCore.ApiClient/**/*
+
+kafka:
+- Src/LibraryCore.Kafka/**/*

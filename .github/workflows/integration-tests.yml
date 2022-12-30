@@ -56,6 +56,9 @@ jobs:
       env: 
          Db_ConnectionString: mongodb://root:${{secrets.IntegrationTestSqlPw}}@localhost:27017
 
+    - name: Kafka Integration Tests
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests.Kafka/LibraryCore.IntegrationTests.Kafka.csproj -f net7.0 -c release
+
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
       run: docker-compose down

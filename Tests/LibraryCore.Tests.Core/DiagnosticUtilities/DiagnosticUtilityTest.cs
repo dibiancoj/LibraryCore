@@ -5,18 +5,36 @@ namespace LibraryCore.Tests.Core.DiagnosticUtilities;
 public class DiagnosticUtilityTest
 {
     [Fact]
-    public void SpinWaitUntilTimespanTest1()
+    public async Task SpinWaitUntilWithPredicateMatches()
     {
-        //grab now
-        DateTime now = DateTime.Now;
+        int timesCalled = 0;
 
-        //spin until then
-        DiagnosticUtility.SpinWaitUntilTimespan(new TimeSpan(0, 0, 2));
+        var result = await DiagnosticUtility.SpinUntilAsync(async () =>
+        {
+            //force it to delay
+            await Task.Delay(10);
 
-        //grab the current time
-        var timeNow = DateTime.Now.Subtract(now).Seconds;
+            timesCalled++;
 
-        //give a little bit of a buffer to finish..so check 3 to 3.75 seconds
-        Assert.True(timeNow >= 2 && timeNow < 2.75);
+            return timesCalled == 3;
+        }, TimeSpan.FromMilliseconds(3), TimeSpan.FromSeconds(10));
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public async Task SpinWaitUntilWithNoPredicateFound()
+    {
+        int timesCalled = 0;
+
+        var result = await DiagnosticUtility.SpinUntilAsync(async () =>
+        {
+            //force it to delay
+            await Task.Delay(10);
+
+            return timesCalled == int.MaxValue;
+        }, TimeSpan.FromMilliseconds(3), TimeSpan.FromSeconds(3));
+
+        Assert.False(result);
     }
 }
