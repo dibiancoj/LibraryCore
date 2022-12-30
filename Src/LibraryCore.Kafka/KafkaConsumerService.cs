@@ -7,6 +7,7 @@ using System.Threading.Channels;
 namespace LibraryCore.Kafka;
 
 //if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
+//see integration test for this example
 //builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
 //builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
 
