@@ -14,21 +14,21 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 
     private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
-    public record ProcessedItem(string Topic, int NodeId, string Key, PublishModel Value);
-    public record PublishModel(string Topic, Guid TestId, string KeyId, string Message);
+    public record ResponseProcessedItem(string Topic, Guid TestId, int NodeId, string KeyId, string Message);
+    public record RequestPublishModel(string Topic, Guid TestId, string KeyId, string Message);
 
     [Fact(Skip = WebApplicationFactoryFixture.SkipReason)]
     public async Task FullIntegrationTest()
     {
-        var testId = Guid.NewGuid();
         const int howManyRecordsToInsert = 10;
+        var testId = Guid.NewGuid();
         var topicsToTestWith = KafkaRegistration.TopicsToUse.Single();
 
-        var messagesToPublish = new List<PublishModel>();
+        var messagesToPublish = new List<RequestPublishModel>();
 
         for (int i = 0; i < howManyRecordsToInsert; i++)
         {
-            messagesToPublish.Add(new PublishModel(topicsToTestWith, testId, i.ToString(), $"message{i}"));
+            messagesToPublish.Add(new RequestPublishModel(topicsToTestWith, testId, i.ToString(), $"message{i}"));
         }
 
         _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish)).EnsureSuccessStatusCode();
@@ -43,19 +43,21 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 
         }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(60));
 
-        //did it find all the records
+        //did it find all the records (criteria of the spin until)
         Assert.True(spinWaitResult, "Spin Until Messages Were Received Failed");
 
-        var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ProcessedItem>>($"kafka?TestId={testId}") ?? throw new Exception("Value Can't Be Deserialized");
+        //go grab the actual records so we can test with whats inside
+        var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ResponseProcessedItem>>($"kafka?TestId={testId}") ?? throw new Exception("Value Can't Be Deserialized");
 
         Assert.Equal(howManyRecordsToInsert, recordsFound.Count());
 
         //this should be spread out round robin. If this fails its not an "error"...but should be looked into why its not spreading the messages out
         Assert.Equal(2, recordsFound.GroupBy(x => x.NodeId).Count());
 
+        //make sure we have the right messages
         foreach (var toPublish in messagesToPublish)
         {
-            Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.Key == toPublish.KeyId && x.Value.Message == toPublish.Message);
+            Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.TestId == testId && x.KeyId == toPublish.KeyId && x.Message == toPublish.Message);
         }
     }
 }

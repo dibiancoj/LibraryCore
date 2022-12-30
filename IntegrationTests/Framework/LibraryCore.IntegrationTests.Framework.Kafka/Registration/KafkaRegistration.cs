@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
+using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
 using System.Collections.Immutable;
 using System.Text.Json;
-using static LibraryCore.IntegrationTests.Framework.Kafka.Api.KafkaApi;
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 
@@ -34,9 +34,9 @@ public static class KafkaRegistration
         };
     }
 
-    public static IConsumer<string, PublishModel> BuildConsumerGroup(string consumerGroup)
+    public static IConsumer<string, KafkaMessageModel> BuildConsumerGroup(string consumerGroup)
     {
-        return new ConsumerBuilder<string, PublishModel>(new ConsumerConfig(BuildClientConfig())
+        return new ConsumerBuilder<string, KafkaMessageModel>(new ConsumerConfig(BuildClientConfig())
         {
             GroupId = consumerGroup,
             AutoOffsetReset = AutoOffsetReset.Earliest,
@@ -51,9 +51,9 @@ public static class KafkaRegistration
         }).Build();
     }
 
-    private static IProducer<string, PublishModel> BuildProducerGroup()
+    private static IProducer<string, KafkaMessageModel> BuildProducerGroup()
     {
-        return new ProducerBuilder<string, PublishModel>(new ProducerConfig(BuildClientConfig()))
+        return new ProducerBuilder<string, KafkaMessageModel>(new ProducerConfig(BuildClientConfig()))
         .SetErrorHandler((t, err) =>
         {
             throw new Exception(err.Reason);
@@ -62,14 +62,14 @@ public static class KafkaRegistration
         .Build();
     }
 
-    public class KafkaMessagePayloadSerializer : IDeserializer<PublishModel>, ISerializer<PublishModel>
+    public class KafkaMessagePayloadSerializer : IDeserializer<KafkaMessageModel>, ISerializer<KafkaMessageModel>
     {
-        public PublishModel Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
+        public KafkaMessageModel Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
         {
-            return JsonSerializer.Deserialize<PublishModel>(data) ?? throw new Exception("Can't Deserialize The Kafka Message To PublishModel");
+            return JsonSerializer.Deserialize<KafkaMessageModel>(data) ?? throw new Exception("Can't Deserialize The Kafka Message To PublishModel");
         }
 
-        public byte[] Serialize(PublishModel data, SerializationContext context)
+        public byte[] Serialize(KafkaMessageModel data, SerializationContext context)
         {
             return JsonSerializer.SerializeToUtf8Bytes(data);
         }

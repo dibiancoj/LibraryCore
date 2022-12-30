@@ -2,9 +2,9 @@ using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using LibraryCore.IntegrationTests.Framework.Kafka;
 using LibraryCore.IntegrationTests.Framework.Kafka.Api;
+using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.Kafka;
-using static LibraryCore.IntegrationTests.Framework.Kafka.Api.KafkaApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +17,12 @@ const string consumerGroupToUse = "integrationTest";
 //if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
 //** not using AddHostedAgent because it doesn't allow you to register the same class twice. So this AddSingleton<IHostedService> is a work around that I found.
 //The key to this is you set the NumPartitions = 2...so we can go between different consumers
-builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, PublishModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, PublishModel>>>(),
+builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, KafkaMessageModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, KafkaMessageModel>>>(),
                                                                                                    new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
                                                                                                    sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>()),
                                                                                                    1));
 
-builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, PublishModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, PublishModel>>>(),
+builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, KafkaMessageModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, KafkaMessageModel>>>(),
                                                                                                    new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
                                                                                                    sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>()),
                                                                                                    2));

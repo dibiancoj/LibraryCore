@@ -10,7 +10,6 @@ namespace LibraryCore.Kafka;
 //see integration test for this example
 //builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
 //builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
-
 public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
     public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor, int nodeId = 1)

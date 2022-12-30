@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace LibraryCore.IntegrationTests.Kafka.Fixtures;
 
@@ -20,7 +19,7 @@ public class WebApplicationFactoryFixture : IDisposable
     }
 
 #if DEBUG
-    public const string SkipReason = "Don't want to run kafka integration tests locally";
+    public const string SkipReason = "";
 #else
     public const string SkipReason = "";
 #endif

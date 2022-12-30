@@ -1,31 +1,29 @@
 ﻿using Confluent.Kafka;
+using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.Kafka;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using static LibraryCore.IntegrationTests.Framework.Kafka.Api.KafkaApi;
-using static LibraryCore.IntegrationTests.Framework.Kafka.MyIntegrationHostedAgentMockDatabase;
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka;
 
 [ExcludeFromCodeCoverage(Justification = "Coming up in code coverage report as actual code.")]
-public class MyIntegrationHostedAgent : IKafkaProcessor<string, PublishModel>
+public class MyIntegrationHostedAgent : IKafkaProcessor<string, KafkaMessageModel>
 {
-    public MyIntegrationHostedAgent(IConsumer<string, PublishModel> kafkaConsumer, MyIntegrationHostedAgentMockDatabase myIntegrationHostedAgentMockDatabase)
+    public MyIntegrationHostedAgent(IConsumer<string, KafkaMessageModel> kafkaConsumer, MyIntegrationHostedAgentMockDatabase myIntegrationHostedAgentMockDatabase)
     {
         KafkaConsumer = kafkaConsumer;
         MyIntegrationHostedAgentMockDatabase = myIntegrationHostedAgentMockDatabase;
         TopicsToRead = KafkaRegistration.TopicsToUse;
     }
 
-    public IConsumer<string, PublishModel> KafkaConsumer { get; }
+    public IConsumer<string, KafkaMessageModel> KafkaConsumer { get; }
     private MyIntegrationHostedAgentMockDatabase MyIntegrationHostedAgentMockDatabase { get; }
     public IEnumerable<string> TopicsToRead { get; }
 
-    public async Task ProcessMessageAsync(ConsumeResult<string, PublishModel> messageResult, int nodeId, CancellationToken stoppingToken)
+    public async Task ProcessMessageAsync(ConsumeResult<string, KafkaMessageModel> messageResult, int nodeId, CancellationToken stoppingToken)
     {
-        MyIntegrationHostedAgentMockDatabase.MessagesProcessed.Add(new ProcessedItem(messageResult.Topic, nodeId, messageResult.Message.Key, messageResult.Message.Value));
+        MyIntegrationHostedAgentMockDatabase.MessagesProcessed.Add(new KafkaProcessedItemModel(messageResult.Topic, messageResult.Message.Value.TestId, nodeId, messageResult.Message.Key, messageResult.Message.Value.Message));
 
         await Task.CompletedTask;
     }
@@ -35,10 +33,8 @@ public class MyIntegrationHostedAgentMockDatabase
 {
     public MyIntegrationHostedAgentMockDatabase()
     {
-        MessagesProcessed = new ConcurrentBag<ProcessedItem>();
+        MessagesProcessed = new ConcurrentBag<KafkaProcessedItemModel>();
     }
 
-    public record ProcessedItem(string Topic, int NodeId, string Key, PublishModel Value);
-
-    public ConcurrentBag<ProcessedItem> MessagesProcessed { get; }
+    public ConcurrentBag<KafkaProcessedItemModel> MessagesProcessed { get; }
 }
