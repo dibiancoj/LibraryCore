@@ -36,7 +36,7 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         //give it some time to get setup
         await Task.Delay(1000);
 
-        //try to wait until the test passes...Or kill it after 5 seconds
+        //try to wait until the test passes...Or kill it after x number of seconds
         var spinWaitResult = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
             return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}");
