@@ -52,7 +52,7 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         Assert.Equal(howManyRecordsToInsert, recordsFound.Count());
 
         //this should be spread out round robin. If this fails its not an "error"...but should be looked into why its not spreading the messages out
-        Assert.Equal(2, recordsFound.GroupBy(x => x.NodeId).Count());
+        Assert.True(recordsFound.GroupBy(x => x.NodeId).Count() > 2);
 
         //make sure we have the right messages
         foreach (var toPublish in messagesToPublish)

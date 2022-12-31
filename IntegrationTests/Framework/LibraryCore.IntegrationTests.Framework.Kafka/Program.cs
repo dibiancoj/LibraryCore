@@ -14,18 +14,20 @@ builder.Services.AddSingleton<MyIntegrationHostedAgentMockDatabase>();
 //need both readers to be from the same group so its split equally
 const string consumerGroupToUse = "integrationTest";
 
+const int numberOfNodesOrPartitions = 5;
+
 //if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
 //** not using AddHostedAgent because it doesn't allow you to register the same class twice. So this AddSingleton<IHostedService> is a work around that I found.
 //The key to this is you set the NumPartitions = 2...so we can go between different consumers
 builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, KafkaMessageModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, KafkaMessageModel>>>(),
                                                                                                    new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
                                                                                                    sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>()),
-                                                                                                   1));
+                                                                                                   numberOfNodesOrPartitions));
 
-builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, KafkaMessageModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, KafkaMessageModel>>>(),
-                                                                                                   new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
-                                                                                                   sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>()),
-                                                                                                   2));
+//builder.Services.AddSingleton<IHostedService>(sp => new KafkaConsumerService<string, KafkaMessageModel>(sp.GetRequiredService<ILogger<KafkaConsumerService<string, KafkaMessageModel>>>(),
+//                                                                                                   new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
+//                                                                                                   sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>()),
+//                                                                                                   2));
 
 var app = builder.Build();
 
@@ -49,7 +51,7 @@ catch (Exception ex)
 
 try
 {
-    await adminClient.CreateTopicsAsync(new List<TopicSpecification> { new() { Name = KafkaRegistration.TopicsToUse.Single(), NumPartitions = 2 } });
+    await adminClient.CreateTopicsAsync(new List<TopicSpecification> { new() { Name = KafkaRegistration.TopicsToUse.Single(), NumPartitions = numberOfNodesOrPartitions } });
 }
 catch (Exception ex)
 {
