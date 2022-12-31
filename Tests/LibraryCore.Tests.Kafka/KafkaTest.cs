@@ -1,9 +1,7 @@
-﻿using Castle.Core.Logging;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using LibraryCore.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
-using NuGet.Frameworks;
 using System.Diagnostics.CodeAnalysis;
 using static LibraryCore.Tests.Kafka.Framework.MyUnitTestHostedAgent;
 

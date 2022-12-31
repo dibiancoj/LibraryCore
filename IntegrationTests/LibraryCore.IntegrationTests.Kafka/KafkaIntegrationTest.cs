@@ -1,7 +1,6 @@
 ﻿using LibraryCore.Core.DiagnosticUtilities;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests.Kafka;
