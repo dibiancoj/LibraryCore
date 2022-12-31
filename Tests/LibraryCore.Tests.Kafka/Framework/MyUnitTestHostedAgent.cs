@@ -13,7 +13,7 @@ public class MyUnitTestHostedAgent : IKafkaProcessor<string, string>
         KafkaConsumer = consumer;
         MessagesProcessed = new ConcurrentBag<ProcessedItem>();
         TopicsToRead = new[] { "Topic1", "Topic2" };
-        NodeCount = howManyNodesSetup.HowManyNodes;
+        NodeCount = howManyNodesSetup.HowManyNodes; //this is only here so we can mock it. Real use would pass in IOptions or this would be hardcoded.
     }
 
     public ConcurrentBag<ProcessedItem> MessagesProcessed { get; }
