@@ -9,24 +9,22 @@ namespace LibraryCore.Kafka;
 //builder.Services.AddSingleton<BackgroundService>(x => new MyHostedAgent());
 public class KafkaConsumerService<TKafkaKey, TKafkaMessageBody> : BackgroundService
 {
-    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor, int numberOfNodes = 1)
+    public KafkaConsumerService(ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor)
     {
         Logger = logger;
         KafkaProcessor = kafkaProcessor;
-        NumberOfNodes = numberOfNodes;
     }
 
     private ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> Logger { get; }
     private IKafkaProcessor<TKafkaKey, TKafkaMessageBody> KafkaProcessor { get; }
-    public int NumberOfNodes { get; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var tasks = new List<Task>();
 
-        for (int i = 0; i < NumberOfNodes; i++)
+        for (int i = 0; i < KafkaProcessor.NodeCount; i++)
         {
-            tasks.Add(new KafkaThreadRunner<TKafkaKey, TKafkaMessageBody>(i + 1, Logger, KafkaProcessor).CreateThreadAsync(stoppingToken));
+            tasks.Add(new KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>(i + 1, Logger, KafkaProcessor).CreateNodeAsync(stoppingToken));
         }
 
         await Task.WhenAll(tasks);

@@ -5,9 +5,9 @@ using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
 
-internal class KafkaThreadRunner<TKafkaKey, TKafkaMessageBody>
+internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
 {
-    internal KafkaThreadRunner(int nodeId, ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor)
+    internal KafkaNodeRunner(int nodeId, ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> logger, IKafkaProcessor<TKafkaKey, TKafkaMessageBody> kafkaProcessor)
     {
         NodeId = nodeId;
         Logger = logger;
@@ -18,7 +18,7 @@ internal class KafkaThreadRunner<TKafkaKey, TKafkaMessageBody>
     private ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> Logger { get; }
     private IKafkaProcessor<TKafkaKey, TKafkaMessageBody> KafkaProcessor { get; }
 
-    internal async Task CreateThreadAsync(CancellationToken cancellationToken)
+    internal async Task CreateNodeAsync(CancellationToken cancellationToken)
     {
         var channel = Channel.CreateUnbounded<ConsumeResult<TKafkaKey, TKafkaMessageBody>?>(new UnboundedChannelOptions
         {

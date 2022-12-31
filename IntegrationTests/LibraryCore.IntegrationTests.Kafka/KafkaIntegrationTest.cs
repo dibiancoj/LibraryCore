@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.DiagnosticUtilities;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.IntegrationTests.Kafka.Fixtures;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests.Kafka;
@@ -34,14 +35,14 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish)).EnsureSuccessStatusCode();
 
         //give it some time to get setup
-        await Task.Delay(1000);
+        await Task.Delay(TimeSpan.FromMinutes(1));
 
         //try to wait until the test passes...Or kill it after x number of seconds
         var spinWaitResult = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
             return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}");
 
-        }, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(60));
+        }, TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
 
         //did it find all the records (criteria of the spin until)
         Assert.True(spinWaitResult, "Spin Until Messages Were Received Failed");
@@ -52,12 +53,32 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
         Assert.Equal(howManyRecordsToInsert, recordsFound.Count());
 
         //this should be spread out round robin. If this fails its not an "error"...but should be looked into why its not spreading the messages out
-        Assert.True(recordsFound.GroupBy(x => x.NodeId).Count() > 2);
+        Assert.True(recordsFound.GroupBy(x => x.NodeId).Count() >= 2);
 
         //make sure we have the right messages
         foreach (var toPublish in messagesToPublish)
         {
             Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.TestId == testId && x.KeyId == toPublish.KeyId && x.Message == toPublish.Message);
         }
+
+        //now make sure after hanging out for 20 seconds that it succeeds
+        await Task.Delay(TimeSpan.FromSeconds(30));
+
+        var newTestId = Guid.NewGuid();
+
+        //push 2 more records
+        (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", new List<RequestPublishModel>
+        {
+            new RequestPublishModel(topicsToTestWith,newTestId,"Key100", "Message100"),
+            new RequestPublishModel(topicsToTestWith,newTestId,"Key101", "Message101")
+        })).EnsureSuccessStatusCode();
+
+        var spinWaitResult2 = await DiagnosticUtility.SpinUntilAsync(async () =>
+        {
+            return 2 == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={newTestId}");
+
+        }, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30));
+
+        Assert.True(spinWaitResult2);
     }
 }

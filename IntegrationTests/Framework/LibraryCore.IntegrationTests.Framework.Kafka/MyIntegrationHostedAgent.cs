@@ -20,6 +20,7 @@ public class MyIntegrationHostedAgent : IKafkaProcessor<string, KafkaMessageMode
     public IConsumer<string, KafkaMessageModel> KafkaConsumer { get; }
     private MyIntegrationHostedAgentMockDatabase MyIntegrationHostedAgentMockDatabase { get; }
     public IEnumerable<string> TopicsToRead { get; }
+    public int NodeCount => 5;
 
     public async Task ProcessMessageAsync(ConsumeResult<string, KafkaMessageModel> messageResult, int nodeId, CancellationToken stoppingToken)
     {
