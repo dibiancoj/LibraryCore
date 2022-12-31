@@ -61,8 +61,8 @@ public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
             Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.TestId == testId && x.KeyId == toPublish.KeyId && x.Message == toPublish.Message);
         }
 
-        //now make sure after hanging out for 20 seconds that it succeeds
-        await Task.Delay(TimeSpan.FromSeconds(30));
+        //let it hang out for a few seconds to ensure the threads keep going and processes more.
+        await Task.Delay(TimeSpan.FromSeconds(15));
 
         var newTestId = Guid.NewGuid();
 
