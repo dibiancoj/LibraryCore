@@ -19,7 +19,7 @@ public class WebApplicationFactoryFixture : IDisposable
     }
 
 #if DEBUG
-    public const string SkipReason = "";
+    public const string SkipReason = "Don't want to run Kafka tests locally";
 #else
     public const string SkipReason = "";
 #endif

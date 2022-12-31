@@ -3,7 +3,9 @@ using Confluent.Kafka;
 using LibraryCore.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
+using NuGet.Frameworks;
 using System.Diagnostics.CodeAnalysis;
+using static LibraryCore.Tests.Kafka.Framework.MyUnitTestHostedAgent;
 
 namespace LibraryCore.Tests.Kafka;
 
@@ -14,20 +16,28 @@ public class KafkaTest
     {
         MockedConsumerKafka = new Mock<IConsumer<string, string>>();
 
-        Provider = new ServiceCollection()
+        ServiceCollectionToUse = new ServiceCollection()
            .AddLogging()
            .AddSingleton<KafkaConsumerService<string, string>>()
            .AddSingleton(MockedConsumerKafka.Object)
-           .AddSingleton<IKafkaProcessor<string, string>, MyUnitTestHostedAgent>()
-           .BuildServiceProvider();
+           .AddSingleton<IKafkaProcessor<string, string>, MyUnitTestHostedAgent>();
     }
 
     private Mock<IConsumer<string, string>> MockedConsumerKafka { get; set; }
-    private ServiceProvider Provider { get; }
+    private IServiceCollection ServiceCollectionToUse { get; }
 
-    [Fact]
-    public async Task BasicKafkaIntegration()
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(10)]
+    [InlineData(25)]
+    [Theory]
+    public async Task BasicKafkaIntegration(int howManyNodes)
     {
+        var provider = ServiceCollectionToUse
+                            .AddSingleton(new HowManyNodesSetup(howManyNodes))
+                            .BuildServiceProvider();
+
         int howManyStoreOffsetsAreCalled = 0;
 
         var resultsToReturn = new List<ConsumeResult<string, string>>
@@ -45,13 +55,16 @@ public class KafkaTest
 
         MockedConsumerKafka.SetupSequence(x => x.Consume(It.IsAny<TimeSpan>()))
             .Returns(resultsToReturn[0])
+            .Returns((ConsumeResult<string, string>)null!)
             .Returns(resultsToReturn[1])
             .Returns((ConsumeResult<string, string>)null!) //add a null here so we ensure this thing keeps going on after the null
             .Returns(resultsToReturn[2])
-            .Returns(resultsToReturn[3]);
+            .Returns((ConsumeResult<string, string>)null!)
+            .Returns(resultsToReturn[3])
+            .Returns((ConsumeResult<string, string>)null!);
 
-        var hostedAgentToTest = Provider.GetRequiredService<KafkaConsumerService<string, string>>();
-        var processor = (MyUnitTestHostedAgent)Provider.GetRequiredService<IKafkaProcessor<string, string>>();
+        var hostedAgentToTest = provider.GetRequiredService<KafkaConsumerService<string, string>>();
+        var processor = (MyUnitTestHostedAgent)provider.GetRequiredService<IKafkaProcessor<string, string>>();
 
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 
@@ -77,7 +90,13 @@ public class KafkaTest
         Assert.Contains(result, x => x.Topic == "Topic2" && x.Message.Key == "key3" && x.Message.Value == "value3");
         Assert.Contains(result, x => x.Topic == "Topic1" && x.Message.Key == "key4" && x.Message.Value == "value4");
 
-        MockedConsumerKafka.Verify(x => x.Subscribe(It.Is<IEnumerable<string>>(t => t.Contains("Topic1") || t.Contains("Topic2"))), Times.Once);
+        //based on the threading this should be spread out a bit between nodes...this is more of a warning. This test might get flaky. This is def a race condition but will see how it goes. 
+        if (howManyNodes > 1)
+        {
+            Assert.True(result.GroupBy(x => x.NodeId).Count() > 1);
+        }
+
+        MockedConsumerKafka.Verify(x => x.Subscribe(It.Is<IEnumerable<string>>(t => t.Contains("Topic1") || t.Contains("Topic2"))), Times.Exactly(howManyNodes));
         MockedConsumerKafka.Verify(x => x.Consume(It.IsAny<TimeSpan>()), Times.AtLeast(5));
         MockedConsumerKafka.Verify(x => x.StoreOffset(It.Is<ConsumeResult<string, string>>(t => resultsToReturn.Contains(t))), Times.Exactly(4));
     }
