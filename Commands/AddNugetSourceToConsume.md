@@ -1,1 +1,1 @@
-dotnet nuget add source "https://nuget.pkg.github.com/dibiancoj/index.json" --name "github" --username "dibiancoj@gmail.com" --password "PAT"
+dotnet nuget add source --username dibiancoj --password {{PAT_TOKEN_PUT_HERE}} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"

@@ -35,7 +35,7 @@ RunReport - Run this command to generate the report
 
 ";
 
-        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ RunReport
 
 ";
 
-        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ RunReport - Run this command to generate the report
 ";
 
         Assert.Equal(0, await RunAsync(new[] { "NotFoundCommand" }, optionBuilder));
-        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ RunReport - Run this command to generate the report
 Required Parameter Name = JsonPath | Value = jsonpath123
 ";
 
-        Assert.Equal(expectedOutput, Writer.GetStringBuilder().ToString());
+        Assert.Equal(expectedOutput, Writer.GetStringBuilder().ToString(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -282,7 +282,7 @@ Optional Parameter Name = -l | Value = Not Set
 ";
 
         Assert.Equal(2, await RunAsync(new[] { "RunReport", "-v", "-c", "MyConnectionString", "-l" }, optionBuilder));
-        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString());
+        Assert.Equal(expectedResult, Writer.GetStringBuilder().ToString(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]

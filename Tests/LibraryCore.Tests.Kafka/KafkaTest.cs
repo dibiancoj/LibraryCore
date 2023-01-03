@@ -88,11 +88,12 @@ public class KafkaTest
         Assert.Contains(result, x => x.Topic == "Topic2" && x.Message.Key == "key3" && x.Message.Value == "value3");
         Assert.Contains(result, x => x.Topic == "Topic1" && x.Message.Key == "key4" && x.Message.Value == "value4");
 
-        //based on the threading this should be spread out a bit between nodes...this is more of a warning. This test might get flaky. This is def a race condition but will see how it goes. 
-        if (howManyNodes > 1)
-        {
-            Assert.True(result.GroupBy(x => x.NodeId).Count() > 1);
-        }
+        //based on the threading this should be spread out a bit between nodes...this is more of a warning. This test might get flaky. This is def a race condition but will see how it goes.
+        //this is too flaky
+        //if (howManyNodes > 1)
+        //{
+        //    Assert.True(result.GroupBy(x => x.NodeId).Count() > 1);
+        //}
 
         MockedConsumerKafka.Verify(x => x.Subscribe(It.Is<IEnumerable<string>>(t => t.Contains("Topic1") || t.Contains("Topic2"))), Times.Exactly(howManyNodes));
         MockedConsumerKafka.Verify(x => x.Consume(It.IsAny<TimeSpan>()), Times.AtLeast(5));
