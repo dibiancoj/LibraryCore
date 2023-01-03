@@ -9,13 +9,17 @@ public class WebApplicationFactoryFixture : IDisposable
 {
     public WebApplicationFactoryFixture()
     {
-        ApplicationFactory = new WebApplicationFactory<Program>()
-        .WithWebHostBuilder(builder =>
+        //skip building the factory and causing the web project to spin up if we aren't even running this test.
+        if (IsUnitTestGoingToRun())
         {
-            // ... Configure test services
-        });
+            ApplicationFactory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                // ... Configure test services
+            });
 
-        HttpClientToUse = ApplicationFactory.CreateClient();
+            HttpClientToUse = ApplicationFactory.CreateClient();
+        }
     }
 
 #if DEBUG
@@ -24,8 +28,10 @@ public class WebApplicationFactoryFixture : IDisposable
     public const string SkipReason = "";
 #endif
 
-    public WebApplicationFactory<Program> ApplicationFactory { get; }
-    public HttpClient HttpClientToUse { get; }
+    public bool IsUnitTestGoingToRun() => string.IsNullOrEmpty(SkipReason);
+
+    public WebApplicationFactory<Program> ApplicationFactory { get; } = null!;
+    public HttpClient HttpClientToUse { get; } = null!;
     private bool Disposed { get; set; }
 
     #region Dispose Method
@@ -40,7 +46,7 @@ public class WebApplicationFactoryFixture : IDisposable
     {
         if (!this.Disposed)
         {
-            if (disposing)
+            if (disposing && IsUnitTestGoingToRun())
             {
                 ApplicationFactory.Dispose();
                 HttpClientToUse.Dispose();
