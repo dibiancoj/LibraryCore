@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Collections.Immutable;
 using static LibraryCore.Performance.Tests.Program;
 
@@ -8,11 +7,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class ImmutableListBuilderPerfTest : IPerformanceTest
+public class ImmutableListBuilderPerfTest
 {
-    public string CommandName => "ImmListBuilder";
-    public string Description => "Run the immutable list builder vs List.ToImmutableList";
-
     [Params(5, 50, 100, 500, 1000, 10000)]
     public int NumberOfElements { get; set; }
 

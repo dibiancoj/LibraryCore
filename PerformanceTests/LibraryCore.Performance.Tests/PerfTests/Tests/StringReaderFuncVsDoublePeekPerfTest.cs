@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests.Tests;
@@ -7,11 +6,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class StringReaderFuncVsDoublePeekPerfTest : IPerformanceTest
+public class StringReaderFuncVsDoublePeekPerfTest
 {
-    public string CommandName => "StringReaderFuncVs2Peek";
-    public string Description => "Run performance test on invoking a func vs calling peek twice";
-
     [Benchmark(Baseline = true)]
     public int DoublePeek()
     {

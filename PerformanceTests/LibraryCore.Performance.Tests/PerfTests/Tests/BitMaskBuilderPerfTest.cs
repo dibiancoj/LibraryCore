@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Core.EnumUtilities;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests.Tests;
@@ -8,11 +7,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class BitMaskBuilderPerfTest : IPerformanceTest
+public class BitMaskBuilderPerfTest
 {
-    public string CommandName => "BitMaskBuilder";
-    public string Description => "Run performance test on the bit mask builder with an immutable record or mutable class";
-
     [Flags]
     public enum TestEnum : int
     {

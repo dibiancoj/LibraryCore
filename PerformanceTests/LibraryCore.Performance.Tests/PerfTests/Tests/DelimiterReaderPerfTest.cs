@@ -2,7 +2,6 @@
 using LibraryCore.Core.Delimiter;
 using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.Readers;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 using static LibraryCore.Core.Delimiter.DelimiterBuilder;
 using static LibraryCore.Performance.Tests.Program;
@@ -12,11 +11,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class DelimiterReaderPerfTest : IPerformanceTest
+public class DelimiterReaderPerfTest
 {
-    public string CommandName => "CsvReader";
-    public string Description => "String reader csv parser vs struct span csv parser";
-
     [Params(@"""abc""|""cde""|""fgh""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""")]
     public string TextToParse { get; set; }
 

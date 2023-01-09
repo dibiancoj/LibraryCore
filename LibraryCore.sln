@@ -29,7 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{44
 		Commands\IntegratedTestInVsEnvSetup.ps1 = Commands\IntegratedTestInVsEnvSetup.ps1
 		Commands\IntegratedTestInVsEnvTearDown.ps1 = Commands\IntegratedTestInVsEnvTearDown.ps1
 		Commands\PublishAndPushNuget.bat = Commands\PublishAndPushNuget.bat
-		Commands\RunPerformanceTest.bat = Commands\RunPerformanceTest.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerformanceTests", "PerformanceTests", "{056D9475-618C-453C-8BDF-F578E8F07945}"
@@ -113,7 +112,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.Kafka", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests.Kafka", "IntegrationTests\LibraryCore.IntegrationTests.Kafka\LibraryCore.IntegrationTests.Kafka.csproj", "{E922471F-EC04-44FA-8D93-F8935BEC10CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCore.IntegrationTests.Framework.Kafka", "IntegrationTests\Framework\LibraryCore.IntegrationTests.Framework.Kafka\LibraryCore.IntegrationTests.Framework.Kafka.csproj", "{5979B730-DB33-4342-93FE-E6ADB1132F0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests.Framework.Kafka", "IntegrationTests\Framework\LibraryCore.IntegrationTests.Framework.Kafka\LibraryCore.IntegrationTests.Framework.Kafka.csproj", "{5979B730-DB33-4342-93FE-E6ADB1132F0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
