@@ -2,7 +2,6 @@
 using LibraryCore.Parsers.RuleParser;
 using LibraryCore.Parsers.RuleParser.Registration;
 using LibraryCore.Parsers.RuleParser.TokenFactories;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
 using static LibraryCore.Performance.Tests.Program;
@@ -12,11 +11,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.RuleParser;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class RuleParserPerfTest : IPerformanceTest
+public class RuleParserPerfTest
 {
-    public string CommandName => "RuleParser";
-    public string Description => "Run the rule parser to tokenize the items. Basic test to verify performance regression";
-
     [GlobalSetup]
     public void Init()
     {

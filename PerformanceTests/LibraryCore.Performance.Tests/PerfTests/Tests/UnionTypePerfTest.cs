@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Core.DataTypes.Unions;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using static LibraryCore.Performance.Tests.Program;
 
 namespace LibraryCore.Performance.Tests.PerfTests.Tests;
@@ -8,11 +7,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class UnionTypePerfTest : IPerformanceTest
+public class UnionTypePerfTest
 {
-    public string CommandName => "Union";
-    public string Description => "Run performance test on union object the different variations";
-
     [GlobalSetup]
     public void Init()
     {

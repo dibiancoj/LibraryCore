@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Core.Readers;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 using static LibraryCore.Performance.Tests.Program;
 
@@ -9,11 +8,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.StringReaderVsSpan;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class StringReaderVsSpanScanForCharacterPerfTest : IPerformanceTest
+public class StringReaderVsSpanScanForCharacterPerfTest
 {
-    public string CommandName => "StringReaderVsSpan.ScanForCharacter";
-    public string Description => "Scan for a character in a string reader vs string span reader";
-
     [Params("1 == 1 && 2 == 2",
             "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz && zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
             "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz && zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")]

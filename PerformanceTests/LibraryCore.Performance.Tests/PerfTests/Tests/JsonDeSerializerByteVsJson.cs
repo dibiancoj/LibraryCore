@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text.Json;
 using static LibraryCore.Performance.Tests.Program;
 
@@ -8,11 +7,8 @@ namespace LibraryCore.Performance.Tests.PerfTests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class JsonDeserializerByteVsJson : IPerformanceTest
+public class JsonDeserializerByteVsJson
 {
-    public string CommandName => "JsonDeserializerByteVsJson";
-    public string Description => "Does System.Text.Json deserialize a byte array faster then a string";
-
     [GlobalSetup]
     public void Init()
     {

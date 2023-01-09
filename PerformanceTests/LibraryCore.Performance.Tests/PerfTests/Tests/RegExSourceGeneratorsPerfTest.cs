@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Core.RegularExpressionUtilities;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text.RegularExpressions;
 using static LibraryCore.Performance.Tests.Program;
 
@@ -10,11 +9,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class RegExSourceGeneratorsPerfTest : IPerformanceTest
+public class RegExSourceGeneratorsPerfTest
 {
-    public string CommandName => "RegExSourceGenerators";
-    public string Description => "How fast are the new regex source generators";
-
     [Params("https://www.google456.com Test", "local host test https://localhost/Test123. Then there is https://www.google.com. Then some more text. Bla bla https://www.espn.com")]
     public string TextToParse { get; set; }
 

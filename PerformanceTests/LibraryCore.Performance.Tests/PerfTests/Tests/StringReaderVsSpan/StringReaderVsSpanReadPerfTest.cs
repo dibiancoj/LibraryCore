@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LibraryCore.Core.Readers;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 using System.Text;
 using static LibraryCore.Performance.Tests.Program;
 
@@ -9,11 +8,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.StringReaderVsSpan;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
-public class StringReaderVsSpanReadPerfTest : IPerformanceTest
+public class StringReaderVsSpanReadPerfTest
 {
-    public string CommandName => "StringReaderVsSpan.GeneralTest";
-    public string Description => "Read a string and determine if a string reader or a span slice if faster";
-
     [Params("1 == 1",
             "'one' =asdf asdf asdffasd fasdf asdasdf asdfasasdfasddfasdfasd= 'one'",
             "1 == 1 && 2 == 2 && true == true asdfasdfasd assd fasd fasdf asdf asdf asdf asdf asdf asdfasdfasddf asdf asdf asdf == true asdfasdfasd assd fasd fasdf asdf asdf asdf asdf asdf asdfasdfasddf asdf asdf asdf")]

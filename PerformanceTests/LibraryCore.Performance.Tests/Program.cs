@@ -1,43 +1,17 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using LibraryCore.CommandLineParser;
-using LibraryCore.CommandLineParser.Options;
-using LibraryCore.Core.Reflection;
-using LibraryCore.Performance.Tests.TestHarnessProvider;
 
 namespace LibraryCore.Performance.Tests
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             //example to run:
-            //dotnet run -c release CsvReader
+            //Get the menu = dotnet run -c release
+            //Run a specific test = dotnet run -c release -filter *JsonDeserializerByteVsJson*
 
-            var allTestsInAssembly = ReflectionUtility.ScanForAllInstancesOfType<IPerformanceTest>();
-
-            var result = await Runner.RunAsync(args, BuildUpPerformanceTestListCommand(allTestsInAssembly));
-
-            Environment.Exit(result);
-        }
-
-        private static OptionsBuilder BuildUpPerformanceTestListCommand(IEnumerable<Type> testsFoundInAssessmbly)
-        {
-            var options = new OptionsBuilder();
-
-            foreach (var testType in testsFoundInAssessmbly)
-            {
-                var instanceOfTest = (IPerformanceTest)Activator.CreateInstance(testType);
-
-                options.AddCommand(instanceOfTest.CommandName, instanceOfTest.Description, args =>
-                {
-                    _ = BenchmarkRunner.Run(testType);
-
-                    return Task.FromResult(0);
-                });
-            }
-
-            return options;
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
         }
 
         public class Config : ManualConfig
