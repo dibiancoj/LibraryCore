@@ -16,7 +16,9 @@ public class SqlDataProvider : IDataProvider, IAsyncDisposable
 
     public SqlDataProvider(string connectionString)
     {
-        ConnSql = new SqlConnection(connectionString ?? throw new ArgumentNullException(nameof(connectionString)));
+        ArgumentNullException.ThrowIfNull(connectionString);
+
+        ConnSql = new SqlConnection(connectionString);
     }
 
     #endregion
