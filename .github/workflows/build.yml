@@ -89,3 +89,33 @@ jobs:
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
       run: docker-compose down
+
+  publish-nuget-package:
+
+    runs-on: ubuntu-latest
+    needs: [test-and-build, integration-tests]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.x
+
+#broke around 11/16. No changes on my end and after .net 7 came out. This step fixes it which I don't like as much.
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+
+    - name: Package The Build
+      run:  dotnet pack --configuration Release
+
+    - name: Push The Nuget Build
+      run:  dotnet nuget push "**/*.nupkg" --source "github" --api-key ${GITHUB_TOKEN} --skip-duplicate
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
