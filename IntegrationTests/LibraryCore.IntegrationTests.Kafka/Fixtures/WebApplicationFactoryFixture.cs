@@ -28,7 +28,7 @@ public class WebApplicationFactoryFixture : IDisposable
     public const string SkipReason = "";
 #endif
 
-    public bool IsUnitTestGoingToRun() => string.IsNullOrEmpty(SkipReason);
+    public static bool IsUnitTestGoingToRun() => string.IsNullOrEmpty(SkipReason);
 
     public WebApplicationFactory<Program> ApplicationFactory { get; } = null!;
     public HttpClient HttpClientToUse { get; } = null!;
@@ -46,7 +46,7 @@ public class WebApplicationFactoryFixture : IDisposable
     {
         if (!this.Disposed)
         {
-            if (disposing && IsUnitTestGoingToRun())
+            if (IsUnitTestGoingToRun() && disposing)
             {
                 ApplicationFactory.Dispose();
                 HttpClientToUse.Dispose();
