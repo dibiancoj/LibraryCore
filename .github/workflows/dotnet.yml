@@ -8,7 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+
+  test-and-build:
 
     runs-on: ${{ matrix.os }}
     strategy:
@@ -45,14 +46,76 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v3.1.1
       with:
-        #files: |
-        #    ./Tests/LibraryCore.Tests.JsonNet/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.Core/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.AspNet/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.CommandLineParser/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.AspNet.DistributedSessionState/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.AspNet.HtmlRendering/coverage.net7.0.opencover.xml,
-        #    ./Tests/LibraryCore.Tests.Caching/coverage.net7.0.opencover.xml
-
         fail_ci_if_error: true # optional (default = false)
 
+  integration-tests:
+
+    runs-on: ${{ matrix.os }}
+    needs: test-and-build
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET 7.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.x
+
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+
+    - name: Docker Compose Up
+      working-directory: ./IntegrationTests
+      run: docker-compose up -d --remove-orphans
+      env:
+         DB_PW: ${{secrets.IntegrationTestSqlPw}}
+
+    - name: Core Integration Tests
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests/LibraryCore.IntegrationTests.csproj -f net7.0 -c release
+      env: 
+         Db_ConnectionString: Data Source=localhost;Initial Catalog=IntegrationTest;User Id=sa;Password=${{secrets.IntegrationTestSqlPw}};trustServerCertificate=true
+
+    - name: Mongo Integration Tests
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests.Mongo/LibraryCore.IntegrationTests.Mongo.csproj -f net7.0 -c release
+      env: 
+         Db_ConnectionString: mongodb://root:${{secrets.IntegrationTestSqlPw}}@localhost:27017
+
+    - name: Kafka Integration Tests
+      run: dotnet test ./IntegrationTests/LibraryCore.IntegrationTests.Kafka/LibraryCore.IntegrationTests.Kafka.csproj -f net7.0 -c release
+
+    - name: Docker Compose Down
+      working-directory: ./IntegrationTests
+      run: docker-compose down
+
+  publish-nuget-package:
+
+    runs-on: ubuntu-latest
+    needs: [test-and-build, integration-tests]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.x
+
+#broke around 11/16. No changes on my end and after .net 7 came out. This step fixes it which I don't like as much.
+    - name: Prep Auth For NuGet
+      run: dotnet nuget add source --username ${{secrets.NUGETUSERNAME}} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/dibiancoj/index.json"
+
+    - name: Package The Build
+      run:  dotnet pack --configuration Release
+
+    - name: Push The Nuget Build
+      run:  dotnet nuget push "**/*.nupkg" --source "github" --api-key ${GITHUB_TOKEN} --skip-duplicate
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
