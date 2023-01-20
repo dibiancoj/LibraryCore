@@ -11,7 +11,7 @@ jobs:
 
   test-and-build:
     
-    name: Run Unit Tests
+    name: Unit Tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -51,7 +51,7 @@ jobs:
 
   integration-tests:
 
-    name: Run Integration Tests
+    name: Integration Tests
     runs-on: ${{ matrix.os }}
     needs: test-and-build
     strategy:
