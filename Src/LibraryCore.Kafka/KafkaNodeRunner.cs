@@ -1,7 +1,5 @@
-﻿using Confluent.Kafka;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
-using System.Threading.Channels;
 
 namespace LibraryCore.Kafka;
 
@@ -20,26 +18,17 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
 
     internal async Task CreateNodeAsync(CancellationToken cancellationToken)
     {
-        var channel = Channel.CreateUnbounded<ConsumeResult<TKafkaKey, TKafkaMessageBody>?>(new UnboundedChannelOptions
-        {
-            SingleReader = true,
-            SingleWriter = true
-        });
-
-        var reader = ReadAndProcessMessageAsync(channel.Reader, cancellationToken);
-        var consumeAndPublishChannel = PublishIncomingMessageAsync(channel.Writer, cancellationToken);
-
-        await Task.WhenAll(reader, consumeAndPublishChannel);
+        await ProcessorAsync(cancellationToken);
     }
 
-    private async Task PublishIncomingMessageAsync(ChannelWriter<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelWriter, CancellationToken stoppingToken)
+    private async Task ProcessorAsync(CancellationToken stoppingToken)
     {
         var timeout = KafkaProcessor.KafkaConsumeTimeOut();
 
         Logger.LogInformation(LogMessage("Started", string.Join(',', KafkaProcessor.TopicsToRead)));
 
         //let the other part of the hosted service bootup
-        await Task.Delay(100, stoppingToken);
+        await Task.Delay(100, stoppingToken).ConfigureAwait(false);
 
         try
         {
@@ -54,42 +43,13 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
                 {
                     Logger.LogInformation(LogMessage("Kafka Messaged Received", $"Key={consumeResult.Message.Key ?? default}"));
 
-                    //we have a message so go publish. (would be null if it timed out)
-                    await channelWriter.WriteAsync(consumeResult, stoppingToken).ConfigureAwait(false);
+                    await KafkaProcessor.ProcessMessageAsync(consumeResult, NodeId, stoppingToken).ConfigureAwait(false);
+
+                    KafkaProcessor.KafkaConsumer.StoreOffset(consumeResult);
                 }
 
                 //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
                 await Task.Delay(10, stoppingToken).ConfigureAwait(false);
-            }
-        }
-        catch (Exception ex)
-        {
-            if (LogExceptionAndThrow(ex, stoppingToken))
-            {
-                throw;
-            }
-        }
-    }
-
-    private async Task ReadAndProcessMessageAsync(ChannelReader<ConsumeResult<TKafkaKey, TKafkaMessageBody>?> channelReader, CancellationToken stoppingToken)
-    {
-        Logger.LogInformation(LogMessage("Started"));
-
-        //let the other part of the hosted service bootup
-        await Task.Delay(100, stoppingToken).ConfigureAwait(false);
-
-        try
-        {
-            while (await channelReader.WaitToReadAsync(cancellationToken: stoppingToken).ConfigureAwait(false))
-            {
-                while (channelReader.TryRead(out var kafkaMessageResult) && kafkaMessageResult != null)
-                {
-                    Logger.LogInformation(LogMessage("Channel Message Received", $"Key={kafkaMessageResult.Message.Key ?? default}"));
-
-                    await KafkaProcessor.ProcessMessageAsync(kafkaMessageResult, NodeId, stoppingToken).ConfigureAwait(false);
-
-                    KafkaProcessor.KafkaConsumer.StoreOffset(kafkaMessageResult);
-                }
             }
         }
         catch (Exception ex)
