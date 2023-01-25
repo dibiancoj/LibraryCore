@@ -12,13 +12,19 @@ public class BooleanParserTest : IClassFixture<RuleParserFixture>
 
     private RuleParserFixture RuleParserFixture { get; }
 
-    [InlineData(false)]
-    [InlineData(true)]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
     [Theory]
-    public void ParseTest(bool canDrive)
+    public void ParseTest(bool canDrive, bool toLowerCaseString)
     {
+        string valueToTest = toLowerCaseString ?
+                                canDrive.ToString().ToLower() :
+                                canDrive.ToString().ToUpper();
+
         var result = RuleParserFixture.ResolveRuleParserEngine()
-                            .ParseString($"$Survey.CanDrive$ == {canDrive.ToString().ToLower()}")
+                            .ParseString($"$Survey.CanDrive$ == {valueToTest}")
                             .CompilationTokenResult;
 
         Assert.Equal(5, result.Count);
