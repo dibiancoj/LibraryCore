@@ -1,6 +1,4 @@
-﻿using LibraryCore.Parsers.RuleParser;
-using LibraryCore.Parsers.RuleParser.TokenFactories;
-using LibraryCore.Parsers.RuleParser.Utilities;
+﻿using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
