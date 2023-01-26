@@ -9,9 +9,9 @@ namespace LibraryCore.Parsers.RuleParser;
 
 public class RuleParserCompilationResult
 {
-    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokeResult)
+    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult)
     {
-        CompilationTokenResult = compilationTokeResult;
+        CompilationTokenResult = compilationTokenResult;
     }
 
     public IImmutableList<IToken> CompilationTokenResult { get; }
