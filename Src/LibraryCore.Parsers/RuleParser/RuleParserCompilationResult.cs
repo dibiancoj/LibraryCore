@@ -19,7 +19,6 @@ public class RuleParserCompilationResult
     /// <summary>
     /// facade the build expressions so we don't need to declare variables. Keep the expression builder seperate but make it easier for the caller
     /// </summary>
-
     public Expression<Func<bool>> BuildExpression()
     {
         var parametersToUse = ImmutableList<ParameterExpression>.Empty;
