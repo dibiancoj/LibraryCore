@@ -8,15 +8,15 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Description>.NetCore Common Library For Mongo and Document Db</Description>
-		<Version>6.1.0</Version>
+		<Version>6.2.0</Version>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Title>LibraryCore - Mongo</Title>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
-		<PackageReference Include="MongoDB.Bson" Version="2.18.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.19.0" />
+		<PackageReference Include="MongoDB.Bson" Version="2.19.0" />
 		<PackageReference Include="LibraryCore.Core" Version="6.2.0" />
 	</ItemGroup>
 
