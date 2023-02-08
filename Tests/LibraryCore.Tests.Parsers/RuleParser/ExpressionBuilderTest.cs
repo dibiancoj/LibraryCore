@@ -49,7 +49,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void TwoParameterTest()
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                            .ParseString("$Survey.SurgeryCount$ == 24 && $Size.SurgeryCount$ == 12")
+                                            .ParseString("$Survey.SurgeryCount$ == 25 && $Size.SurgeryCount$ == 12 || $Survey.SurgeryCount$ == 24")
                                             .BuildExpression<Survey, Survey>("Survey", "Size");
 
         Assert.True(expression.Compile().Invoke(new SurveyModelBuilder()
