@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.Logging;
 
@@ -6,29 +7,42 @@ internal class LoggingExpressionVisitor<TReturnSignature> : ExpressionVisitor
 {
     private IEnumerable<ParameterExpression> Parameters { get; set; } = null!;
     private ParameterExpression LoggerParameter { get; set; } = null!;
+    private bool AddParameterDebugging { get; }
     private Func<Expression, IEnumerable<ParameterExpression>, Expression> Creator { get; }
 
-    public LoggingExpressionVisitor(Func<Expression, IEnumerable<ParameterExpression>, Expression> creator)
+    public LoggingExpressionVisitor(bool addParameterDebugging, Func<Expression, IEnumerable<ParameterExpression>, Expression> creator)
     {
+        AddParameterDebugging = addParameterDebugging;
         Creator = creator;
     }
 
     protected override Expression VisitLambda<T>(Expression<T> node)
     {
         //add the logger parameter to the lambda. This way we have the logger
-        Parameters = node.Parameters.Prepend(Expression.Parameter(typeof(ExpressionLogger)));
-        LoggerParameter = Parameters.Single(x => x.Type == typeof(ExpressionLogger));
-
-        //var newLambdaWithLoggerParameter = Expression.Lambda<Func<ExpressionLogger, bool>>(node.Body, Parameters);
+        LoggerParameter = Expression.Parameter(typeof(IExpressionLogger));
+        Parameters = node.Parameters.Prepend(LoggerParameter);
 
         //having them pass it in so its not completely generic. This is all internal bits that this dll controls
-        var newLambdaWithLoggerParameters = Creator(node.Body, Parameters);
-
-        //var newLambdaWithLoggerParameters2 = ExpressionLambdaDynamicGenericMakeMethod()
-        //        .MakeGenericMethod(typeof(Func<ExpressionLogger, bool>))
-        //        .Invoke(null, new object[] { node.Body, Parameters });
+        var newLambdaWithLoggerParameters = AddParameterDebugging ?
+                                                BuildParameterLogging(node) :
+                                                Creator(node.Body, Parameters);
 
         return base.VisitLambda((Expression<TReturnSignature>)newLambdaWithLoggerParameters);
+    }
+
+    private Expression<TReturnSignature> BuildParameterLogging<T>(Expression<T> lambdaNode)
+    {
+        //we essentially want to output each parameter passed in and serialize it to json
+
+        var serializeMethod = typeof(JsonSerializer).GetMethod(nameof(JsonSerializer.Serialize), new Type[] { typeof(object), typeof(Type), typeof(JsonSerializerOptions) }) ?? throw new Exception("Can't Find Json Serialize MethodInfo");
+        var serializerToUse = Expression.Constant(new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true });
+        var loggerAddParametersMethod = typeof(IExpressionLogger).GetMethod(nameof(IExpressionLogger.AddParameter)) ?? throw new Exception("Can't Find Logger Add Parameter MethodInfo");
+
+        //loop through all the parameters in the lambda and call Logging.AddParamters(ParameterName, JsonSerialize(ParameterValue)
+        var parametersToLogExecution = lambdaNode.Parameters
+            .Select(x => Expression.Call(LoggerParameter, loggerAddParametersMethod, Expression.Constant(x.Name), Expression.Call(serializeMethod, Expression.Convert(x, typeof(object)), Expression.Constant(x.Type), serializerToUse)));
+
+        return Expression.Lambda<TReturnSignature>(Expression.Block(parametersToLogExecution.Append(lambdaNode.Body).ToArray()), Parameters);
     }
 
     protected override Expression VisitBinary(BinaryExpression node)
@@ -43,62 +57,21 @@ internal class LoggingExpressionVisitor<TReturnSignature> : ExpressionVisitor
 
     public Expression WithLog(BinaryExpression exp)
     {
-        //ExpressionLogger.Add(new LogResult("MyParam == 5", true);
-
+        //ExpressionLogger.AddLogRecord(new LogResult("1 == 1", true));
+        //Then the original expression statement which does the comparison. The block statement will always return the last expression which is the base.VisitBinary(1 == 1)
         return Expression.Block(
             Expression.Call(
                 LoggerParameter,
-                LoggerParameter.Type.GetMethod("Add", new Type[] { typeof(LogResult) }) ?? throw new Exception("Can't Find Add Method On ExpressionLogger"),
-                new[]
+                LoggerParameter.Type.GetMethod(nameof(IExpressionLogger.AddLogRecord)) ?? throw new Exception("Can't Find Add Method On ExpressionLogger"),
+                new Expression[]
                 {
-                        Expression.New(typeof(LogResult).GetConstructor(new [] { typeof(string), typeof(bool)}) ?? throw new Exception("Can't Find LogResult Constructor"),
+                    //new LogResult(expression ie: 1 == 2, Expression Result)
                                 Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
-                                Expression.Convert(exp,typeof(bool)))
+                                Expression.Convert(exp,typeof(bool))
                 }
             ),
             base.VisitBinary(exp)
         );
-
-        //return Expression.Block(
-        //    Expression.Call(
-        //        LoggerParameter,
-        //        LoggerParameter.Type.GetMethod("Add", new Type[] { typeof(string) }) ?? throw new Exception("Can't Find Print Method"),
-        //        //typeof(StringBuilder).GetMethod("Append", new Type[] { typeof(string) }) ?? throw new Exception("Can't Find Print Method"),
-        //        new[]
-        //        {
-        //        Expression.Call(
-        //            typeof(string).GetMethod("Format", new [] { typeof(string), typeof(object), typeof(object)}) ?? throw new Exception("Can't Find Format Method"),
-        //            Expression.Constant("Executing Rule: {0} --> {1}"),
-        //            Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
-        //            Expression.Convert(
-        //                exp,
-        //                typeof(object)
-        //            )
-        //        )
-        //        }
-        //    ),
-        //    base.VisitBinary(exp)
-        //);
-
-
-        //return Expression.Block(
-        //    Expression.Call(
-        //        typeof(Debug).GetMethod("Print", new Type[] { typeof(string) }) ?? throw new Exception("Can't Find Print Method"),
-        //        new[]
-        //        {
-        //        Expression.Call(
-        //            typeof(string).GetMethod("Format", new [] { typeof(string), typeof(object), typeof(object)}) ?? throw new Exception("Can't Find Format Method"),
-        //            Expression.Constant("Executing Rule: {0} --> {1}"),
-        //            Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
-        //            Expression.Convert(
-        //                exp,
-        //                typeof(object)
-        //            )
-        //        )
-        //        }
-        //    ),
-        //    base.VisitBinary(exp)
-        //);
     }
 
 }
