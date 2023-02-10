@@ -57,7 +57,7 @@ internal class LoggingExpressionVisitor<TReturnSignature> : ExpressionVisitor
 
     public Expression WithLog(BinaryExpression exp)
     {
-        //ExpressionLogger.AddLogRecord(new LogResult("1 == 1", true));
+        //ExpressionLogger.AddLogRecord("1 == 1", true));
         //Then the original expression statement which does the comparison. The block statement will always return the last expression which is the base.VisitBinary(1 == 1)
         return Expression.Block(
             Expression.Call(
@@ -65,9 +65,9 @@ internal class LoggingExpressionVisitor<TReturnSignature> : ExpressionVisitor
                 LoggerParameter.Type.GetMethod(nameof(IExpressionLogger.AddLogRecord)) ?? throw new Exception("Can't Find Add Method On ExpressionLogger"),
                 new Expression[]
                 {
-                    //new LogResult(expression ie: 1 == 2, Expression Result)
-                                Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
-                                Expression.Convert(exp,typeof(bool))
+                    //call method with the 2 parameters (expression description ie: 1 == 1, expression result ie: true)
+                    Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
+                    Expression.Convert(exp,typeof(bool))
                 }
             ),
             base.VisitBinary(exp)
