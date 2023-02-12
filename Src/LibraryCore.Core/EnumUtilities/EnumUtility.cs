@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace LibraryCore.Core.EnumUtilities;
 
@@ -44,6 +46,16 @@ public static class EnumUtility
     #endregion
 
     #region Get Custom Attribute Off Of Enum Member
+
+    /// <summary>
+    /// Get a dictionary where the key is the enum value and the description is a DescriptionAttribute. This a common pattern that can be abstracted to just this method call
+    /// </summary>
+    /// <typeparam name="T">Type of the enum</typeparam>
+    /// <returns>dictionary where the key is the enum value and the description is a DescriptionAttribute string</returns>
+    public static IImmutableDictionary<T, string> EnumLookupTable<T>() where T : struct, Enum
+    {
+        return GetValuesLazy<T>().ToImmutableDictionary(x => x, x => CustomAttributeGet<DescriptionAttribute>(x).Description);
+    }
 
     public static T? CustomAttributeTryGet<T>(Enum enumValueToRetrieve) where T : Attribute
     {
