@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Core.EnumUtilities;
+using System.ComponentModel;
 
 namespace LibraryCore.Tests.Core.EnumUtilities;
 
@@ -27,6 +28,15 @@ public class EnumUtilityTest
         [DescriptionText("Country_123")]
         Country = 2,
         Planet = 4
+    }
+
+    [Flags]
+    public enum LookupTestEnum : int
+    {
+        [Description("My City")]
+        City = 0,
+        [Description("My State")]
+        State = 1,
     }
 
     #endregion
@@ -70,6 +80,16 @@ public class EnumUtilityTest
     #endregion
 
     #region Custom Attribute
+
+    [Fact]
+    public void EnumLookupTest()
+    {
+        var result = EnumUtility.EnumLookupTable<LookupTestEnum>();
+
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, x => x.Key == LookupTestEnum.City && x.Value == "My City");
+        Assert.Contains(result, x => x.Key == LookupTestEnum.State && x.Value == "My State");
+    }
 
     /// <summary>
     /// Test getting a custom attribute off of an enum
