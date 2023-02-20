@@ -55,13 +55,14 @@ public static class DocumentDbRegistration
         return new MongoClient(settings);
     }
 
-    public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false, int port = 27017)
+    //retry writes aren't supported in document db. Always have that false unless your using the real mongo
+    public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false, int port = 27017, bool retryWrites = false)
     {
-        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true");
+        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true&retryWrites=false");
 
         if (!runningFromLocalHostWithSsh)
         {
-            builder.Append($"&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}&retryWrites=false");
+            builder.Append($"&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}");
         }
 
         return builder.ToString();
