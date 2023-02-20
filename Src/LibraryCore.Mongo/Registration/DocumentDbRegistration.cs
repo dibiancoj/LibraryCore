@@ -58,7 +58,7 @@ public static class DocumentDbRegistration
     //retry writes aren't supported in document db. Always have that false unless your using the real mongo
     public static string EncryptedMongoConnectionStringBuilder(string userName, string password, string dbHostName, string readPreference = "primary", bool runningFromLocalHostWithSsh = false, int port = 27017, bool retryWrites = false)
     {
-        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true&retryWrites={retryWrites}");
+        var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true&retryWrites={retryWrites.ToString().ToLower()}");
 
         if (!runningFromLocalHostWithSsh)
         {
