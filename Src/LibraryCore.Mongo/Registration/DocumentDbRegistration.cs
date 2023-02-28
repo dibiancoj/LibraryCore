@@ -60,10 +60,9 @@ public static class DocumentDbRegistration
     {
         var builder = new StringBuilder($"mongodb://{userName}:{password}@{dbHostName}:{port}/?ssl=true&retryWrites={retryWrites}");
 
-        if (!runningFromLocalHostWithSsh)
-        {
-            builder.Append($"&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}");
-        }
+        builder.Append(runningFromLocalHostWithSsh ?
+                            "&sslVerifyCertificate=false" :
+                            $"&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference={readPreference}");
 
         return builder.ToString();
     }
