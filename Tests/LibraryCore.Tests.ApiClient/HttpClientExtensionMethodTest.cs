@@ -46,7 +46,7 @@ public class HttpClientExtensionMethodTest
                                                 .AddHeader("Header1", "Header1Value")
                                                 .AddJsonBody(jsonParameters);
 
-        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>>(request, includeCancelToken ? new CancellationToken() : default) ?? throw new Exception("Can't deserialize result");
+        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>>(request, cancellationToken: includeCancelToken ? new CancellationToken() : default) ?? throw new Exception("Can't deserialize result");
 
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");

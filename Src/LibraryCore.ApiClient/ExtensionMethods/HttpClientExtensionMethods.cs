@@ -1,16 +1,17 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace LibraryCore.ApiClient.ExtensionMethods;
 
 public static class HttpClientExtensionMethods
 {
-    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)
+    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
 
         return await rawResponse.EnsureSuccessStatusCode()
-                .Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+                .Content.ReadFromJsonAsync<T>(options: jsonSerializerOptions, cancellationToken: cancellationToken);
     }
 
     public static async Task<T?> SendRequestToXmlAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)

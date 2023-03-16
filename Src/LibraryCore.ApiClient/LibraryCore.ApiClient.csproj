@@ -11,13 +11,14 @@
 		<Description>Distributed Session State Library</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>6.0.4</Version>
+		<Version>6.1.0</Version>
 		<Title>LibraryCore - Api Client</Title>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="LibraryCore.XmlSerialization" Version="6.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
 	</ItemGroup>
 
 </Project>
