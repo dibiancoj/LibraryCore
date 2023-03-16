@@ -2,6 +2,7 @@
 using LibraryCore.ApiClient.ExtensionMethods;
 using LibraryCore.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
+using System.Text.Json;
 using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.IntegrationTests;
@@ -78,7 +79,7 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     public async Task QueryStringsTest()
     {
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/QueryStringTest")
-                                                                                        .AddQueryStrings(new Dictionary<string,string>
+                                                                                        .AddQueryStrings(new Dictionary<string, string>
                                                                                         {
                                                                                             { "Q1", "One" },
                                                                                             { "Q2", "Two" }
@@ -122,6 +123,26 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
                                                                                         {
                                                                                             Id = 5,
                                                                                             Text = "5"
+                                                                                        }));
+
+        var result = await response.EnsureSuccessStatusCode()
+                                .Content.ReadFromJsonAsync<ResultModel>() ?? throw new Exception("Can't deserialize result");
+
+        Assert.Equal(6, result.Id);
+        Assert.Equal("5_Result", result.Text);
+    }
+
+    [Fact]
+    public async Task SimpleJsonPayloadWithJsonOptions()
+    {
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/SimpleJsonPayloadWithJsonParameters")
+                                                                                        .AddJsonBody(new
+                                                                                        {
+                                                                                            id = 5,
+                                                                                            text = "5"
+                                                                                        }, jsonSerializerOptions: new JsonSerializerOptions
+                                                                                        {
+                                                                                            PropertyNameCaseInsensitive = true
                                                                                         }));
 
         var result = await response.EnsureSuccessStatusCode()

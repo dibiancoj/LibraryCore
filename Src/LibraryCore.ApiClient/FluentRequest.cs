@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.ApiClient;
@@ -81,9 +82,9 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddJsonBody<T>(T model)
+    public FluentRequest AddJsonBody<T>(T model, JsonSerializerOptions? jsonSerializerOptions = null)
     {
-        Message.Content = JsonContent.Create(model);
+        Message.Content = JsonContent.Create(model, options: jsonSerializerOptions);
         return this;
     }
 
@@ -110,7 +111,7 @@ public class FluentRequest
         Message.Headers.Authorization = new AuthenticationHeaderValue("Basic", BasicAuthenticationHeaderValue(userName, password));
         return this;
     }
-    
+
     public static string BasicAuthenticationHeaderValue(string userName, string password) => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
 
     /// <summary>
