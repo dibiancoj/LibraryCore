@@ -6,7 +6,7 @@ namespace LibraryCore.ApiClient.ExtensionMethods;
 
 public static class HttpClientExtensionMethods
 {
-    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default, JsonSerializerOptions? jsonSerializerOptions = null)
+    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
 
