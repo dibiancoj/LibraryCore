@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using LibraryCore.ApiClient.ExtensionMethods.Models;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,6 +13,23 @@ public static class HttpClientExtensionMethods
 
         return await rawResponse.EnsureSuccessStatusCode()
                 .Content.ReadFromJsonAsync<T>(options: jsonSerializerOptions, cancellationToken: cancellationToken);
+    }
+
+    /// <summary>
+    /// Union type response. If 200 Ok = Deserialize To a model. If a 400 bad request = Deserialize a different model. This way we can handle specific items to a different model type
+    /// </summary>
+    public static async Task<SendRequestToJsonUnionResult<T1Ok, T2BadRequest>> SendRequestToJsonAsync<T1Ok, T2BadRequest>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
+    {
+        var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
+
+        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK && rawResponse.StatusCode != System.Net.HttpStatusCode.BadRequest)
+        {
+            rawResponse.EnsureSuccessStatusCode();
+        }
+
+        return rawResponse.IsSuccessStatusCode ?
+                SendRequestToJsonUnionResult<T1Ok, T2BadRequest>.CreateSuccess(await rawResponse.Content.ReadFromJsonAsync<T1Ok>(jsonSerializerOptions, cancellationToken)) :
+                SendRequestToJsonUnionResult<T1Ok, T2BadRequest>.CreateBadRequest(await rawResponse.Content.ReadFromJsonAsync<T2BadRequest>(jsonSerializerOptions, cancellationToken));
     }
 
     public static async Task<T?> SendRequestToXmlAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)

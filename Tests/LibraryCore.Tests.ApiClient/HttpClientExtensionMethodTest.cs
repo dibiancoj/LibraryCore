@@ -54,6 +54,69 @@ public class HttpClientExtensionMethodTest
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
 
+    [Fact]
+    public async Task HttpClientSendRequestToJsonWithUnionTypesWithNon200OrNon400Test()
+    {
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.InternalServerError, "dummy value");
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddHeader("Header1", "Header1Value");
+
+        var exceptionRaised = await Assert.ThrowsAsync<HttpRequestException>(async () =>
+        {
+            _ = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request);
+        });
+
+        Assert.NotNull(exceptionRaised);
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task HttpClientSendRequestToJsonWithUnionTypesTest(bool isSuccessfulApiCall)
+    {
+        var mockResponse = isSuccessfulApiCall ? CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+                                                    {
+                                                        new WeatherForecast(1, 10, "Weather 1")
+                                                    }) :
+                                                    CreateJsonMockResponse(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                                                                            {
+                                                                                   { "Id", "Is Null"}
+                                                                             });
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddHeader("Header1", "Header1Value");
+
+        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request);
+
+        Assert.Equal(isSuccessfulApiCall, result.IsSuccessful);
+
+        if (isSuccessfulApiCall)
+        {
+            Assert.True(result.TryGetIsSuccessful(out var successModel));
+            Assert.Single(successModel);
+            Assert.Contains(successModel, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+            Assert.False(result.TryGetIsBadRequest(out var badResultModel));
+            Assert.Null(badResultModel);
+        }
+        else
+        {
+            Assert.True(result.TryGetIsBadRequest(out var badResultModel));
+            Assert.Single(badResultModel);
+            Assert.Contains(badResultModel, x => x.Key == "Id" && x.Value == "Is Null");
+
+            Assert.False(result.TryGetIsSuccessful(out var successModelAttempt2));
+            Assert.Null(successModelAttempt2);
+        }
+
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
