@@ -8,7 +8,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Description>.NetCore Common Library For Mongo and Document Db</Description>
-		<Version>6.2.4</Version>
+		<Version>6.2.3</Version>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Title>LibraryCore - Mongo</Title>
