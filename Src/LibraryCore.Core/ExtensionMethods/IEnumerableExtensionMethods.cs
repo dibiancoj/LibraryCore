@@ -49,6 +49,8 @@ public static class IEnumerableExtensionMethods
     /// <returns>If the enumerable has no items</returns>
     public static bool HasNoneWithNullCheck<T>([NotNullWhen(false)] this IEnumerable<T>? collection) => !collection.AnyWithNullCheck();
 
+    public static bool HasNoneWithNullCheck<T>([NotNullWhen(false)] this IEnumerable<T>? collection, Func<T, bool>? predicate) => !collection.AnyWithNullCheck(predicate);
+
     #endregion
 
     #region For Each (On IEnumerable)
