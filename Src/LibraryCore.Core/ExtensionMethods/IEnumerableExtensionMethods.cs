@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace LibraryCore.Core.ExtensionMethods;
 
@@ -47,9 +49,9 @@ public static class IEnumerableExtensionMethods
     /// Does the array have no items. 
     /// </summary>
     /// <returns>If the enumerable has no items</returns>
-    public static bool HasNoneWithNullCheck<T>([NotNullWhen(false)] this IEnumerable<T>? collection) => !collection.AnyWithNullCheck();
+    public static bool IsNullOrEmpty<T>([NotNullWhen(false)] this IEnumerable<T>? collection) => !collection.AnyWithNullCheck();
 
-    public static bool HasNoneWithNullCheck<T>([NotNullWhen(false)] this IEnumerable<T>? collection, Func<T, bool>? predicate) => !collection.AnyWithNullCheck(predicate);
+    public static bool IsNullOrEmpty<T>([NotNullWhen(false)] this IEnumerable<T>? collection, Func<T, bool>? predicate) => !collection.AnyWithNullCheck(predicate);
 
     #endregion
 
@@ -150,6 +152,79 @@ public static class IEnumerableExtensionMethods
     /// <returns>type of index and element item</returns>
     /// <example>foreach (var (index, value) in arrayToTestWith.WithIndex())</example>
     public static IEnumerable<WithIndexResult<T>> WithIndex<T>(this IEnumerable<T> set) => set.Select((value, index) => new WithIndexResult<T>(index, value));
+
+    #endregion
+
+    #region Median
+
+    /// <summary>
+    /// The median is the middle number in a sorted asc or desc, list of numbers and can be more descriptive then the average
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static double Median<T>(this IEnumerable<T> source)
+        where T : IConvertible
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        var sortedList = source
+            .Select(x => x.ToDouble(CultureInfo.InvariantCulture))
+            .OrderBy(x => x)
+            .ToList();
+
+        var count = sortedList.Count;
+
+        if (count == 0)
+        {
+            throw new InvalidOperationException("The source sequence is empty");
+        }
+
+        if (count % 2 == 0)
+        {
+            return (sortedList[count / 2 - 1] + sortedList[count / 2]) / 2;
+        }
+
+        return sortedList[count / 2];
+    }
+
+    #endregion
+
+    #region Mode
+
+    /// <summary>
+    /// The mode is the number that is repeated most often in a set of numbers
+    /// </summary>
+    public static IEnumerable<T> Mode<T>(this IEnumerable<T> source)
+    {
+        if (source.IsNullOrEmpty())
+        {
+            throw new ArgumentException("Source Is Null Or Empty", nameof(source));
+        }
+
+        var groups = source.GroupBy(x => x);
+        var maxCount = groups.Max(g => g.Count());
+
+        return groups
+            .Where(g => g.Count() == maxCount)
+            .Select(g => g.Key);
+    }
+
+    #endregion
+
+    #region Partitioning
+
+    /// <summary>
+    /// Split a collection into 2 buckets based on the predicate. ie: is even or odd. n => n %%2 == 0
+    /// </summary>
+    public static (IEnumerable<T> True, IEnumerable<T> False) Partition<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var groupByPredicate = source.GroupBy(predicate);
+
+        return (groupByPredicate.FirstOrDefault(t => t.Key) ?? Enumerable.Empty<T>(),
+                groupByPredicate.FirstOrDefault(t => !t.Key) ?? Enumerable.Empty<T>());
+    }
 
     #endregion
 

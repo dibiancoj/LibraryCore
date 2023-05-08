@@ -134,7 +134,7 @@ public class DelimiterBuilder
     private void WriteOutRowOfData(DelimiterRow columnsOfDataToOutput)
     {
         //we don't have any columns, just return an empty string
-        if (columnsOfDataToOutput.ColumnData.HasNoneWithNullCheck())
+        if (columnsOfDataToOutput.ColumnData.IsNullOrEmpty())
         {
             //have nothing, return out of the method
             return;

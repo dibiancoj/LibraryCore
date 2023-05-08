@@ -97,19 +97,19 @@ public class IEnumerableExtensionMethodTest
     {
         List<int>? list = null;
 
-        Assert.True(list.HasNoneWithNullCheck());
+        Assert.True(list.IsNullOrEmpty());
     }
 
     [Fact]
     public void HasNoneIsTrue()
     {
-        Assert.True(new List<int>().HasNoneWithNullCheck());
+        Assert.True(new List<int>().IsNullOrEmpty());
     }
 
     [Fact]
     public void HasNoneIsFalse()
     {
-        Assert.False(new List<int> { 1 }.HasNoneWithNullCheck());
+        Assert.False(new List<int> { 1 }.IsNullOrEmpty());
     }
 
     [Fact]
@@ -117,25 +117,25 @@ public class IEnumerableExtensionMethodTest
     {
         List<int>? list = null;
 
-        Assert.True(list.HasNoneWithNullCheck(x => x == 3));
+        Assert.True(list.IsNullOrEmpty(x => x == 3));
     }
 
     [Fact]
     public void HasNoneWithPredicateTrue()
     {
-        Assert.True(new List<int>().HasNoneWithNullCheck(x => true));
+        Assert.True(new List<int>().IsNullOrEmpty(x => true));
     }
 
     [Fact]
     public void HasNoneWithPredicateTrueWithRecords()
     {
-        Assert.True(new List<int> { 1, 2, 3 }.HasNoneWithNullCheck(x => x == 4));
+        Assert.True(new List<int> { 1, 2, 3 }.IsNullOrEmpty(x => x == 4));
     }
 
     [Fact]
     public void HasNoneWithPredicateFalseWithRecords()
     {
-        Assert.False(new List<int> { 1, 2, 3 }.HasNoneWithNullCheck(x => x == 3));
+        Assert.False(new List<int> { 1, 2, 3 }.IsNullOrEmpty(x => x == 3));
     }
 
     #endregion
@@ -291,6 +291,93 @@ public class IEnumerableExtensionMethodTest
 
             i++;
         }
+    }
+
+    #endregion
+
+    #region Median
+
+    [Fact]
+    public void MedianWithNullSource()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((List<int>)null!).Median());
+    }
+
+    [Fact]
+    public void MedianWithEmptySource()
+    {
+        Assert.Throws<InvalidOperationException>(() => Array.Empty<int>().Median());
+    }
+
+    [InlineData(new[] { 1D, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
+    [InlineData(new[] { 1D, 15, 25, 5, 6, 7, 2.5, 9 }, 6.5)] //even item
+    [InlineData(new[] { 3D, 2, 1 }, 2)] //odd item
+    [InlineData(new[] { 3D, 25, 16 }, 16)] //odd item
+    [Theory]
+    public void MedianMultipleChecksSource(IEnumerable<double> source, double expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median());
+    }
+
+    #endregion
+
+    #region Mode
+
+    [Fact]
+    public void ModeWithNullSource()
+    {
+        Assert.Throws<ArgumentException>(() => ((List<int>)null!).Mode());
+    }
+
+    [Fact]
+    public void ModeWithEmptySource()
+    {
+        Assert.Throws<ArgumentException>(() => Array.Empty<int>().Mode());
+    }
+
+    [InlineData(new[] { 1D, 2, 2, 2, 5, 3, 3, 3, 6, 7, 8, 9 }, new[] { 2D, 3 })] //even item
+    [InlineData(new[] { 1D, 2, 3, 4, 5, 2 }, new[] { 2D })] //even item
+    [Theory]
+    public void ModeMultipleChecks(IEnumerable<double> source, IEnumerable<double> expectedResult)
+    {
+        var result = source.Mode();
+
+        foreach (var expected in expectedResult)
+        {
+            Assert.Contains(result, x => x == expected);
+        }
+    }
+
+    #endregion
+
+    #region Partitioning
+
+    [Fact]
+    public void PartitioningWithNullSource()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((List<int>)null!).Partition(x => x % 2 == 0));
+    }
+
+    [Fact]
+    public void PartitioningWithNullPredicate()
+    {
+        Assert.Throws<ArgumentNullException>(() => Array.Empty<int>().Partition(null!));
+    }
+
+    [Fact]
+    public void PartitioningMultipleChecks()
+    {
+        var result = new[] { 1, 2, 3, 4, 6 }.Partition(x => x % 2 == 0);
+
+        Assert.Equal(3, result.True.Count());
+        Assert.Equal(2, result.False.Count());
+
+        Assert.Contains(result.True, x => x == 2);
+        Assert.Contains(result.True, x => x == 4);
+        Assert.Contains(result.True, x => x == 6);
+
+        Assert.Contains(result.False, x => x == 1);
+        Assert.Contains(result.False, x => x == 3);
     }
 
     #endregion
