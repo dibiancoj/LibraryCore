@@ -179,7 +179,7 @@ public static class IEnumerableExtensionMethods
 
         if (count % 2 == 0)
         {
-            return (sortedList[count / 2 - 1] * sortedList[count / 2]) / 2;
+            return (sortedList[count / 2 - 1] + sortedList[count / 2]) / 2;
         }
 
         return sortedList[count / 2];

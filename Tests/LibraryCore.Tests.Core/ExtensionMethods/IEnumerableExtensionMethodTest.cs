@@ -295,4 +295,38 @@ public class IEnumerableExtensionMethodTest
 
     #endregion
 
+    #region Median
+
+    [Fact]
+    public void MedianWithNullSource()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((List<int>)null!).Median());
+    }
+
+    [Fact]
+    public void MedianWithEmptySource()
+    {
+        Assert.Throws<InvalidOperationException>(() => Array.Empty<int>().Median());
+    }
+
+    [Fact]
+    public void MedianWithOddItemCountSource()
+    {
+        var result = new[] { 1, 1, 1, 1, 5, 6, 7, 8, 9 }.Median();
+
+        Assert.Equal(5, result);
+    }
+
+    [InlineData(new[] { 1D, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
+    [InlineData(new[] { 1D, 15, 25, 5, 6, 7, 2.5, 9 }, 6.5)] //even item
+    [InlineData(new[] { 3D, 2, 1 }, 2)] //odd item
+    [InlineData(new[] { 3D, 25, 16 }, 16)] //odd item
+    [Theory]
+    public void MedianWithEvenItemCountSource(IEnumerable<double> source, double expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median());
+    }
+
+    #endregion
+
 }
