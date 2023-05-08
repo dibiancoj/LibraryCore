@@ -86,7 +86,7 @@ public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToke
 {
     public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
-        return InnerTokens.HasNoneWithNullCheck() ?
+        return InnerTokens.IsNullOrEmpty() ?
             Expression.Constant(Value) :
             CreateExpressionWithInnerFormats(parameters);
     }
