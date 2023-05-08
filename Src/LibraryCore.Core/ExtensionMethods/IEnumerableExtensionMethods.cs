@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace LibraryCore.Core.ExtensionMethods;
@@ -194,7 +195,10 @@ public static class IEnumerableExtensionMethods
     /// </summary>
     public static IEnumerable<T> Mode<T>(this IEnumerable<T> source)
     {
-        ArgumentNullException.ThrowIfNull(source);
+        if (source.IsNullOrEmpty())
+        {
+            throw new ArgumentException("Source Is Null Or Empty", nameof(source));
+        }
 
         var groups = source.GroupBy(x => x);
         var maxCount = groups.Max(g => g.Count());

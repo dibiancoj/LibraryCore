@@ -309,22 +309,43 @@ public class IEnumerableExtensionMethodTest
         Assert.Throws<InvalidOperationException>(() => Array.Empty<int>().Median());
     }
 
-    [Fact]
-    public void MedianWithOddItemCountSource()
-    {
-        var result = new[] { 1, 1, 1, 1, 5, 6, 7, 8, 9 }.Median();
-
-        Assert.Equal(5, result);
-    }
-
     [InlineData(new[] { 1D, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
     [InlineData(new[] { 1D, 15, 25, 5, 6, 7, 2.5, 9 }, 6.5)] //even item
     [InlineData(new[] { 3D, 2, 1 }, 2)] //odd item
     [InlineData(new[] { 3D, 25, 16 }, 16)] //odd item
     [Theory]
-    public void MedianWithEvenItemCountSource(IEnumerable<double> source, double expectedResult)
+    public void MedianMultipleChecksSource(IEnumerable<double> source, double expectedResult)
     {
         Assert.Equal(expectedResult, source.Median());
+    }
+
+    #endregion
+
+    #region Mode
+
+    [Fact]
+    public void ModeWithNullSource()
+    {
+        Assert.Throws<ArgumentException>(() => ((List<int>)null!).Mode());
+    }
+
+    [Fact]
+    public void ModeWithEmptySource()
+    {
+        Assert.Throws<ArgumentException>(() => Array.Empty<int>().Mode());
+    }
+
+    [InlineData(new[] { 1D, 2, 2, 2, 5, 3, 3, 3, 6, 7, 8, 9 }, new[] { 2D, 3 })] //even item
+    [InlineData(new[] { 1D, 2, 3, 4, 5, 2 }, new[] { 2D })] //even item
+    [Theory]
+    public void ModeMultipleChecks(IEnumerable<double> source, IEnumerable<double> expectedResult)
+    {
+        var result = source.Mode();
+
+        foreach (var expected in expectedResult)
+        {
+            Assert.Contains(result, x => x == expected);
+        }
     }
 
     #endregion
