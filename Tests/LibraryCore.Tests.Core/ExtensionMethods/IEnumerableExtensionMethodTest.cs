@@ -97,19 +97,19 @@ public class IEnumerableExtensionMethodTest
     {
         List<int>? list = null;
 
-        Assert.True(list.HasNoneWithNullCheck());
+        Assert.True(list.IsNullOrEmpty());
     }
 
     [Fact]
     public void HasNoneIsTrue()
     {
-        Assert.True(new List<int>().HasNoneWithNullCheck());
+        Assert.True(new List<int>().IsNullOrEmpty());
     }
 
     [Fact]
     public void HasNoneIsFalse()
     {
-        Assert.False(new List<int> { 1 }.HasNoneWithNullCheck());
+        Assert.False(new List<int> { 1 }.IsNullOrEmpty());
     }
 
     [Fact]
@@ -117,25 +117,25 @@ public class IEnumerableExtensionMethodTest
     {
         List<int>? list = null;
 
-        Assert.True(list.HasNoneWithNullCheck(x => x == 3));
+        Assert.True(list.IsNullOrEmpty(x => x == 3));
     }
 
     [Fact]
     public void HasNoneWithPredicateTrue()
     {
-        Assert.True(new List<int>().HasNoneWithNullCheck(x => true));
+        Assert.True(new List<int>().IsNullOrEmpty(x => true));
     }
 
     [Fact]
     public void HasNoneWithPredicateTrueWithRecords()
     {
-        Assert.True(new List<int> { 1, 2, 3 }.HasNoneWithNullCheck(x => x == 4));
+        Assert.True(new List<int> { 1, 2, 3 }.IsNullOrEmpty(x => x == 4));
     }
 
     [Fact]
     public void HasNoneWithPredicateFalseWithRecords()
     {
-        Assert.False(new List<int> { 1, 2, 3 }.HasNoneWithNullCheck(x => x == 3));
+        Assert.False(new List<int> { 1, 2, 3 }.IsNullOrEmpty(x => x == 3));
     }
 
     #endregion
