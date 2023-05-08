@@ -350,4 +350,36 @@ public class IEnumerableExtensionMethodTest
 
     #endregion
 
+    #region Partitioning
+
+    [Fact]
+    public void PartitioningWithNullSource()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((List<int>)null!).Partition(x => x % 2 == 0));
+    }
+
+    [Fact]
+    public void PartitioningWithNullPredicate()
+    {
+        Assert.Throws<ArgumentNullException>(() => Array.Empty<int>().Partition(null!));
+    }
+
+    [Fact]
+    public void PartitioningMultipleChecks()
+    {
+        var result = new[] { 1, 2, 3, 4, 6 }.Partition(x => x % 2 == 0);
+
+        Assert.Equal(3, result.True.Count());
+        Assert.Equal(2, result.False.Count());
+
+        Assert.Contains(result.True, x => x == 2);
+        Assert.Contains(result.True, x => x == 4);
+        Assert.Contains(result.True, x => x == 6);
+
+        Assert.Contains(result.False, x => x == 1);
+        Assert.Contains(result.False, x => x == 3);
+    }
+
+    #endregion
+
 }
