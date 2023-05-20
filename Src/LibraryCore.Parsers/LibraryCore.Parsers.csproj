@@ -8,14 +8,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Description>.NetCore Common Library For Parsing Such As A Rule Parser</Description>
-		<Version>6.4.0</Version>
+		<Version>6.4.1</Version>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Title>LibraryCore - Parsers</Title>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LibraryCore.Core" Version="6.4.0" />
+		<PackageReference Include="LibraryCore.Core" Version="6.4.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 
