@@ -1,7 +1,6 @@
 ﻿using Confluent.Kafka;
 using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using static LibraryCore.IntegrationTests.Framework.Kafka.MyIntegrationHostedAgentMockDatabase;
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka.Api;
 
