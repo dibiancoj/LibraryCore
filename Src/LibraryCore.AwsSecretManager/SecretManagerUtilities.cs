@@ -41,10 +41,10 @@ public static class SecretManagerUtilities
     /// Json Object Version
     /// </summary>
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
-                                                        string secretArnOrName,
-                                                        string versionStage = "AWSCURRENT",
-                                                        JsonSerializerOptions? jsonSerializerOptions = null,
-                                                        CancellationToken cancellationToken = default)
+                                                   string secretArnOrName,
+                                                   string versionStage = "AWSCURRENT",
+                                                   JsonSerializerOptions? jsonSerializerOptions = null,
+                                                   CancellationToken cancellationToken = default)
     {
         var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken).ConfigureAwait(false);
 
