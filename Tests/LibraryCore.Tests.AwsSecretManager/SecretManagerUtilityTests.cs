@@ -102,4 +102,21 @@ public class SecretManagerUtilityTests
 
         mockIAmazonSecretsManager.VerifyAll();
     }
+
+    [Fact]
+    public async Task SuccessOnNullJsonSecret()
+    {
+        var mockIAmazonSecretsManager = new Mock<IAmazonSecretsManager>();
+
+        mockIAmazonSecretsManager.Setup(x => x.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(new GetSecretValueResponse
+            {
+                HttpStatusCode = System.Net.HttpStatusCode.OK,
+                SecretString = string.Empty
+            }));
+
+        Assert.Null(await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName"));
+
+        mockIAmazonSecretsManager.VerifyAll();
+    }
 }
