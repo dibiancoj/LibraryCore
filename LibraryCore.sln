@@ -114,6 +114,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.IntegrationTests.Framework.Kafka", "IntegrationTests\Framework\LibraryCore.IntegrationTests.Framework.Kafka\LibraryCore.IntegrationTests.Framework.Kafka.csproj", "{5979B730-DB33-4342-93FE-E6ADB1132F0D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aws", "Aws", "{4BB9DABB-6EF9-4CC9-AA20-F1AC5F19F8C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.AwsSecretManager", "Src\LibraryCore.AwsSecretManager\LibraryCore.AwsSecretManager.csproj", "{79AC6834-9B4E-4B8E-B9A9-40399054211A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.AwsSecretManager", "Tests\LibraryCore.Tests.AwsSecretManager\LibraryCore.Tests.AwsSecretManager.csproj", "{D525B4BC-52B8-4CD3-BE69-DBAB95241A08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SecretManager", "SecretManager", "{6F1657D5-7DD6-4C75-B601-E1FCD40B39D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -240,6 +248,14 @@ Global
 		{5979B730-DB33-4342-93FE-E6ADB1132F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5979B730-DB33-4342-93FE-E6ADB1132F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5979B730-DB33-4342-93FE-E6ADB1132F0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79AC6834-9B4E-4B8E-B9A9-40399054211A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79AC6834-9B4E-4B8E-B9A9-40399054211A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79AC6834-9B4E-4B8E-B9A9-40399054211A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79AC6834-9B4E-4B8E-B9A9-40399054211A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D525B4BC-52B8-4CD3-BE69-DBAB95241A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D525B4BC-52B8-4CD3-BE69-DBAB95241A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D525B4BC-52B8-4CD3-BE69-DBAB95241A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D525B4BC-52B8-4CD3-BE69-DBAB95241A08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,6 +305,10 @@ Global
 		{6CB53280-2062-48FC-AD70-77EDB471F515} = {0596B611-307A-46B6-991C-076D490644D4}
 		{E922471F-EC04-44FA-8D93-F8935BEC10CB} = {0596B611-307A-46B6-991C-076D490644D4}
 		{5979B730-DB33-4342-93FE-E6ADB1132F0D} = {0596B611-307A-46B6-991C-076D490644D4}
+		{4BB9DABB-6EF9-4CC9-AA20-F1AC5F19F8C1} = {75C64940-5413-442D-B876-AEAA8DC20FC0}
+		{79AC6834-9B4E-4B8E-B9A9-40399054211A} = {6F1657D5-7DD6-4C75-B601-E1FCD40B39D2}
+		{D525B4BC-52B8-4CD3-BE69-DBAB95241A08} = {6F1657D5-7DD6-4C75-B601-E1FCD40B39D2}
+		{6F1657D5-7DD6-4C75-B601-E1FCD40B39D2} = {4BB9DABB-6EF9-4CC9-AA20-F1AC5F19F8C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61C7767-7D12-4313-8DA2-56AE8FC5AAD5}
