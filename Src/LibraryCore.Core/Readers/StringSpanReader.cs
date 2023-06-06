@@ -60,7 +60,7 @@ public ref struct StringSpanReader
         }
 
         //fast forward the index (because we are working with just the index on...we need to += to fast forward from the index plus whatever the smaller string we are scanning)
-        Index+= tryToFindIndex;
+        Index += tryToFindIndex;
 
         //start from the first character and read until the index
         return new string(stringFromIndexToEnd[..tryToFindIndex]);

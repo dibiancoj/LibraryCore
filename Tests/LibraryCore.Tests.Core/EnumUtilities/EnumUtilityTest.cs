@@ -165,9 +165,9 @@ public class EnumUtilityTest
         Assert.True(EnumUtility.BitMaskContainsValue(workingValue, TestEnum.Planet));
 
         //value = 0 so always included
-        Assert.True(EnumUtility.BitMaskContainsValue(workingValue, TestEnum.City)); 
+        Assert.True(EnumUtility.BitMaskContainsValue(workingValue, TestEnum.City));
         Assert.False(EnumUtility.BitMaskContainsValue(workingValue, TestEnum.State));
-        
+
         Assert.False(EnumUtility.BitMaskContainsValue(workingValue, TestEnum.Country));
 
         workingValue = EnumUtility.BitMaskAddItem(workingValue, TestEnum.Country);
@@ -232,7 +232,7 @@ public class EnumUtilityTest
         Assert.True(builder.ContainsValue(TestEnum.Planet));
 
         //value = 0 so always included
-        Assert.True(builder.ContainsValue( TestEnum.City));
+        Assert.True(builder.ContainsValue(TestEnum.City));
         Assert.False(builder.ContainsValue(TestEnum.State));
         Assert.False(builder.ContainsValue(TestEnum.Country));
 
