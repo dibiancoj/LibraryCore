@@ -133,8 +133,8 @@ public class FluentRequestTest
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
@@ -173,8 +173,8 @@ public class FluentRequestTest
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
@@ -209,8 +209,8 @@ public class FluentRequestTest
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
     }
@@ -250,8 +250,8 @@ public class FluentRequestTest
 
         Assert.Equal("application/x-www-form-urlencoded", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Equal("10=Test10&20=Test20", await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get &&
                                             req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri &&
@@ -282,8 +282,8 @@ public class FluentRequestTest
 
         Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
     }
@@ -311,8 +311,8 @@ public class FluentRequestTest
 
         Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
         Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
-        Assert.Single(result);
-        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+        var singleResult = Assert.Single(result);
+        Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
     }

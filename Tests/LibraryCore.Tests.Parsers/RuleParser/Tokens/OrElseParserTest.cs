@@ -22,21 +22,21 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
                                             .CompilationTokenResult;
 
         Assert.Equal(13, result.Count);
-        Assert.IsType<NumberToken<int>>(result[0]);
-        Assert.IsType<WhiteSpaceToken>(result[1]);
-        Assert.IsType<EqualsToken>(result[2]);
-        Assert.IsType<WhiteSpaceToken>(result[3]);
-        Assert.IsType<NumberToken<int>>(result[4]);
+        _ = Assert.IsType<NumberToken<int>>(result[0]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[1]);
+        _ = Assert.IsType<EqualsToken>(result[2]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[3]);
+        _ = Assert.IsType<NumberToken<int>>(result[4]);
 
-        Assert.IsType<WhiteSpaceToken>(result[5]);
-        Assert.IsType<OrElseToken>(result[6]);
-        Assert.IsType<WhiteSpaceToken>(result[7]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[5]);
+        _ = Assert.IsType<OrElseToken>(result[6]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[7]);
 
-        Assert.IsType<NumberToken<int>>(result[8]);
-        Assert.IsType<WhiteSpaceToken>(result[9]);
-        Assert.IsType<EqualsToken>(result[10]);
-        Assert.IsType<WhiteSpaceToken>(result[11]);
-        Assert.IsType<NumberToken<int>>(result[12]);
+        _ = Assert.IsType<NumberToken<int>>(result[8]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[9]);
+        _ = Assert.IsType<EqualsToken>(result[10]);
+        _ = Assert.IsType<WhiteSpaceToken>(result[11]);
+        _ = Assert.IsType<NumberToken<int>>(result[12]);
     }
 
     [Fact]
