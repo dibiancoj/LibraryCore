@@ -50,7 +50,7 @@ jobs:
         fail_ci_if_error: true # optional (default = false)
 
     - name: Dotnet Format
-      run: dotnet format --verify-no-changes --no-restore
+      run: dotnet format --verify-no-changes --no-restore --verbosity d
 
   integration-tests:
 
