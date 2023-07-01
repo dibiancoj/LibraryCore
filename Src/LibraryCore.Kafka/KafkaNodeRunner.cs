@@ -16,6 +16,11 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
     private ILogger<KafkaConsumerService<TKafkaKey, TKafkaMessageBody>> Logger { get; }
     private IKafkaProcessor<TKafkaKey, TKafkaMessageBody> KafkaProcessor { get; }
 
+    /// <summary>
+    /// static log message with parameters for structured logging
+    /// </summary>
+    private const string LogFormat = "{Action} : NodeId = {NodeId} : Method = {Method} : AdditionalInfo = {AdditionalInfo}";
+
     internal async Task CreateNodeAsync(CancellationToken cancellationToken)
     {
         await ProcessorAsync(cancellationToken);
@@ -25,7 +30,7 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
     {
         var timeout = KafkaProcessor.KafkaConsumeTimeOut();
 
-        Logger.LogInformation(LogMessage("Started", string.Join(',', KafkaProcessor.TopicsToRead)));
+        Logger.LogInformation(LogFormat, "Processor Started", NodeId, nameof(ProcessorAsync), $"TopicsRead = {string.Join(',', KafkaProcessor.TopicsToRead)}");
 
         //let the other part of the hosted service bootup
         await Task.Delay(100, stoppingToken).ConfigureAwait(false);
@@ -41,7 +46,7 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
-                    Logger.LogInformation(LogMessage("Kafka Messaged Received", $"Key={consumeResult.Message.Key ?? default}"));
+                    Logger.LogInformation(LogFormat, "Kafka Messaged Received", NodeId, nameof(ProcessorAsync), $"Key = {consumeResult.Message.Key ?? default}");
 
                     await KafkaProcessor.ProcessMessageAsync(consumeResult, NodeId, stoppingToken).ConfigureAwait(false);
 
@@ -61,25 +66,16 @@ internal class KafkaNodeRunner<TKafkaKey, TKafkaMessageBody>
         }
     }
 
-    private string LogMessage(string command, string? additionalInfo = null, [CallerMemberName] string methodName = "")
-    {
-        string? additionalInfoOutput = additionalInfo == null ?
-                                        null :
-                                        $"({additionalInfo})";
-
-        return $"{command} : Node = {NodeId} : Method = {methodName}{additionalInfoOutput} : {DateTime.Now}";
-    }
-
     private bool LogExceptionAndThrow(Exception ex, CancellationToken cancellationToken, [CallerMemberName] string methodName = "")
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            Logger.LogWarning(LogMessage("Cancellation Token Is Stopping", methodName: methodName));
+            Logger.LogWarning(LogFormat, "Cancellation Token Is Stopping", NodeId, methodName, string.Empty);
             return false;
         }
 
         //log any critical errors. Hosted services don't bubble up well with threading like this.
-        Logger.LogCritical(ex, LogMessage("Error In Kafka Hosted Service. Service is not unstable", methodName: methodName));
+        Logger.LogCritical(ex, LogFormat, "Error In Kafka Hosted Service. Service is not unstable", NodeId, methodName, string.Empty);
 
         return true;
     }
