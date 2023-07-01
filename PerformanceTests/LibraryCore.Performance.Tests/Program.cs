@@ -1,25 +1,24 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
-namespace LibraryCore.Performance.Tests
+namespace LibraryCore.Performance.Tests;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            //example to run:
-            //Get the menu = dotnet run -c release
-            //Run a specific test = dotnet run -c release -filter *JsonDeserializerByteVsJson*
+        //example to run:
+        //Get the menu = dotnet run -c release
+        //Run a specific test = dotnet run -c release -filter *JsonDeserializerByteVsJson*
 
-            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-        }
+        _ = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+    }
 
-        public class Config : ManualConfig
+    public class Config : ManualConfig
+    {
+        public Config()
         {
-            public Config()
-            {
-                SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithRatioStyle(BenchmarkDotNet.Columns.RatioStyle.Trend); //value is the other basic one
-            }
+            SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithRatioStyle(BenchmarkDotNet.Columns.RatioStyle.Trend); //value is the other basic one
         }
     }
 }

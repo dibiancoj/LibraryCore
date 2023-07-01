@@ -15,7 +15,7 @@ public class JsonToStreamResult : IDisposable
     internal StreamWriter StreamWriterToUse { get; }
     internal JsonTextWriter JsonTextWriterToUse { get; }
     private bool Disposed { get; set; }
-    
+
     /// <summary>
     /// This is only meant to be consumed once. Multiple consumes on the same stream is not supported.
     /// </summary>

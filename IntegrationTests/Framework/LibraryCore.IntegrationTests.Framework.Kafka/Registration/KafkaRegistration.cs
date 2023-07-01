@@ -13,13 +13,13 @@ public static class KafkaRegistration
     public static void RegisterKakfa(this WebApplicationBuilder builder)
     {
         //kafka admin client
-        builder.Services.AddSingleton(sp => new AdminClientBuilder(new AdminClientConfig
+        _ = builder.Services.AddSingleton(sp => new AdminClientBuilder(new AdminClientConfig
         {
             BootstrapServers = bootstrapServer
         }).Build());
 
         //kafka producer
-        builder.Services.AddSingleton(sp => BuildProducerGroup());
+        _ = builder.Services.AddSingleton(sp => BuildProducerGroup());
     }
 
     private static ClientConfig BuildClientConfig()

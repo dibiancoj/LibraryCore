@@ -3,45 +3,44 @@ using LibraryCore.AspNet.ExtensionMethods.HttpContextExtensionMethods;
 using LibraryCore.AspNet.Validation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryCore.IntegrationTests.Framework.Api.Controllers
+namespace LibraryCore.IntegrationTests.Framework.Api.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class SimpleController : Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class SimpleController : Controller
-    {
-        [HttpGetOptionHead("AspNetHttpMethodTest")]
-        public bool AspNetHttpMethodTest() => true;
+    [HttpGetOptionHead("AspNetHttpMethodTest")]
+    public bool AspNetHttpMethodTest() => true;
 
-        [HttpPost("ValidationTest")]
-        public bool ValidationTest([FromBody] ValidationTest model) => true;
+    [HttpPost("ValidationTest")]
+    public bool ValidationTest([FromBody] ValidationTest model) => true;
 
-        [HttpGet("IsAjaxCall")]
-        public bool IsAjaxCall() => HttpContext.Request.IsAjaxRequest();
-    }
+    [HttpGet("IsAjaxCall")]
+    public bool IsAjaxCall() => HttpContext.Request.IsAjaxRequest();
+}
 
-    public class ValidationTest
-    {
-        [DateOfBirthRange]
-        public DateTime? DataOfBirth { get; set; }
+public class ValidationTest
+{
+    [DateOfBirthRange]
+    public DateTime? DataOfBirth { get; set; }
 
-        [MaximumValue(100)]
-        public int MaximumValue { get; set; }
+    [MaximumValue(100)]
+    public int MaximumValue { get; set; }
 
-        [MinimumValue(25)]
-        public int MinimumValue { get; set; }
+    [MinimumValue(25)]
+    public int MinimumValue { get; set; }
 
-        [RequiredIf(nameof(RequiredIfValue), "IsRequired")]
+    [RequiredIf(nameof(RequiredIfValue), "IsRequired")]
 
-        [PastDateValidation(false)]
-        public DateTime? PastDateValue { get; set; }
+    [PastDateValidation(false)]
+    public DateTime? PastDateValue { get; set; }
 
-        public string? RequiredIfValue { get; set; }
+    public string? RequiredIfValue { get; set; }
 
-        [RequiredIfContains(nameof(RequiredIfContainsValue), "IsRequired")]
-        public string? RequiredIfContainsTarget { get; set; }
-        public IEnumerable<string> RequiredIfContainsValue { get; set; } = null!;
+    [RequiredIfContains(nameof(RequiredIfContainsValue), "IsRequired")]
+    public string? RequiredIfContainsTarget { get; set; }
+    public IEnumerable<string> RequiredIfContainsValue { get; set; } = null!;
 
-        [USZipCodeValidation(false)]
-        public string? ZipCodeValue { get; set; }
-    }
+    [USZipCodeValidation(false)]
+    public string? ZipCodeValue { get; set; }
 }
