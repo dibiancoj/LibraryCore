@@ -79,7 +79,7 @@ dotnet_style_qualification_for_field = false:silent
 dotnet_style_qualification_for_property = false:silent
 dotnet_style_qualification_for_method = false:silent
 dotnet_style_qualification_for_event = false:silent
-end_of_line = native
+end_of_line = unset
 dotnet_diagnostic.CA2254.severity = error
 
 [*.cs]
