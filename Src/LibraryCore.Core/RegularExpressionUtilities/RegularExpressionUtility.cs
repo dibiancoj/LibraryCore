@@ -19,7 +19,7 @@ public static partial class RegularExpressionUtility
 
 #if NET6_0
 
-    private static Regex ParseRawUrlIntoHyperLinkSourceGenerator() => new (UrlIntoHyperLinkPattern, RegexOptions.Compiled, DefaultTimeOut);
+    private static Regex ParseRawUrlIntoHyperLinkSourceGenerator() => new(UrlIntoHyperLinkPattern, RegexOptions.Compiled, DefaultTimeOut);
     private static Regex ParseStringAndLeaveOnlyNumbersSourceGenerator() => new(ParseStringAndLeaveOnlyNumbersPattern, RegexOptions.Compiled, DefaultTimeOut);
 
 #else

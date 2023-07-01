@@ -15,7 +15,7 @@ public class OrElseParserTest : IClassFixture<RuleParserFixture>
     private RuleParserFixture RuleParserFixture { get; }
 
     [Fact]
-        public void ParserTest()
+    public void ParserTest()
     {
         var result = RuleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("1 == 1 || 2 == 2")

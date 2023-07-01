@@ -151,7 +151,7 @@ public static class StringExtensionMethods
             //zip code is null / blank...just return the string that was passed in
             return zipCode;
         }
-        
+
         //grab just the digits
         var justDigitsInSpan = new string(zipCode.PullDigitsFromString().ToArray()).AsSpan();
 

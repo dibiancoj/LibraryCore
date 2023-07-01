@@ -7,7 +7,7 @@ public record InvokeParameters(IImmutableList<CommandConfiguration> ConfiguredCo
                                IImmutableDictionary<string, string> RequiredArguments,
                                IImmutableDictionary<string, string?> OptionalArguments,
                                Action<string> MessagePump)
-{ 
+{
     public T RequiredParameterToValue<T>(string key) => (T)Convert.ChangeType(RequiredArguments[key], typeof(T));
     public (bool IsSpecified, T? ValueIfSpecified) OptionalParameterToValue<T>(string key)
     {

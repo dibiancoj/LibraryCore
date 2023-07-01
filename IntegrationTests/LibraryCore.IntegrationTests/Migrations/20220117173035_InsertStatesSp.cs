@@ -2,13 +2,13 @@
 
 #nullable disable
 
-namespace LibraryCore.IntegrationTests.Migrations
+namespace LibraryCore.IntegrationTests.Migrations;
+
+public partial class InsertStatesSp : Migration
 {
-    public partial class InsertStatesSp : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            const string sql = @"SET ANSI_NULLS ON
+        const string sql = @"SET ANSI_NULLS ON
                                 GO
                                 SET QUOTED_IDENTIFIER ON
                                 GO
@@ -22,12 +22,11 @@ namespace LibraryCore.IntegrationTests.Migrations
                                 END
                                 GO";
 
-            migrationBuilder.Sql(sql);
-        }
+        migrationBuilder.Sql(sql);
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql("drop procedure dbo.CreateState");
-        }
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("drop procedure dbo.CreateState");
     }
 }

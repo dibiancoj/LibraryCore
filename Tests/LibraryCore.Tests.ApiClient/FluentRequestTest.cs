@@ -339,7 +339,7 @@ public class FluentRequestTest
         var result = await response.EnsureSuccessStatusCode()
                         .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
 
-     
+
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
     }
 

@@ -14,8 +14,8 @@ public class DateOfBirthValueValidationTest
     [Theory]
     public void DateOfBirthValidation(int yearsToAddToTest, bool isValidExpectedResult, bool addYears)
     {
-        var dateToValidate = addYears ? 
-                                DateTime.Now.AddYears(yearsToAddToTest) : 
+        var dateToValidate = addYears ?
+                                DateTime.Now.AddYears(yearsToAddToTest) :
                                 DateTime.Now.AddDays(yearsToAddToTest);
 
         Assert.Equal(isValidExpectedResult, new DateOfBirthRangeAttribute().IsValid(dateToValidate));
