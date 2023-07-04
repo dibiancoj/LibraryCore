@@ -38,7 +38,7 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     public void SimpleParameterTest(int age, bool expectedResult)
     {
         var expression = RuleParserFixture.ResolveRuleParserEngine()
-                                                .ParseString($"$Age$ > 15")
+                                                .ParseString("$Age$ > 15")
                                                 .BuildExpression<int>("Age")
                                                 .Compile();
 
