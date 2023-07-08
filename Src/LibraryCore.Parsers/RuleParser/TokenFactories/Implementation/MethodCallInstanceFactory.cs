@@ -1,12 +1,11 @@
-﻿using LibraryCore.Parsers.RuleParser;
-using LibraryCore.Parsers.RuleParser.TokenFactories;
-using LibraryCore.Parsers.RuleParser.Utilities;
+﻿using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -18,9 +17,11 @@ public class MethodCallInstanceFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '.';
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              CreateTokenParameters createTokenParameters)
     {
-        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine));
+        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, createTokenParameters));
     }
 }
 

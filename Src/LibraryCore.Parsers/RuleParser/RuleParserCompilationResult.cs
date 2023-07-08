@@ -1,8 +1,10 @@
 ﻿using LibraryCore.Core.DataTypes;
 using LibraryCore.Parsers.RuleParser.ExpressionBuilders;
 using LibraryCore.Parsers.RuleParser.TokenFactories;
+using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
+using System.Text.Json;
 using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Parsers.RuleParser;
@@ -93,12 +95,14 @@ public class RuleParserCompilationResult
 
 public class RuleParserCompilationResult<TResult>
 {
-    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokeResult)
+    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokeResult, SchemaModel schema)
     {
         CompilationTokenResult = compilationTokeResult;
+        Schema = schema;
     }
 
     public IImmutableList<IToken> CompilationTokenResult { get; }
+    public SchemaModel Schema { get; private set; }
 
     public Expression<Func<T1, TResult>> BuildScoreExpression<T1>(ScoringMode scoringMode, string parameter1Name)
     {
@@ -110,7 +114,7 @@ public class RuleParserCompilationResult<TResult>
         var parameter1 = Expression.Parameter(typeof(T1), parameter1Name);
         var parametersToUse = new[] { parameter1 }.ToImmutableList();
 
-        return Expression.Lambda<Func<T1, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
+        return Expression.Lambda<Func<T1, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse, Schema), parametersToUse);
     }
 
     public Expression<Func<T1, T2, TResult>> BuildScoreExpression<T1, T2>(ScoringMode scoringMode, string parameter1Name, string parameter2Name)
@@ -124,7 +128,7 @@ public class RuleParserCompilationResult<TResult>
         var parameter2 = Expression.Parameter(typeof(T2), parameter2Name);
         var parametersToUse = new[] { parameter1, parameter2 }.ToImmutableList();
 
-        return Expression.Lambda<Func<T1, T2, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse), parametersToUse);
+        return Expression.Lambda<Func<T1, T2, TResult>>(RuleParserExpressionBuilder.CreateRuleExpression<TResult>(scoringMode, CompilationTokenResult, parametersToUse, Schema), parametersToUse);
     }
 
     private static bool IsValidScoringMode(ScoringMode scoringMode) => scoringMode == ScoringMode.ShortCircuitOnFirstTrueEval || PrimitiveTypes.NumberTypesSelect().Contains(typeof(TResult));

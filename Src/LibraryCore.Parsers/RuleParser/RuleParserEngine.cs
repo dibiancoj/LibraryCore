@@ -1,7 +1,9 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser;
 
@@ -53,10 +55,14 @@ public class RuleParserEngine
     //&& AndAlso
     //|| OrElse
 
-    public RuleParserCompilationResult ParseString(string stringToParse)
+    public record CreateTokenParameters(TokenFactoryProvider TokenFactoryProvider, RuleParserEngine RuleParserEngine, SchemaModel SchemaConfiguration);
+
+    public RuleParserCompilationResult ParseString(string stringToParse, object? schemaModel = null)
     {
         using var reader = new StringReader(stringToParse);
         var tokens = new List<IToken>();
+        var schema = SchemaModel.Create(schemaModel);
+        var createTokenParameters = new CreateTokenParameters(TokenFactoryProvider, this, schema);
 
         while (reader.HasMoreCharacters())
         {
@@ -68,7 +74,7 @@ public class RuleParserEngine
 
             var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 
-            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider, this));
+            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, createTokenParameters));
         }
 
         return new RuleParserCompilationResult(tokens.ToImmutableList());
@@ -76,6 +82,7 @@ public class RuleParserEngine
 
     public RuleParserCompilationResult<TScoreType> ParseScore<TScoreType>(params ScoringCriteriaParameter<TScoreType>[] scoreCriteria)
     {
-        return new RuleParserCompilationResult<TScoreType>(scoreCriteria.Select(t => (IToken)new ScoreCriteriaToken<TScoreType>(t.ScoreValueIfTrue, ParseString(t.ScoreTruthCriteria).CompilationTokenResult)).ToImmutableList());
+        return new RuleParserCompilationResult<TScoreType>(
+            scoreCriteria.Select(t => (IToken)new ScoreCriteriaToken<TScoreType>(t.ScoreValueIfTrue, ParseString(t.ScoreTruthCriteria).CompilationTokenResult)).ToImmutableList(), SchemaModel.Create(null));
     }
 }

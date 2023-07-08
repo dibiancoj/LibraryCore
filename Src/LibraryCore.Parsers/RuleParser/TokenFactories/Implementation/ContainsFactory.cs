@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -14,7 +15,9 @@ public class ContainsFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "co", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              CreateTokenParameters createTokenParameters)
     {
         //read the other c...ontains
         RuleParsingUtility.EatOrThrowCharacters(stringReader, "ONTAINS");

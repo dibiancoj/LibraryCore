@@ -1,6 +1,7 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
@@ -54,6 +55,8 @@ internal static class RuleParserExpressionBuilder
             }
             else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
             {
+                //var (left, right) = CastStatementForDynamicType(statementLeft.ThrowIfNull(), statementRight.ThrowIfNull());
+
                 //since we lazy loaded the last statement..we load it in here now.
                 expressionStatements.Enqueue(operation.ThrowIfNull().CreateBinaryOperatorExpression(statementLeft.ThrowIfNull(), statementRight.ThrowIfNull()));
 
@@ -104,7 +107,7 @@ internal static class RuleParserExpressionBuilder
         return (expressionStatements, combinerStatements);
     }
 
-    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse, SchemaModel schema)
     {
         var workingExpressions = new List<Expression>();
 

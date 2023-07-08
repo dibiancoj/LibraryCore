@@ -1,10 +1,10 @@
-﻿using LibraryCore.Core.ExtensionMethods;
-using LibraryCore.Parsers.RuleParser;
-using LibraryCore.Parsers.RuleParser.Utilities;
+﻿using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -23,9 +23,11 @@ public class MethodCallFactory : ITokenFactory
     //@MyMethod(1)
     //@MyMethod(1,'abc', true)
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              CreateTokenParameters createTokenParameters)
     {
-        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine);
+        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, createTokenParameters);
 
         if (!RegisterdMethods.TryGetValue(methodInfoSignature.MethodName, out var tryToGetMethodInfoResult))
         {
