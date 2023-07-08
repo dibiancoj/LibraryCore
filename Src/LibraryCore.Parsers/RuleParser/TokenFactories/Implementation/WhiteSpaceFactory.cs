@@ -1,7 +1,7 @@
-﻿using LibraryCore.Parsers.RuleParser.Utilities;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -13,9 +13,7 @@ public class WhiteSpaceFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema) => CachedToken;
+                              CreateTokenParameters createTokenParameters) => CachedToken;
 }
 
 [DebuggerDisplay("Whitespace")]

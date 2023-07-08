@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
-using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -16,9 +16,7 @@ public class DateFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
         var text = new StringBuilder();
 

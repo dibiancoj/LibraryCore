@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.Utilities;
 
@@ -15,9 +16,7 @@ public static class RuleParsingUtility
     public record MethodParsingResult(string MethodName, IImmutableList<IToken> Parameters);
 
     internal static MethodParsingResult ParseMethodSignature(StringReader reader,
-                                                             TokenFactoryProvider tokenFactoryProvider,
-                                                             RuleParserEngine ruleParserEngine,
-                                                             SchemaModel schema,
+                                                             CreateTokenParameters createTokenParameters,
                                                              char closingCharacter = ')')
     {
         var methodName = WalkUntil(reader, '(', true);
@@ -64,17 +63,17 @@ public static class RuleParsingUtility
             var characterRead = parameterReader.ReadCharacter();
             var nextPeekedCharacter = parameterReader.PeekCharacter();
 
-            if (tokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().IsToken(characterRead, nextPeekedCharacter, parameter))
+            if (createTokenParameters.TokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().IsToken(characterRead, nextPeekedCharacter, parameter))
             {
                 //is it a lamda
-                tokenList.Add(tokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema));
+                tokenList.Add(createTokenParameters.TokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().CreateToken(characterRead, parameterReader, createTokenParameters));
             }
             else
             {
                 var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
 
-                tokenList.Add(tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
-                                                  .CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema));
+                tokenList.Add(createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
+                                                  .CreateToken(characterRead, parameterReader, createTokenParameters));
             }
         }
 
@@ -101,10 +100,8 @@ public static class RuleParsingUtility
     /// Syntax (24,true,'test'). This will work with multiple scenarios
     /// </summary>
     internal static IEnumerable<IToken> WalkTheParameterString(StringReader reader,
-                                                               TokenFactoryProvider tokenFactoryProvider,
                                                                char closingCharacter,
-                                                               RuleParserEngine ruleParserEngine,
-                                                               SchemaModel schema)
+                                                               CreateTokenParameters createTokenParameters)
     {
         var text = new StringBuilder();
 
@@ -125,8 +122,8 @@ public static class RuleParsingUtility
             var nextPeekedCharacter = parameterReader.PeekCharacter();
             var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
 
-            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
-                                    .CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema);
+            yield return createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
+                                    .CreateToken(characterRead, parameterReader, createTokenParameters);
         }
     }
 

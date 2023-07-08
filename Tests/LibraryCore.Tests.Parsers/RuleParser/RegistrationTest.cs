@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
@@ -52,7 +53,7 @@ public class RegistrationTest
 
     public class CustomTokenFactory : ITokenFactory
     {
-        public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine, SchemaModel schema) => new CustomToken();
+        public IToken CreateToken(char characterRead, StringReader stringReader, CreateTokenParameters createTokenParameters) => new CustomToken();
         public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '!';
     }
 

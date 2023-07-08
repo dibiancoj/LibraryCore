@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -15,9 +15,7 @@ public class LikeFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
         //read the l...ike
         RuleParsingUtility.EatOrThrowCharacters(stringReader, "IKE");

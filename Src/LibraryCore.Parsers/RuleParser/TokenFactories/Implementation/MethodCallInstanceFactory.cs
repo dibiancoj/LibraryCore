@@ -1,13 +1,11 @@
-﻿using LibraryCore.Parsers.RuleParser;
-using LibraryCore.Parsers.RuleParser.TokenFactories;
-using LibraryCore.Parsers.RuleParser.Utilities;
+﻿using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -21,11 +19,9 @@ public class MethodCallInstanceFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
-        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine, schema));
+        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, createTokenParameters));
     }
 }
 

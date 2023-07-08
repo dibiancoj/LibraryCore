@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -24,11 +25,9 @@ public class MethodCallFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
-        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine, schema);
+        var methodInfoSignature = RuleParsingUtility.ParseMethodSignature(stringReader, createTokenParameters);
 
         if (!RegisterdMethods.TryGetValue(methodInfoSignature.MethodName, out var tryToGetMethodInfoResult))
         {

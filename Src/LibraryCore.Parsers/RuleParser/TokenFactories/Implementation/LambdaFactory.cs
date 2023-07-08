@@ -3,6 +3,7 @@ using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -16,9 +17,7 @@ public class LambdaFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
         //parsing:
         //$x$ => $x$ == 2
@@ -33,7 +32,7 @@ public class LambdaFactory : ITokenFactory
         //grab the body
         var bodyOfMethod = RuleParsingUtility.WalkUntilEof(stringReader);
 
-        var tokensInBody = ruleParserEngine.ParseString(bodyOfMethod);
+        var tokensInBody = createTokenParameters.RuleParserEngine.ParseString(bodyOfMethod);
 
         return new LambdaToken(allParameters.ToImmutableList(), tokensInBody.CompilationTokenResult);
     }

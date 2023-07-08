@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
+using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 using static LibraryCore.Parsers.RuleParser.Utilities.SchemaModel;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
@@ -18,9 +19,7 @@ public class ParameterPropertyFactory : ITokenFactory
 
     public IToken CreateToken(char characterRead,
                               StringReader stringReader,
-                              TokenFactoryProvider tokenFactoryProvider,
-                              RuleParserEngine ruleParserEngine,
-                              SchemaModel schema)
+                              CreateTokenParameters createTokenParameters)
     {
         var text = new StringBuilder();
 
@@ -32,12 +31,12 @@ public class ParameterPropertyFactory : ITokenFactory
         //eat the closing $
         RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, TokenIdentifier);
 
-        return new ParameterPropertyToken(text.ToString().Split('.'), schema);
+        return new ParameterPropertyToken(text.ToString().Split('.'), createTokenParameters.SchemaConfiguration);
     }
 }
 
 [DebuggerDisplay("Parameter Property Path = {DebuggerDisplay()}")]
-public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel schemaConfiguration) : IToken
+public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel SchemaConfiguration) : IToken
 {
     public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
@@ -49,8 +48,8 @@ public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel sch
         //loop through each level and keep grabbing the next level
 
         var parameter = parameters.Single(x => x.Name == PropertyPath[0]);
-        JsonElement? workingSchemaElement = schemaConfiguration.Schema.HasValue ?
-                                                 schemaConfiguration.Schema.Value.GetProperty(PropertyPath[0]) :
+        JsonElement? workingSchemaElement = SchemaConfiguration.Schema.HasValue ?
+                                                 SchemaConfiguration.Schema.Value.GetProperty(PropertyPath[0]) :
                                                  null;
 
         bool parameterIsDynamicType = parameter.Type == typeof(JsonElement);

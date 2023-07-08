@@ -55,11 +55,14 @@ public class RuleParserEngine
     //&& AndAlso
     //|| OrElse
 
+    public record CreateTokenParameters(TokenFactoryProvider TokenFactoryProvider, RuleParserEngine RuleParserEngine, SchemaModel SchemaConfiguration);
+
     public RuleParserCompilationResult ParseString(string stringToParse, object? schemaModel = null)
     {
         using var reader = new StringReader(stringToParse);
         var tokens = new List<IToken>();
         var schema = SchemaModel.Create(schemaModel);
+        var createTokenParameters = new CreateTokenParameters(TokenFactoryProvider, this, schema);
 
         while (reader.HasMoreCharacters())
         {
@@ -71,7 +74,7 @@ public class RuleParserEngine
 
             var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 
-            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider, this, schema));
+            tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, createTokenParameters));
         }
 
         return new RuleParserCompilationResult(tokens.ToImmutableList());
