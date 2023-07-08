@@ -4,6 +4,7 @@ using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -14,11 +15,15 @@ public class ArrayFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '[';
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema)
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != ']')
         {
-            var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ']', ruleParserEngine).ToArray();
+            var parameterGroup = RuleParsingUtility.WalkTheParameterString(stringReader, tokenFactoryProvider, ']', ruleParserEngine, schema).ToArray();
 
             return new ArrayToken(parameterGroup);
         }

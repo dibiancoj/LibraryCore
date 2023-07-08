@@ -1,17 +1,19 @@
 ﻿using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
+using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
+using System.Text.Json;
 using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Parsers.RuleParser.ExpressionBuilders;
 
 internal static class RuleParserExpressionBuilder
 {
-    internal static Expression CreateExpression(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    internal static Expression CreateExpression(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse, SchemaModel schema)
     {
-        var (expressionStatements, expressionCombiners) = SortTree(tokens, parametersToUse);
+        var (expressionStatements, expressionCombiners) = SortTree(tokens, parametersToUse, schema);
 
         //only 1 statement. Just return it
         if (expressionStatements.Count == 1)
@@ -32,7 +34,7 @@ internal static class RuleParserExpressionBuilder
         return finalExpression.ThrowIfNull();
     }
 
-    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse, SchemaModel schema)
     {
         //The expression statement queue will load lazily. It won't get added to the queue until we hit the Combiner Expression...Or the tokens loop is done and their is stuff in the working variables
         var expressionStatements = new Queue<Expression>();
@@ -54,6 +56,8 @@ internal static class RuleParserExpressionBuilder
             }
             else if (token is IBinaryExpressionCombiner tempBinaryExpressionCombiner)
             {
+                //var (left, right) = CastStatementForDynamicType(statementLeft.ThrowIfNull(), statementRight.ThrowIfNull());
+
                 //since we lazy loaded the last statement..we load it in here now.
                 expressionStatements.Enqueue(operation.ThrowIfNull().CreateBinaryOperatorExpression(statementLeft.ThrowIfNull(), statementRight.ThrowIfNull()));
 
@@ -104,7 +108,36 @@ internal static class RuleParserExpressionBuilder
         return (expressionStatements, combinerStatements);
     }
 
-    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    //private static (Expression left, Expression right) CastStatementForDynamicType(Expression left, Expression right)
+    //{
+    //    if (left.Type != typeof(JsonElement) && right.Type != typeof(JsonElement))
+    //    {
+    //        return (left, right);
+    //    }
+
+    //    var methodInfo = typeof(JsonElement).GetMethod("GetInt32") ?? throw new Exception("Can't Find Get Property On JsonElement");
+
+    //    if (left.Type == typeof(JsonElement))
+    //    {
+    //        return (Expression.Convert(Expression.Call(left, methodInfo), right.Type), right);
+    //    }
+
+    //    return (left, Expression.Convert(right, left.Type));
+
+    //    //if (left.Type != typeof(object) && right.Type != typeof(object))
+    //    //{
+    //    //    return (left, right);
+    //    //}
+
+    //    //if (left.Type == typeof(object))
+    //    //{
+    //    //    return (Expression.Convert(left, right.Type), right);
+    //    //}
+
+    //    //return (left, Expression.Convert(right, left.Type));
+    //}
+
+    internal static Expression CreateRuleExpression<TScoreResult>(ScoringMode scoringMode, IEnumerable<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse, SchemaModel schema)
     {
         var workingExpressions = new List<Expression>();
 
@@ -119,7 +152,7 @@ internal static class RuleParserExpressionBuilder
                                             Expression.Constant(rule.ScoreValue) :
                                             Expression.Add(resultVariable, Expression.Constant(rule.ScoreValue));
 
-            var conditionToRun = CreateExpression(rule.ScoreCriteriaTokens, parametersToUse);
+            var conditionToRun = CreateExpression(rule.ScoreCriteriaTokens, parametersToUse, schema);
             var assignExpression = Expression.Assign(resultVariable, scoreTallyExpression);
 
             //first score wins

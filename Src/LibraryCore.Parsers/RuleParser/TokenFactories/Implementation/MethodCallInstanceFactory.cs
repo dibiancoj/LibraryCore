@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -18,9 +19,13 @@ public class MethodCallInstanceFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '.';
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema)
     {
-        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine));
+        return new MethodCallInstanceToken(RuleParsingUtility.ParseMethodSignature(stringReader, tokenFactoryProvider, ruleParserEngine, schema));
     }
 }
 

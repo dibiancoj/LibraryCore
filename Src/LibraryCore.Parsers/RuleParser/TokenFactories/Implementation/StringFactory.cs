@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -17,7 +18,11 @@ public class StringFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == TokenIdentifier;
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema)
     {
         var text = new StringBuilder();
         int numberOfSubTokens = 0;
@@ -30,7 +35,7 @@ public class StringFactory : ITokenFactory
             //to support logging we are going to allow formatters in a string. ie: 'MedicationId = {$Parameter.MedicationId}'
             if (currentCharacter == '{')
             {
-                subTokens.Add(ResolveInnerTokens(stringReader, tokenFactoryProvider, ruleParserEngine));
+                subTokens.Add(ResolveInnerTokens(stringReader, tokenFactoryProvider, ruleParserEngine, schema));
 
                 //turn into a format syntax..{0}, {1}
                 text.Append('{').Append(numberOfSubTokens).Append('}');
@@ -55,7 +60,10 @@ public class StringFactory : ITokenFactory
         return new StringToken(text.ToString(), subTokens);
     }
 
-    private static IToken ResolveInnerTokens(StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    private static IToken ResolveInnerTokens(StringReader stringReader,
+                                             TokenFactoryProvider tokenFactoryProvider,
+                                             RuleParserEngine ruleParserEngine,
+                                             SchemaModel schema)
     {
         while (stringReader.HasMoreCharacters() && stringReader.PeekCharacter() != '}')
         {
@@ -64,7 +72,7 @@ public class StringFactory : ITokenFactory
 
             var factoryFound = tokenFactoryProvider.ResolveTokenFactory(characterRead, characterPeeked, new string(new[] { characterRead, characterPeeked }));
 
-            var token = factoryFound.CreateToken(characterRead, stringReader, tokenFactoryProvider, ruleParserEngine);
+            var token = factoryFound.CreateToken(characterRead, stringReader, tokenFactoryProvider, ruleParserEngine, schema);
 
             //kill the closing }
             RuleParsingUtility.ThrowIfCharacterNotExpected(stringReader, '}');

@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -10,7 +11,11 @@ public class BooleanFactory : ITokenFactory
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => string.Equals(readAndPeakedCharacters, "fa", StringComparison.OrdinalIgnoreCase) ||
                                                                                                      string.Equals(readAndPeakedCharacters, "tr", StringComparison.OrdinalIgnoreCase);
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema)
     {
         //set the value if its true / false.
         bool valueToUse = characterRead == 't' || characterRead == 'T';

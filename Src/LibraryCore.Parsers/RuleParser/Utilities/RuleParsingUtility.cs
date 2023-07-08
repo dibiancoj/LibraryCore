@@ -14,7 +14,11 @@ public static class RuleParsingUtility
 
     public record MethodParsingResult(string MethodName, IImmutableList<IToken> Parameters);
 
-    internal static MethodParsingResult ParseMethodSignature(StringReader reader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine, char closingCharacter = ')')
+    internal static MethodParsingResult ParseMethodSignature(StringReader reader,
+                                                             TokenFactoryProvider tokenFactoryProvider,
+                                                             RuleParserEngine ruleParserEngine,
+                                                             SchemaModel schema,
+                                                             char closingCharacter = ')')
     {
         var methodName = WalkUntil(reader, '(', true);
         var text = new StringBuilder();
@@ -63,13 +67,14 @@ public static class RuleParsingUtility
             if (tokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().IsToken(characterRead, nextPeekedCharacter, parameter))
             {
                 //is it a lamda
-                tokenList.Add(tokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine));
+                tokenList.Add(tokenFactoryProvider.ResolveSpecificFactory<LambdaFactory>().CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema));
             }
             else
             {
                 var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
 
-                tokenList.Add(tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked).CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine));
+                tokenList.Add(tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
+                                                  .CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema));
             }
         }
 
@@ -95,7 +100,11 @@ public static class RuleParsingUtility
     /// Walk the parmeters in a method or between (....). This is specifically for method parameter parsing but can be used. The reader should be passed in with the first character being '('
     /// Syntax (24,true,'test'). This will work with multiple scenarios
     /// </summary>
-    internal static IEnumerable<IToken> WalkTheParameterString(StringReader reader, TokenFactoryProvider tokenFactoryProvider, char closingCharacter, RuleParserEngine ruleParserEngine)
+    internal static IEnumerable<IToken> WalkTheParameterString(StringReader reader,
+                                                               TokenFactoryProvider tokenFactoryProvider,
+                                                               char closingCharacter,
+                                                               RuleParserEngine ruleParserEngine,
+                                                               SchemaModel schema)
     {
         var text = new StringBuilder();
 
@@ -116,7 +125,8 @@ public static class RuleParsingUtility
             var nextPeekedCharacter = parameterReader.PeekCharacter();
             var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
 
-            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked).CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine);
+            yield return tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
+                                    .CreateToken(characterRead, parameterReader, tokenFactoryProvider, ruleParserEngine, schema);
         }
     }
 

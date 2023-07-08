@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using LibraryCore.Parsers.RuleParser.Utilities;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -10,7 +11,11 @@ public class GreaterThenFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => characterRead == '>' && characterPeeked != '=';
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine) => CachedToken;
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema) => CachedToken;
 }
 
 [DebuggerDisplay(">")]

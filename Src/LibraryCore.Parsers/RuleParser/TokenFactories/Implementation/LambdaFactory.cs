@@ -5,6 +5,7 @@ using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
@@ -16,7 +17,11 @@ public class LambdaFactory : ITokenFactory
 
     public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters) => readAndPeakedCharacters.Contains("=>");
 
-    public IToken CreateToken(char characterRead, StringReader stringReader, TokenFactoryProvider tokenFactoryProvider, RuleParserEngine ruleParserEngine)
+    public IToken CreateToken(char characterRead,
+                              StringReader stringReader,
+                              TokenFactoryProvider tokenFactoryProvider,
+                              RuleParserEngine ruleParserEngine,
+                              SchemaModel schema)
     {
         //parsing:
         //$x$ => $x$ == 2
@@ -33,12 +38,12 @@ public class LambdaFactory : ITokenFactory
 
         var tokensInBody = ruleParserEngine.ParseString(bodyOfMethod);
 
-        return new LambdaToken(allParameters.ToImmutableList(), tokensInBody.CompilationTokenResult);
+        return new LambdaToken(allParameters.ToImmutableList(), tokensInBody.CompilationTokenResult, schema);
     }
 }
 
 [DebuggerDisplay("Inline Lambda")]
-public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableList<IToken> MethodBodyTokens) : IToken, IInstanceOperator
+public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableList<IToken> MethodBodyTokens, SchemaModel Schema) : IToken, IInstanceOperator
 {
     public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
 
@@ -51,7 +56,7 @@ public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableLis
 
         var funcParameterArray = new[] { funcParameter }.ToImmutableList();
 
-        var functionBodyToExecute = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray);
+        var functionBodyToExecute = RuleParserExpressionBuilder.CreateExpression(MethodBodyTokens, funcParameterArray, Schema);
 
         return Expression.Lambda(functionBodyToExecute, funcParameterArray);
     }
