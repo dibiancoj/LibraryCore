@@ -6,7 +6,7 @@ namespace LibraryCore.Parsers.RuleParser.Utilities;
 
 public record SchemaModel(JsonElement? Schema)
 {
-    public static SchemaModel Create(Func<object>? schemaModel) => new(schemaModel == null ? null : JsonSerializer.SerializeToElement(schemaModel()));
+    public static SchemaModel Create(object? schemaModel) => new(schemaModel == null ? null : JsonSerializer.SerializeToElement(schemaModel));
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SchemaDataType
@@ -17,13 +17,22 @@ public record SchemaModel(JsonElement? Schema)
         DateTime = 3
     }
 
+    internal static readonly MethodInfo JsonElementGetProperty = JsonElementGetMethodInfoHelper("GetProperty", typeof(string));
+    private static readonly MethodInfo JsonElementGetInt32 = JsonElementGetMethodInfoHelper("GetInt32");
+    private static readonly MethodInfo JsonElementGetBoolean = JsonElementGetMethodInfoHelper("GetBoolean");
+    private static readonly MethodInfo JsonElementGetDateTime = JsonElementGetMethodInfoHelper("GetDateTime");
+    private static readonly MethodInfo JsonElementGetString = JsonElementGetMethodInfoHelper("GetString");
+
+    private static MethodInfo JsonElementGetMethodInfoHelper(string methodName, params Type[] types) =>
+        typeof(JsonElement).GetMethod(methodName, types) ?? throw new Exception($"Can't Find {methodName} In {nameof(JsonElementGetMethodInfoHelper)}");
+
     public static MethodInfo MethodInfoToConvertValue(SchemaDataType schemaValue) =>
            schemaValue switch
            {
-               SchemaDataType.Int => typeof(JsonElement).GetMethod("GetInt32") ?? throw new Exception("Can't Find GetInt32 In Dynamic"),
-               SchemaDataType.Boolean => typeof(JsonElement).GetMethod("GetBoolean") ?? throw new Exception("Can't Find GetBoolean In Dynamic"),
-               SchemaDataType.DateTime => typeof(JsonElement).GetMethod("GetDateTime") ?? throw new Exception("Can't Find GetDateTime In Dynamic"),
-               SchemaDataType.String => typeof(JsonElement).GetMethod("GetString") ?? throw new Exception("Can't Find GetString In Dynamic"),
+               SchemaDataType.Int => JsonElementGetInt32,
+               SchemaDataType.Boolean => JsonElementGetBoolean,
+               SchemaDataType.DateTime => JsonElementGetDateTime,
+               SchemaDataType.String => JsonElementGetString,
                _ => throw new ArgumentException("Invalid Enum With Dynamic Method Call")
            };
 }

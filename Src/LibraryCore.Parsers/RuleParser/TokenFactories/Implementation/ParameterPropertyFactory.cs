@@ -53,52 +53,55 @@ public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel sch
                                                  schemaConfiguration.Schema.Value.GetProperty(PropertyPath[0]) :
                                                  null;
 
+        bool parameterIsDynamicType = parameter.Type == typeof(JsonElement);
+
         Expression workingExpression = parameter;
+
+        //if we are using a dynamic object and its a single property...then it won't have any nested items...so we will run the dynamic expression now
+        if (parameterIsDynamicType && PropertyPath.Count == 1)
+        {
+            workingExpression = BuildDynamicPropertyValue(workingExpression, PropertyPath[0], workingSchemaElement);
+        }
 
         foreach (var propertyLevel in PropertyPath.Skip(1))
         {
-            //TODO: can clean this up and only calculate if schem is filled out
             workingSchemaElement = workingSchemaElement.HasValue ?
                                         workingSchemaElement.Value.GetProperty(propertyLevel) :
                                         null;
 
-            workingExpression = parameter.Type == typeof(object) || parameter.Type == typeof(JsonElement) ?
-                          BuildDynamicPropertyExpression(workingExpression, propertyLevel, workingSchemaElement) :
+            workingExpression = parameterIsDynamicType ?
+                          BuildDynamicPropertyValue(BuildDynamicPropertyExpression(workingExpression, propertyLevel, workingSchemaElement), propertyLevel, workingSchemaElement) :
                           Expression.PropertyOrField(workingExpression, propertyLevel);
         }
 
         return workingExpression;
     }
 
-    private static Expression BuildDynamicPropertyExpression(Expression workingExpression, string propertyLevel, JsonElement? workingSchemaElement)
+    private static Expression BuildDynamicPropertyValue(Expression workingExpression, string propertyName, JsonElement? workingSchemaElement)
     {
         ArgumentNullException.ThrowIfNull(workingSchemaElement, nameof(workingSchemaElement));
-
-        var methodInfo = typeof(JsonElement).GetMethod("GetProperty", new[] { typeof(string) }) ?? throw new Exception("Can't Find Get Property On JsonElement");
-        var getPropertyMethodCall = Expression.Call(workingExpression, methodInfo, Expression.Constant(propertyLevel));
 
         if (workingSchemaElement.Value.ValueKind == JsonValueKind.Object)
         {
             //nested object
-            return getPropertyMethodCall;
+            return workingExpression;
         }
 
         if (!Enum.TryParse<SchemaDataType>(workingSchemaElement.Value.GetString(), true, out var schemaValue))
         {
-            throw new Exception("Can't Parse Schema Type For Property Level = " + propertyLevel);
+            throw new Exception("Can't Parse Schema Type For Property Level = " + propertyName);
         }
 
-        return Expression.Call(getPropertyMethodCall, MethodInfoToConvertValue(schemaValue));
+        return Expression.Call(workingExpression, MethodInfoToConvertValue(schemaValue));
+    }
 
-        //todo: cache these
+    private static Expression BuildDynamicPropertyExpression(Expression workingExpression,
+                                                             string propertyLevel,
+                                                             JsonElement? workingSchemaElement)
+    {
+        ArgumentNullException.ThrowIfNull(workingSchemaElement, nameof(workingSchemaElement));
 
-
-        //var binder = Microsoft.CSharp.RuntimeBinder.Binder.GetMember(Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags.None,
-        //             propertyLevel,
-        //             typeof(ParameterPropertyToken),
-        //             new[] { Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags.None, null) });
-
-        //return Expression.Dynamic(binder, typeof(object), parameterExpression);
+        return Expression.Call(workingExpression, JsonElementGetProperty, Expression.Constant(propertyLevel));
     }
 
     [ExcludeFromCodeCoverage]

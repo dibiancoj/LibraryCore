@@ -55,7 +55,7 @@ public class RuleParserEngine
     //&& AndAlso
     //|| OrElse
 
-    public RuleParserCompilationResult ParseString(string stringToParse, Func<object>? schemaModel = null)
+    public RuleParserCompilationResult ParseString(string stringToParse, object? schemaModel = null)
     {
         using var reader = new StringReader(stringToParse);
         var tokens = new List<IToken>();
@@ -74,7 +74,7 @@ public class RuleParserEngine
             tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, TokenFactoryProvider, this, schema));
         }
 
-        return new RuleParserCompilationResult(tokens.ToImmutableList(), schema);
+        return new RuleParserCompilationResult(tokens.ToImmutableList());
     }
 
     public RuleParserCompilationResult<TScoreType> ParseScore<TScoreType>(params ScoringCriteriaParameter<TScoreType>[] scoreCriteria)

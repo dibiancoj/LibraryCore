@@ -11,14 +11,12 @@ namespace LibraryCore.Parsers.RuleParser;
 
 public class RuleParserCompilationResult
 {
-    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult, SchemaModel schema)
+    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult)
     {
         CompilationTokenResult = compilationTokenResult;
-        Schema = schema;
     }
 
     public IImmutableList<IToken> CompilationTokenResult { get; }
-    public SchemaModel Schema { get; }
 
     /// <summary>
     /// facade the build expressions so we don't need to declare variables. Keep the expression builder seperate but make it easier for the caller
@@ -27,7 +25,7 @@ public class RuleParserCompilationResult
     {
         var parametersToUse = ImmutableList<ParameterExpression>.Empty;
 
-        return Expression.Lambda<Func<bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse, Schema), parametersToUse);
+        return Expression.Lambda<Func<bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
     public Expression<Func<T1, bool>> BuildExpression<T1>(string parameter1Name)
@@ -35,7 +33,7 @@ public class RuleParserCompilationResult
         var parameter1 = Expression.Parameter(typeof(T1), parameter1Name);
         var parametersToUse = new[] { parameter1 }.ToImmutableList();
 
-        return Expression.Lambda<Func<T1, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse, Schema), parametersToUse);
+        return Expression.Lambda<Func<T1, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
     public Expression<Func<T1, T2, bool>> BuildExpression<T1, T2>(string parameter1Name, string parameter2Name)
@@ -44,7 +42,7 @@ public class RuleParserCompilationResult
         var parameter2 = Expression.Parameter(typeof(T2), parameter2Name);
         var parametersToUse = new[] { parameter1, parameter2 }.ToImmutableList();
 
-        return Expression.Lambda<Func<T1, T2, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse, Schema), parametersToUse);
+        return Expression.Lambda<Func<T1, T2, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
     public Expression<Func<T1, T2, T3, bool>> BuildExpression<T1, T2, T3>(string parameter1Name, string parameter2Name, string parameter3Name)
@@ -54,7 +52,7 @@ public class RuleParserCompilationResult
         var parameter3 = Expression.Parameter(typeof(T3), parameter3Name);
         var parametersToUse = new[] { parameter1, parameter2, parameter3 }.ToImmutableList();
 
-        return Expression.Lambda<Func<T1, T2, T3, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse, Schema), parametersToUse);
+        return Expression.Lambda<Func<T1, T2, T3, bool>>(RuleParserExpressionBuilder.CreateExpression(CompilationTokenResult, parametersToUse), parametersToUse);
     }
 
     /// <summary>

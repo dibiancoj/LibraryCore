@@ -1,7 +1,4 @@
 ﻿using LibraryCore.Tests.Parsers.RuleParser.Fixtures;
-using System.Text.Json;
-using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
-using static LibraryCore.Parsers.RuleParser.Utilities.SchemaModel;
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
@@ -51,60 +48,17 @@ public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void TwoParameterTest()
     {
-        //var expression = RuleParserFixture.ResolveRuleParserEngine()
-        //                                    .ParseString("$Survey.SurgeryCount$ == 25 || $Size.Abc$ == 'test12' || $Survey.Bla$ == true")
-        //                                    .BuildExpression<dynamic, dynamic>("Survey", "Size");
+        var expression = RuleParserFixture.ResolveRuleParserEngine()
+                                            .ParseString("$Survey.SurgeryCount$ == 25 && $Size.SurgeryCount$ == 12 || $Survey.SurgeryCount$ == 24")
+                                            .BuildExpression<Survey, Survey>("Survey", "Size");
 
+        Assert.True(expression.Compile().Invoke(new SurveyModelBuilder()
+                                                .WithSurgeryCount(24)
+                                                .Value,
 
-
-        //var exp1 = new ExpandoObject();
-        //exp1.TryAdd("SurgeryCount", 24);
-        //exp1.TryAdd("Bla", true);
-
-        //var exp2 = new ExpandoObject();
-        //exp2.TryAdd("Abc", "test");
-
-        //var result = expression.Compile().Invoke(exp1, exp2);
-
-        //Assert.True(result);
-
-        //////////////////
-        //json element now
-        var jsonString = JsonSerializer.Serialize(new
-        {
-            SurgeryCount = 25,
-            Bla = false,
-            Str = "sadfsd",
-            Dt = DateTime.Now,
-            SubObject = new
-            {
-                Id = "99"
-            }
-        });
-
-        var dynamicFromJsonElement = JsonSerializer.Deserialize<dynamic>(jsonString);
-
-        var expression2 = RuleParserFixture.ResolveRuleParserEngine()
-                                           .ParseString("$Survey.SurgeryCount$ == 26 || $Survey.SubObject.Id$ == '99'",
-                                           () => new
-                                           {
-                                               Survey = new
-                                               {
-                                                   SurgeryCount = SchemaDataType.Int,
-                                                   Bla = SchemaDataType.Boolean,
-                                                   Str = SchemaDataType.String,
-                                                   Dt = SchemaDataType.DateTime,
-                                                   SubObject = new
-                                                   {
-                                                       Id = SchemaDataType.String
-                                                   }
-                                               }
-                                           })
-                                           .BuildExpression<JsonElement>("Survey");
-
-        var result2 = expression2.Compile().Invoke(dynamicFromJsonElement);
-
-        Assert.True(result2);
+                                                new SurveyModelBuilder()
+                                                .WithSurgeryCount(12)
+                                                .Value));
     }
 
     [Fact]
