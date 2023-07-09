@@ -19,13 +19,13 @@ public class KafkaNodeManager
 
     public IEnumerable<Task> CreateNodeAsync(string key, CancellationToken cancellationToken)
     {
-        var configuration = RegisteredJobs.Single(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+        var configuration = RegisteredJobs[key];
 
         var tasks = new List<Task>();
 
-        for (int i = 0; i < configuration.Value.NumberOfNodes; i++)
+        for (int i = 0; i < configuration.NumberOfNodes; i++)
         {
-            tasks.Add(configuration.Value.NodeCreator().CreateNodeAsync(i, key, cancellationToken));
+            tasks.Add(configuration.NodeCreator().CreateNodeAsync(i, key, cancellationToken));
         }
 
         return tasks;
