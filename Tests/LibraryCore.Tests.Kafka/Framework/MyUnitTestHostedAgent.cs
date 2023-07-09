@@ -1,46 +1,51 @@
 ﻿using Confluent.Kafka;
 using LibraryCore.Kafka;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.Tests.Kafka.Framework;
 
 [ExcludeFromCodeCoverage(Justification = "Coming up in code coverage report as actual code.")]
-public class MyUnitTestHostedAgent : IKafkaProcessor<string, string>
+public class MyUnitTestHostedAgent : BackgroundService
 {
-    public MyUnitTestHostedAgent(IConsumer<string, string> consumer, HowManyNodesSetup howManyNodesSetup)
+    public MyUnitTestHostedAgent(KafkaNodeManager kafkaNodeManager)
     {
-        KafkaConsumer = consumer;
-        MessagesProcessed = new ConcurrentBag<ProcessedItem>();
-        TopicsToRead = new[] { "Topic1", "Topic2" };
-        NodeCount = howManyNodesSetup.HowManyNodes; //this is only here so we can mock it. Real use would pass in IOptions or this would be hardcoded.
+        KafkaNodeManager = kafkaNodeManager;
     }
 
-    public ConcurrentBag<ProcessedItem> MessagesProcessed { get; }
+    private KafkaNodeManager KafkaNodeManager { get; }
+    public const string KakfaJobName = "Job1";
 
-    public IConsumer<string, string> KafkaConsumer { get; }
-
-    public IEnumerable<string> TopicsToRead { get; }
-
-    public int NodeCount { get; }
-
-    public async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, int nodeId, CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        MessagesProcessed.Add(new ProcessedItem(messageResult.Topic, nodeId, messageResult.Message));
+        await Task.WhenAll(KafkaNodeManager.CreateNodeAsync(KakfaJobName, stoppingToken));
+    }
+}
+
+public class KafkaMockedDataStore
+{
+    public record ProcessedItem(string Topic, int NodeId, Message<string, string> Message);
+    public ConcurrentBag<ProcessedItem> MessagesProcessed { get; } = new ConcurrentBag<ProcessedItem>();
+}
+
+public class MyKafkaJob1 : KafkaNode<string, string>
+{
+    public MyKafkaJob1(ILogger<KafkaNode<string, string>> logger, IEnumerable<string> topicsToRead, IConsumer<string, string> kafkaConsumer, KafkaMockedDataStore kafkaMockedDataStore) :
+        base(logger, topicsToRead, kafkaConsumer)
+    {
+        KafkaMockedDataStore = kafkaMockedDataStore;
+    }
+
+    public KafkaMockedDataStore KafkaMockedDataStore { get; }
+
+    public override async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, int nodeId, CancellationToken stoppingToken)
+    {
+        KafkaMockedDataStore.MessagesProcessed.Add(new KafkaMockedDataStore.ProcessedItem(messageResult.Topic, nodeId, messageResult.Message));
 
         //throw in a wait for simulation
         await Task.Delay(50, stoppingToken);
-    }
-
-    public record ProcessedItem(string Topic, int NodeId, Message<string, string> Message);
-
-    public class HowManyNodesSetup
-    {
-        public HowManyNodesSetup(int howManyNodes)
-        {
-            HowManyNodes = howManyNodes;
-        }
-
-        public int HowManyNodes { get; }
     }
 }

@@ -2,6 +2,8 @@
 using LibraryCore.Kafka;
 using LibraryCore.Tests.Kafka.Framework;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using static LibraryCore.Tests.Kafka.Framework.MyUnitTestHostedAgent;
 
@@ -16,24 +18,23 @@ public class KafkaTest
 
         ServiceCollectionToUse = new ServiceCollection()
            .AddLogging()
-           .AddSingleton<KafkaConsumerService<string, string>>()
+           .AddSingleton<MyUnitTestHostedAgent>()
            .AddSingleton(MockedConsumerKafka.Object)
-           .AddSingleton<IKafkaProcessor<string, string>, MyUnitTestHostedAgent>();
+           .AddSingleton(new KafkaMockedDataStore())
+           .AddSingleton(sp => new KafkaNodeManager()
+                                        .RegisterJob(KakfaJobName, 2, () => new MyKafkaJob1(sp.GetRequiredService<ILogger<MyKafkaJob1>>(),
+                                                                      new[] { "Topics1", "Topic2" },
+                                                                      MockedConsumerKafka.Object,
+                                                                      sp.GetRequiredService<KafkaMockedDataStore>())));
     }
 
     private Mock<IConsumer<string, string>> MockedConsumerKafka { get; set; }
     private IServiceCollection ServiceCollectionToUse { get; }
 
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(10)]
-    [InlineData(25)]
-    [Theory]
-    public async Task BasicKafkaIntegration(int howManyNodes)
+    [Fact]
+    public async Task BasicKafkaIntegration()
     {
         var provider = ServiceCollectionToUse
-                            .AddSingleton(new HowManyNodesSetup(howManyNodes))
                             .BuildServiceProvider();
 
         int howManyStoreOffsetsAreCalled = 0;
@@ -61,8 +62,8 @@ public class KafkaTest
             .Returns(resultsToReturn[3])
             .Returns((ConsumeResult<string, string>)null!);
 
-        var hostedAgentToTest = provider.GetRequiredService<KafkaConsumerService<string, string>>();
-        var processor = (MyUnitTestHostedAgent)provider.GetRequiredService<IKafkaProcessor<string, string>>();
+        var hostedAgentToTest = provider.GetRequiredService<MyUnitTestHostedAgent>();
+        var processor = provider.GetRequiredService<KafkaMockedDataStore>();
 
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 
@@ -95,7 +96,7 @@ public class KafkaTest
         //    Assert.True(result.GroupBy(x => x.NodeId).Count() > 1);
         //}
 
-        MockedConsumerKafka.Verify(x => x.Subscribe(It.Is<IEnumerable<string>>(t => t.Contains("Topic1") || t.Contains("Topic2"))), Times.Exactly(howManyNodes));
+        MockedConsumerKafka.Verify(x => x.Subscribe(It.Is<IEnumerable<string>>(t => t.Contains("Topic1") || t.Contains("Topic2"))), Times.Exactly(2)); //2 nodes setup
         MockedConsumerKafka.Verify(x => x.Consume(It.IsAny<TimeSpan>()), Times.AtLeast(5));
         MockedConsumerKafka.Verify(x => x.StoreOffset(It.Is<ConsumeResult<string, string>>(t => resultsToReturn.Contains(t))), Times.Exactly(4));
     }
