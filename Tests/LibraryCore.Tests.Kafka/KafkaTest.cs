@@ -77,7 +77,7 @@ public class KafkaTest
         }, TimeSpan.FromSeconds(10));
 
         await hostedAgentToTest.StopAsync(cancellationToken.Token);
-         
+
         //make sure we spun until we found the right amount of records
         Assert.True(spinWaitResult);
 
