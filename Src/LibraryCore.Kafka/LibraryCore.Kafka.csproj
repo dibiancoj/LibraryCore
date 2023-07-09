@@ -11,7 +11,7 @@
 		<Description>.NetCore Kafka Logic With Consumer Patterns</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>7.0.0</Version>
+		<Version>7.0.1</Version>
 		<Title>LibraryCore - Kafka</Title>
 	</PropertyGroup>
 
