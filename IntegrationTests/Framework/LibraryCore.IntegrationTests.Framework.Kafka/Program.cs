@@ -1,7 +1,7 @@
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
-using LibraryCore.IntegrationTests.Framework.Kafka;
 using LibraryCore.IntegrationTests.Framework.Kafka.Api;
+using LibraryCore.IntegrationTests.Framework.Kafka.KafkaProcessor;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 using LibraryCore.Kafka;
 

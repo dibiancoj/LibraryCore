@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
+using LibraryCore.IntegrationTests.Framework.Kafka.KafkaProcessor;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka.Api;

@@ -11,6 +11,8 @@ public class KafkaNodeManager
 
     private ConcurrentDictionary<string, RegistrationConfiguration> RegisteredJobs { get; }
 
+    public record RegistrationConfiguration(Func<IKafkaNodeCreator> NodeCreator, int NumberOfNodes);
+
     public KafkaNodeManager RegisterJob(string key, int numberOfNodes, Func<IKafkaNodeCreator> nodeCreator)
     {
         RegisteredJobs.TryAdd(key, new(nodeCreator, numberOfNodes));
@@ -25,12 +27,9 @@ public class KafkaNodeManager
 
         for (int i = 0; i < configuration.NumberOfNodes; i++)
         {
-            tasks.Add(configuration.NodeCreator().CreateNodeAsync(i, key, cancellationToken));
+            tasks.Add(configuration.NodeCreator().CreateNodeAsync(i + 1, key, cancellationToken));
         }
 
         return tasks;
     }
-
-    public record RegistrationConfiguration(Func<IKafkaNodeCreator> NodeCreator, int NumberOfNodes);
-
 }
