@@ -1,6 +1,5 @@
 ﻿using Confluent.Kafka;
 using LibraryCore.Kafka;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
