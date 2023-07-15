@@ -22,7 +22,7 @@ public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
     private const string LogFormat = "{Action} : NodeId = {NodeId} : JobKey = {JobKey} : AdditionalInfo = {AdditionalInfo}";
 
     public abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaBody> messageResult, int nodeId, CancellationToken stoppingToken);
-    public virtual void StoreOffset(ConsumeResult<TKafkaKey, TKafkaBody> result) => KafkaConsumer.StoreOffset(result);
+    public virtual void StoreOffsetByConsumer(ConsumeResult<TKafkaKey, TKafkaBody> result) => KafkaConsumer.StoreOffset(result);
 
     public async Task CreateNodeAsync(int nodeId, string jobKey, CancellationToken cancellationToken)
     {
@@ -48,7 +48,8 @@ public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
 
                     await ProcessMessageAsync(consumeResult, nodeId, cancellationToken).ConfigureAwait(false);
 
-                    KafkaConsumer.StoreOffset(consumeResult);
+                    //allow the consumer to control the offset after processing is complete. This way if they want to manually consume it, etc.
+                    StoreOffsetByConsumer(consumeResult);
                 }
 
                 //allow threads to get control. We need something that is async to allow threads to continue and run anything needed that is urgent (mainly for time out scenario)
