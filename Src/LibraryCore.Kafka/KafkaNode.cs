@@ -44,7 +44,7 @@ public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
                 //only publish if it didn't time out and we have an entry from kafka. This is an effort to keep the channel clear
                 if (consumeResult != null)
                 {
-                    Logger.LogInformation(LogFormat, "Kafka Messaged Received", nodeId, jobKey, $"Key = {consumeResult.Message.Key ?? default}");
+                    Logger.LogInformation(LogFormat, "Kafka Messaged Received", nodeId, jobKey, $"Key: {consumeResult.Message.Key ?? default}");
 
                     await ProcessMessageAsync(consumeResult, nodeId, cancellationToken).ConfigureAwait(false);
 
@@ -68,12 +68,12 @@ public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            Logger.LogWarning(LogFormat, "Cancellation Token Is Stopping", nodeId, jobKey, string.Empty);
+            Logger.LogWarning(LogFormat, "Cancellation Token Is Stopping", nodeId, jobKey, "N/A");
             return false;
         }
 
         //log any critical errors. Hosted services don't bubble up well with threading like this.
-        Logger.LogCritical(ex, LogFormat, "Error In Kafka Hosted Service. Service is not unstable", nodeId, jobKey, string.Empty);
+        Logger.LogCritical(ex, LogFormat, "Error In Kafka Hosted Service. Service is not unstable", nodeId, jobKey, "N/A");
 
         return true;
     }
