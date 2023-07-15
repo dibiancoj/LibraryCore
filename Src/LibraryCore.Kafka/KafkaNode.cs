@@ -20,8 +20,8 @@ public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
     public virtual TimeSpan ConsumeTimeout() => TimeSpan.FromSeconds(15);
 
     private const string LogFormat = "{Action} : NodeId = {NodeId} : JobKey = {JobKey}";
-    private const string LogFormatOnStartup = LogFormat + " : TopicsRead={TopicsRead}";
-    private const string LogFormatOnMessageReceived = LogFormat + " : MessageReadKey={MessageKey}";
+    private const string LogFormatOnStartup = LogFormat + " : TopicsRead = {TopicsRead}";
+    private const string LogFormatOnMessageReceived = LogFormat + " : MessageReadKey = {MessageKey}";
 
     public abstract Task ProcessMessageAsync(ConsumeResult<TKafkaKey, TKafkaBody> messageResult, int nodeId, CancellationToken stoppingToken);
     public virtual void StoreOffsetByConsumer(ConsumeResult<TKafkaKey, TKafkaBody> result) => KafkaConsumer.StoreOffset(result);
