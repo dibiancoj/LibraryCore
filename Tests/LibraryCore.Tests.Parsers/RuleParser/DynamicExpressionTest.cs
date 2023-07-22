@@ -66,6 +66,18 @@ public class DynamicExpressionTest : IClassFixture<RuleParserFixture>
             }
         };
 
+        var z = JsonSerializer.SerializeToElement(new
+        {
+            SurgeryCount = surgeryCountValue,
+            Bla = false,
+            Str = "sadfsd",
+            Dt = DateTime.Now,
+            SubObject = new
+            {
+                Id = subObjectIdValue
+            }
+        });
+
         var expressionToRun = RuleParserFixture.ResolveRuleParserEngine()
                                            .ParseString("$Survey.SurgeryCount$ == 26 || $Survey.SubObject.Id$ == '99'", schema)
                                            .BuildExpression<JsonElement>("Survey");

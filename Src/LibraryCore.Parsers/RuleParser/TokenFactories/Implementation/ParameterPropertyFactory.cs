@@ -1,4 +1,5 @@
-﻿using LibraryCore.Core.ExtensionMethods;
+﻿using LibraryCore.Core.EnumUtilities;
+using LibraryCore.Core.ExtensionMethods;
 using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -38,6 +39,8 @@ public class ParameterPropertyFactory : ITokenFactory
 [DebuggerDisplay("Parameter Property Path = {DebuggerDisplay()}")]
 public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel SchemaConfiguration) : IToken
 {
+    private static ConstantExpression JsonSerializerOptions { get; } = Expression.Constant(new JsonSerializerOptions());
+
     public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
@@ -91,7 +94,9 @@ public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel Sch
             throw new Exception("Can't Parse Schema Type For Property Level = " + propertyName);
         }
 
-        return Expression.Call(workingExpression, MethodInfoToConvertValue(schemaValue));
+        return Expression.Call(MethodInfoToConvertValue(schemaValue),
+                                workingExpression,
+                                JsonSerializerOptions);
     }
 
     private static Expression BuildDynamicPropertyExpression(Expression workingExpression,
