@@ -25,7 +25,10 @@ public record SchemaModel(JsonElement? Schema)
         DateTime = 3,
 
         [SchemaDataTypeDotNetTypeAttibute(typeof(IEnumerable<int>))]
-        ArrayOfInts
+        ArrayOfInts,
+
+        [SchemaDataTypeDotNetTypeAttibute(typeof(IEnumerable<string>))]
+        ArrayOfStrings,
     }
 
     private class SchemaDataTypeDotNetTypeAttibute : Attribute
