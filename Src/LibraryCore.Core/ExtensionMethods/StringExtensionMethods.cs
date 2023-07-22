@@ -238,7 +238,7 @@ public static class StringExtensionMethods
     public static string ReplaceAllTagsInString(this string rawTextToSearchAndReplace, IEnumerable<KeyValuePair<string, string>> tagsToReplace)
     {
         var temp = new StringBuilder(rawTextToSearchAndReplace);
-
+        StringParserTest
         foreach (var tagToReplace in tagsToReplace.Where(x => rawTextToSearchAndReplace.Contains(x.Key)))
         {
             temp.Replace(tagToReplace.Key, tagToReplace.Value);
@@ -254,7 +254,7 @@ public static class StringExtensionMethods
     [DoesNotReturn]
     private static void ThrowIfNullOrEmptyException(string? expression) => throw new ArgumentException($"{expression} must be string that is not null or empty");
 
-    public static void ThrowIfNullOrEmpty(this string? value, [CallerArgumentExpression("value")] string? expression = null)
+    public static void ThrowIfNullOrEmpty(this string? value, [CallerArgumentExpression(nameof(value))] string? expression = null)
     {
         if (string.IsNullOrEmpty(value))
         {

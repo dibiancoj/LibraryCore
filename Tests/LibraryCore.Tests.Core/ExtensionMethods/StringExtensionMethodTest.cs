@@ -150,7 +150,7 @@ public class StringExtensionMethodTest
     public void StringToByteArrayTest1()
     {
         //loop through the elements to test using the helper method for this
-        Assert.Equal(new byte[] { 106, 97, 115, 111, 110 }, "jason".ToByteArray());
+        Assert.Equal("jason"u8.ToArray(), "jason".ToByteArray());
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public class StringExtensionMethodTest
     public void StringToByteArrayTest2()
     {
         //loop through the elements to test using the helper method for this
-        Assert.Equal(new byte[] { 106, 97, 115, 111, 110, 50 }, "jason2".ToByteArray());
+        Assert.Equal("jason2"u8.ToArray(), "jason2".ToByteArray());
     }
 
     #endregion

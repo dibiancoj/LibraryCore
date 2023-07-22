@@ -39,7 +39,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("'abc {@GetANumberWithNoParameters()}'");
 
-        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.Single(result.CompilationTokenResult);
         Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
 
         var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
@@ -56,7 +56,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$}'");
 
-        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.Single(result.CompilationTokenResult);
         Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
 
         var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
@@ -73,7 +73,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$} | {$param2$}'");
 
-        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.Single(result.CompilationTokenResult);
         Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
 
         var firstStringToken = (StringToken)result.CompilationTokenResult.Single();
@@ -90,7 +90,7 @@ public class StringParserTest : IClassFixture<RuleParserFixture>
         var result = RuleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("'abc {@GetANumberWithNoParameters()} | {$param1$} | {$param200$}'");
 
-        Assert.Equal(1, result.CompilationTokenResult.Count);
+        Assert.Single(result.CompilationTokenResult);
         Assert.IsType<StringToken>(result.CompilationTokenResult[0]);
 
         var firstStringToken = (StringToken)result.CompilationTokenResult.Single();

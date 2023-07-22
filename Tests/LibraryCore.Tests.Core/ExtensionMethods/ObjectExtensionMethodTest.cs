@@ -123,7 +123,7 @@ public class ObjectExtensionMethodTest
         var iListBuiltFromSingleObject = new DummyObject().ToIList();
 
         //make sure we only have 1 record. This should prove it's in a form of ienumerable
-        Assert.Equal(1, iListBuiltFromSingleObject.Count);
+        Assert.Single(iListBuiltFromSingleObject);
 
         //add another record so we can make sure it increments
         iListBuiltFromSingleObject.Add(new DummyObject());
