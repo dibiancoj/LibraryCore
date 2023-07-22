@@ -19,7 +19,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
                                     .ParseString("[1,2,3]")
                                     .CompilationTokenResult;
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.IsType<ArrayToken>(result[0]);
 
         var array = result.OfType<ArrayToken>().First();
@@ -37,7 +37,7 @@ public class ArrayParserTest : IClassFixture<RuleParserFixture>
                                         .ParseString("['item 1','item 2','item 3']")
                                         .CompilationTokenResult;
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.IsType<ArrayToken>(result[0]);
 
         var array = result.OfType<ArrayToken>().First();
