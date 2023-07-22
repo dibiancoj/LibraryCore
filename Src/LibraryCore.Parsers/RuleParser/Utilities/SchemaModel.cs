@@ -22,7 +22,10 @@ public record SchemaModel(JsonElement? Schema)
         Boolean = 2,
 
         [SchemaDataTypeDotNetTypeAttibute(typeof(DateTime))]
-        DateTime = 3
+        DateTime = 3,
+
+        [SchemaDataTypeDotNetTypeAttibute(typeof(IEnumerable<int>))]
+        ArrayOfInts
     }
 
     private class SchemaDataTypeDotNetTypeAttibute : Attribute
