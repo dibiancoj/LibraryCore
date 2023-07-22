@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Tests.Parsers.RuleParser.Fixtures;
+using System.ComponentModel;
 using System.Text.Json;
 using static LibraryCore.Parsers.RuleParser.Utilities.SchemaModel;
 
@@ -48,7 +49,8 @@ public class DynamicExpressionTest : IClassFixture<RuleParserFixture>
             SubObject = new
             {
                 Id = subObjectIdValue
-            }
+            },
+            MyArrayOfInts = new[] { 1, 2, 3 }
         });
 
         var schema = new
@@ -62,12 +64,99 @@ public class DynamicExpressionTest : IClassFixture<RuleParserFixture>
                 SubObject = new
                 {
                     Id = SchemaDataType.String
-                }
+                },
+                MyArrayOfInts = SchemaDataType.Int
             }
         };
 
         var expressionToRun = RuleParserFixture.ResolveRuleParserEngine()
                                            .ParseString("$Survey.SurgeryCount$ == 26 || $Survey.SubObject.Id$ == '99'", schema)
+                                           .BuildExpression<JsonElement>("Survey");
+
+        Assert.Equal(expectedResult, expressionToRun.Compile().Invoke(JsonSerializer.Deserialize<dynamic>(makeDynamicObject)));
+    }
+
+    [InlineData(1, true)]
+    [InlineData(2, true)]
+    [InlineData(5, false)]
+    [InlineData(6, false)]
+    [Theory]
+    public void IntContainsTest(int valueToTestContains, bool expectedResult)
+    {
+        var makeDynamicObject = JsonSerializer.Serialize(new
+        {
+            SurgeryCount = 5,
+            Bla = false,
+            Str = "sadfsd",
+            Dt = DateTime.Now,
+            SubObject = new
+            {
+                Id = "Test"
+            },
+            MyArrayOfInts = new[] { 1, 2, 3 }
+        });
+
+        var schema = new
+        {
+            Survey = new
+            {
+                SurgeryCount = SchemaDataType.Int,
+                Bla = SchemaDataType.Boolean,
+                Str = SchemaDataType.String,
+                Dt = SchemaDataType.DateTime,
+                SubObject = new
+                {
+                    Id = SchemaDataType.String
+                },
+                MyArrayOfInts = SchemaDataType.ArrayOfInts
+            }
+        };
+
+        var expressionToRun = RuleParserFixture.ResolveRuleParserEngine()
+                                           .ParseString($"$Survey.MyArrayOfInts$ contains {valueToTestContains} || $Survey.SubObject.Id$ == '99'", schema)
+                                           .BuildExpression<JsonElement>("Survey");
+
+        Assert.Equal(expectedResult, expressionToRun.Compile().Invoke(JsonSerializer.Deserialize<dynamic>(makeDynamicObject)));
+    }
+
+    [InlineData("abc", true)]
+    [InlineData("def", true)]
+    [InlineData("xyz", false)]
+    [InlineData("qrs", false)]
+    [Theory]
+    public void StringContainsTest(string valueToTestContains, bool expectedResult)
+    {
+        var makeDynamicObject = JsonSerializer.Serialize(new
+        {
+            SurgeryCount = 5,
+            Bla = false,
+            Str = "sadfsd",
+            Dt = DateTime.Now,
+            SubObject = new
+            {
+                Id = "Test"
+            },
+            MyArrayOfStrings = new[] { "abc", "def" }
+        });
+
+        var schema = new
+        {
+            Survey = new
+            {
+                SurgeryCount = SchemaDataType.Int,
+                Bla = SchemaDataType.Boolean,
+                Str = SchemaDataType.String,
+                Dt = SchemaDataType.DateTime,
+                SubObject = new
+                {
+                    Id = SchemaDataType.String
+                },
+                MyArrayOfStrings = SchemaDataType.ArrayOfStrings
+            }
+        };
+
+        var expressionToRun = RuleParserFixture.ResolveRuleParserEngine()
+                                           .ParseString($"$Survey.MyArrayOfStrings$ contains '{valueToTestContains}' || $Survey.SubObject.Id$ == '99'", schema)
                                            .BuildExpression<JsonElement>("Survey");
 
         Assert.Equal(expectedResult, expressionToRun.Compile().Invoke(JsonSerializer.Deserialize<dynamic>(makeDynamicObject)));
