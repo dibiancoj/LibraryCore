@@ -238,7 +238,7 @@ public static class StringExtensionMethods
     public static string ReplaceAllTagsInString(this string rawTextToSearchAndReplace, IEnumerable<KeyValuePair<string, string>> tagsToReplace)
     {
         var temp = new StringBuilder(rawTextToSearchAndReplace);
-        StringParserTest
+        
         foreach (var tagToReplace in tagsToReplace.Where(x => rawTextToSearchAndReplace.Contains(x.Key)))
         {
             temp.Replace(tagToReplace.Key, tagToReplace.Value);
