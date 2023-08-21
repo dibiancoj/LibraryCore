@@ -11,6 +11,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.RuleParser;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
+[ReturnValueValidator(failOnError: true)]
+[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.SlowestToFastest)]
 public class RuleParserPerfTest
 {
     [GlobalSetup]

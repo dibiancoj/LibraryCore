@@ -11,6 +11,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
+[ReturnValueValidator(failOnError: true)]
+[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.SlowestToFastest)]
 public class DelimiterReaderPerfTest
 {
     [Params(@"""abc""|""cde""|""fgh""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""", @"""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""|""abc""|""cde""|""fgh"",""zz""|""bb""|""gg""")]

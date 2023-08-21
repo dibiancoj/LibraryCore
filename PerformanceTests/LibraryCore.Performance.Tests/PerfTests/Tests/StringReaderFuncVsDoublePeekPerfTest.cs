@@ -6,6 +6,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
+[ReturnValueValidator(failOnError: true)]
+[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.SlowestToFastest)]
 public class StringReaderFuncVsDoublePeekPerfTest
 {
     [Benchmark(Baseline = true)]
