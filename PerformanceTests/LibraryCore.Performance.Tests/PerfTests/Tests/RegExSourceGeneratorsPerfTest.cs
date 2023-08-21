@@ -9,6 +9,8 @@ namespace LibraryCore.Performance.Tests.PerfTests.Tests;
 [SimpleJob]
 [Config(typeof(Config))]
 [MemoryDiagnoser]
+[ReturnValueValidator(failOnError: true)]
+[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.SlowestToFastest)]
 public class RegExSourceGeneratorsPerfTest
 {
     [Params("https://www.google456.com Test", "local host test https://localhost/Test123. Then there is https://www.google.com. Then some more text. Bla bla https://www.espn.com")]
