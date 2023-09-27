@@ -2,42 +2,28 @@
 
 public class TaskExtensionMethodTest
 {
-    private static async Task<string> AsyncStub1Method()
+    private static async Task<T> AsyncStub<T>(T result)
     {
         await Task.Delay(50);
 
-        return "Test 123";
-    }
-
-    private static async Task<string> AsyncStub2Method()
-    {
-        await Task.Delay(50);
-
-        return "T1";
-    }
-
-    private static async Task<int> AsyncStub3Method()
-    {
-        await Task.Delay(50);
-
-        return 1000;
+        return result;
     }
 
     [Fact]
     public async Task ThenResultTest()
     {
-        Assert.Equal("T", await AsyncStub1Method().Then(tsk => tsk[..1]));
+        Assert.Equal("T", await AsyncStub("Test 123").Then(tsk => tsk[..1]));
     }
 
     [Fact]
     public async Task ThenResultAwaitContinuationTest()
     {
-        Assert.Equal("T1", await AsyncStub1Method().Then(tsk => AsyncStub2Method()));
+        Assert.Equal("T1", await AsyncStub("Test 123").Then(tsk => AsyncStub("T1")));
     }
 
     [Fact]
     public async Task ChainedAwaits()
     {
-        Assert.Equal(1000, await AsyncStub1Method().Then(tsk => AsyncStub2Method()).Then(tsk => AsyncStub3Method()));
+        Assert.Equal(1000, await AsyncStub("Test 123").Then(tsk => AsyncStub("T1")).Then(tsk => AsyncStub(1000)));
     }
 }
