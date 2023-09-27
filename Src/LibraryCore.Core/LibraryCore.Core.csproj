@@ -8,7 +8,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Description>.NetCore Common Library</Description>
-		<Version>6.4.1</Version>
+		<Version>6.4.2</Version>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Title>LibraryCore - Core</Title>

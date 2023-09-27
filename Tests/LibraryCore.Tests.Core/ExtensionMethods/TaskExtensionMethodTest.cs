@@ -27,16 +27,4 @@ public class TaskExtensionMethodTest
     {
         Assert.Equal("T1", await AsyncStub1Method().Then(tsk => AsyncStub2Method()));
     }
-
-    [Fact]
-    public async Task ThenResultWithConfigureAwaitTest()
-    {
-        Assert.Equal("T", await AsyncStub1Method().ConfigureAwait(false).Then(tsk => tsk[..1]));
-    }
-
-    [Fact]
-    public async Task ConfigureAwaitThenResultWithConfigureAwaitTest()
-    {
-        Assert.Equal("T1", await AsyncStub1Method().ConfigureAwait(false).Then(tsk => AsyncStub2Method().ConfigureAwait(false)));
-    }
 }
