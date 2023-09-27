@@ -16,6 +16,13 @@ public class TaskExtensionMethodTest
         return "T1";
     }
 
+    private static async Task<int> AsyncStub3Method()
+    {
+        await Task.Delay(50);
+
+        return 1000;
+    }
+
     [Fact]
     public async Task ThenResultTest()
     {
@@ -29,14 +36,8 @@ public class TaskExtensionMethodTest
     }
 
     [Fact]
-    public async Task ThenResultWithConfigureAwaitTest()
+    public async Task ChainedAwaits()
     {
-        Assert.Equal("T", await AsyncStub1Method().ConfigureAwait(false).Then(tsk => tsk[..1]));
-    }
-
-    [Fact]
-    public async Task ConfigureAwaitThenResultWithConfigureAwaitTest()
-    {
-        Assert.Equal("T1", await AsyncStub1Method().ConfigureAwait(false).Then(tsk => AsyncStub2Method().ConfigureAwait(false)));
+        Assert.Equal(1000, await AsyncStub1Method().Then(tsk => AsyncStub2Method()).Then(tsk => AsyncStub3Method()));
     }
 }
