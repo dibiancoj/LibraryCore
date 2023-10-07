@@ -9,7 +9,6 @@ public static class SecretManagerUtilities
 {
     //AmazonSecretsManagerClient is the IAmazonSecretsManager implementation.
     //In DI services.AddAWSService<IAmazonSecretsManager>();
-    //notes: Doesn't have support to get a specific version. Not needed so VersionId is not a parameter in the method
     public static async Task<string?> GetSecretAsync(IAmazonSecretsManager client, string secretArnOrName, string versionStage = "AWSCURRENT", CancellationToken cancellationToken = default)
     {
         var tempResponse = await client.GetSecretValueAsync(new GetSecretValueRequest
