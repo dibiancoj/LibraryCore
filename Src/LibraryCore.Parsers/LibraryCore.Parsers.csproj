@@ -15,7 +15,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LibraryCore.Core" Version="6.4.1" />
+		<PackageReference Include="LibraryCore.Core" Version="6.4.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 
