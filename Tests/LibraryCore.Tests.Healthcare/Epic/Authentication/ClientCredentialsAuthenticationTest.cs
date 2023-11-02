@@ -7,6 +7,9 @@ namespace LibraryCore.Tests.Healthcare.Epic.Authentication;
 
 public class ClientCredentialsAuthenticationTest
 {
+
+    #region Http Call To Retrieve Token
+
     [Fact]
     public async Task ClientCredentialsTokenAsync()
     {
@@ -54,4 +57,7 @@ public class ClientCredentialsAuthenticationTest
                msg.RequestUri == new Uri("https://mytokenendpoint") &&
                bodyContent.Equals(expectedBody);
     }
+
+    #endregion
+
 }
