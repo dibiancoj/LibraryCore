@@ -22,9 +22,7 @@ public class FhirAuthenticationMessageHandlerTest
         mockTokenProvider.Setup(x => x.AccessTokenAsync(It.IsAny<CancellationToken>()))
           .Returns(new ValueTask<string>(tokenValue));
 
-        Patient mockPatientResponse = new() { Id = "12345678"};
-        var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector).Pretty();
-        string patientJson = JsonSerializer.Serialize(mockPatientResponse, options);
+        string patientJson = JsonSerializer.Serialize(new Patient { Id = "12345678" }, new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector).Pretty());
 
         var mockResponse = new HttpResponseMessage
         {
