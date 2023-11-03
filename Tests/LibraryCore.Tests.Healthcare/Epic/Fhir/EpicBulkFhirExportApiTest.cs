@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Healthcare.Epic.Fhir.BulkExport;
+using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
 using Moq;
 using Moq.Protected;
@@ -8,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.EpicBulkFhirExportApi;
+using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models.BulkFhirCompletedStatus;
 
 namespace LibraryCore.Tests.Healthcare.Epic.Fhir;
 
@@ -92,13 +94,59 @@ public class EpicBulkFhirExportApiTest
     [Fact]
     public async Task CheckStatusNotDoneTest()
     {
-        Assert.True(false);
+        SetupFhirBearerTokenProvider();
+
+        var mockResponse = new HttpResponseMessage(HttpStatusCode.Accepted);
+
+        mockResponse.Headers.Add("X-Progress", "10 of 100 Patients Checked");
+
+        Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
+                                                                       msg.Headers.Authorization!.Parameter == "abc";
+
+        CreateMockedHttpHandlerCall(mockResponse, msgChecker);
+
+        var result = await EpicBulkFhirExportApiToUse.CheckStatusOfBulkRequestAsync("https://MyLocationOfContent");
+
+        var castedResult = Assert.IsType<BulkFhirInProgressStatus>(result);
+        Assert.Equal("10 of 100 Patients Checked", castedResult.ProgressDescription);
+
+        FhirBearerTokenProvider.VerifyAll();
+        CreateVerifyHttpHandlerCall(msgChecker);
     }
 
     [Fact]
     public async Task CheckStatusIsDoneTest()
     {
-        Assert.True(false);
+        SetupFhirBearerTokenProvider();
+
+        var mockResultOutput = new BulkFhirCompletedResultOutput[]
+        {
+            new("Patient", "Http://Patient/1.json"),
+            new("Patient", "Http://Patient/2.json")
+        };
+
+        var mockResponse = CreateMockedResponse(new BulkFhirCompletedResult(
+                                                            DateTime.Now,
+                                                            "MyLocationOfContent",
+                                                            true,
+                                                            mockResultOutput,
+                                                            Array.Empty<object>()));
+
+
+        Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
+                                                                       msg.Headers.Authorization!.Parameter == "abc";
+
+        CreateMockedHttpHandlerCall(mockResponse, msgChecker);
+
+        var result = await EpicBulkFhirExportApiToUse.CheckStatusOfBulkRequestAsync("https://MyLocationOfContent");
+
+        var castedResult = Assert.IsType<BulkFhirCompletedStatus>(result);
+
+        Assert.Contains(castedResult.Result.Output, x => x.Type == "Patient" && x.Url == "Http://Patient/1.json");
+        Assert.Contains(castedResult.Result.Output, x => x.Type == "Patient" && x.Url == "Http://Patient/2.json");
+
+        FhirBearerTokenProvider.VerifyAll();
+        CreateVerifyHttpHandlerCall(msgChecker);
     }
 
     [Fact]

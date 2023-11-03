@@ -1,11 +1,13 @@
 ﻿using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
+using LibraryCore.Core.Json.Converters;
 using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models.BulkFhirCompletedStatus;
 
 namespace LibraryCore.Healthcare.Epic.Fhir.BulkExport;
@@ -17,11 +19,21 @@ public class EpicBulkFhirExportApi
         Client = httpClient;
         FhirBearerTokenProvider = fhirBearerTokenProvider;
         JsonParser = new();
+        SerializerOptions = CreateSerializerOptions();
     }
 
     private HttpClient Client { get; }
     private IFhirBearerTokenProvider FhirBearerTokenProvider { get; }
-    private FhirJsonParser JsonParser { get; set; }
+    private FhirJsonParser JsonParser { get; }
+    private JsonSerializerOptions SerializerOptions { get; }
+
+    private static JsonSerializerOptions CreateSerializerOptions()
+    {
+        var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        serializerOptions.Converters.Add(new BooleanConverter());
+
+        return serializerOptions;
+    }
 
     private async Task<HttpRequestMessage> CreateBaseRequestAsync(HttpMethod method, string url, string acceptType = "application/json")
     {
@@ -54,7 +66,7 @@ public class EpicBulkFhirExportApi
 
         return rawResponse.StatusCode == HttpStatusCode.Accepted ?
             new BulkFhirInProgressStatus(rawResponse.Headers.GetValues("X-Progress").First()) :
-            new BulkFhirCompletedStatus(await rawResponse.Content.ReadFromJsonAsync<BulkFhirCompletedResult>() ?? throw new Exception("Can't Deserialize"));
+            new BulkFhirCompletedStatus(await rawResponse.Content.ReadFromJsonAsync<BulkFhirCompletedResult>(SerializerOptions) ?? throw new Exception("Can't Deserialize"));
     }
 
     public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls)
@@ -86,8 +98,8 @@ public class EpicBulkFhirExportApi
     /// This method is the accumulation of all the methods above. This will kick off a call and poll it until complete. Then once complete will return the data
     /// </summary>
     /// <typeparam name="T">Resource type to return</typeparam>
-    public async IAsyncEnumerable<T> KickOffAndWaitForCompletionAsync<T>(string kickOffRequestUrl, 
-                                                                         bool deleteAfterGrabbingData = false, 
+    public async IAsyncEnumerable<T> KickOffAndWaitForCompletionAsync<T>(string kickOffRequestUrl,
+                                                                         bool deleteAfterGrabbingData = false,
                                                                          TimeSpan? pollForCompletion = null,
                                                                          [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where T : Base

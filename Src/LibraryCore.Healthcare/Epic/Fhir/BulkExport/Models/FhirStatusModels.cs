@@ -10,10 +10,10 @@ public record BulkFhirInProgressStatus(string ProgressDescription) : IBulkFhirSt
 public record BulkFhirCompletedStatus(BulkFhirCompletedResult Result) : IBulkFhirStatus
 {
     public record BulkFhirCompletedResult([property: JsonPropertyName("transactionTime")] DateTime TransactionTime,
-                                           [property: JsonPropertyName("request")] string Request,
-                                           [property: JsonPropertyName("requiresAccessToken")] string RequiresAccessToken,
-                                           [property: JsonPropertyName("output")] BulkFhirCompletedResultOutput[] Output,
-                                           [property: JsonPropertyName("error")] object[] Error);
+                                          [property: JsonPropertyName("request")] string Request,
+                                          [property: JsonPropertyName("requiresAccessToken")] bool RequiresAccessToken,
+                                          [property: JsonPropertyName("output")] BulkFhirCompletedResultOutput[] Output,
+                                          [property: JsonPropertyName("error")] object[] Error);
 }
 
 public record BulkFhirCompletedResultOutput([property: JsonPropertyName("type")] string Type, [property: JsonPropertyName("url")] string Url);

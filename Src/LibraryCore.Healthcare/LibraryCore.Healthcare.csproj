@@ -27,4 +27,8 @@
 		<PackageReference Include="Hl7.Fhir.R4" Version="5.4.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
+	</ItemGroup>
+
 </Project>
