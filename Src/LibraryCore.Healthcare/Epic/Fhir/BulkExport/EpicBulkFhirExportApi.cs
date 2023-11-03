@@ -1,5 +1,4 @@
-﻿using Hl7.Fhir.Model;
-using Hl7.Fhir.Serialization;
+﻿using Hl7.Fhir.Serialization;
 using LibraryCore.Core.Json.Converters;
 using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
@@ -18,13 +17,13 @@ public class EpicBulkFhirExportApi
     {
         Client = httpClient;
         FhirBearerTokenProvider = fhirBearerTokenProvider;
-        JsonParser = new();
+        JsonFhirParser = new();
         SerializerOptions = CreateSerializerOptions();
     }
 
     private HttpClient Client { get; }
     private IFhirBearerTokenProvider FhirBearerTokenProvider { get; }
-    private FhirJsonParser JsonParser { get; }
+    private FhirJsonParser JsonFhirParser { get; }
     private JsonSerializerOptions SerializerOptions { get; }
 
     private static JsonSerializerOptions CreateSerializerOptions()
@@ -70,7 +69,7 @@ public class EpicBulkFhirExportApi
     }
 
     public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls)
-        where T : Base
+        where T : Hl7.Fhir.Model.Base
     {
         foreach (var resultUrl in resultUrls)
         {
@@ -82,12 +81,12 @@ public class EpicBulkFhirExportApi
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
-                yield return await JsonParser.ParseAsync<T>(line);
+                yield return await JsonFhirParser.ParseAsync<T>(line);
             }
         }
     }
 
-    public async System.Threading.Tasks.Task DeleteBulkRequestAsync(string contentLocationFromKickOff)
+    public async Task DeleteBulkRequestAsync(string contentLocationFromKickOff)
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Delete, contentLocationFromKickOff);
 
@@ -95,14 +94,15 @@ public class EpicBulkFhirExportApi
     }
 
     /// <summary>
-    /// This method is the accumulation of all the methods above. This will kick off a call and poll it until complete. Then once complete will return the data
+    /// This method is the accumulation of all the methods above. This will kick off a call and poll it until complete. Then once complete will return the data.
+    /// Use this if you are only returning 1 type. Otherwise, you can write the few lines of code to combine all the steps
     /// </summary>
     /// <typeparam name="T">Resource type to return</typeparam>
     public async IAsyncEnumerable<T> KickOffAndWaitForCompletionAsync<T>(string kickOffRequestUrl,
                                                                          bool deleteAfterGrabbingData = false,
                                                                          TimeSpan? pollForCompletion = null,
                                                                          [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        where T : Base
+        where T : Hl7.Fhir.Model.Base
     {
         var kickOffResult = await KickOffBulkRequestAsync(kickOffRequestUrl);
         var bulkFhirCompletedResultOutput = Enumerable.Empty<BulkFhirCompletedResultOutput>();
@@ -110,7 +110,7 @@ public class EpicBulkFhirExportApi
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            await System.Threading.Tasks.Task.Delay(pollTimeFrame, cancellationToken);
+            await Task.Delay(pollTimeFrame, cancellationToken);
 
             var statusResult = await CheckStatusOfBulkRequestAsync(kickOffResult.ContentLocation);
 
