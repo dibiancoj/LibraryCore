@@ -197,7 +197,21 @@ public class EpicBulkFhirExportApiTest
     [Fact]
     public async Task DeleteFhirData()
     {
-        Assert.True(false);
+        SetupFhirBearerTokenProvider();
+
+        var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
+
+        mockResponse.Content.Headers.Add("Content-Location", "MyLocationOfContent");
+
+        Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
+                                                                       msg.Headers.Authorization!.Parameter == "abc";
+
+        CreateMockedHttpHandlerCall(mockResponse, msgChecker);
+
+        await EpicBulkFhirExportApiToUse.DeleteBulkRequestAsync("http://server.fhir/group/zzzzzz/$export");
+
+        FhirBearerTokenProvider.VerifyAll();
+        CreateVerifyHttpHandlerCall(msgChecker);
     }
 
     [Fact]
