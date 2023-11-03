@@ -2,6 +2,7 @@
 using Hl7.Fhir.Rest;
 using Hl7.Fhir.Serialization;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
+using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
 using Moq.Protected;
 using System.Text;
 using System.Text.Json;

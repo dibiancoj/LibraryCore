@@ -1,4 +1,4 @@
-﻿namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.Implementations;
+﻿namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders.Implementations;
 
 public class EpicClientCredentialsBearerTokenProvider : IFhirBearerTokenProvider
 {

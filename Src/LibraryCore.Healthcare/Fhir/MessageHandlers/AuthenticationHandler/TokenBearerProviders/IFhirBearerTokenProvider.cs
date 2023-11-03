@@ -1,4 +1,4 @@
-﻿namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
+﻿namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
 
 public interface IFhirBearerTokenProvider
 {

@@ -1,4 +1,4 @@
-﻿namespace LibraryCore.Tests.Healthcare.Fhir.HttpClientHandlers.Implementations;
+﻿namespace LibraryCore.Tests.Healthcare.Fhir.HttpClientHandlers.TokenBearerProviders;
 
 public class EpicClientCredentialsBearerTokenProviderTest
 {

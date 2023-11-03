@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
 
