@@ -1,14 +1,12 @@
-﻿using LibraryCore.Healthcare.Epic.Fhir.BulkExport;
+﻿using Hl7.Fhir.Serialization;
+using LibraryCore.Healthcare.Epic.Fhir.BulkExport;
 using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
-using Moq;
 using Moq.Protected;
 using System.Linq.Expressions;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.EpicBulkFhirExportApi;
 using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models.BulkFhirCompletedStatus;
 
 namespace LibraryCore.Tests.Healthcare.Epic.Fhir;
@@ -38,10 +36,12 @@ public class EpicBulkFhirExportApiTest
 
     private static HttpResponseMessage CreateMockedResponse<T>(T? responseModel, HttpStatusCode code = HttpStatusCode.OK)
     {
+        string serializedContent = responseModel is string castedString ? castedString : JsonSerializer.Serialize(responseModel);
+
         return new HttpResponseMessage
         {
             StatusCode = code,
-            Content = responseModel == null ? null : new StringContent(JsonSerializer.Serialize(responseModel), Encoding.UTF8, "application/json")
+            Content = responseModel == null ? null : new StringContent(serializedContent, Encoding.UTF8, "application/json")
         };
     }
 
@@ -56,12 +56,12 @@ public class EpicBulkFhirExportApiTest
               .ReturnsAsync(mockedResponse);
     }
 
-    private void CreateVerifyHttpHandlerCall(Expression<Func<HttpRequestMessage, bool>> predicate)
+    private void CreateVerifyHttpHandlerCall(Expression<Func<HttpRequestMessage, bool>> predicate, Times? times = default)
     {
         MockHttpHandler.Protected()
             .Verify(
                  nameof(HttpClient.SendAsync),
-                 Times.Once(),
+                 times == null ? Times.Once() : times.Value,
                  ItExpr.Is(predicate),
                  ItExpr.IsAny<CancellationToken>());
     }
@@ -151,6 +151,51 @@ public class EpicBulkFhirExportApiTest
 
     [Fact]
     public async Task CompletedResultTest()
+    {
+        SetupFhirBearerTokenProvider();
+
+        var urls = new string[]
+        {
+            "http://fhir/Patient/file1.json",
+            "http://fhir/Patient/file2.json",
+        };
+
+        var mockPatient1 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "11111111" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+
+        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
+        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+
+        Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
+                                                                       msg.Headers.Authorization!.Parameter == "abc";
+
+        MockHttpHandler
+          .Protected()
+          .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is(msgChecker),
+                ItExpr.IsAny<CancellationToken>())
+             .ReturnsAsync(mockResponse1)
+             .ReturnsAsync(mockResponse2);
+
+        var patientsFromData = new List<Hl7.Fhir.Model.Patient>();
+
+        await foreach (var patientRecord in EpicBulkFhirExportApiToUse.BulkResultRawSectionData<Hl7.Fhir.Model.Patient>(urls))
+        {
+            patientsFromData.Add(patientRecord);
+        }
+
+        Assert.Contains(patientsFromData, x => x.Id == "11111111");
+        Assert.Contains(patientsFromData, x => x.Id == "22222222");
+        Assert.Contains(patientsFromData, x => x.Id == "33333333");
+
+        FhirBearerTokenProvider.VerifyAll();
+        CreateVerifyHttpHandlerCall(msgChecker, Times.Exactly(2));
+    }
+
+    [Fact]
+    public async Task DeleteFhirData()
     {
         Assert.True(false);
     }

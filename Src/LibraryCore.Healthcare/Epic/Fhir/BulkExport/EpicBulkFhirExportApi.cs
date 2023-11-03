@@ -77,7 +77,7 @@ public class EpicBulkFhirExportApi
             var request = await CreateBaseRequestAsync(HttpMethod.Get, resultUrl);
 
             var rawResponse = await Client.SendAsync(request);
-
+       
             using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync());
             string? line;
             while ((line = sr.ReadLine()) != null)

@@ -42,11 +42,11 @@ public class BundleExtensionMethodTest
                             .ToBlockingEnumerable()
                             .ToArray();
 
-        Assert.Equal(4, result.Count());
-        Assert.Equal("abc", result.ElementAt(0).FullUrl);
-        Assert.Equal("def", result.ElementAt(1).FullUrl);
-        Assert.Equal("yyy", result.ElementAt(2).FullUrl);
-        Assert.Equal("zzz", result.ElementAt(3).FullUrl);
+        Assert.Equal(4, result.Length);
+        Assert.Equal("abc", result[0].FullUrl);
+        Assert.Equal("def", result[1].FullUrl);
+        Assert.Equal("yyy", result[2].FullUrl);
+        Assert.Equal("zzz", result[3].FullUrl);
     }
 
 #endif
@@ -61,10 +61,10 @@ public class BundleExtensionMethodTest
             itemsReturned.Add(item);
         }
 
-        Assert.Equal(4, itemsReturned.Count());
-        Assert.Equal("abc", itemsReturned.ElementAt(0).FullUrl);
-        Assert.Equal("def", itemsReturned.ElementAt(1).FullUrl);
-        Assert.Equal("yyy", itemsReturned.ElementAt(2).FullUrl);
-        Assert.Equal("zzz", itemsReturned.ElementAt(3).FullUrl);
+        Assert.Equal(4, itemsReturned.Count);
+        Assert.Equal("abc", itemsReturned[0].FullUrl);
+        Assert.Equal("def", itemsReturned[1].FullUrl);
+        Assert.Equal("yyy", itemsReturned[2].FullUrl);
+        Assert.Equal("zzz", itemsReturned[3].FullUrl);
     }
 }
