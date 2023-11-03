@@ -217,6 +217,56 @@ public class EpicBulkFhirExportApiTest
     [Fact]
     public async Task FullApiFlowTest()
     {
-        Assert.True(false);
+        SetupFhirBearerTokenProvider();
+
+        var kickOffMockMessageResponse = new HttpResponseMessage(HttpStatusCode.OK);
+        kickOffMockMessageResponse.Content.Headers.Add("Content-Location", "http://fhir/export/123");
+
+        var mockResponseForStatusPending = new HttpResponseMessage(HttpStatusCode.Accepted);
+        mockResponseForStatusPending.Headers.Add("X-Progress", "10 of 100 Patients Checked");
+
+        var mockResponseForStatusCompleted = CreateMockedResponse(new BulkFhirCompletedResult(
+                                                            DateTime.Now,
+                                                            "http://fhir/export/123",
+                                                            true,
+                                                            new BulkFhirCompletedResultOutput[]
+                                                            {
+                                                                new("Patient", "Http://Patient/1.json"),
+                                                                new("Patient", "Http://Patient/2.json")
+                                                            },
+                                                            Array.Empty<object>()));
+
+        var mockPatient1 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "11111111" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+
+        var mockGetDetailsWhenDone1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
+        var mockGetDetailsWhenDone2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+
+        MockHttpHandler
+         .Protected()
+         .SetupSequence<Task<HttpResponseMessage>>(
+               "SendAsync",
+               ItExpr.IsAny<HttpRequestMessage>(),
+               ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(kickOffMockMessageResponse)
+            .ReturnsAsync(mockResponseForStatusPending)
+            .ReturnsAsync(mockResponseForStatusCompleted)
+            .ReturnsAsync(mockGetDetailsWhenDone1)
+            .ReturnsAsync(mockGetDetailsWhenDone2);
+
+        var results = new List<Hl7.Fhir.Model.Patient>();
+
+        await foreach (var patientResult in EpicBulkFhirExportApiToUse.KickOffAndWaitForCompletionAsync<Hl7.Fhir.Model.Patient>("http://server.fhir/group/zzzzzz/$export", false, TimeSpan.FromSeconds(2)))
+        {
+            results.Add(patientResult);
+        }
+
+        Assert.Equal(3, results.Count);
+        Assert.Contains(results, x => x.Id == "11111111");
+        Assert.Contains(results, x => x.Id == "22222222");
+        Assert.Contains(results, x => x.Id == "33333333");
+
+        FhirBearerTokenProvider.VerifyAll();
     }
 }
