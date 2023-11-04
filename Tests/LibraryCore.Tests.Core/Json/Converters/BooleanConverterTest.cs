@@ -1,10 +1,21 @@
 ﻿using LibraryCore.Core.Json.Converters;
+using System.Diagnostics.Contracts;
 using System.Text.Json;
 
 namespace LibraryCore.Tests.Core.Json.Converters;
 
 public class BooleanConverterTest
 {
+    public BooleanConverterTest()
+    {
+        var settings = new JsonSerializerOptions();
+        settings.Converters.Add(new BooleanConverter());
+
+        Settings = settings;
+    }
+
+    private JsonSerializerOptions Settings { get; }
+
     [Theory]
     [InlineData("true", true)]
     [InlineData("false", false)]
@@ -13,7 +24,10 @@ public class BooleanConverterTest
         var json = $$"""
                       {
                         "Id" : 5,
-                        "IsActive" : "{{value}}"
+                        "IsActive" : "{{value}}",
+                        "UnitTestBool1": true,
+                        "UnitTestBool2": false,
+                        "UnitTestBool3": "abcShouldDefaultToFalse"
                       }
                    """;
 
@@ -25,7 +39,23 @@ public class BooleanConverterTest
 
         Assert.Equal(5, model.Id);
         Assert.Equal(expectedValue, model.IsActive);
+        Assert.True(model.UnitTestBool1);
+        Assert.False(model.UnitTestBool2);
+        Assert.False(model.UnitTestBool3);
     }
 
-    public record Model(int Id, bool IsActive);
+    [Fact]
+    public void WriteTest()
+    {
+        var model = new SmallerModel(true, false);
+
+        var result = JsonSerializer.Serialize(model, Settings);
+        var backToModel = JsonSerializer.Deserialize<SmallerModel>(result, Settings) ?? throw new Exception("Can't Deserialize Model");
+
+        Assert.True(backToModel.IsActive);
+        Assert.False(backToModel.IsActive2);
+    }
+
+    public record Model(int Id, bool IsActive, bool UnitTestBool1, bool UnitTestBool2, bool UnitTestBool3);
+    public record SmallerModel(bool IsActive, bool IsActive2);
 }

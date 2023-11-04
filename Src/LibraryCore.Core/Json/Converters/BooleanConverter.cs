@@ -18,7 +18,7 @@ public class BooleanConverter : JsonConverter<bool>
             {
                 "true" => true,
                 "false" => false,
-                _ => throw new JsonException()
+                _ => false
             },
             _ => throw new JsonException(),
         };

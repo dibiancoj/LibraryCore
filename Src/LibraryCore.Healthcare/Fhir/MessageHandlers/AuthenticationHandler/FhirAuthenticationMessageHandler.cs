@@ -1,5 +1,6 @@
-﻿using System.Net.Http.Headers;
-using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
+﻿using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
 
@@ -22,6 +23,7 @@ public class FhirAuthenticationMessageHandler : HttpClientHandler
         return await SendToBaseAsync(request, cancellationToken);
     }
 
+    [ExcludeFromCodeCoverage]
     protected virtual async Task<HttpResponseMessage> SendToBaseAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         return await base.SendAsync(request, cancellationToken);
