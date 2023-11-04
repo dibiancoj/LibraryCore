@@ -66,4 +66,42 @@ public class BundleExtensionMethodTest
         Assert.Equal("yyy", itemsReturned[2].FullUrl);
         Assert.Equal("zzz", itemsReturned[3].FullUrl);
     }
+
+    [Fact]
+    public async System.Threading.Tasks.Task CancelInBetweenItems()
+    {
+        var itemsReturnedBeforeCancel = new List<Bundle.EntryComponent>();
+        var cancelToken = new CancellationTokenSource();
+
+        await foreach (var item in Bundle.AllPagesInBundle(MockFhirClient.Object, cancelToken.Token))
+        {
+            if (itemsReturnedBeforeCancel.Count == 0)
+            {
+                cancelToken.Cancel();
+            }
+
+            itemsReturnedBeforeCancel.Add(item);
+        }
+
+        Assert.Single(itemsReturnedBeforeCancel);
+    }
+
+    [Fact]
+    public async System.Threading.Tasks.Task CancelAfterFirstPage()
+    {
+        var itemsReturnedBeforeCancel = new List<Bundle.EntryComponent>();
+        var cancelToken = new CancellationTokenSource();
+
+        await foreach (var item in Bundle.AllPagesInBundle(MockFhirClient.Object, cancelToken.Token))
+        {
+            if (itemsReturnedBeforeCancel.Count == 1)
+            {
+                cancelToken.Cancel();
+            }
+
+            itemsReturnedBeforeCancel.Add(item);
+        }
+
+        Assert.Equal(2, itemsReturnedBeforeCancel.Count);
+    }
 }
