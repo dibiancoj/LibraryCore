@@ -46,7 +46,7 @@ public static class ClientCredentialsAuthentication
         Guid gJti = Guid.NewGuid(); // you may improve it
 
         var provider = new RSACryptoServiceProvider(); //don't dispose of this will get "Safe handle has been closed". Because its being disposed as soon as we init the RsaSecurity Key. So we need to keep it alive longer. It disposes of it when it shouldn't.
-        
+
         provider.ImportPkcs8PrivateKey(ClensePrivateKey(rawPrivateKeyContentInPemFile), out _);
 
         var jwtToken = new JwtSecurityToken

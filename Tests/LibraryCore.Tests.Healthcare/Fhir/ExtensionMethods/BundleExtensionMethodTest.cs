@@ -1,7 +1,6 @@
 ﻿using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using LibraryCore.Healthcare.Fhir.ExtensionMethods;
-using System.Net.Http;
 
 namespace LibraryCore.Tests.Healthcare.Fhir.ExtensionMethods;
 
@@ -56,7 +55,7 @@ public class BundleExtensionMethodTest
     {
         var itemsReturned = new List<Bundle.EntryComponent>();
 
-        await foreach(var item in Bundle.AllPagesInBundle(MockFhirClient.Object, default))
+        await foreach (var item in Bundle.AllPagesInBundle(MockFhirClient.Object, default))
         {
             itemsReturned.Add(item);
         }
