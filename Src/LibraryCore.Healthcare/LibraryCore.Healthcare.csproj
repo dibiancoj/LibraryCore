@@ -11,7 +11,7 @@
 		<Description>.NetCore Common Utilities For Healthcare</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>6.0.0</Version>
+		<Version>6.0.1</Version>
 		<Title>LibraryCore - Healthcare</Title>
 	</PropertyGroup>
 
@@ -28,8 +28,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\LibraryCore.Caching\LibraryCore.Caching.csproj" />
-	  <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
+		<PackageReference Include="LibraryCore.Caching" Version="6.0.0" />
+		<PackageReference Include="LibraryCore.Core" Version="6.4.3" />
 	</ItemGroup>
 
 </Project>
