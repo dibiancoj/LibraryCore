@@ -123,7 +123,7 @@ public class EpicBulkFhirExportApi
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        //var patientsInBulk = completedBulkRequest.Where(t => t.Type == "Patient"); (need this otherwise we can have mix match)
+        //var patientsInBulk = bulkFhirCompletedResultOutput.Where(t => t.Type == "Patient"); (need this otherwise we can have mix match)
 
         await foreach (var resource in BulkResultRawSectionData<T>(bulkFhirCompletedResultOutput.Select(t => t.Url)))
         {
