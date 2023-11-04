@@ -9,7 +9,8 @@ public static class ContentTypeLookup
         Json,
         Xml,
         TextHtml,
-        TextPlain
+        TextPlain,
+        FhirJson
     }
 
     public static MediaTypeWithQualityHeaderValue RetrieveAcceptType(AcceptTypeEnum acceptType)
@@ -20,6 +21,7 @@ public static class ContentTypeLookup
             AcceptTypeEnum.TextPlain => TextPlainMediaType,
             AcceptTypeEnum.Xml => XmlMediaType,
             AcceptTypeEnum.TextHtml => TextHtmlMediaType,
+            AcceptTypeEnum.FhirJson => FhirJsonMediaType,
             _ => throw new NotImplementedException(),
         };
     }
@@ -65,6 +67,11 @@ public static class ContentTypeLookup
     public const string XmlContentType = "application/xml";
 
     /// <summary>
+    /// Fhir plus json
+    /// </summary>
+    public const string FhirJsonContentType = "application/fhir+json";
+
+    /// <summary>
     /// Json media type
     /// </summary>
     public static MediaTypeWithQualityHeaderValue JsonMediaType { get; } = new MediaTypeWithQualityHeaderValue(JsonContentType);
@@ -83,4 +90,9 @@ public static class ContentTypeLookup
     /// Xml media type
     /// </summary>
     public static MediaTypeWithQualityHeaderValue XmlMediaType { get; } = new MediaTypeWithQualityHeaderValue(XmlContentType);
+
+    /// <summary>
+    /// Fhir with Json
+    /// </summary>
+    public static MediaTypeWithQualityHeaderValue FhirJsonMediaType { get; } = new MediaTypeWithQualityHeaderValue(FhirJsonContentType);
 }

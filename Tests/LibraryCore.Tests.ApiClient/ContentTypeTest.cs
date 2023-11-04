@@ -8,6 +8,7 @@ public class ContentTypeTest
     [InlineData("text/html", ContentTypeLookup.HtmlContentType)]
     [InlineData("text/plain", ContentTypeLookup.TextPlainContentType)]
     [InlineData("application/xml", ContentTypeLookup.XmlContentType)]
+    [InlineData("application/fhir+json", ContentTypeLookup.FhirJsonContentType)]
     [Theory(DisplayName = "Verify Correct Content Type")]
     public void VerifyContentTypes(string expectedValue, string testValue)
     {
@@ -21,6 +22,7 @@ public class ContentTypeTest
         Assert.Equal(ContentTypeLookup.XmlMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.Xml));
         Assert.Equal(ContentTypeLookup.TextPlainMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.TextPlain));
         Assert.Equal(ContentTypeLookup.TextHtmlMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.TextHtml));
+        Assert.Equal(ContentTypeLookup.FhirJsonMediaType, ContentTypeLookup.RetrieveAcceptType(ContentTypeLookup.AcceptTypeEnum.FhirJson));
     }
 
     [Fact]
