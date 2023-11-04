@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Jason DiBianco</Authors>
+		<Company>Jason DiBianco</Company>
+		<Description>.NetCore Common Utilities For Healthcare</Description>
+		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Version>6.0.0</Version>
+		<Title>LibraryCore - Healthcare</Title>
+	</PropertyGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.23" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Hl7.Fhir.R4" Version="5.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\LibraryCore.Caching\LibraryCore.Caching.csproj" />
+	  <ProjectReference Include="..\LibraryCore.Core\LibraryCore.Core.csproj" />
+	</ItemGroup>
+
+</Project>
