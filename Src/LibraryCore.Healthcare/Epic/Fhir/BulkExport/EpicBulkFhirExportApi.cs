@@ -25,7 +25,7 @@ public class EpicBulkFhirExportApi
     private FhirJsonParser JsonFhirParser { get; }
     private static JsonSerializerOptions SerializerOptions { get; } = DefaultCreateSerializerOptions();
 
-    public static JsonSerializerOptions DefaultCreateSerializerOptions()
+    private static JsonSerializerOptions DefaultCreateSerializerOptions()
     {
         var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         serializerOptions.Converters.Add(new BooleanConverter());
