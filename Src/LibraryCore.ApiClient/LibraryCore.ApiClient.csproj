@@ -11,7 +11,7 @@
 		<Description>Distributed Session State Library</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>6.3.0</Version>
+		<Version>6.4.</Version>
 		<Title>LibraryCore - Api Client</Title>
 	</PropertyGroup>
 

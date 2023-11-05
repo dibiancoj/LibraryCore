@@ -88,7 +88,7 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddFormsUrlEncodedBody(IEnumerable<KeyValuePair<string, string>> parametersToAdd)
+    public FluentRequest AddFormsUrlEncodedBody(params KeyValuePair<string, string>[] parametersToAdd)
     {
         Message.Content = new FormUrlEncodedContent(parametersToAdd);
         return this;
