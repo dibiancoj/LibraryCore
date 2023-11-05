@@ -1,4 +1,5 @@
-﻿using LibraryCore.Healthcare.Epic.Authentication;
+﻿using LibraryCore.Caching;
+using LibraryCore.Healthcare.Epic.Authentication;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders.Implementations;
@@ -26,7 +27,7 @@ public class EpicClientCredentialsBearerTokenProvider : IFhirBearerTokenProvider
 
     public async ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        return await MemoryCache.GetOrCreateAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
+        return await new InMemoryCacheService(MemoryCache).GetOrCreateWithLockAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
         {
             var clientAssertion = ClientCredentialsAuthentication.CreateEpicClientAssertionJwtToken(RawPrivateKeyContentInPemFile, ClientId, TokenEndPointUrl);
 
