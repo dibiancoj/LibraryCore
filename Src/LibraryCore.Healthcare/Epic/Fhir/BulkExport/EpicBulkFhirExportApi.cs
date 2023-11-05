@@ -18,15 +18,14 @@ public class EpicBulkFhirExportApi
         Client = httpClient;
         FhirBearerTokenProvider = fhirBearerTokenProvider;
         JsonFhirParser = new();
-        SerializerOptions = CreateSerializerOptions();
     }
 
     private HttpClient Client { get; }
     private IFhirBearerTokenProvider FhirBearerTokenProvider { get; }
     private FhirJsonParser JsonFhirParser { get; }
-    private JsonSerializerOptions SerializerOptions { get; }
+    private static JsonSerializerOptions SerializerOptions { get; } = DefaultCreateSerializerOptions();
 
-    private static JsonSerializerOptions CreateSerializerOptions()
+    public static JsonSerializerOptions DefaultCreateSerializerOptions()
     {
         var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         serializerOptions.Converters.Add(new BooleanConverter());
@@ -90,7 +89,7 @@ public class EpicBulkFhirExportApi
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Delete, contentLocationFromKickOff);
 
-        (await Client.SendAsync(request)).EnsureSuccessStatusCode();
+        _ = (await Client.SendAsync(request)).EnsureSuccessStatusCode();
     }
 
     /// <summary>
