@@ -1,6 +1,7 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using LibraryCore.ApiClient;
+using LibraryCore.ApiClient.ExtensionMethods;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,17 +21,12 @@ public static class ClientCredentialsAuthentication
                                                                                  string clientAssertion,
                                                                                  CancellationToken cancellationToken = default)
     {
-        var rawResponse = await httpClient.PostAsync(tokenEndPointUrl, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-        {
-            new("grant_type", "client_credentials"),
-            new("client_assertion_type","urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
-            new("client_assertion", clientAssertion),
-        }), cancellationToken).ConfigureAwait(false);
+        var request = new FluentRequest(HttpMethod.Post, tokenEndPointUrl)
+                            .AddFormsUrlEncodedBody(new("grant_type", "client_credentials"),
+                                                    new("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
+                                                    new("client_assertion", clientAssertion));
 
-        return await rawResponse.EnsureSuccessStatusCode()
-                                .Content
-                                .ReadFromJsonAsync<EpicClientCredentialsAuthorizationToken>(cancellationToken: cancellationToken)
-                                .ConfigureAwait(false) ?? throw new Exception("Can't Deserialize Token");
+        return await httpClient.SendRequestToJsonAsync<EpicClientCredentialsAuthorizationToken>(request, cancellationToken: cancellationToken) ?? throw new Exception("Can't Deserialize Token");
     }
 
     /// <summary>

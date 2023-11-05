@@ -1,4 +1,5 @@
 ﻿using Hl7.Fhir.Serialization;
+using LibraryCore.ApiClient;
 using LibraryCore.Core.Json.Converters;
 using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
@@ -7,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using static LibraryCore.ApiClient.ContentTypeLookup;
 using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models.BulkFhirCompletedStatus;
 
 namespace LibraryCore.Healthcare.Epic.Fhir.BulkExport;
@@ -33,23 +35,19 @@ public class EpicBulkFhirExportApi
         return serializerOptions;
     }
 
-    private async Task<HttpRequestMessage> CreateBaseRequestAsync(HttpMethod method, string url, string acceptType = "application/json")
+    private async Task<FluentRequest> CreateBaseRequestAsync(HttpMethod method, string url, AcceptTypeEnum acceptType = AcceptTypeEnum.Json)
     {
-        var request = new HttpRequestMessage(method, url);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await FhirBearerTokenProvider.AccessTokenAsync());
-        request.Headers.Add("Accept", acceptType);
-
-        return request;
+        return new FluentRequest(method, url)
+                    .AddAuthenticationHeader("Bearer", await FhirBearerTokenProvider.AccessTokenAsync())
+                    .AddAcceptType(acceptType);
     }
 
     public record KickOffBulkRequestResponse(string ContentLocation);
 
     public async Task<KickOffBulkRequestResponse> KickOffBulkRequestAsync(string url)
     {
-        var request = await CreateBaseRequestAsync(HttpMethod.Get, url, "application/fhir+json");
-
-        request.Headers.Add("Prefer", "respond-async");
+        var request = (await CreateBaseRequestAsync(HttpMethod.Get, url, AcceptTypeEnum.FhirJson))
+                            .AddHeader("Prefer", "respond-async");
 
         var rawResponse = await Client.SendAsync(request);
 
