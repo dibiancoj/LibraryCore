@@ -11,7 +11,7 @@
 		<Description>.NetCore Kafka Logic With Consumer Patterns</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>7.1.1</Version>
+		<Version>7.1.2</Version>
 		<Title>LibraryCore - Kafka</Title>
 	</PropertyGroup>
 
@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Confluent.Kafka" Version="2.2.0" />
+		<PackageReference Include="Confluent.Kafka" Version="2.3.0" />
 	</ItemGroup>
 	
 </Project>

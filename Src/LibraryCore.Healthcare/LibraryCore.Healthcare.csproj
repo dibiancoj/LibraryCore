@@ -11,16 +11,16 @@
 		<Description>.NetCore Common Utilities For Healthcare</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>6.1.1</Version>
+		<Version>6.1.2</Version>
 		<Title>LibraryCore - Healthcare</Title>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.23" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.24" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
 	</ItemGroup>
 
 	<ItemGroup>
