@@ -30,7 +30,7 @@
 	<ItemGroup>
 		<PackageReference Include="LibraryCore.ApiClient" Version="6.4.0" />
 		<PackageReference Include="LibraryCore.Caching" Version="6.0.0" />
-		<PackageReference Include="LibraryCore.Core" Version="6.4.3" />
+		<PackageReference Include="LibraryCore.Core" Version="6.4.4" />
 	</ItemGroup>
 
 </Project>
