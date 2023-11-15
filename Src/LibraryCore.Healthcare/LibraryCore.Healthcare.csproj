@@ -23,14 +23,18 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Hl7.Fhir.R4" Version="5.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="LibraryCore.ApiClient" Version="6.4.0" />
-		<PackageReference Include="LibraryCore.Caching" Version="6.0.0" />
-		<PackageReference Include="LibraryCore.Core" Version="6.4.4" />
+		<PackageReference Include="LibraryCore.Caching" Version="8.0.0" />
+		<PackageReference Include="LibraryCore.Core" Version="8.0.0" />
 	</ItemGroup>
 
 </Project>

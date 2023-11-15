@@ -8,19 +8,14 @@ using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.ApiClient;
 
-public class FluentRequest
+public class FluentRequest(HttpMethod httpMethodType, string url)
 {
-    public FluentRequest(HttpMethod httpMethodType, string url)
-    {
-        Message = new HttpRequestMessage(httpMethodType, url);
-    }
-
     public FluentRequest(HttpMethod httpMethodType) :
         this(httpMethodType, string.Empty)
     {
     }
 
-    public HttpRequestMessage Message { get; }
+    public HttpRequestMessage Message { get; } = new HttpRequestMessage(httpMethodType, url);
 
     /// <summary>
     /// No need to grab the http request message. Allow the conversion
@@ -49,7 +44,7 @@ public class FluentRequest
         return this;
     }
 
-    public FluentRequest AddQueryStrings(IDictionary<string, string> queryStringsToAdd)
+    public FluentRequest AddQueryStrings(IDictionary<string, string?> queryStringsToAdd)
     {
         Message.RequestUri = new Uri(QueryHelpers.AddQueryString(Message.RequestUri!.ToString(), queryStringsToAdd), UriKind.RelativeOrAbsolute);
         return this;

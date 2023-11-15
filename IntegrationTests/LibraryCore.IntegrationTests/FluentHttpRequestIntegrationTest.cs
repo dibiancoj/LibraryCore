@@ -7,14 +7,9 @@ using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.IntegrationTests;
 
-public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
+public class FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture) : IClassFixture<WebApplicationFactoryFixture>
 {
-    public WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
-
-    public FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
-    {
-        WebApplicationFactoryFixture = webApplicationFactoryFixture;
-    }
+    public WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
 
     #region Models
 
@@ -79,7 +74,7 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     public async Task QueryStringsTest()
     {
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/QueryStringTest")
-                                                                                        .AddQueryStrings(new Dictionary<string, string>
+                                                                                        .AddQueryStrings(new Dictionary<string, string?>
                                                                                         {
                                                                                             { "Q1", "One" },
                                                                                             { "Q2", "Two" }
@@ -156,11 +151,11 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     public async Task FormsEncodedParameters()
     {
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/FormsEncodedParameters")
-                                                                                        .AddFormsUrlEncodedBody(new[]
-                                                                                        {
+                                                                                        .AddFormsUrlEncodedBody(
+                                                                                        [
                                                                                                 new KeyValuePair<string,string>("4", "4"),
                                                                                                 new KeyValuePair<string,string>("5", "5")
-                                                                                        }));
+                                                                                        ]));
 
         var result = await response.EnsureSuccessStatusCode()
                                 .Content.ReadFromJsonAsync<IEnumerable<ResultModel>>() ?? throw new Exception("Can't deserialize result");
@@ -189,8 +184,8 @@ public class FluentHttpRequestIntegrationTest : IClassFixture<WebApplicationFact
     [Fact]
     public async Task FileUploadWithStreamTest()
     {
-        var streamOfFile1 = new MemoryStream(new byte[] { 1, 2, 3 });
-        var streamOfFile2 = new MemoryStream(new byte[] { 4, 5, 6, 7 });
+        var streamOfFile1 = new MemoryStream([1, 2, 3]);
+        var streamOfFile2 = new MemoryStream([4, 5, 6, 7]);
 
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Post, "FluentHttpRequest/FileUploadStream")
                                                                                         .AddFileStreamBody("formFiles",
