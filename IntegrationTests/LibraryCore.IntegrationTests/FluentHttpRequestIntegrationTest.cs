@@ -153,8 +153,8 @@ public class FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webAp
         var response = await WebApplicationFactoryFixture.HttpClientToUse.SendAsync(new FluentRequest(HttpMethod.Get, "FluentHttpRequest/FormsEncodedParameters")
                                                                                         .AddFormsUrlEncodedBody(
                                                                                         [
-                                                                                                new KeyValuePair<string,string>("4", "4"),
-                                                                                                new KeyValuePair<string,string>("5", "5")
+                                                                                            new KeyValuePair<string, string>("4", "4"),
+                                                                                            new KeyValuePair<string, string>("5", "5")
                                                                                         ]));
 
         var result = await response.EnsureSuccessStatusCode()
