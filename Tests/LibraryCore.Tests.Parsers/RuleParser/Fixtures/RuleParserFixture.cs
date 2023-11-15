@@ -31,7 +31,7 @@ public class RuleParserFixture
     public static string GetAnswerId(Survey surveyModel, int questionId) => surveyModel.Answers[questionId];
     public static IEnumerable<int> GetAnswerArray(Survey surveyModel) => new[] { 1, 2, 3 };
     public static IEnumerable<int?> GetNullableIntArray(Survey surveyModel) => new List<int?> { 1, 2, 3, 80 };
-    public static object ExtractFromDictionary(IDictionary<string, object> parameters, string nodeStatment)
+    public static object? ExtractFromDictionary(IDictionary<string, object> parameters, string nodeStatment)
     {
         //this would be the "saveRequest.DrugNameId"...split by property value
         var nodePropertiesToParse = nodeStatment.Split('.').AsSpan();
