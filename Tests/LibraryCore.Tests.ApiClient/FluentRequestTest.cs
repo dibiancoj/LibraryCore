@@ -75,7 +75,7 @@ public class FluentRequestTest
     public void AddMultipleQueryStringsAtOnce()
     {
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
-                                .AddQueryStrings(new Dictionary<string, string>
+                                .AddQueryStrings(new Dictionary<string, string?>
                                 {
                                     { "id", "4" },
                                     { "id2", "5" }
@@ -110,7 +110,7 @@ public class FluentRequestTest
     {
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
@@ -146,7 +146,7 @@ public class FluentRequestTest
 
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
@@ -186,7 +186,7 @@ public class FluentRequestTest
 
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
@@ -220,7 +220,7 @@ public class FluentRequestTest
     {
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get &&
@@ -264,7 +264,7 @@ public class FluentRequestTest
     {
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
@@ -293,12 +293,12 @@ public class FluentRequestTest
     {
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri);
 
-        using var byteArrayStream = new MemoryStream(new byte[] { 1, 2, 3 });
+        using var byteArrayStream = new MemoryStream([1, 2, 3]);
 
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                                 .AddFileStreamBody("formFiles", new KeyValuePair<string, Stream>("test.jpg", byteArrayStream))
@@ -324,7 +324,7 @@ public class FluentRequestTest
 
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         const string expectedAuthValue = "Basic cm9vdDpwYXNzQHdvcmQx";
@@ -352,7 +352,7 @@ public class FluentRequestTest
 
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         string expectedAuthValue = $"{scheme} abcdefg";
