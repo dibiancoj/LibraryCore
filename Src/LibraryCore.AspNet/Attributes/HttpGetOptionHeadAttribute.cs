@@ -8,12 +8,11 @@ namespace LibraryCore.AspNet.Attributes;
 /// </summary>
 public class HttpGetOptionHeadAttribute : HttpMethodAttribute
 {
-    private static IImmutableList<string> SupportedMethodTypes { get; } = ImmutableList.CreateRange(new string[]
-    {
-            HttpMethod.Get.Method.ToUpper(),
-            HttpMethod.Options.Method.ToUpper(),
-            HttpMethod.Head.Method.ToUpper()
-    });
+    private static IImmutableList<string> SupportedMethodTypes { get; } = ImmutableList.CreateRange([
+        HttpMethod.Get.Method.ToUpper(),
+        HttpMethod.Options.Method.ToUpper(),
+        HttpMethod.Head.Method.ToUpper()
+    ]);
 
     public HttpGetOptionHeadAttribute()
         : base(SupportedMethodTypes)

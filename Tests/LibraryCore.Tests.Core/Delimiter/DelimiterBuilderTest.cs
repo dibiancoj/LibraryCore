@@ -217,7 +217,7 @@ public class DelimiterBuilderTest
     public void CSVWithHeadersTest1()
     {
         //create the delimiter builder
-        var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CsvDelimiter);
+        var delimiterBuilder = new DelimiterBuilder(["column1", "column2", "column3", "column4"], CsvDelimiter);
 
         //add a row
         delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
@@ -247,7 +247,7 @@ public class DelimiterBuilderTest
     public void CSVWithHeadersTest2()
     {
         //create the delimiter builder
-        var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CsvDelimiter);
+        var delimiterBuilder = new DelimiterBuilder(["column1", "column2", "column3", "column4"], CsvDelimiter);
 
         //add a row
         delimiterBuilder.AddRow(new string?[] { "1", "2", null, string.Empty });
@@ -281,7 +281,7 @@ public class DelimiterBuilderTest
     public void CSVWithHeadersMultiRowTest1()
     {
         //create the delimiter builder
-        var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CsvDelimiter);
+        var delimiterBuilder = new DelimiterBuilder(["column1", "column2", "column3", "column4"], CsvDelimiter);
 
         //add 2 rows
         delimiterBuilder.AddRow(new string?[] { "1", "2", "3", "4" });
@@ -321,7 +321,7 @@ public class DelimiterBuilderTest
     public void CSVWithHeadersMultiRowBulkLoadTest1()
     {
         //create the delimiter builder
-        var delimiterBuilder = new DelimiterBuilder(new string[] { "column1", "column2", "column3", "column4" }, CsvDelimiter);
+        var delimiterBuilder = new DelimiterBuilder(["column1", "column2", "column3", "column4"], CsvDelimiter);
 
         //create list of rows
         var rowsToAdd = new List<DelimiterRow>
