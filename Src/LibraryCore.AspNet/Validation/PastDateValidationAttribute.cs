@@ -2,20 +2,13 @@
 
 namespace LibraryCore.AspNet.Validation;
 
-public class PastDateValidationAttribute : ValidationAttribute
+public class PastDateValidationAttribute(bool required) : ValidationAttribute
 {
-    public PastDateValidationAttribute(bool required)
-    {
-        Required = required;
-    }
-
-    private bool Required { get; }
-
     public override bool IsValid(object? value)
     {
         if (value == null)
         {
-            return !Required;
+            return !required;
         }
 
         return DateTime.TryParse(value.ToString(), out DateTime userGivenDate) && userGivenDate.Date <= DateTime.Today;

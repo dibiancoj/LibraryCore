@@ -4,34 +4,19 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders.Implementations;
 
-public class EpicClientCredentialsBearerTokenProvider : IFhirBearerTokenProvider
+public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
+                                                     HttpClient httpClient,
+                                                     string tokenEndPointUrl,
+                                                     string rawPrivateKeyContentInPemFile,
+                                                     string clientId) : IFhirBearerTokenProvider
 {
-    public EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
-                                                    HttpClient httpClient,
-                                                    string tokenEndPointUrl,
-                                                    string rawPrivateKeyContentInPemFile,
-                                                    string clientId)
-    {
-        MemoryCache = memoryCache;
-        HttpClient = httpClient;
-        TokenEndPointUrl = tokenEndPointUrl;
-        RawPrivateKeyContentInPemFile = rawPrivateKeyContentInPemFile;
-        ClientId = clientId;
-    }
-
-    private IMemoryCache MemoryCache { get; }
-    private HttpClient HttpClient { get; }
-    private string TokenEndPointUrl { get; }
-    private string RawPrivateKeyContentInPemFile { get; }
-    private string ClientId { get; }
-
     public async ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        return await new InMemoryCacheService(MemoryCache).GetOrCreateWithLockAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
+        return await new InMemoryCacheService(memoryCache).GetOrCreateWithLockAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
         {
-            var clientAssertion = ClientCredentialsAuthentication.CreateEpicClientAssertionJwtToken(RawPrivateKeyContentInPemFile, ClientId, TokenEndPointUrl);
+            var clientAssertion = ClientCredentialsAuthentication.CreateEpicClientAssertionJwtToken(rawPrivateKeyContentInPemFile, clientId, tokenEndPointUrl);
 
-            var tokenResult = await ClientCredentialsAuthentication.TokenAsync(HttpClient, TokenEndPointUrl, clientAssertion, cancellationToken);
+            var tokenResult = await ClientCredentialsAuthentication.TokenAsync(httpClient, tokenEndPointUrl, clientAssertion, cancellationToken);
 
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn);
 
