@@ -4,22 +4,13 @@ using System.Text.Json;
 
 namespace LibraryCore.AspNet.DistributedSessionState;
 
-public class DistributedSessionStateService : ISessionStateService
+public class DistributedSessionStateService(IHttpContextAccessor httpContextAccessor, JsonSerializerOptions? jsonSerializationOptions) : ISessionStateService
 {
-    public DistributedSessionStateService(IHttpContextAccessor httpContextAccessor, JsonSerializerOptions? jsonSerializationOptions)
-    {
-        HttpContextAccessor = httpContextAccessor;
-        JsonSerializationOption = jsonSerializationOptions;
-        CachedAutoTypeLookup = new ConcurrentDictionary<string, Type>();
-    }
-
     public DistributedSessionStateService(IHttpContextAccessor httpContextAccessor) : this(httpContextAccessor, null)
     {
     }
 
-    private IHttpContextAccessor HttpContextAccessor { get; }
-    private JsonSerializerOptions? JsonSerializationOption { get; }
-    private ConcurrentDictionary<string, Type> CachedAutoTypeLookup { get; }
+    private ConcurrentDictionary<string, Type> CachedAutoTypeLookup { get; } = new ConcurrentDictionary<string, Type>();
 
     public async ValueTask<TryToGetResult<T>> TryGetObjectAsync<T>(string key, bool useAutoTypeHandling = false)
     {
@@ -102,10 +93,10 @@ public class DistributedSessionStateService : ISessionStateService
                     JsonSerializer.SerializeToUtf8Bytes(new AutoTypeHandling
                     (
                         typeof(T).AssemblyQualifiedName ?? throw new Exception("Assembly Qualified Name Null"),
-                        JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: JsonSerializationOption)
-                    ), options: JsonSerializationOption) :
+                        JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: jsonSerializationOptions)
+                    ), options: jsonSerializationOptions) :
 
-                    JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: JsonSerializationOption);
+                    JsonSerializer.SerializeToUtf8Bytes(objectToPutInSession, options: jsonSerializationOptions);
     }
 
     private T? DeserializeItem<T>(byte[] bytesToDeserialize, bool useAutoTypeHandling)
@@ -113,21 +104,21 @@ public class DistributedSessionStateService : ISessionStateService
         //regular serialization and not an interface or derived class
         if (!useAutoTypeHandling)
         {
-            return JsonSerializer.Deserialize<T>(bytesToDeserialize, JsonSerializationOption);
+            return JsonSerializer.Deserialize<T>(bytesToDeserialize, jsonSerializationOptions);
         }
 
-        var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, JsonSerializationOption) ?? throw new Exception("Temp should never be null here even with a null value that got serialized. Null will serialize 'null' string");
+        var temp = JsonSerializer.Deserialize<AutoTypeHandling>(bytesToDeserialize, jsonSerializationOptions) ?? throw new Exception("Temp should never be null here even with a null value that got serialized. Null will serialize 'null' string");
 
         Type typeToDeserialize = CachedAutoTypeLookup.GetOrAdd(temp.FullTypePath, (path) => Type.GetType(path) ?? throw new Exception("Type Not Found: " + temp.FullTypePath));
 
-        var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize, JsonSerializationOption);
+        var tempBeforeCast = JsonSerializer.Deserialize(temp.ValueInBytes, typeToDeserialize, jsonSerializationOptions);
 
         return tempBeforeCast == null ?
                     default :
                     (T)tempBeforeCast;
     }
 
-    private HttpContext ResolveHttpContextOrThrow() => HttpContextAccessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor");
+    private HttpContext ResolveHttpContextOrThrow() => httpContextAccessor.HttpContext ?? throw new NullReferenceException("HttpContext Not Found In Accessor");
 
     private record AutoTypeHandling(string FullTypePath, byte[] ValueInBytes);
 

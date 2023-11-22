@@ -4,16 +4,11 @@
 /// This is faster by a string reader by 2x. Always pass this into a method by ref to avoid copy cost. Always benchmark this over string reader but is faster based on tests
 /// </summary>
 /// <remarks>See StringReaderVsSpanReadPerfTest for the performance test</remarks>
-public ref struct StringSpanReader
+public ref struct StringSpanReader(ReadOnlySpan<char> stringToParse)
 {
-    public StringSpanReader(string stringToParse)
-    {
-        StringToParse = stringToParse;
-        Index = 0;
-    }
+    private ReadOnlySpan<char> StringToParse { get; } = stringToParse;
 
-    private ReadOnlySpan<char> StringToParse { get; }
-    private int Index { get; set; }
+    private int Index { get; set; } = 0;
 
     public bool HasMoreCharacters() => Index < StringToParse.Length;
     public char? PeekCharacter() => HasMoreCharacters() ? StringToParse[Index] : null;

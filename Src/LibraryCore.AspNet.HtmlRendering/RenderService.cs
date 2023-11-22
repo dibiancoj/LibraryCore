@@ -9,25 +9,10 @@ using Microsoft.AspNetCore.Routing;
 
 namespace LibraryCore.AspNet.Render;
 
-public class RenderService : IRenderService
+public class RenderService(IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IHttpContextAccessor accessor) : IRenderService
 {
 
-    #region Constructor
-
-    public RenderService(IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IHttpContextAccessor accessor)
-    {
-        RazorViewEngine = razorViewEngine;
-        TempDataProvider = tempDataProvider;
-        Accessor = accessor;
-    }
-
-    #endregion
-
     #region Properties
-
-    private IRazorViewEngine RazorViewEngine { get; }
-    private ITempDataProvider TempDataProvider { get; }
-    private IHttpContextAccessor Accessor { get; }
 
     #endregion
 
@@ -63,9 +48,9 @@ public class RenderService : IRenderService
     /// <returns>Task which will return a string</returns>
     public async Task<string> RenderToStringAsync(string fullpathToViewOrPartial, object? model, ModelStateDictionary? modelStateDictionary, RouteData? routeData, ActionDescriptor? actionDescriptor)
     {
-        ArgumentNullException.ThrowIfNull(Accessor.HttpContext);
+        ArgumentNullException.ThrowIfNull(accessor.HttpContext);
 
-        var actionContext = new ActionContext(Accessor.HttpContext, routeData ?? new RouteData(), actionDescriptor ?? new ActionDescriptor());
+        var actionContext = new ActionContext(accessor.HttpContext, routeData ?? new RouteData(), actionDescriptor ?? new ActionDescriptor());
 
         using var outputWriter = new StringWriter();
 
@@ -73,7 +58,7 @@ public class RenderService : IRenderService
         //await RenderService.RenderToStringAsync("~/Areas/Patient/Views/Home/Index.cshtml");
         //await RenderService.RenderToStringAsync("~/Areas/Patient/Views/Shared/_TopNavMenu.cshtml", true);
 
-        var viewResult = RazorViewEngine.GetView(executingFilePath: null, viewPath: fullpathToViewOrPartial, isMainPage: false);
+        var viewResult = razorViewEngine.GetView(executingFilePath: null, viewPath: fullpathToViewOrPartial, isMainPage: false);
 
         if (!viewResult.Success)
         {
@@ -89,12 +74,12 @@ public class RenderService : IRenderService
             actionContext,
             viewResult.View,
             viewDictionary,
-            new TempDataDictionary(actionContext.HttpContext, TempDataProvider),
+            new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
             outputWriter,
             new HtmlHelperOptions()
         )
         {
-            RouteData = Accessor.HttpContext.GetRouteData()
+            RouteData = accessor.HttpContext.GetRouteData()
         };
 
         await viewResult.View.RenderAsync(viewContext);

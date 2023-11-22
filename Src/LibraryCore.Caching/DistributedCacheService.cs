@@ -16,7 +16,7 @@ namespace LibraryCore.Caching;
    ## Only use this if you hit timeouts or redis can't keep up with your traffic volume
 */
 
-public class DistributedCacheService
+public class DistributedCacheService(IDistributedCache distributedCache)
 {
 
     #region Properties
@@ -25,17 +25,6 @@ public class DistributedCacheService
     /// Holds a lookup for all the cache locks. You can't lock an async method so we use Semaphore. 
     /// </summary>
     private static ConcurrentDictionary<object, SemaphoreSlim> CacheLocksLookup { get; } = new ConcurrentDictionary<object, SemaphoreSlim>();
-
-    private IDistributedCache DistributedCache { get; }
-
-    #endregion
-
-    #region Constructor
-
-    public DistributedCacheService(IDistributedCache distributedCache)
-    {
-        DistributedCache = distributedCache;
-    }
 
     #endregion
 
@@ -105,12 +94,12 @@ public class DistributedCacheService
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions)
     {
         //can't pass null for the distributed options
-        await DistributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions);
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions);
 
         return itemToAdd;
     }
 
-    public Task RemoveAsync(string key) => DistributedCache.RemoveAsync(key);
+    public Task RemoveAsync(string key) => distributedCache.RemoveAsync(key);
 
     #endregion
 
@@ -118,7 +107,7 @@ public class DistributedCacheService
 
     private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key)
     {
-        var tryToFindInDistributedCache = await DistributedCache.GetAsync(key);
+        var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
 
         return tryToFindInDistributedCache == null ?
                             TryToGetInCacheResult<TItem>.IsNotFoundInCache() :

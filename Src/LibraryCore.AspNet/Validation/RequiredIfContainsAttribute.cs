@@ -6,17 +6,8 @@ namespace LibraryCore.AspNet.Validation;
 /// <summary>
 /// Field is required if a another property which is ienumerable contains a specific value
 /// </summary>
-public class RequiredIfContainsAttribute : ValidationAttribute
+public class RequiredIfContainsAttribute(string propertyName, object requiredIfValue) : ValidationAttribute
 {
-    public RequiredIfContainsAttribute(string propertyName, object requiredIfValue)
-    {
-        RequiredIfPropertyName = propertyName;
-        RequiredIfValue = requiredIfValue;
-    }
-
-    private string RequiredIfPropertyName { get; }
-    private object RequiredIfValue { get; }
-
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         //try to short circuit without reflection. Do we have a value then we can ignore everything
@@ -25,20 +16,20 @@ public class RequiredIfContainsAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(RequiredIfPropertyName) ?? throw new MissingFieldException($"Property Name = {RequiredIfPropertyName} not found in object");
+        var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(propertyName) ?? throw new MissingFieldException($"Property Name = {propertyName} not found in object");
 
         var triggerPropertyValue = triggerPropertyInfo.GetValue(validationContext.ObjectInstance, null);
 
         if (triggerPropertyValue is string || triggerPropertyValue is not IEnumerable castToIEnumerable)
         {
-            throw new Exception("Trigger Property Value Is Not A List. Property Name = " + RequiredIfPropertyName);
+            throw new Exception("Trigger Property Value Is Not A List. Property Name = " + propertyName);
         }
 
         var enumerator = castToIEnumerable.GetEnumerator();
 
         while (enumerator.MoveNext())
         {
-            if (enumerator.Current.Equals(RequiredIfValue))
+            if (enumerator.Current.Equals(requiredIfValue))
             {
                 return new ValidationResult(ErrorMessage);
             }

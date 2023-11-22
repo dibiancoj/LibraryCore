@@ -13,18 +13,9 @@ using static LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models.BulkFhirComplete
 
 namespace LibraryCore.Healthcare.Epic.Fhir.BulkExport;
 
-public class EpicBulkFhirExportApi
+public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvider fhirBearerTokenProvider)
 {
-    public EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvider fhirBearerTokenProvider)
-    {
-        Client = httpClient;
-        FhirBearerTokenProvider = fhirBearerTokenProvider;
-        JsonFhirParser = new();
-    }
-
-    private HttpClient Client { get; }
-    private IFhirBearerTokenProvider FhirBearerTokenProvider { get; }
-    private FhirJsonParser JsonFhirParser { get; }
+    private FhirJsonParser JsonFhirParser { get; } = new();
     private static JsonSerializerOptions SerializerOptions { get; } = DefaultCreateSerializerOptions();
 
     private static JsonSerializerOptions DefaultCreateSerializerOptions()
@@ -38,7 +29,7 @@ public class EpicBulkFhirExportApi
     private async Task<FluentRequest> CreateBaseRequestAsync(HttpMethod method, string url, AcceptTypeEnum acceptType = AcceptTypeEnum.Json)
     {
         return new FluentRequest(method, url)
-                    .AddAuthenticationHeader("Bearer", await FhirBearerTokenProvider.AccessTokenAsync())
+                    .AddAuthenticationHeader("Bearer", await fhirBearerTokenProvider.AccessTokenAsync())
                     .AddAcceptType(acceptType);
     }
 
@@ -49,7 +40,7 @@ public class EpicBulkFhirExportApi
         var request = (await CreateBaseRequestAsync(HttpMethod.Get, url, AcceptTypeEnum.FhirJson))
                             .AddHeader("Prefer", "respond-async");
 
-        var rawResponse = await Client.SendAsync(request);
+        var rawResponse = await httpClient.SendAsync(request);
 
         return new KickOffBulkRequestResponse(rawResponse.EnsureSuccessStatusCode().Content.Headers.GetValues("Content-Location").First());
     }
@@ -58,7 +49,7 @@ public class EpicBulkFhirExportApi
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Get, contentLocationFromKickOff);
 
-        var rawResponse = (await Client.SendAsync(request)).EnsureSuccessStatusCode();
+        var rawResponse = (await httpClient.SendAsync(request)).EnsureSuccessStatusCode();
 
         return rawResponse.StatusCode == HttpStatusCode.Accepted ?
             new BulkFhirInProgressStatus(rawResponse.Headers.GetValues("X-Progress").First()) :
@@ -72,7 +63,7 @@ public class EpicBulkFhirExportApi
         {
             var request = await CreateBaseRequestAsync(HttpMethod.Get, resultUrl);
 
-            var rawResponse = await Client.SendAsync(request);
+            var rawResponse = await httpClient.SendAsync(request);
 
             using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync());
             string? line;
@@ -87,7 +78,7 @@ public class EpicBulkFhirExportApi
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Delete, contentLocationFromKickOff);
 
-        _ = (await Client.SendAsync(request)).EnsureSuccessStatusCode();
+        _ = (await httpClient.SendAsync(request)).EnsureSuccessStatusCode();
     }
 
     /// <summary>

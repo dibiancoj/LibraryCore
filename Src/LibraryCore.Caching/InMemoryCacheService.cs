@@ -4,20 +4,12 @@ using System.Collections.Concurrent;
 
 namespace LibraryCore.Caching;
 
-public class InMemoryCacheService
+public class InMemoryCacheService(IMemoryCache memoryCache)
 {
-    public InMemoryCacheService(IMemoryCache memoryCache)
-    {
-        MemoryCache = memoryCache;
-    }
-
     /// <summary>
     /// Holds a lookup for all the cache locks. You can't lock an async method so we use Semaphore. 
     /// </summary>
     private static ConcurrentDictionary<object, SemaphoreSlim> CacheLocksLookup { get; } = new ConcurrentDictionary<object, SemaphoreSlim>();
-
-    //public to allow anyone to set and use however they want. No need to facade it
-    public IMemoryCache MemoryCache { get; }
 
     private static SemaphoreSlim AcquireLock(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 
@@ -28,7 +20,7 @@ public class InMemoryCacheService
     public async ValueTask<TItem> GetOrCreateWithLockAsync<TItem>(object key, Func<ICacheEntry, Task<TItem>> factory)
     {
         //try to eagerly grab the cache item without taking a lock
-        if (MemoryCache.TryGetValue<TItem>(key, out var tryToGetItemOptimistic))
+        if (memoryCache.TryGetValue<TItem>(key, out var tryToGetItemOptimistic))
         {
             //we have it in our cache...return it. 
             return tryToGetItemOptimistic!; //ignoring nulls because we really shouldn't be storing nulls in cache.
@@ -45,7 +37,7 @@ public class InMemoryCacheService
 
             //if we were waiting for a lock to be released by another thread then most likely its in the cache now. We will try to grab the item again.
             //that is why we are doing a GetOrCreate. this way we try to fetch it on more time before we create it and put it in the cache.
-            return (await MemoryCache.GetOrCreateAsync(key, factory))!; //ignoring nulls because we really shouldn't be storing nulls in cache.
+            return (await memoryCache.GetOrCreateAsync(key, factory))!; //ignoring nulls because we really shouldn't be storing nulls in cache.
         }
         finally
         {

@@ -7,14 +7,8 @@ using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser;
 
-public class RuleParserEngine
+public class RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
 {
-    public RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
-    {
-        TokenFactoryProvider = tokenFactoryProvider;
-    }
-
-    private TokenFactoryProvider TokenFactoryProvider { get; }
 
     //Types:
     //SomeValue == 'some text'          <-- string --> You can also add formatter tags in a string because of the logger code. ie: 'Medication Id = {$Request.MedicationId$}
@@ -62,7 +56,7 @@ public class RuleParserEngine
         using var reader = new StringReader(stringToParse);
         var tokens = new List<IToken>();
         var schema = SchemaModel.Create(schemaModel);
-        var createTokenParameters = new CreateTokenParameters(TokenFactoryProvider, this, schema);
+        var createTokenParameters = new CreateTokenParameters(tokenFactoryProvider, this, schema);
 
         while (reader.HasMoreCharacters())
         {
@@ -72,7 +66,7 @@ public class RuleParserEngine
             //alot of the tokens are looking for words or the first 2 characters. Combine it here so each rule doesn't need to create a string
             var readAndPeeked = new string(new[] { characterRead, nextPeekedCharacter });
 
-            var tokenFactoryFound = TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
+            var tokenFactoryFound = tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 
             tokens.Add(tokenFactoryFound.CreateToken(characterRead, reader, createTokenParameters));
         }

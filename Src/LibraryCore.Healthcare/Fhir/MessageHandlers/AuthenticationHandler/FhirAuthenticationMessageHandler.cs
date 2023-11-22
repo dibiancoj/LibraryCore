@@ -4,18 +4,11 @@ using System.Net.Http.Headers;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
 
-public class FhirAuthenticationMessageHandler : HttpClientHandler
+public class FhirAuthenticationMessageHandler(IFhirBearerTokenProvider fhirBearerTokenProvider) : HttpClientHandler
 {
-    public FhirAuthenticationMessageHandler(IFhirBearerTokenProvider fhirBearerTokenProvider)
-    {
-        FhirBearerTokenProvider = fhirBearerTokenProvider;
-    }
-
-    private IFhirBearerTokenProvider FhirBearerTokenProvider { get; }
-
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var accessToken = await FhirBearerTokenProvider.AccessTokenAsync(cancellationToken).ConfigureAwait(false);
+        var accessToken = await fhirBearerTokenProvider.AccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 

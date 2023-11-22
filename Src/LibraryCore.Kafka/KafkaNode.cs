@@ -3,20 +3,13 @@ using Microsoft.Extensions.Logging;
 
 namespace LibraryCore.Kafka;
 
-public abstract class KafkaNode<TKafkaKey, TKafkaBody> : IKafkaNodeCreator
+public abstract class KafkaNode<TKafkaKey, TKafkaBody>(ILogger logger,
+                                                       IEnumerable<string> topicsToRead,
+                                                       IConsumer<TKafkaKey, TKafkaBody> kafkaConsumer) : IKafkaNodeCreator
 {
-    public KafkaNode(ILogger logger,
-                     IEnumerable<string> topicsToRead,
-                     IConsumer<TKafkaKey, TKafkaBody> kafkaConsumer)
-    {
-        Logger = logger;
-        TopicsToRead = topicsToRead;
-        KafkaConsumer = kafkaConsumer;
-    }
-
-    public ILogger Logger { get; }
-    public IEnumerable<string> TopicsToRead { get; }
-    public IConsumer<TKafkaKey, TKafkaBody> KafkaConsumer { get; }
+    public ILogger Logger { get; } = logger;
+    public IEnumerable<string> TopicsToRead { get; } = topicsToRead;
+    public IConsumer<TKafkaKey, TKafkaBody> KafkaConsumer { get; } = kafkaConsumer;
     public virtual TimeSpan ConsumeTimeout() => TimeSpan.FromSeconds(15);
 
     private const string LogFormat = "{Action} : NodeId = {NodeId} : JobKey = {JobKey}";
