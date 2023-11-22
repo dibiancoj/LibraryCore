@@ -58,7 +58,7 @@ catch (Exception ex)
 try
 {
     //add 10 just to make sure we have ample slots when the old test hasn't been killed off yet.
-    await adminClient.CreateTopicsAsync(new List<TopicSpecification> { new() { Name = KafkaRegistration.TopicsToUse.Single(), NumPartitions = numberOfNodesOrPartitions + 10 } });
+    await adminClient.CreateTopicsAsync([new() { Name = KafkaRegistration.TopicsToUse.Single(), NumPartitions = numberOfNodesOrPartitions + 10 }]);
 }
 catch (Exception ex)
 {
