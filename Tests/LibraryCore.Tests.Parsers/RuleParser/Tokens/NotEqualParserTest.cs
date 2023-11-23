@@ -25,8 +25,8 @@ public class NotEqualParserTest(RuleParserFixture ruleParserFixture) : IClassFix
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
-    [InlineData("$Survey.NullableNameTest != null", null, false)]
-    [InlineData("$Survey.NullableNameTest != null", "abc", true)]
+    [InlineData("$Survey.NullableNameTest$ != null", null, false)]
+    [InlineData("$Survey.NullableNameTest$ != null", "abc", true)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string? nameValueToSet, bool expectedResult)
     {

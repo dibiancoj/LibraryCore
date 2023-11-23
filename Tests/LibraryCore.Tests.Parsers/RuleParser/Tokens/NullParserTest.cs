@@ -20,10 +20,10 @@ public class NullParserTest(RuleParserFixture ruleParserFixture) : IClassFixture
         Assert.IsType<NullToken>(result[4]);
     }
 
-    [InlineData("$Survey.NullableNameTest == null", null, true)]
-    [InlineData("$Survey.NullableNameTest == null", "abc", false)]
-    [InlineData("$Survey.NullableNameTest != null", null, false)]
-    [InlineData("$Survey.NullableNameTest != null", "abc", true)]
+    [InlineData("$Survey.NullableNameTest$ == null", null, true)]
+    [InlineData("$Survey.NullableNameTest$ == null", "abc", false)]
+    [InlineData("$Survey.NullableNameTest$ != null", null, false)]
+    [InlineData("$Survey.NullableNameTest$ != null", "abc", true)]
     [Theory]
     public void ExpressionsToTest(string expressionToTest, string? nameValueToSet, bool expectedResult)
     {
