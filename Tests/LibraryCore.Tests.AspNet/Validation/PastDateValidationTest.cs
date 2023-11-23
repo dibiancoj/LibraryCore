@@ -19,7 +19,7 @@ public class PastDateValidationTest
     [InlineData("2/29/2020", true, true)]
 
     [Theory]
-    public void PastDateValidationAttribute(string dateToValidate, bool isRequiredField, bool isValidExpectedResult)
+    public void PastDateValidationAttribute(string? dateToValidate, bool isRequiredField, bool isValidExpectedResult)
     {
         Assert.Equal(isValidExpectedResult, new PastDateValidationAttribute(isRequiredField).IsValid(dateToValidate));
     }

@@ -3,19 +3,12 @@ using LibraryCore.Tests.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class NullParserTest : IClassFixture<RuleParserFixture>
+public class NullParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    public NullParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
-
-    private RuleParserFixture RuleParserFixture { get; }
-
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine()
+        var result = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("1 == null")
                                             .CompilationTokenResult;
 
@@ -27,27 +20,27 @@ public class NullParserTest : IClassFixture<RuleParserFixture>
         Assert.IsType<NullToken>(result[4]);
     }
 
-    [InlineData("$Survey.Name$ == null", null, true)]
-    [InlineData("$Survey.Name$ == null", "abc", false)]
-    [InlineData("$Survey.Name$ != null", null, false)]
-    [InlineData("$Survey.Name$ != null", "abc", true)]
+    [InlineData("$Survey.NullableNameTest$ == null", null, true)]
+    [InlineData("$Survey.NullableNameTest$ == null", "abc", false)]
+    [InlineData("$Survey.NullableNameTest$ != null", null, false)]
+    [InlineData("$Survey.NullableNameTest$ != null", "abc", true)]
     [Theory]
-    public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
+    public void ExpressionsToTest(string expressionToTest, string? nameValueToSet, bool expectedResult)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString(expressionToTest)
                                                 .BuildExpression<Survey>("Survey")
                                                 .Compile();
 
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder()
-                                                       .WithName(nameValueToSet)
+                                                       .WithNullableNameTest(nameValueToSet)
                                                        .Value));
     }
 
     [Fact]
     public void ExpressionInLinq()
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("$Survey.Name$ == null || $Survey.Name$ == 'Jacob'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();

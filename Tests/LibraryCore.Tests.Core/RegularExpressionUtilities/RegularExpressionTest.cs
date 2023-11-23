@@ -23,7 +23,7 @@ public class RegularExpressionTest
     //local host - not an external url...should return the same thing
     [InlineData("local host test http://localhost/Test123", "local host test http://localhost/Test123")]
     [Theory]
-    public void ParseRawUrlIntoHyperLinkTests(string input, string expectedOutput)
+    public void ParseRawUrlIntoHyperLinkTests(string? input, string? expectedOutput)
     {
         Assert.Equal(expectedOutput, RegularExpressionUtility.ParseRawUrlIntoHyperLink(input));
     }
@@ -51,7 +51,7 @@ public class RegularExpressionTest
     //multiple matches (ignore case)
     [InlineData("dad <b>abc</b> aa<b>def</b>aa", "dad abc aadefaa", true, "<b>", "</b>", "ABC", "dEf")]
     [Theory]
-    public void WrapSearchPhraseInStringTest(string expectedResult, string stringToInspect, bool caseInsensitive, string beginningReplacementTag, string endReplacementTag, params string[] searchPhrases)
+    public void WrapSearchPhraseInStringTest(string? expectedResult, string? stringToInspect, bool caseInsensitive, string beginningReplacementTag, string endReplacementTag, params string[] searchPhrases)
     {
         Assert.Equal(expectedResult, RegularExpressionUtility.WrapSearchPhraseInString(stringToInspect, caseInsensitive, beginningReplacementTag, endReplacementTag, searchPhrases));
     }

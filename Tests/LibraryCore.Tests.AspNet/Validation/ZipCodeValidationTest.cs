@@ -19,7 +19,7 @@ public class ZipCodeValidationTest
     [InlineData("07842", true, true)]
 
     [Theory]
-    public void ZipCodeValidationAttribute(string zipToValidate, bool isRequiredField, bool isValidExpectedResult)
+    public void ZipCodeValidationAttribute(string? zipToValidate, bool isRequiredField, bool isValidExpectedResult)
     {
         Assert.Equal(isValidExpectedResult, new USZipCodeValidationAttribute(isRequiredField).IsValid(zipToValidate));
     }

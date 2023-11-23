@@ -120,7 +120,7 @@ public class StringExtensionMethodTest
     [InlineData("  a", false)]
     [InlineData("abc", false)]
     [Theory]
-    public void IsNullOrWhiteSpaceTest1(string valueToTest, bool expectedResult)
+    public void IsNullOrWhiteSpaceTest1(string? valueToTest, bool expectedResult)
     {
         Assert.Equal(expectedResult, valueToTest.IsNullOrWhiteSpace());
     }
@@ -218,7 +218,7 @@ public class StringExtensionMethodTest
     [InlineData("105832233", "10583-2233")]
     [InlineData("12345678-", "12345678-")] //not valid should return whatever we passed in
     [Theory]
-    public void FormatUSAZipCodeTest1(string valueToTest, string shouldBeValue)
+    public void FormatUSAZipCodeTest1(string? valueToTest, string? shouldBeValue)
     {
         Assert.Equal(shouldBeValue, valueToTest.ToUSAZipCode());
     }
@@ -236,7 +236,7 @@ public class StringExtensionMethodTest
     [InlineData("(914)555-2235", "(914) 555-2235")]
     [InlineData("914552", "914552")]
     [Theory]
-    public void FormatUSAPhoneNumberTest1(string valueToTest, string shouldBeValue)
+    public void FormatUSAPhoneNumberTest1(string? valueToTest, string? shouldBeValue)
     {
         Assert.Equal(shouldBeValue, valueToTest.ToUSAPhoneNumber());
     }
@@ -328,7 +328,7 @@ public class StringExtensionMethodTest
     [InlineData(false, "T")]
     [InlineData(false, "Test")]
     [Theory]
-    public void ThrowIfNullOrEmpty(bool expectedToThrowException, string valueToTest)
+    public void ThrowIfNullOrEmpty(bool expectedToThrowException, string? valueToTest)
     {
         if (expectedToThrowException)
         {

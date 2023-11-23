@@ -10,7 +10,7 @@ public class HttpGetOptionHeadAttributeTest
     //no parameter constructor 
     [InlineData(null)]
     [Theory]
-    public void VerifyCorrectHttpMethodsAreBeingUsed(string templateValue)
+    public void VerifyCorrectHttpMethodsAreBeingUsed(string? templateValue)
     {
         var supportedHttpTypes = templateValue == null ?
                                     new HttpGetOptionHeadAttribute().HttpMethods :
