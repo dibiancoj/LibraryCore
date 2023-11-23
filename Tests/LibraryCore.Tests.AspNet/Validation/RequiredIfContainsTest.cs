@@ -68,7 +68,7 @@ public class RequiredIfContainsTest
     [InlineData("Test 123")]
     [InlineData("")]
     [Theory]
-    public void RequiredIfTestWhenEmptyList(string valueIfYes)
+    public void RequiredIfTestWhenEmptyList(string? valueIfYes)
     {
         var target = new RequiredIfModel { Value = Array.Empty<TestEnum>(), ValueIfYes = valueIfYes };
         var context = new ValidationContext(target);
@@ -83,7 +83,7 @@ public class RequiredIfContainsTest
     [InlineData(true, "", false)]
     [InlineData(true, "Test 123", true)]
     [Theory]
-    public void RequiredIfTestWhenNotFoundInLocalization(bool includeTwoInList, string valueIfYes, bool shouldBeValidModel)
+    public void RequiredIfTestWhenNotFoundInLocalization(bool includeTwoInList, string? valueIfYes, bool shouldBeValidModel)
     {
         var target = new RequiredIfModel { Value = MockList(includeTwoInList), ValueIfYes = valueIfYes };
         var context = new ValidationContext(target);

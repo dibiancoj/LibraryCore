@@ -5,19 +5,12 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class NotEqualParserTest : IClassFixture<RuleParserFixture>
+public class NotEqualParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    public NotEqualParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
-
-    private RuleParserFixture RuleParserFixture { get; }
-
     [Fact]
     public void ParseTest()
     {
-        var result = RuleParserFixture.ResolveRuleParserEngine()
+        var result = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("1 != 1")
                                             .CompilationTokenResult;
 
@@ -32,24 +25,24 @@ public class NotEqualParserTest : IClassFixture<RuleParserFixture>
     [Fact]
     public void CreateTokenNotImplemented() => Assert.Throws<NotImplementedException>(() => new NotEqualsToken().CreateExpression(ImmutableList<ParameterExpression>.Empty));
 
-    [InlineData("$Survey.Name$ != null", null, false)]
-    [InlineData("$Survey.Name$ != null", "abc", true)]
+    [InlineData("$Survey.NullableNameTest != null", null, false)]
+    [InlineData("$Survey.NullableNameTest != null", "abc", true)]
     [Theory]
-    public void ExpressionsToTest(string expressionToTest, string nameValueToSet, bool expectedResult)
+    public void ExpressionsToTest(string expressionToTest, string? nameValueToSet, bool expectedResult)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString(expressionToTest)
                                             .BuildExpression<Survey>("Survey");
 
         Assert.Equal(expectedResult, expression.Compile().Invoke(new SurveyModelBuilder()
-                                                       .WithName(nameValueToSet)
+                                                       .WithNullableNameTest(nameValueToSet)
                                                        .Value));
     }
 
     [Fact]
     public void ExpressionInLinq()
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("$Survey.Name$ != null && $Survey.Name$ != 'Jacob'")
                                             .BuildExpression<Survey>("Survey")
                                             .Compile();

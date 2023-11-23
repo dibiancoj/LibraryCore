@@ -36,7 +36,7 @@ public class RequiredIfValidationTest
     [InlineData("No", null, true)]
     [InlineData("No", "Test 123", true)]
     [Theory]
-    public void RequiredIfTestWhenNotFoundInLocalization(string value, string valueIfYes, bool shouldBeValidModel)
+    public void RequiredIfTestWhenNotFoundInLocalization(string value, string? valueIfYes, bool shouldBeValidModel)
     {
         var target = new RequiredIfModel { Value = value, ValueIfYes = valueIfYes };
         //don't use default <-- for automated builds
@@ -77,7 +77,7 @@ public class RequiredIfValidationTest
     [InlineData("Yes2", null, false)]
     [InlineData("Yes2", "ValueIsSet", true)]
     [Theory]
-    public void RequiredIfTestWhenLookingForMultipleValues(string value, string valueIfYes1OrYes2, bool shouldBeValidModel)
+    public void RequiredIfTestWhenLookingForMultipleValues(string value, string? valueIfYes1OrYes2, bool shouldBeValidModel)
     {
         var target = new RequiredIfModel { Value = value, ValueIfYes1OrYes2 = valueIfYes1OrYes2 };
         var context = new ValidationContext(target);
