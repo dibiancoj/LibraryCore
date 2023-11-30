@@ -71,9 +71,9 @@ public static class IcsCalendarCreator
         //grab the time zone factory
         var timeZoneFactoryToUse = CreateTimeZone(icsTimeZone);
 
-        //we will use a string builder to write everything. use a default capacity. All the static text below is 166-ish plus the dates.
+        //we will use a string builder to write everything. use a default capacity. 
         //there are basically 5 fields tht we need to fill in...start date, end date, summary, location, and the body.
-        var icsWriter = new StringBuilder(185)
+        var icsWriter = new StringBuilder()
             .AppendLine("BEGIN:VCALENDAR")
             .AppendLine("VERSION:2.0")
             .AppendLine("PRODID:-//hacksw/handcal//NONSGML v1.0//EN")
@@ -90,23 +90,22 @@ public static class IcsCalendarCreator
 
         if (isFullDayAppointment)
         {
-            //add the start date time value in the format we need
-            icsWriter.Append($"DTSTART;VALUE=DATE:{startDateTimeOfAppointment.ToString(FormatSpecificDateTimeForFullDayAppointment)}").Append(Environment.NewLine);
-
-            ////add the end date time value in the format we need
-            icsWriter.Append($"DTEND;VALUE=DATE:{endDateTimeOfAppointment.ToString(FormatSpecificDateTimeForFullDayAppointment)}").Append(Environment.NewLine);
+            icsWriter
+                .Append($"DTSTART;VALUE=DATE:{startDateTimeOfAppointment.ToString(FormatSpecificDateTimeForFullDayAppointment)}")
+                .Append(Environment.NewLine)
+                .Append($"DTEND;VALUE=DATE:{endDateTimeOfAppointment.ToString(FormatSpecificDateTimeForFullDayAppointment)}")
+                .Append(Environment.NewLine);
         }
         else
         {
-            //add the start date time value in the format we need
-            icsWriter.Append($"DTSTART;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(startDateTimeOfAppointment)}").Append(Environment.NewLine);
-
-            //add the end date time value in the format we need
-            icsWriter.Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}").Append(Environment.NewLine);
+            icsWriter     
+                .Append($"DTSTART;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(startDateTimeOfAppointment)}").Append(Environment.NewLine)
+                .Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}").Append(Environment.NewLine);
         }
 
         //add the summary and return
-        return icsWriter.Append($"SUMMARY:{summaryOfAppointment}").Append(Environment.NewLine)
+        return icsWriter
+                 .Append($"SUMMARY:{summaryOfAppointment}").Append(Environment.NewLine)
                  .Append($"LOCATION:{locationOfAppointment}").Append(Environment.NewLine)
                  .Append($"DESCRIPTION:{bodyOfReminder}").Append(Environment.NewLine)
                  .AppendLine("END:VEVENT")
