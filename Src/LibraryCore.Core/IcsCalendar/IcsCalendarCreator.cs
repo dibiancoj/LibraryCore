@@ -98,9 +98,11 @@ public static class IcsCalendarCreator
         }
         else
         {
-            icsWriter     
-                .Append($"DTSTART;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(startDateTimeOfAppointment)}").Append(Environment.NewLine)
-                .Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}").Append(Environment.NewLine);
+            icsWriter
+                .Append($"DTSTART;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(startDateTimeOfAppointment)}")
+                .Append(Environment.NewLine)
+                .Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}")
+                .Append(Environment.NewLine);
         }
 
         //add the summary and return
