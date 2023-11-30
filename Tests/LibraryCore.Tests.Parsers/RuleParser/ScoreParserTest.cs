@@ -3,14 +3,9 @@ using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreT
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
-public class ScoreParserTest : IClassFixture<RuleParserFixture>
+public class ScoreParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; }
-
-    public ScoreParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     public record ScoreParserModel(int Age);
 

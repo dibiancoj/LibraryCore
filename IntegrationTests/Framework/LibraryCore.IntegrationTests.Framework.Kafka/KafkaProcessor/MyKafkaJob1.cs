@@ -5,15 +5,9 @@ using System.Collections.Concurrent;
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka.KafkaProcessor;
 
-public class MyKafkaJob1 : KafkaNode<string, KafkaMessageModel>
+public class MyKafkaJob1(ILogger<MyKafkaJob1> logger, IEnumerable<string> topicsToRead, IConsumer<string, KafkaMessageModel> kafkaConsumer, MyIntegrationHostedAgentMockDatabase myIntegrationHostedAgentMockDatabase) : KafkaNode<string, KafkaMessageModel>(logger, topicsToRead, kafkaConsumer)
 {
-    public MyKafkaJob1(ILogger<MyKafkaJob1> logger, IEnumerable<string> topicsToRead, IConsumer<string, KafkaMessageModel> kafkaConsumer, MyIntegrationHostedAgentMockDatabase myIntegrationHostedAgentMockDatabase) :
-        base(logger, topicsToRead, kafkaConsumer)
-    {
-        MyIntegrationHostedAgentMockDatabase = myIntegrationHostedAgentMockDatabase;
-    }
-
-    public MyIntegrationHostedAgentMockDatabase MyIntegrationHostedAgentMockDatabase { get; }
+    public MyIntegrationHostedAgentMockDatabase MyIntegrationHostedAgentMockDatabase { get; } = myIntegrationHostedAgentMockDatabase;
 
     public override async Task ProcessMessageAsync(ConsumeResult<string, KafkaMessageModel> messageResult, int nodeId, CancellationToken stoppingToken)
     {

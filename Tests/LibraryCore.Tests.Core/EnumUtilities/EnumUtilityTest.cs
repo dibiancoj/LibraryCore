@@ -9,14 +9,9 @@ public class EnumUtilityTest
     #region Framework
 
     [AttributeUsage(AttributeTargets.Field)]
-    private class DescriptionTextAttribute : Attribute
+    private class DescriptionTextAttribute(string descriptionText) : Attribute
     {
-        public DescriptionTextAttribute(string descriptionText)
-        {
-            Description = descriptionText;
-        }
-
-        public string Description { get; }
+        public string Description { get; } = descriptionText;
     }
 
     [Flags]

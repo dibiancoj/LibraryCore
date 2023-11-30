@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class LessThenOrEqualParserTest : IClassFixture<RuleParserFixture>
+public class LessThenOrEqualParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    public LessThenOrEqualParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
-
-    private RuleParserFixture RuleParserFixture { get; }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     [Fact]
     public void ParseTest()

@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class AndAlsoParserTest : IClassFixture<RuleParserFixture>
+public class AndAlsoParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    public AndAlsoParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
-
-    private RuleParserFixture RuleParserFixture { get; }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     [Fact]
     public void ParserTest()

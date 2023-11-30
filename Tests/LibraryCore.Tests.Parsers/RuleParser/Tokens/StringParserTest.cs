@@ -3,14 +3,9 @@ using LibraryCore.Tests.Parsers.RuleParser.Fixtures;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class StringParserTest : IClassFixture<RuleParserFixture>
+public class StringParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    public StringParserTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
-
-    private RuleParserFixture RuleParserFixture { get; }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     [Fact]
     public void ParseTest()
