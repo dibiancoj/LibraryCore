@@ -2,14 +2,9 @@
 
 namespace LibraryCore.IntegrationTests.Framework.Kafka.KafkaProcessor;
 
-public class MyHostedAgent : BackgroundService
+public class MyHostedAgent(KafkaNodeManager kafkaNodeManager) : BackgroundService
 {
-    public MyHostedAgent(KafkaNodeManager kafkaNodeManager)
-    {
-        KafkaNodeManager = kafkaNodeManager;
-    }
-
-    private KafkaNodeManager KafkaNodeManager { get; }
+    private KafkaNodeManager KafkaNodeManager { get; } = kafkaNodeManager;
     public const string KakfaJobName = "Job1";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

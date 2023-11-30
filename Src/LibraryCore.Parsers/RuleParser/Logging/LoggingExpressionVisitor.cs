@@ -3,18 +3,12 @@ using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser.Logging;
 
-internal class LoggingExpressionVisitor<TReturnSignature> : ExpressionVisitor
+internal class LoggingExpressionVisitor<TReturnSignature>(bool addParameterDebugging, Func<Expression, IEnumerable<ParameterExpression>, Expression> creator) : ExpressionVisitor
 {
     private IEnumerable<ParameterExpression> Parameters { get; set; } = null!;
     private ParameterExpression LoggerParameter { get; set; } = null!;
-    private bool AddParameterDebugging { get; }
-    private Func<Expression, IEnumerable<ParameterExpression>, Expression> Creator { get; }
-
-    public LoggingExpressionVisitor(bool addParameterDebugging, Func<Expression, IEnumerable<ParameterExpression>, Expression> creator)
-    {
-        AddParameterDebugging = addParameterDebugging;
-        Creator = creator;
-    }
+    private bool AddParameterDebugging { get; } = addParameterDebugging;
+    private Func<Expression, IEnumerable<ParameterExpression>, Expression> Creator { get; } = creator;
 
     protected override Expression VisitLambda<T>(Expression<T> node)
     {

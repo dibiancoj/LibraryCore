@@ -98,7 +98,7 @@ public static class IcsCalendarCreator
         }
         else
         {
-            icsWriter     
+            icsWriter
                 .Append($"DTSTART;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(startDateTimeOfAppointment)}").Append(Environment.NewLine)
                 .Append($"DTEND;TZID={timeZoneFactoryToUse.TimeZoneDateOutput}:{GetFormattedDateTime(endDateTimeOfAppointment)}").Append(Environment.NewLine);
         }
