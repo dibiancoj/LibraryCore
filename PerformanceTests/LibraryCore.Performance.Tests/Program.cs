@@ -3,9 +3,9 @@ using BenchmarkDotNet.Running;
 
 namespace LibraryCore.Performance.Tests;
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         //example to run:
         //Get the menu = dotnet run -c release

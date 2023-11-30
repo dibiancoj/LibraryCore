@@ -1,13 +1,8 @@
 ﻿namespace LibraryCore.Core.EnumUtilities;
 
-public class BitMaskBuilder<T> where T : struct, Enum
+public class BitMaskBuilder<T>(T initialValue) where T : struct, Enum
 {
-    public BitMaskBuilder(T initialValue)
-    {
-        Value = initialValue;
-    }
-
-    public T Value { get; private set; }
+    public T Value { get; private set; } = initialValue;
 
     public BitMaskBuilder<T> AddItem(T valueToAdd)
     {

@@ -5,14 +5,9 @@ using static LibraryCore.Parsers.RuleParser.Utilities.SchemaModel;
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
-public class DynamicExpressionTest : IClassFixture<RuleParserFixture>
+public class DynamicExpressionTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; }
-
-    public DynamicExpressionTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     [InlineData(26, true)]
     [InlineData(25, false)]
