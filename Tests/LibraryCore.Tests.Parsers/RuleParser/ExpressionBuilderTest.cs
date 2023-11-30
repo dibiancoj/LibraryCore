@@ -2,14 +2,9 @@
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
-public class ExpressionBuilderTest : IClassFixture<RuleParserFixture>
+public class ExpressionBuilderTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; }
-
-    public ExpressionBuilderTest(RuleParserFixture ruleParserFixture)
-    {
-        RuleParserFixture = ruleParserFixture;
-    }
+    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
 
     [Fact]
     public void NoParameterTest()

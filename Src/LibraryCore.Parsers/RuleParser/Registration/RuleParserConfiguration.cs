@@ -5,16 +5,10 @@ using System.Reflection;
 
 namespace LibraryCore.Parsers.RuleParser.Registration;
 
-public class RuleParserConfiguration
+public class RuleParserConfiguration(IServiceCollection serviceDescriptors)
 {
-    public RuleParserConfiguration(IServiceCollection serviceDescriptors)
-    {
-        ServiceDescriptors = serviceDescriptors;
-        RegisteredMethods = new Dictionary<string, MethodInfo>();
-    }
-
-    private IServiceCollection ServiceDescriptors { get; }
-    private Dictionary<string, MethodInfo> RegisteredMethods { get; }
+    private IServiceCollection ServiceDescriptors { get; } = serviceDescriptors;
+    private Dictionary<string, MethodInfo> RegisteredMethods { get; } = new Dictionary<string, MethodInfo>();
 
     public RuleParserConfiguration WithRegisteredMethod(string key, MethodInfo methodInfo)
     {

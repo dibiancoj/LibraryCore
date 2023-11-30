@@ -31,14 +31,9 @@ public record SchemaModel(JsonElement? Schema)
         ArrayOfStrings,
     }
 
-    private class SchemaDataTypeDotNetTypeAttibute : Attribute
+    private class SchemaDataTypeDotNetTypeAttibute(Type dotNetType) : Attribute
     {
-        public SchemaDataTypeDotNetTypeAttibute(Type dotNetType)
-        {
-            DotNetType = dotNetType;
-        }
-
-        public Type DotNetType { get; }
+        public Type DotNetType { get; } = dotNetType;
     }
 
     internal static readonly MethodInfo JsonElementGetProperty = JsonElementGetMethodInfoHelper("GetProperty", typeof(string));

@@ -1,8 +1,5 @@
 ﻿namespace LibraryCore.CommandLineParser.RunnerModels;
 
-internal class CommandLineParserException : Exception
+internal class CommandLineParserException(string? message) : Exception(message)
 {
-    public CommandLineParserException(string? message) : base(message)
-    {
-    }
 }

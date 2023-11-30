@@ -5,14 +5,9 @@ using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests.Kafka;
 
-public class KafkaIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
+public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture) : IClassFixture<WebApplicationFactoryFixture>
 {
-    public KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
-    {
-        WebApplicationFactoryFixture = webApplicationFactoryFixture;
-    }
-
-    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
 
     public record ResponseProcessedItem(string Topic, Guid TestId, int NodeId, string KeyId, string Message);
     public record RequestPublishModel(string Topic, Guid TestId, string KeyId, string Message);

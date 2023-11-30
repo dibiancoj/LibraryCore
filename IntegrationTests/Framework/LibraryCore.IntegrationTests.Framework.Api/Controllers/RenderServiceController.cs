@@ -5,14 +5,9 @@ namespace LibraryCore.IntegrationTests.Framework.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RenderServiceController : Controller
+public class RenderServiceController(IRenderService renderService) : Controller
 {
-    public RenderServiceController(IRenderService renderService)
-    {
-        RenderService = renderService;
-    }
-
-    private IRenderService RenderService { get; }
+    private IRenderService RenderService { get; } = renderService;
 
     [HttpGet("CantFindView")]
     public async Task<IActionResult> CantFindView() => Content(await RenderService.RenderToStringAsync("~/Views/RenderService/CantFindView.cshtml"));

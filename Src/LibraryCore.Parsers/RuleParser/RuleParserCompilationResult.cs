@@ -9,14 +9,9 @@ using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreT
 
 namespace LibraryCore.Parsers.RuleParser;
 
-public class RuleParserCompilationResult
+public class RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult)
 {
-    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult)
-    {
-        CompilationTokenResult = compilationTokenResult;
-    }
-
-    public IImmutableList<IToken> CompilationTokenResult { get; }
+    public IImmutableList<IToken> CompilationTokenResult { get; } = compilationTokenResult;
 
     /// <summary>
     /// facade the build expressions so we don't need to declare variables. Keep the expression builder seperate but make it easier for the caller
@@ -93,16 +88,10 @@ public class RuleParserCompilationResult
     }
 }
 
-public class RuleParserCompilationResult<TResult>
+public class RuleParserCompilationResult<TResult>(IImmutableList<IToken> compilationTokeResult, SchemaModel schema)
 {
-    public RuleParserCompilationResult(IImmutableList<IToken> compilationTokeResult, SchemaModel schema)
-    {
-        CompilationTokenResult = compilationTokeResult;
-        Schema = schema;
-    }
-
-    public IImmutableList<IToken> CompilationTokenResult { get; }
-    public SchemaModel Schema { get; private set; }
+    public IImmutableList<IToken> CompilationTokenResult { get; } = compilationTokeResult;
+    public SchemaModel Schema { get; private set; } = schema;
 
     public Expression<Func<T1, TResult>> BuildScoreExpression<T1>(ScoringMode scoringMode, string parameter1Name)
     {
