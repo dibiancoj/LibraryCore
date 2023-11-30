@@ -45,6 +45,9 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
+    - name: Dotnet Format
+      run: dotnet format --verify-no-changes --no-restore --verbosity d
+
     - name: Test
       run: dotnet test --filter FullyQualifiedName!~LibraryCore.IntegrationTests --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:  #the env variables below fixes a .net 7 issue where the code coverage is json and doesn't get outputted right. These can be removed once they make a fix https://github.com/coverlet-coverage/coverlet/issues/1391
@@ -55,9 +58,6 @@ jobs:
       uses: codecov/codecov-action@v3.1.1
       with:
         fail_ci_if_error: true # optional (default = false)
-
-    - name: Dotnet Format
-      run: dotnet format --verify-no-changes --no-restore --verbosity d
 
   integration-tests:
 
