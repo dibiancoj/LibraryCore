@@ -3,10 +3,16 @@
 /// <summary>
 /// Base Union type
 /// </summary>
-public abstract class UnionBase(Type unionType, dynamic? currentValue)
+public abstract class UnionBase
 {
-    protected Type UnionType { get; } = unionType;
-    protected dynamic? CurrentValue { get; } = currentValue;
+    public UnionBase(Type unionType, dynamic? currentValue)
+    {
+        UnionType = unionType;
+        CurrentValue = currentValue;
+    }
+
+    protected Type UnionType { get; }
+    protected dynamic? CurrentValue { get; }
 
     /// <summary>
     /// Returns true if the union contains a value of type T

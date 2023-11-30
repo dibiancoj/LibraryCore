@@ -5,9 +5,14 @@ using System.Text.Json;
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
-public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
+public class ExpressionBuilderLoggerTest : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
+    private RuleParserFixture RuleParserFixture { get; }
+
+    public ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture)
+    {
+        RuleParserFixture = ruleParserFixture;
+    }
 
     [InlineData("1 == 2", "(1 == 2)", false, false)]
     [InlineData("2 == 2", "(2 == 2)", true, false)]

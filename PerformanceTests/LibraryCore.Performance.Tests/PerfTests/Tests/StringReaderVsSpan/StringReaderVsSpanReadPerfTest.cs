@@ -93,9 +93,14 @@ public class StringReaderVsSpanReadPerfTest
     }
 }
 
-public class RawStringReader(string stringToRead)
+public class RawStringReader
 {
-    private string StringToRead { get; } = stringToRead;
+    public RawStringReader(string stringToRead)
+    {
+        StringToRead = stringToRead;
+    }
+
+    private string StringToRead { get; }
     private int Index { get; set; }
 
     public int Peek() => StringToRead.Length == Index ? -1 : StringToRead[Index];
@@ -110,9 +115,14 @@ public class RawStringReader(string stringToRead)
     }
 }
 
-public class ClassSpanStringReader(string stringToRead)
+public class ClassSpanStringReader
 {
-    private string StringToRead { get; } = stringToRead;
+    public ClassSpanStringReader(string stringToRead)
+    {
+        StringToRead = stringToRead;
+    }
+
+    private string StringToRead { get; }
     private int Index { get; set; }
 
     public int Peek() => StringToRead.Length == Index ? -1 : StringToRead.AsSpan()[Index];
@@ -127,10 +137,16 @@ public class ClassSpanStringReader(string stringToRead)
     }
 }
 
-public ref struct StructSpanStringReader(string stringToRead)
+public ref struct StructSpanStringReader
 {
-    private ReadOnlySpan<char> StringToRead { get; } = stringToRead.AsSpan();
-    private int Index { get; set; } = 0;
+    public StructSpanStringReader(string stringToRead)
+    {
+        StringToRead = stringToRead.AsSpan();
+        Index = 0;
+    }
+
+    private ReadOnlySpan<char> StringToRead { get; }
+    private int Index { get; set; }
 
     public int Peek() => StringToRead.Length == Index ? -1 : StringToRead[Index];
 

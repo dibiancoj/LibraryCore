@@ -2,9 +2,14 @@
 
 namespace LibraryCore.Tests.Parsers.RuleParser;
 
-public class TokenFactoryTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
+public class TokenFactoryTest : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
+    private RuleParserFixture RuleParserFixture { get; }
+
+    public TokenFactoryTest(RuleParserFixture ruleParserFixture)
+    {
+        RuleParserFixture = ruleParserFixture;
+    }
 
     [Fact]
     public void NoFactoryFoundTest()

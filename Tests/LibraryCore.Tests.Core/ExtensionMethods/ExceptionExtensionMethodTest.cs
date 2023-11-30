@@ -5,9 +5,14 @@ namespace LibraryCore.Tests.Core.ExtensionMethods;
 public class ExceptionExtensionMethodTest
 {
 
-    internal class UnitTestException(int testVariable) : Exception
+    internal class UnitTestException : Exception
     {
-        public int TestVariable { get; } = testVariable;
+        public UnitTestException(int testVariable)
+        {
+            TestVariable = testVariable;
+        }
+
+        public int TestVariable { get; }
     }
 
     [Fact]

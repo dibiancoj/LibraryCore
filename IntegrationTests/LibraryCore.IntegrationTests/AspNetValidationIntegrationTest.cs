@@ -4,9 +4,14 @@ using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests;
 
-public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture) : IClassFixture<WebApplicationFactoryFixture>
+public class AspNetValidationIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 {
-    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
+    public AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
+    {
+        WebApplicationFactoryFixture = webApplicationFactoryFixture;
+    }
+
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
     [InlineData(true, -2)]
     [InlineData(false, -500)]

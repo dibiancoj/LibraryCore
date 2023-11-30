@@ -3,9 +3,14 @@ using System.Net.Http.Json;
 
 namespace LibraryCore.IntegrationTests;
 
-public class AspNetExtensionMethodIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture) : IClassFixture<WebApplicationFactoryFixture>
+public class AspNetExtensionMethodIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 {
-    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
+    public AspNetExtensionMethodIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
+    {
+        WebApplicationFactoryFixture = webApplicationFactoryFixture;
+    }
+
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
     [Fact]
     public async Task IsAjaxCall()

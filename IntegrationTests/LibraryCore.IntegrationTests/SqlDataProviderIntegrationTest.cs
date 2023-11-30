@@ -4,9 +4,14 @@ using System.Data;
 
 namespace LibraryCore.IntegrationTests;
 
-public class SqlDataProviderIntegrationTest(SqlServerTestFixture sqlServerTestFixture) : IClassFixture<SqlServerTestFixture>
+public class SqlDataProviderIntegrationTest : IClassFixture<SqlServerTestFixture>
 {
-    private SqlServerTestFixture SqlServerTestFixture { get; } = sqlServerTestFixture;
+    public SqlDataProviderIntegrationTest(SqlServerTestFixture sqlServerTestFixture)
+    {
+        SqlServerTestFixture = sqlServerTestFixture;
+    }
+
+    private SqlServerTestFixture SqlServerTestFixture { get; }
 
     #region Framework
 

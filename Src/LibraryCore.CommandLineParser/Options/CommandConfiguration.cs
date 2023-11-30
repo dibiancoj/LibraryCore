@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace LibraryCore.CommandLineParser.Options;
 
 [DebuggerDisplay("Command = {CommandName}")]
-public class CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker, OptionsBuilder optionsBuilder)
+public class CommandConfiguration
 {
     //MyCli [CommandName] [RequiredArgument] -p {optionalArgument}
     //MyCli [CommandName] [RequiredArgument] -v
@@ -19,13 +19,23 @@ public class CommandConfiguration(string commandName, string commandHelp, Func<I
     public record RequiredArgument(string CommandName, string Description);
     public record OptionalArgument(string Flag, string Description, bool ArgumentRequiresParameterAfterFlag);
 
-    public Func<InvokeParameters, Task<int>> Invoker { get; } = invoker;
-    private OptionsBuilder OptionsBuilder { get; } = optionsBuilder;
-    public string CommandName { get; } = commandName;
-    public string CommandHelp { get; } = commandHelp;
+    public CommandConfiguration(string commandName, string commandHelp, Func<InvokeParameters, Task<int>> invoker, OptionsBuilder optionsBuilder)
+    {
+        RequiredArguments = ImmutableList<RequiredArgument>.Empty;
+        OptionalArguments = ImmutableList<OptionalArgument>.Empty;
+        Invoker = invoker;
+        OptionsBuilder = optionsBuilder;
+        CommandName = commandName;
+        CommandHelp = commandHelp;
+    }
+
+    public Func<InvokeParameters, Task<int>> Invoker { get; }
+    private OptionsBuilder OptionsBuilder { get; }
+    public string CommandName { get; }
+    public string CommandHelp { get; }
     public int? OrderId { get; private set; }
-    public IImmutableList<RequiredArgument> RequiredArguments { get; private set; } = ImmutableList<RequiredArgument>.Empty;
-    public IImmutableList<OptionalArgument> OptionalArguments { get; private set; } = ImmutableList<OptionalArgument>.Empty;
+    public IImmutableList<RequiredArgument> RequiredArguments { get; private set; }
+    public IImmutableList<OptionalArgument> OptionalArguments { get; private set; }
 
     public CommandConfiguration WithOrderId(int orderId)
     {

@@ -8,9 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace LibraryCore.Tests.Kafka.Framework;
 
 [ExcludeFromCodeCoverage(Justification = "Coming up in code coverage report as actual code.")]
-public class MyUnitTestHostedAgent(KafkaNodeManager kafkaNodeManager) : BackgroundService
+public class MyUnitTestHostedAgent : BackgroundService
 {
-    private KafkaNodeManager KafkaNodeManager { get; } = kafkaNodeManager;
+    public MyUnitTestHostedAgent(KafkaNodeManager kafkaNodeManager)
+    {
+        KafkaNodeManager = kafkaNodeManager;
+    }
+
+    private KafkaNodeManager KafkaNodeManager { get; }
     public const string KakfaJobName = "Job1";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,9 +30,15 @@ public class KafkaMockedDataStore
     public ConcurrentBag<ProcessedItem> MessagesProcessed { get; } = new ConcurrentBag<ProcessedItem>();
 }
 
-public class MyKafkaJob1(ILogger<KafkaNode<string, string>> logger, IEnumerable<string> topicsToRead, IConsumer<string, string> kafkaConsumer, KafkaMockedDataStore kafkaMockedDataStore) : KafkaNode<string, string>(logger, topicsToRead, kafkaConsumer)
+public class MyKafkaJob1 : KafkaNode<string, string>
 {
-    public KafkaMockedDataStore KafkaMockedDataStore { get; } = kafkaMockedDataStore;
+    public MyKafkaJob1(ILogger<KafkaNode<string, string>> logger, IEnumerable<string> topicsToRead, IConsumer<string, string> kafkaConsumer, KafkaMockedDataStore kafkaMockedDataStore) :
+        base(logger, topicsToRead, kafkaConsumer)
+    {
+        KafkaMockedDataStore = kafkaMockedDataStore;
+    }
+
+    public KafkaMockedDataStore KafkaMockedDataStore { get; }
 
     public override async Task ProcessMessageAsync(ConsumeResult<string, string> messageResult, int nodeId, CancellationToken stoppingToken)
     {

@@ -5,9 +5,14 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class LikeParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
+public class LikeParserTest : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
+    public LikeParserTest(RuleParserFixture ruleParserFixture)
+    {
+        RuleParserFixture = ruleParserFixture;
+    }
+
+    private RuleParserFixture RuleParserFixture { get; }
 
     [Fact]
     public void ParseTest()

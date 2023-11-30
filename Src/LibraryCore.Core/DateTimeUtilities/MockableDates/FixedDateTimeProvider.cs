@@ -6,9 +6,14 @@
 #if NET8_0_OR_GREATER
 [Obsolete("Use TimeProvider In .net 8 Or C# 12")]
 #endif
-public class FixedDateTimeProvider(DateTime fixedDate) : IDateTimeProvider
+public class FixedDateTimeProvider : IDateTimeProvider
 {
-    private DateTime FixedDate { get; } = fixedDate;
+    public FixedDateTimeProvider(DateTime fixedDate)
+    {
+        FixedDate = fixedDate;
+    }
+
+    private DateTime FixedDate { get; }
 
     public DateTime GetNow() => FixedDate;
 }

@@ -2,9 +2,14 @@
 
 namespace LibraryCore.IntegrationTests;
 
-public class RenderServiceIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture) : IClassFixture<WebApplicationFactoryFixture>
+public class RenderServiceIntegrationTest : IClassFixture<WebApplicationFactoryFixture>
 {
-    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
+    public RenderServiceIntegrationTest(WebApplicationFactoryFixture webApplicationFactoryFixture)
+    {
+        WebApplicationFactoryFixture = webApplicationFactoryFixture;
+    }
+
+    private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; }
 
     [Fact]
     public async Task CantFindView()

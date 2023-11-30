@@ -6,9 +6,14 @@ using System.Linq.Expressions;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
-public class LambdaParserTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
+public class LambdaParserTest : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
+    public LambdaParserTest(RuleParserFixture ruleParserFixture)
+    {
+        RuleParserFixture = ruleParserFixture;
+    }
+
+    private RuleParserFixture RuleParserFixture { get; }
 
     [Fact]
     public void ThrowsOnCreateExpression()
