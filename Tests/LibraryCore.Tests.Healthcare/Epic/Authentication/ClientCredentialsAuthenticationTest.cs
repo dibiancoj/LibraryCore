@@ -98,8 +98,6 @@ public class ClientCredentialsAuthenticationTest
     [Fact]
     public void ClientAssertionCreateTest()
     {
-
-
         //we ran into "Safe handle has been closed" when you run it multiple times. So we are putting this in a for loop to verify that works in current code
         for (int i = 0; i < 10; i++)
         {
