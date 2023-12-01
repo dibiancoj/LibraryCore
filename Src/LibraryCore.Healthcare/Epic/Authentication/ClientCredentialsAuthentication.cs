@@ -66,6 +66,8 @@ public static class ClientCredentialsAuthentication
     {
         //there is a perf test with this code and a string builder, regex, and a few other patterns to avoid allocation and fastest code.
 
+        //basic method without all the fancyiness is just taking everything between the "begin private key" header and the "end private key" footer
+
         //Find the index after the header which has the -----BEGIN PRIVATE KEY-----
         var indexAfterHeaderContent = rawContentPrivateKeyPem.IndexOf(Environment.NewLine);
 
