@@ -73,22 +73,24 @@ public static class ClientCredentialsAuthentication
         //grab the last line break which has the -----END PRIVATE KEY-----
         var lastPageIndex = rawContentPrivateKeyPem.LastIndexOf(Environment.NewLine);
 
+        //Most performant version but a bit crazy
         //grab everything between BEGIN PRIVATE KEY and END PRIVATE KEY
-        var contentBetweenHeaderAndFooter = rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex];
+        //var contentBetweenHeaderAndFooter = rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex];
 
-        //going to get fancy and try not to allocate anything (in base64 every char encodes 6 bits, so 4 chars = 3 bytes)
-        var buffer = new Span<byte>(new byte[((contentBetweenHeaderAndFooter.Length * 3) + 3) / 4]);
+        ////going to get fancy and try not to allocate anything (in base64 every char encodes 6 bits, so 4 chars = 3 bytes)
+        //var buffer = new Span<byte>(new byte[((contentBetweenHeaderAndFooter.Length * 3) + 3) / 4]);
 
-        //pem file is in base 64...so decode it back to bytes using the buffer
-        if (!Convert.TryFromBase64Chars(contentBetweenHeaderAndFooter, buffer, out _))
-        {
-            throw new Exception("Cant' Convert From Base 64");
-        }
+        ////pem file is in base 64...so decode it back to bytes using the buffer
+        //if (!Convert.TryFromBase64Chars(contentBetweenHeaderAndFooter, buffer, out _))
+        //{
+        //    throw new Exception("Cant' Convert From Base 64");
+        //}
 
-        return buffer;
+        //return buffer;
+        //end of most performant code
 
         //this is the simplified version instead of using the buffer
-        //return Convert.FromBase64String(new string(rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex]));
+        return Convert.FromBase64String(new string(rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex]));
     }
 }
 
