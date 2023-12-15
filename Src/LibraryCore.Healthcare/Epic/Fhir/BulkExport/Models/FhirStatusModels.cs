@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 
-public interface IBulkFhirStatus { };
+public interface IBulkFhirStatus;
 
 public record BulkFhirInProgressStatus(string ProgressDescription) : IBulkFhirStatus;
 

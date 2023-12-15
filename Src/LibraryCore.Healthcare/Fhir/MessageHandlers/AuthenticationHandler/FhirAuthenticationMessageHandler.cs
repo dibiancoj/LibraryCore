@@ -4,6 +4,9 @@ using System.Net.Http.Headers;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler;
 
+/// <summary>
+/// This should be registered as a transient based on the documentation on Microsoft's site. HttpClient factory manages the lifetime from there
+/// </summary>
 public class FhirAuthenticationMessageHandler(IFhirBearerTokenProvider fhirBearerTokenProvider) : HttpClientHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
