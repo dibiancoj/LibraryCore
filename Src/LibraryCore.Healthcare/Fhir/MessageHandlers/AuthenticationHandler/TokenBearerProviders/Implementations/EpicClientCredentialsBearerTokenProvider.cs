@@ -10,6 +10,8 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
                                                      string rawPrivateKeyContentInPemFile,
                                                      string clientId) : IFhirBearerTokenProvider
 {
+    private static TimeSpan CacheBufferTimePeriod { get; } = new TimeSpan(0, 1, 0);
+
     public async ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default)
     {
         return await new InMemoryCacheService(memoryCache).GetOrCreateWithLockAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
@@ -18,7 +20,12 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
 
             var tokenResult = await ClientCredentialsAuthentication.TokenAsync(httpClient, tokenEndPointUrl, clientAssertion, cancellationToken);
 
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn);
+            //giving it a minute buffer so we don't get too close to the expiration
+            var buffer = tokenResult.ExpiresIn <= CacheBufferTimePeriod.TotalSeconds ?
+                                new TimeSpan(0, 0, 0) :
+                                CacheBufferTimePeriod;
+
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn).Subtract(buffer);
 
             return tokenResult.AccessToken;
         }) ?? throw new Exception("Can't Find Token From Cache Or Source");
