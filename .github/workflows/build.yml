@@ -49,7 +49,7 @@ jobs:
       run: dotnet format --verify-no-changes --no-restore --verbosity d
 
     - name: Test
-      run: dotnet test --collect:"XPlat Code Coverage" --filter FullyQualifiedName!~LibraryCore.IntegrationTests --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --collect "XPlat Code Coverage" --filter FullyQualifiedName!~LibraryCore.IntegrationTests --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       env:  #the env variables below fixes a .net 7 issue where the code coverage is json and doesn't get outputted right. These can be removed once they make a fix https://github.com/coverlet-coverage/coverlet/issues/1391
         CollectCoverage: true
         CoverletOutputFormat: opencover
