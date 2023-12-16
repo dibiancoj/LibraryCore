@@ -18,7 +18,8 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
 
             var tokenResult = await ClientCredentialsAuthentication.TokenAsync(httpClient, tokenEndPointUrl, clientAssertion, cancellationToken);
 
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn);
+            //giving it a minute buffer so we don't get too close to the expiration
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn).Subtract(new TimeSpan(0, 1, 0));
 
             return tokenResult.AccessToken;
         }) ?? throw new Exception("Can't Find Token From Cache Or Source");

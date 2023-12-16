@@ -72,6 +72,10 @@ public class ClientCredentialsAuthenticationTest
                 Times.Once(),
                 ItExpr.Is<HttpRequestMessage>(msg => CheckBodyExpression(msg)),
                 ItExpr.IsAny<CancellationToken>());
+
+        Assert.Equal(2, result.Scopes.Count);
+        Assert.Contains(result.Scopes, x => x == "abc");
+        Assert.Contains(result.Scopes, x => x == "def");
     }
 
     private static bool CheckBodyExpression(HttpRequestMessage msg)

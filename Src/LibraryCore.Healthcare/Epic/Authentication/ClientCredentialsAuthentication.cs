@@ -1,6 +1,7 @@
 ﻿using LibraryCore.ApiClient;
 using LibraryCore.ApiClient.ExtensionMethods;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -101,6 +102,6 @@ public record EpicClientCredentialsAuthorizationToken([property: JsonPropertyNam
 {
     public DateTimeOffset ExpiresLocalTime { get; } = DateTimeOffset.Now.ToLocalTime().AddSeconds(ExpiresIn);
     public bool IsExpired(TimeSpan TimeBuffer) => DateTime.Now.Add(-TimeBuffer) >= ExpiresLocalTime;
+    public IReadOnlyCollection<string> Scopes = Scope.Split(' ').ToImmutableArray();
     public bool IsExpired() => DateTime.Now >= ExpiresLocalTime;
-    public IEnumerable<string> Scopes() => Scope.Split(' ');
 }
