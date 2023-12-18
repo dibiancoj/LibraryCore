@@ -63,9 +63,9 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
         {
             var request = await CreateBaseRequestAsync(HttpMethod.Get, resultUrl);
 
-            var rawResponse = await httpClient.SendAsync(request);
+            var rawResponse = await httpClient.SendAsync(request, cancellationToken);
 
-            using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync());
+            using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync(cancellationToken));
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
