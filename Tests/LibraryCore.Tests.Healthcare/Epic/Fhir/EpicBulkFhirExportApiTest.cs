@@ -130,7 +130,7 @@ public class EpicBulkFhirExportApiTest
                                                             "MyLocationOfContent",
                                                             true,
                                                             mockResultOutput,
-                                                            Array.Empty<object>()));
+                                                            []));
 
 
         Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
@@ -279,12 +279,11 @@ public class EpicBulkFhirExportApiTest
                                                             DateTime.Now,
                                                             "http://fhir/export/123",
                                                             true,
-                                                            new BulkFhirCompletedResultOutput[]
-                                                            {
+                                                            [
                                                                 new("Patient", "Http://Patient/1.json"),
                                                                 new("Patient", "Http://Patient/2.json")
-                                                            },
-                                                            Array.Empty<object>()));
+                                                            ],
+                                                            []));
 
         var mockPatient1 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "11111111" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
         var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
