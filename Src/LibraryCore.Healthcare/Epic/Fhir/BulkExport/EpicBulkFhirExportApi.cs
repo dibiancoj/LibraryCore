@@ -56,7 +56,7 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
             new BulkFhirCompletedStatus(await rawResponse.Content.ReadFromJsonAsync<BulkFhirCompletedResult>(SerializerOptions) ?? throw new Exception("Can't Deserialize"));
     }
 
-    public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls)
+    public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where T : Hl7.Fhir.Model.Base
     {
         foreach (var resultUrl in resultUrls)
@@ -69,7 +69,17 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    yield break;
+                }
+
                 yield return await JsonFhirParser.ParseAsync<T>(line);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                yield break;
             }
         }
     }
