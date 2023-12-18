@@ -70,7 +70,7 @@ public class RequiredIfContainsTest
     [Theory]
     public void RequiredIfTestWhenEmptyList(string? valueIfYes)
     {
-        var target = new RequiredIfModel { Value = Array.Empty<TestEnum>(), ValueIfYes = valueIfYes };
+        var target = new RequiredIfModel { Value = [], ValueIfYes = valueIfYes };
         var context = new ValidationContext(target);
         var results = new List<ValidationResult>();
 

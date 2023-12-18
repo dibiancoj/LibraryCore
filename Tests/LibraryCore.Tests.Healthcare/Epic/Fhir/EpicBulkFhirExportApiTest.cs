@@ -130,7 +130,7 @@ public class EpicBulkFhirExportApiTest
                                                             "MyLocationOfContent",
                                                             true,
                                                             mockResultOutput,
-                                                            Array.Empty<object>()));
+                                                            []));
 
 
         Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
@@ -195,6 +195,56 @@ public class EpicBulkFhirExportApiTest
     }
 
     [Fact]
+    public async Task CompletedResultTestWithCancelInMiddle()
+    {
+        SetupFhirBearerTokenProvider();
+
+        var urls = new string[]
+        {
+            "http://fhir/Patient/file1.json",
+            "http://fhir/Patient/file2.json",
+        };
+
+        var mockPatient1 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "11111111" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+        var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
+
+        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
+        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+
+        Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
+                                                                       msg.Headers.Authorization!.Parameter == "abc";
+
+        MockHttpHandler
+          .Protected()
+          .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is(msgChecker),
+                ItExpr.IsAny<CancellationToken>())
+             .ReturnsAsync(mockResponse1)
+             .ReturnsAsync(mockResponse2);
+
+        var patientsFromData = new List<Hl7.Fhir.Model.Patient>();
+        var cancelTokenSource = new CancellationTokenSource();
+
+        await foreach (var patientRecord in EpicBulkFhirExportApiToUse.BulkResultRawSectionData<Hl7.Fhir.Model.Patient>(urls, cancelTokenSource.Token))
+        {
+            patientsFromData.Add(patientRecord);
+
+            if (patientsFromData.Count == 1)
+            {
+                cancelTokenSource.Cancel();
+            }
+        }
+
+        Assert.Single(patientsFromData);
+        Assert.Contains(patientsFromData, x => x.Id == "11111111");
+
+        FhirBearerTokenProvider.VerifyAll();
+        CreateVerifyHttpHandlerCall(msgChecker, Times.Once());
+    }
+
+    [Fact]
     public async Task DeleteFhirData()
     {
         SetupFhirBearerTokenProvider();
@@ -229,12 +279,11 @@ public class EpicBulkFhirExportApiTest
                                                             DateTime.Now,
                                                             "http://fhir/export/123",
                                                             true,
-                                                            new BulkFhirCompletedResultOutput[]
-                                                            {
+                                                            [
                                                                 new("Patient", "Http://Patient/1.json"),
                                                                 new("Patient", "Http://Patient/2.json")
-                                                            },
-                                                            Array.Empty<object>()));
+                                                            ],
+                                                            []));
 
         var mockPatient1 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "11111111" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
         var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));

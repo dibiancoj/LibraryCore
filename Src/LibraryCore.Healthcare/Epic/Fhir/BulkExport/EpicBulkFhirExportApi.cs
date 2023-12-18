@@ -56,20 +56,30 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
             new BulkFhirCompletedStatus(await rawResponse.Content.ReadFromJsonAsync<BulkFhirCompletedResult>(SerializerOptions) ?? throw new Exception("Can't Deserialize"));
     }
 
-    public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls)
+    public async IAsyncEnumerable<T> BulkResultRawSectionData<T>(IEnumerable<string> resultUrls, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where T : Hl7.Fhir.Model.Base
     {
         foreach (var resultUrl in resultUrls)
         {
             var request = await CreateBaseRequestAsync(HttpMethod.Get, resultUrl);
 
-            var rawResponse = await httpClient.SendAsync(request);
+            var rawResponse = await httpClient.SendAsync(request, cancellationToken);
 
-            using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync());
+            using var sr = new StreamReader(await rawResponse.EnsureSuccessStatusCode().Content.ReadAsStreamAsync(cancellationToken));
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    yield break;
+                }
+
                 yield return await JsonFhirParser.ParseAsync<T>(line);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                yield break;
             }
         }
     }
@@ -113,7 +123,7 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
 
         //var patientsInBulk = bulkFhirCompletedResultOutput.Where(t => t.Type == "Patient"); (need this otherwise we can have mix match)
 
-        await foreach (var resource in BulkResultRawSectionData<T>(bulkFhirCompletedResultOutput.Select(t => t.Url)))
+        await foreach (var resource in BulkResultRawSectionData<T>(bulkFhirCompletedResultOutput.Select(t => t.Url), cancellationToken))
         {
             yield return resource;
         }

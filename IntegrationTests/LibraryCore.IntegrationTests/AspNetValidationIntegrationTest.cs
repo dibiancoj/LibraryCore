@@ -108,6 +108,6 @@ public class ValidationTest
     public string? RequiredIfValue { get; set; }
 
     public string? RequiredIfContainsTarget { get; set; }
-    public IEnumerable<string> RequiredIfContainsValue { get; set; } = Array.Empty<string>();
+    public IEnumerable<string> RequiredIfContainsValue { get; set; } = [];
     public string? ZipCodeValue { get; set; }
 }

@@ -69,7 +69,7 @@ RunReport
                                     .AddCommand("RunReport", "Run this command to generate the report", x => Task.FromResult(24))
                                     .BuildCommand();
 
-        Assert.Equal(1, await RunAsync(Array.Empty<string>(), optionBuilder));
+        Assert.Equal(1, await RunAsync([], optionBuilder));
     }
 
     [Fact]
