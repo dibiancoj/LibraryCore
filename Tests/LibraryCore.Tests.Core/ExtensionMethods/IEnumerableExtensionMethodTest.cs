@@ -21,7 +21,7 @@ public class IEnumerableExtensionMethodTest
         Assert.False(ListToTestWith.AnyWithNullCheck());
 
         //create a new list
-        ListToTestWith = new List<int>();
+        ListToTestWith = [];
 
         //check if the object instance has any items
         Assert.False(ListToTestWith.AnyWithNullCheck());
@@ -58,7 +58,7 @@ public class IEnumerableExtensionMethodTest
         Assert.False(ListToTestWith.AnyWithNullCheck(x => x == 5));
 
         //create an instance of the list now
-        ListToTestWith = new List<int>();
+        ListToTestWith = [];
 
         //we still don't have any items in the list
         Assert.False(ListToTestWith.AnyWithNullCheck(x => x == 5));

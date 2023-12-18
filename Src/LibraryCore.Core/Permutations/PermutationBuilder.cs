@@ -128,7 +128,7 @@ public static class PermutationBuilder
         if (lengthOfPermute == 0)
         {
             //just return the 0 based index so we can short circuit the rescursive function
-            yield return new PermutationBuilderResult<T>(Array.Empty<T>());
+            yield return new PermutationBuilderResult<T>([]);
         }
         else
         {
