@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace LibraryCore.Healthcare.Epic.Authentication;
@@ -62,37 +63,47 @@ public static class ClientCredentialsAuthentication
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 
-    private static ReadOnlySpan<byte> ClensePrivateKey(ReadOnlySpan<char> rawContentPrivateKeyPem)
+    private static ReadOnlySpan<byte> ClensePrivateKey(string rawContentPrivateKeyPem)
     {
-        //there is a perf test with this code and a string builder, regex, and a few other patterns to avoid allocation and fastest code.
-
-        //basic method without all the fancyiness is just taking everything between the "begin private key" header and the "end private key" footer
-
-        //Find the index after the header which has the -----BEGIN PRIVATE KEY-----
-        var indexAfterHeaderContent = rawContentPrivateKeyPem.IndexOf(Environment.NewLine);
-
-        //grab the last line break which has the -----END PRIVATE KEY-----
-        var lastPageIndex = rawContentPrivateKeyPem.LastIndexOf(Environment.NewLine);
-
-        //Most performant version but a bit crazy
-        //grab everything between BEGIN PRIVATE KEY and END PRIVATE KEY
-        //var contentBetweenHeaderAndFooter = rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex];
-
-        ////going to get fancy and try not to allocate anything (in base64 every char encodes 6 bits, so 4 chars = 3 bytes)
-        //var buffer = new Span<byte>(new byte[((contentBetweenHeaderAndFooter.Length * 3) + 3) / 4]);
-
-        ////pem file is in base 64...so decode it back to bytes using the buffer
-        //if (!Convert.TryFromBase64Chars(contentBetweenHeaderAndFooter, buffer, out _))
-        //{
-        //    throw new Exception("Cant' Convert From Base 64");
-        //}
-
-        //return buffer;
-        //end of most performant code
-
-        //this is the simplified version instead of using the buffer
-        return Convert.FromBase64String(new string(rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex]));
+        //use a span to optimize this
+        return Convert.FromBase64String(new StringBuilder(rawContentPrivateKeyPem)
+                        .Replace("-----BEGIN PRIVATE KEY-----", string.Empty)
+                        .Replace("-----END PRIVATE KEY-----", string.Empty)
+                        .ToString());
     }
+
+    //moved away from this incase people are putting this secrets on 1 line. The above is alot safer to work in all scenario
+    //private static ReadOnlySpan<byte> ClensePrivateKey(ReadOnlySpan<char> rawContentPrivateKeyPem)
+    //{
+    //    //there is a perf test with this code and a string builder, regex, and a few other patterns to avoid allocation and fastest code.
+
+    //    //basic method without all the fancyiness is just taking everything between the "begin private key" header and the "end private key" footer
+
+    //    //Find the index after the header which has the -----BEGIN PRIVATE KEY-----
+    //    var indexAfterHeaderContent = rawContentPrivateKeyPem.IndexOf(Environment.NewLine);
+
+    //    //grab the last line break which has the -----END PRIVATE KEY-----
+    //    var lastPageIndex = rawContentPrivateKeyPem.LastIndexOf(Environment.NewLine);
+
+    //    //Most performant version but a bit crazy
+    //    //grab everything between BEGIN PRIVATE KEY and END PRIVATE KEY
+    //    //var contentBetweenHeaderAndFooter = rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex];
+
+    //    ////going to get fancy and try not to allocate anything (in base64 every char encodes 6 bits, so 4 chars = 3 bytes)
+    //    //var buffer = new Span<byte>(new byte[((contentBetweenHeaderAndFooter.Length * 3) + 3) / 4]);
+
+    //    ////pem file is in base 64...so decode it back to bytes using the buffer
+    //    //if (!Convert.TryFromBase64Chars(contentBetweenHeaderAndFooter, buffer, out _))
+    //    //{
+    //    //    throw new Exception("Cant' Convert From Base 64");
+    //    //}
+
+    //    //return buffer;
+    //    //end of most performant code
+
+    //    //this is the simplified version instead of using the buffer
+    //    return Convert.FromBase64String(new string(rawContentPrivateKeyPem[indexAfterHeaderContent..lastPageIndex]));
+    //}
 }
 
 public record EpicClientCredentialsAuthorizationToken([property: JsonPropertyName("token_type")] string TokenType,

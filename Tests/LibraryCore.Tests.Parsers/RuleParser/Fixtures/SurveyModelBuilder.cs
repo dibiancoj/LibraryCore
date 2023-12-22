@@ -1,8 +1,20 @@
-﻿namespace LibraryCore.Tests.Parsers.RuleParser.Fixtures;
+﻿using static LibraryCore.Tests.Parsers.RuleParser.Fixtures.Survey;
+
+namespace LibraryCore.Tests.Parsers.RuleParser.Fixtures;
 
 public record Survey(string Name, int SurgeryCount, double PriceOfSurgery, DateTime DateOfBirth, DateTime? LastLogin, bool CanDrive, bool? HasAccount, int? NumberOfMotorcyles, double? NumberOfBoats, IDictionary<int, string> Answers, Survey? InnerSurvey, string? NullableNameTest)
 {
     public string InstanceMethodName(int howManyCharacters) => Name[..howManyCharacters];
+
+    public SmokingStatusEnum SmokingStatus { get; set; }
+    public SmokingStatusEnum? NullableSmokingStatus { get; set; }
+
+    public enum SmokingStatusEnum
+    {
+        DoNotSmoke,
+        Moderate,
+        SmokeAlot
+    }
 }
 
 public class SurveyModelBuilder
@@ -31,6 +43,8 @@ public class SurveyModelBuilder
     public SurveyModelBuilder WithNumberOfBoats(double? value) => SetAndReturn(Value with { NumberOfBoats = value });
     public SurveyModelBuilder WithInnerSurveyObject(Survey innerSurvey) => SetAndReturn(Value with { InnerSurvey = innerSurvey });
     public SurveyModelBuilder WithNullableNameTest(string? valueToSet) => SetAndReturn(Value with { NullableNameTest = valueToSet });
+    public SurveyModelBuilder WithSmokingStatus(SmokingStatusEnum valueToSet) => SetAndReturn(Value with { SmokingStatus = valueToSet });
+    public SurveyModelBuilder WithNullableSmokingStatus(SmokingStatusEnum valueToSet) => SetAndReturn(Value with { NullableSmokingStatus = valueToSet });
 
     public static IEnumerable<Survey> CreateArrayOfRecords(params SurveyModelBuilder[] surveyModelBuilders)
     {

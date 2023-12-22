@@ -39,6 +39,7 @@ public class RuleParserConfiguration(IServiceCollection serviceDescriptors)
         serviceDescriptors.AddSingleton<ITokenFactory, StringFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, NumberFactory>();
         serviceDescriptors.AddSingleton<ITokenFactory, DateFactory>();
+        serviceDescriptors.AddSingleton<ITokenFactory, EnumFactory>();
 
         //secondary types
         serviceDescriptors.AddSingleton<ITokenFactory, NullFactory>();

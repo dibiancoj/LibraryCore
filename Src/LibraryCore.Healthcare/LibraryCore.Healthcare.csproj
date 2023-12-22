@@ -11,7 +11,7 @@
 		<Description>.NetCore Common Utilities For Healthcare</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>8.1.0</Version>
+		<Version>8.2.0</Version>
 		<Title>LibraryCore - Healthcare</Title>
 	</PropertyGroup>
 

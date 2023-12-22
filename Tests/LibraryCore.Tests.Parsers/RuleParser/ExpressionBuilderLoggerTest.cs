@@ -7,8 +7,6 @@ namespace LibraryCore.Tests.Parsers.RuleParser;
 
 public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : IClassFixture<RuleParserFixture>
 {
-    private RuleParserFixture RuleParserFixture { get; } = ruleParserFixture;
-
     [InlineData("1 == 2", "(1 == 2)", false, false)]
     [InlineData("2 == 2", "(2 == 2)", true, false)]
     [InlineData("1 == 2", "(1 == 2)", false, true)]
@@ -16,7 +14,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void NoParameterTest(string stringToParse, string expectedLoggerMessage, bool expectedLoggerResult, bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString(stringToParse)
                                                 .BuildExpression()
                                                 .WithLogging(withParameterDebugging);
@@ -32,7 +30,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void NoParameterTestWithMultipleLinesWithTrue(bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("1 == 2 || 2 == 2")
                                                 .BuildExpression()
                                                 .WithLogging(withParameterDebugging);
@@ -52,7 +50,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void NoParameterTestWithMultipleLinesWithFalse(bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("1 == 2 && 2 == 3")
                                                 .BuildExpression()
                                                 .WithLogging(withParameterDebugging);
@@ -73,7 +71,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void SimpleParameterTest(int age, bool withParameterDebugging, bool expectedResult)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("$Age$ > 15")
                                                 .BuildExpression<int>("Age")
                                                 .WithLogging(withParameterDebugging)
@@ -101,7 +99,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void SimpleParameterTestWithMultiLineTest1(bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("$Age$ > 15 || $Age$ == 5")
                                                 .BuildExpression<int>("Age")
                                                 .WithLogging(withParameterDebugging: withParameterDebugging)
@@ -131,7 +129,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void SimpleParameterTestWithMultiLineTest2(bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                                 .ParseString("$Age$ > 15 || $Age$ == 5")
                                                 .BuildExpression<int>("Age")
                                                 .WithLogging(withParameterDebugging)
@@ -162,7 +160,7 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
     [Theory]
     public void TwoParameterTest(bool withParameterDebugging)
     {
-        var expression = RuleParserFixture.ResolveRuleParserEngine()
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
                                             .ParseString("$Survey.SurgeryCount$ == 25 && $Size.SurgeryCount$ == 12 || $Survey.SurgeryCount$ == 24 && @GetANumberWithNoParameters() == 25")
                                             .BuildExpression<Survey, Survey>("Survey", "Size")
                                             .WithLogging(withParameterDebugging)
@@ -206,6 +204,26 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
         {
             Assert.Empty(logger.ParameterRecords());
         }
+    }
+
+    [Fact]
+    public void WithEmbeddedLambda()
+    {
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
+                                              .ParseString("$Surveys$.Any($x$ => $x.Name$ == 'Test') == true")
+                                              .BuildExpression<List<Survey>>("Surveys")
+                                              .WithLogging(true)
+                                              .Compile();
+
+        var logger = new ExpressionLogger();
+
+        var result = expression.Invoke(logger,
+        [
+            new SurveyModelBuilder().WithName("Bob").Value,
+            new SurveyModelBuilder().WithName("Test").Value
+        ]);
+
+        Assert.True(result);
     }
 
 }

@@ -3,7 +3,6 @@ using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
-using System.Text.Json;
 
 namespace LibraryCore.Parsers.RuleParser;
 
@@ -24,6 +23,8 @@ public class RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
     //SomeValue == ^1/1/2000 1:00pm^?   <-- nullable date with time
     //[1,2,3] contains 2                <-- array of ints
     //['a1','a2'] contains 'a2'         <-- array of strings
+    //SomeValue == #EnumTypeFullNamespace|Male#        <-- Enum Value
+    //SomeValue == #EnumTypeFullNamespace|Male?#        <-- Enum Value With Nullable Comparison
 
     //Parameter / Methods Calls
     //$ParameterName.PropertyName$ Of a property passed in
@@ -33,6 +34,7 @@ public class RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
     //instance method calls and linq (you can chain the calls together too)
     //$myString$.ToUpper() == 'HIGH'
     //[1,2,3].Any($x$ => $x$ > 3) == true
+    //"$Surveys$.Any($x$ => $x.Name$ == 'Test') == true"
     //@MethodCallToGetArray().Count($x$ => $x$ == 3) > 2
 
     //Comparison
