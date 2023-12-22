@@ -206,4 +206,24 @@ public class ExpressionBuilderLoggerTest(RuleParserFixture ruleParserFixture) : 
         }
     }
 
+    [Fact]
+    public void WithEmbeddedLambda()
+    {
+        var expression = ruleParserFixture.ResolveRuleParserEngine()
+                                              .ParseString("$Surveys$.Any($x$ => $x.Name$ == 'Test') == true")
+                                              .BuildExpression<List<Survey>>("Surveys")
+                                              .WithLogging(true)
+                                              .Compile();
+
+        var logger = new ExpressionLogger();
+
+        var result = expression.Invoke(logger,
+        [
+            new SurveyModelBuilder().WithName("Bob").Value,
+            new SurveyModelBuilder().WithName("Test").Value
+        ]);
+
+        Assert.True(result);
+    }
+
 }

@@ -10,8 +10,21 @@ internal class LoggingExpressionVisitor<TReturnSignature>(bool addParameterDebug
     private bool AddParameterDebugging { get; } = addParameterDebugging;
     private Func<Expression, IEnumerable<ParameterExpression>, Expression> Creator { get; } = creator;
 
+    /// <summary>
+    /// with logging, we only want to inject the outer most lambda. so if you have $survey.array.Any(x => x.Id == 5) == true.. we don't want to inject the logger into the Any(x => x.id)
+    /// </summary>
+    private bool OuterMostLambdaHasBeenModified { get; set; } 
+
     protected override Expression VisitLambda<T>(Expression<T> node)
     {
+        if (OuterMostLambdaHasBeenModified)
+        {
+            return node;
+        }
+
+        //set the flag not to run this logic so we always start at the root expression
+        OuterMostLambdaHasBeenModified = true;
+
         //add the logger parameter to the lambda. This way we have the logger
         LoggerParameter = Expression.Parameter(typeof(IExpressionLogger));
         Parameters = node.Parameters.Prepend(LoggerParameter);

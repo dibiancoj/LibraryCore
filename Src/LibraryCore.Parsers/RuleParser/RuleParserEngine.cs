@@ -34,6 +34,7 @@ public class RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
     //instance method calls and linq (you can chain the calls together too)
     //$myString$.ToUpper() == 'HIGH'
     //[1,2,3].Any($x$ => $x$ > 3) == true
+    //"$Surveys$.Any($x$ => $x.Name$ == 'Test') == true"
     //@MethodCallToGetArray().Count($x$ => $x$ == 3) > 2
 
     //Comparison
