@@ -13,7 +13,7 @@ internal class LoggingExpressionVisitor<TReturnSignature>(bool addParameterDebug
     /// <summary>
     /// with logging, we only want to inject the outer most lambda. so if you have $survey.array.Any(x => x.Id == 5) == true.. we don't want to inject the logger into the Any(x => x.id)
     /// </summary>
-    private bool OuterMostLambdaHasBeenModified { get; set; } 
+    private bool OuterMostLambdaHasBeenModified { get; set; }
 
     protected override Expression VisitLambda<T>(Expression<T> node)
     {
