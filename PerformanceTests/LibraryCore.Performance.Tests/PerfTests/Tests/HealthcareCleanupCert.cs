@@ -53,6 +53,19 @@ public class HealthcareCleanupCert
     }
 
     [Benchmark]
+    public ReadOnlySpan<byte> StringReplaceWithSpan()
+    {
+        const string headerText = "-----BEGIN PRIVATE KEY-----";
+        const string footerText = "-----END PRIVATE KEY-----";
+        var cert = PrivateKeyTester.AsSpan();
+
+        var topHeader = cert.IndexOf(headerText);
+        var bottomHeader = cert.IndexOf(footerText);
+
+        return Convert.FromBase64String(new string(cert[(topHeader + headerText.Length)..bottomHeader]));
+    }
+
+    [Benchmark]
     public ReadOnlySpan<byte> SpanWithNoBuffer()
     {
         var keyAsSpan = PrivateKeyTester.AsSpan();
