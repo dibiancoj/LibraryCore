@@ -44,7 +44,7 @@ public static class ClientCredentialsAuthentication
 
         var provider = new RSACryptoServiceProvider(); //don't dispose of this will get "Safe handle has been closed". Because its being disposed as soon as we init the RsaSecurity Key. So we need to keep it alive longer. It disposes of it when it shouldn't.
 
-        provider.ImportPkcs8PrivateKey(ClensePrivateKey(rawPrivateKeyContentInPemFile), out _);
+        provider.ImportPkcs8PrivateKey(CleansePrivateKey(rawPrivateKeyContentInPemFile), out _);
 
         var jwtToken = new JwtSecurityToken
         (
@@ -63,7 +63,7 @@ public static class ClientCredentialsAuthentication
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 
-    private static ReadOnlySpan<byte> ClensePrivateKey(ReadOnlySpan<char> rawContentPrivateKeyPem)
+    private static ReadOnlySpan<byte> CleansePrivateKey(ReadOnlySpan<char> rawContentPrivateKeyPem)
     {
         //span method is faster and allocates left without the code being crazy like the buffer below.
         const string headerText = "-----BEGIN PRIVATE KEY-----";
