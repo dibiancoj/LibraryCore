@@ -19,7 +19,7 @@ public class LessThenFactory : ITokenFactory
 [DebuggerDisplay("<")]
 public record LessThenToken() : IToken, IBinaryComparisonToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.LessThan(left, right);
 }

@@ -39,11 +39,11 @@ public class LambdaFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Inline Lambda")]
-public record LambdaToken(IImmutableList<string> MethodParameters, IImmutableList<IToken> MethodBodyTokens) : IToken, IInstanceOperator
+public record LambdaToken(IReadOnlyList<string> MethodParameters, IReadOnlyList<IToken> MethodBodyTokens) : IToken, IInstanceOperator
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 
-    public Expression CreateInstanceExpression(IImmutableList<ParameterExpression> parameters, Expression instance)
+    public Expression CreateInstanceExpression(IReadOnlyList<ParameterExpression> parameters, Expression instance)
     {
         Type genericType = RuleParsingUtility.DetermineGenericType(instance);
 

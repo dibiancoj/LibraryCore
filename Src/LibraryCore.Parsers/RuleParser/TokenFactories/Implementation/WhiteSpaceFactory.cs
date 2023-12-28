@@ -19,5 +19,5 @@ public class WhiteSpaceFactory : ITokenFactory
 [DebuggerDisplay("Whitespace")]
 public record WhiteSpaceToken() : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

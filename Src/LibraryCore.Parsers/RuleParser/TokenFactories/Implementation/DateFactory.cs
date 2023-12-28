@@ -67,5 +67,5 @@ public class DateFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value} | Type = {TypeToUse.Name}")]
 public record DateToken(DateTime Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

@@ -5,7 +5,7 @@ namespace LibraryCore.Parsers.RuleParser.TokenFactories;
 
 public interface IToken
 {
-    Expression CreateExpression(IImmutableList<ParameterExpression> parameters);
+    Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters);
 }
 
 /// <summary>
@@ -24,7 +24,7 @@ public interface IBinaryExpressionCombiner : IBinaryOperator
 
 public interface IInstanceOperator
 {
-    public Expression CreateInstanceExpression(IImmutableList<ParameterExpression> parameters, Expression instance);
+    public Expression CreateInstanceExpression(IReadOnlyList<ParameterExpression> parameters, Expression instance);
 }
 
 public interface IBinaryOperator

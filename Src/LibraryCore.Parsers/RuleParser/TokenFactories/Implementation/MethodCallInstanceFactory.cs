@@ -28,9 +28,9 @@ public class MethodCallInstanceFactory : ITokenFactory
 [DebuggerDisplay("Method Name = {MethodInformation.MethodName}")]
 public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult MethodInformation) : IToken, IInstanceOperator
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 
-    public Expression CreateInstanceExpression(IImmutableList<ParameterExpression> parameters, Expression instance)
+    public Expression CreateInstanceExpression(IReadOnlyList<ParameterExpression> parameters, Expression instance)
     {
         Type typeToFetchMethodInfoOffOf = typeof(IEnumerable).IsAssignableFrom(instance.Type) && instance.Type != typeof(string) ?
                                                 typeof(Enumerable) :
@@ -62,7 +62,7 @@ public record MethodCallInstanceToken(RuleParsingUtility.MethodParsingResult Met
         }
     }
 
-    private static Expression CreateMethodParameter(Expression? instance, IToken token, IImmutableList<ParameterExpression> parameters)
+    private static Expression CreateMethodParameter(Expression? instance, IToken token, IReadOnlyList<ParameterExpression> parameters)
     {
         return token is IInstanceOperator instanceOperator ?
                     instanceOperator.CreateInstanceExpression(parameters, instance!) :

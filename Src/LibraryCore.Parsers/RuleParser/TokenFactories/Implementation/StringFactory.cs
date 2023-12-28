@@ -87,14 +87,14 @@ public class StringFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters)
     {
         return InnerTokens.IsNullOrEmpty() ?
             Expression.Constant(Value) :
             CreateExpressionWithInnerFormats(parameters);
     }
 
-    private Expression CreateExpressionWithInnerFormats(IImmutableList<ParameterExpression> parameters)
+    private Expression CreateExpressionWithInnerFormats(IReadOnlyList<ParameterExpression> parameters)
     {
         //create an object[] with the correct number of parameters. ie: {0}  {1}...we would end up with object[1]
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();

@@ -49,7 +49,7 @@ public class EnumFactory : ITokenFactory
 [DebuggerDisplay("{Value}")]
 public record EnumToken(string Value, Type TypeOfEnum, bool IsNullable) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters)
     {
         if (!Enum.TryParse(TypeOfEnum, Value, out var tryToParseResult))
         {

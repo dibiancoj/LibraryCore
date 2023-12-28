@@ -1,16 +1,14 @@
 ﻿using LibraryCore.Parsers.RuleParser.Utilities;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.Json;
 using static LibraryCore.Parsers.RuleParser.RuleParserEngine;
 
 namespace LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 
 public class MethodCallFactory : ITokenFactory
 {
-    private Dictionary<string, MethodInfo> RegisterdMethods { get; } = new();
+    private Dictionary<string, MethodInfo> RegisterdMethods { get; } = [];
 
     public MethodCallFactory RegisterNewMethodAlias(string key, MethodInfo registeredMethodParameters)
     {
@@ -39,9 +37,9 @@ public class MethodCallFactory : ITokenFactory
 }
 
 [DebuggerDisplay("Method Call {RegisteredMethodToUse}")]
-public record MethodCallToken(MethodInfo RegisteredMethodToUse, IImmutableList<IToken> AdditionalParameters) : IToken
+public record MethodCallToken(MethodInfo RegisteredMethodToUse, IReadOnlyList<IToken> AdditionalParameters) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters)
     {
         //convert all the additional parameters to an expression
         var parameterExpression = AdditionalParameters.Select(x => x.CreateExpression(parameters)).ToArray();
