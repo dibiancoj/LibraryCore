@@ -41,7 +41,7 @@ public record ParameterPropertyToken(IList<string> PropertyPath, SchemaModel Sch
 {
     private static ConstantExpression JsonSerializerOptions { get; } = Expression.Constant(new JsonSerializerOptions());
 
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters)
     {
         //need to handle a few scenarios
         //A property off of a single parameter which is an object. ie: $MyParameter.Age$

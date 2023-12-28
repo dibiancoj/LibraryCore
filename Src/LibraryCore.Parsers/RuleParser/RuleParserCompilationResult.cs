@@ -4,14 +4,13 @@ using LibraryCore.Parsers.RuleParser.TokenFactories;
 using LibraryCore.Parsers.RuleParser.Utilities;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
-using System.Text.Json;
 using static LibraryCore.Parsers.RuleParser.TokenFactories.Implementation.ScoreToken;
 
 namespace LibraryCore.Parsers.RuleParser;
 
-public class RuleParserCompilationResult(IImmutableList<IToken> compilationTokenResult)
+public class RuleParserCompilationResult(IReadOnlyList<IToken> compilationTokenResult)
 {
-    public IImmutableList<IToken> CompilationTokenResult { get; } = compilationTokenResult;
+    public IReadOnlyList<IToken> CompilationTokenResult { get; } = compilationTokenResult;
 
     /// <summary>
     /// facade the build expressions so we don't need to declare variables. Keep the expression builder seperate but make it easier for the caller

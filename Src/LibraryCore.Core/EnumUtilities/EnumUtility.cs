@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿#if NET8_0_OR_GREATER
+using System.Collections.Frozen;
+#endif
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -52,9 +55,13 @@ public static class EnumUtility
     /// </summary>
     /// <typeparam name="T">Type of the enum</typeparam>
     /// <returns>dictionary where the key is the enum value and the description is a DescriptionAttribute string</returns>
-    public static IImmutableDictionary<T, string> EnumLookupTable<T>() where T : struct, Enum
+    public static IReadOnlyDictionary<T, string> EnumLookupTable<T>() where T : struct, Enum
     {
+#if NET8_0_OR_GREATER
+        return GetValuesLazy<T>().ToFrozenDictionary(x => x, x => CustomAttributeGet<DescriptionAttribute>(x).Description);
+#else
         return GetValuesLazy<T>().ToImmutableDictionary(x => x, x => CustomAttributeGet<DescriptionAttribute>(x).Description);
+#endif
     }
 
     public static T? CustomAttributeTryGet<T>(Enum enumValueToRetrieve) where T : Attribute

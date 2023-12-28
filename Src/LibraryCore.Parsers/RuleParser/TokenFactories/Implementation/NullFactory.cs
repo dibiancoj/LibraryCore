@@ -26,5 +26,5 @@ public class NullFactory : ITokenFactory
 [DebuggerDisplay("null")]
 public record NullToken() : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(null);
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => Expression.Constant(null);
 }

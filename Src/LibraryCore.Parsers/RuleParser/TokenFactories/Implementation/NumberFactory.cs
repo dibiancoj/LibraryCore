@@ -116,5 +116,5 @@ public class NumberFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value} | Type = {NumberType.Name}")]
 public record NumberToken<T>(T Value, Type NumberType) : IToken, INumberToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, NumberType);
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => Expression.Constant(Value, NumberType);
 }

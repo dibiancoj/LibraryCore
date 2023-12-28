@@ -16,10 +16,10 @@ public class ScoreToken
 public record ScoringCriteriaParameter<TScoreType>(TScoreType ScoreValueIfTrue, string ScoreTruthCriteria);
 
 [DebuggerDisplay("Score Value = {ScoreValue}")]
-public class ScoreCriteriaToken<TScore>(TScore scoreValue, IImmutableList<IToken> scoreCriteriaTokens) : IToken
+public class ScoreCriteriaToken<TScore>(TScore scoreValue, IReadOnlyList<IToken> scoreCriteriaTokens) : IToken
 {
     public TScore ScoreValue { get; } = scoreValue;
-    public IImmutableList<IToken> ScoreCriteriaTokens { get; } = scoreCriteriaTokens;
+    public IReadOnlyList<IToken> ScoreCriteriaTokens { get; } = scoreCriteriaTokens;
 
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

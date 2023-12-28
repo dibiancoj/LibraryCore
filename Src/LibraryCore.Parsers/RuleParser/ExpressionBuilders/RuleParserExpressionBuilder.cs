@@ -10,7 +10,7 @@ namespace LibraryCore.Parsers.RuleParser.ExpressionBuilders;
 
 internal static class RuleParserExpressionBuilder
 {
-    internal static Expression CreateExpression(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    internal static Expression CreateExpression(IReadOnlyList<IToken> tokens, IReadOnlyList<ParameterExpression> parametersToUse)
     {
         var (expressionStatements, expressionCombiners) = SortTree(tokens, parametersToUse);
 
@@ -33,7 +33,7 @@ internal static class RuleParserExpressionBuilder
         return finalExpression.ThrowIfNull();
     }
 
-    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IImmutableList<IToken> tokens, IImmutableList<ParameterExpression> parametersToUse)
+    private static (Queue<Expression> ExpressionStatements, Queue<IBinaryExpressionCombiner> ExpressionCombiners) SortTree(IReadOnlyList<IToken> tokens, IReadOnlyList<ParameterExpression> parametersToUse)
     {
         //The expression statement queue will load lazily. It won't get added to the queue until we hit the Combiner Expression...Or the tokens loop is done and their is stuff in the working variables
         var expressionStatements = new Queue<Expression>();

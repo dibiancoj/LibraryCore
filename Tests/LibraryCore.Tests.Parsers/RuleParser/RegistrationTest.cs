@@ -59,7 +59,7 @@ public class RegistrationTest
 
     public class CustomToken : IToken
     {
-        public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(99.99, typeof(double));
+        public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => Expression.Constant(99.99, typeof(double));
     }
 }
 

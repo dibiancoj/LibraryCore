@@ -28,5 +28,5 @@ public class BooleanFactory : ITokenFactory
 [DebuggerDisplay("Value = {Value}")]
 public record BooleanToken(bool Value, Type TypeToUse) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => Expression.Constant(Value, TypeToUse);
 }

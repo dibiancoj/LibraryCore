@@ -32,7 +32,7 @@ public class ArrayFactory : ITokenFactory
 [DebuggerDisplay("{Values}")]
 public record ArrayToken(IEnumerable<IToken> Values) : IToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters)
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters)
     {
         var type = DetermineType();
 

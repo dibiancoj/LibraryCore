@@ -28,5 +28,5 @@ public record AndAlsoToken() : IToken, IBinaryExpressionCombiner
 {
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.AndAlso(left, right);
 
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 }

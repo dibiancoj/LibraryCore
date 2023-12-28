@@ -27,7 +27,7 @@ public class LessThenOrEqualFactory : ITokenFactory
 [DebuggerDisplay("<=")]
 public record LessThenOrEqualToken() : IToken, IBinaryComparisonToken
 {
-    public Expression CreateExpression(IImmutableList<ParameterExpression> parameters) => throw new NotImplementedException();
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters) => throw new NotImplementedException();
 
     public Expression CreateBinaryOperatorExpression(Expression left, Expression right) => Expression.LessThanOrEqual(left, right);
 }

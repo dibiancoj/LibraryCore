@@ -31,5 +31,5 @@ public class RuleParserPerfTest
     public string CodeToParse { get; set; }
 
     [Benchmark(Baseline = true)]
-    public IImmutableList<IToken> Current() => Parser.ParseString(CodeToParse).CompilationTokenResult;
+    public IReadOnlyList<IToken> Current() => Parser.ParseString(CodeToParse).CompilationTokenResult;
 }
