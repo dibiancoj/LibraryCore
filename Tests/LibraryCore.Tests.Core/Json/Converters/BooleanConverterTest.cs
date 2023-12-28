@@ -18,7 +18,13 @@ public class BooleanConverterTest
 
     [Theory]
     [InlineData("true", true)]
+    [InlineData("TRUE", true)]
+    [InlineData("tRuE", true)]
+    [InlineData("trUE", true)]
     [InlineData("false", false)]
+    [InlineData("FALSE", false)]
+    [InlineData("FaLsE", false)]
+    [InlineData("fALSE", false)]
     public void BooleanTestConverter(string value, bool expectedValue)
     {
         var json = $$"""
