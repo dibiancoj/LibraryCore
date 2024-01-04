@@ -50,11 +50,11 @@ public class InMemoryCacheService(IMemoryCache memoryCache)
     /// <summary>
     /// Create a cache item where you can remove that 'group' from the cache using a cancellation token
     /// </summary>
-    public async ValueTask<TItem> GetOrCreateWithLockAndEvictionAsync<TItem>(object key, Func<ICacheEntry, Task<TItem>> factory, CancellationTokenSource cancellationToken)
+    public async ValueTask<TItem> GetOrCreateWithLockAndEvictionAsync<TItem>(object key, Func<ICacheEntry, Task<TItem>> factory, CancellationToken cancellationToken)
     {
         return await GetOrCreateWithLockAsync(key, async x =>
         {
-            x.AddExpirationToken(new CancellationChangeToken(cancellationToken.Token));
+            x.AddExpirationToken(new CancellationChangeToken(cancellationToken));
 
             return await factory(x);
         });
