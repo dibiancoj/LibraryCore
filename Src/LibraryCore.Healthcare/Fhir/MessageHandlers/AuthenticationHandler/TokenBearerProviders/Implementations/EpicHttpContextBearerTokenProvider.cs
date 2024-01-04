@@ -13,6 +13,6 @@ public class EpicHttpContextBearerTokenProvider(IHttpContextAccessor httpContext
     {
         ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext);
 
-        return await httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken) ?? throw new Exception();
+        return await httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken) ?? throw new Exception("Can't Find Access Token In HttpContext");
     }
 }
