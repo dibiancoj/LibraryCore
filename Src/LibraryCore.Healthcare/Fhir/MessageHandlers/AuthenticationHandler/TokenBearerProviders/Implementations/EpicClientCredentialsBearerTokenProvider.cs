@@ -14,7 +14,7 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
 
     public async ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        return await new InMemoryCacheService(memoryCache).GetOrCreateWithLockAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
+        return await new InMemoryCacheService(memoryCache).GetOrCreateWithLockAndEvictionAsync(nameof(EpicClientCredentialsBearerTokenProvider), async entry =>
         {
             var clientAssertion = ClientCredentialsAuthentication.CreateEpicClientAssertionJwtToken(rawPrivateKeyContentInPemFile, clientId, tokenEndPointUrl);
 
@@ -28,6 +28,6 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(tokenResult.ExpiresIn).Subtract(buffer);
 
             return tokenResult.AccessToken;
-        }) ?? throw new Exception("Can't Find Token From Cache Or Source");
+        }, cancellationToken) ?? throw new Exception("Can't Find Token From Cache Or Source");
     }
 }
