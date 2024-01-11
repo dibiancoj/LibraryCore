@@ -37,11 +37,7 @@ public class BooleanConverterTest
                       }
                    """;
 
-        var settings = new JsonSerializerOptions();
-
-        settings.Converters.Add(new BooleanConverter());
-
-        var model = JsonSerializer.Deserialize<Model>(json, settings) ?? throw new Exception("Can't Deserialize Model");
+        var model = JsonSerializer.Deserialize<Model>(json, Settings) ?? throw new Exception("Can't Deserialize Model");
 
         Assert.Equal(5, model.Id);
         Assert.Equal(expectedValue, model.IsActive);
