@@ -26,16 +26,18 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     /// </summary>
     private static ConcurrentDictionary<object, SemaphoreSlim> CacheLocksLookup { get; } = new ConcurrentDictionary<object, SemaphoreSlim>();
 
+    private static TimeSpan DefaultWaitTimeout { get; } = TimeSpan.FromSeconds(30);
+
     #endregion
 
     #region Public Methods
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory)
+    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, TimeSpan? acquireLockTimeout = default)
     {
-        return await GetOrCreateAsync(key, factory, new DistributedCacheEntryOptions());
+        return await GetOrCreateAsync(key, factory, new DistributedCacheEntryOptions(), acquireLockTimeout: acquireLockTimeout);
     }
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions distributedCacheEntryOptions)
+    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions distributedCacheEntryOptions, TimeSpan? acquireLockTimeout = default)
     {
         var tryToGrabFromCacheResult = await TryToGetValueFromCache<TItem>(key);
 
@@ -49,17 +51,22 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         //couldn't grab it...we need to set the lock
         var asyncLockToUse = AcquireLock(key);
 
+        //grab the count in a variable. If = 1...then you are the thread that is causing the blocking.
+        //this value is the remaining threads that can enter the lock (we take the lock on the next row).
+        //1 = i'm about to take a lock.
+        //0 = Someone has a lock already
+        int i = asyncLockToUse.CurrentCount;
+
+        //take the lock and wait for it
+        if (!await asyncLockToUse.WaitAsync(acquireLockTimeout ?? DefaultWaitTimeout))
+        {
+            throw new TimeoutException("Can't acquire lock in the allocated period.");
+        }
+
+        //we acquired the lock succesfully...so we will put the rest in a try catch
+
         try
         {
-            //grab the count in a variable. If = 1...then you are the thread that is causing the blocking.
-            //this value is the remaining threads that can enter the lock (we take the lock on the next row).
-            //1 = i'm about to take a lock.
-            //0 = Someone has a lock already
-            int i = asyncLockToUse.CurrentCount;
-
-            //take the lock and wait for it
-            await asyncLockToUse.WaitAsync();
-
             //if we are the thread that is blocking then don't try to fetch it again. If we were waiting because of a another thread...
             //then the value should be in the cache and go fetch it (still verify its in the cache and don't assume because of contention)
             //0 = Someone had a lock and we had to wait for them. So the item will be in the cache already

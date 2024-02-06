@@ -203,4 +203,30 @@ public class DistributedCacheTest
 
     #endregion
 
+    #region Throw On Timeout
+
+    [Fact]
+    public async Task ThrowOnTimeout_GetOrCreateWithLockAsync()
+    {
+        //kick off a thread
+        var longRunningCache = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async () =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            return await Task.FromResult("abc");
+        });
+
+        //this should be blocked and throw
+        var shouldFailBecauseOfTimeout = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async () =>
+        {
+            return await Task.FromResult("def");
+        }, acquireLockTimeout: TimeSpan.FromSeconds(1));
+
+        Assert.Equal("abc", await longRunningCache);
+
+        await Assert.ThrowsAsync<TimeoutException>(async () => await shouldFailBecauseOfTimeout);
+    }
+
+    #endregion
+
 }

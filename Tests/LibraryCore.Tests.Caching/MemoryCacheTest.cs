@@ -111,4 +111,52 @@ public class MemoryCacheTest
 
     #endregion
 
+    #region Throw On Timeout
+
+    [Fact]
+    public async Task ThrowOnTimeout_GetOrCreateWithLockAsync()
+    {
+        //kick off a thread
+        var longRunningCache = InMemoryCacheServiceToUse.GetOrCreateWithLockAsync("Test1", async x =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            return await Task.FromResult("abc");
+        });
+
+        //this should be blocked and throw
+        var shouldFailBecauseOfTimeout = InMemoryCacheServiceToUse.GetOrCreateWithLockAsync("Test1", async x =>
+        {
+            return await Task.FromResult("def");
+        }, acquireLockTimeout: TimeSpan.FromSeconds(1));
+
+        Assert.Equal("abc", await longRunningCache);
+
+        await Assert.ThrowsAsync<TimeoutException>(async () => await shouldFailBecauseOfTimeout);
+    }
+
+    [Fact]
+    public async Task ThrowOnTimeout_GetOrCreateWithLockAndEvictionAsync()
+    {
+        //kick off a thread
+        var longRunningCache = InMemoryCacheServiceToUse.GetOrCreateWithLockAndEvictionAsync("Test2", async x =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            return await Task.FromResult("abc");
+        }, default);
+
+        //this should be blocked and throw
+        var shouldFailBecauseOfTimeout = InMemoryCacheServiceToUse.GetOrCreateWithLockAndEvictionAsync("Test2", async x =>
+        {
+            return await Task.FromResult("def");
+        }, cancellationToken: default, acquireLockTimeout: TimeSpan.FromSeconds(1));
+
+        Assert.Equal("abc", await longRunningCache);
+
+        await Assert.ThrowsAsync<TimeoutException>(async () => await shouldFailBecauseOfTimeout);
+    }
+
+    #endregion
+
 }
