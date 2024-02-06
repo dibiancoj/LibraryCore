@@ -11,7 +11,7 @@ public class InMemoryCacheService(IMemoryCache memoryCache)
     /// </summary>
     private static ConcurrentDictionary<object, SemaphoreSlim> CacheLocksLookup { get; } = new ConcurrentDictionary<object, SemaphoreSlim>();
 
-    private static SemaphoreSlim AcquireLock(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
+    private static SemaphoreSlim AcquireSemaphoreSlimForCacheKey(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 
     private static TimeSpan DefaultWaitTimeout { get; } = TimeSpan.FromSeconds(30);
 
@@ -30,10 +30,10 @@ public class InMemoryCacheService(IMemoryCache memoryCache)
 
         //so we couldn't find it on our first shot. we need to take a lock now
         //couldn't grab it...we need to set the lock
-        var asyncLockToUse = AcquireLock(key);
+        var semaphoreLockToUseForCacheKey = AcquireSemaphoreSlimForCacheKey(key);
 
         //do we enter the lock successfully?
-        if (!await asyncLockToUse.WaitAsync(acquireLockTimeout ?? DefaultWaitTimeout))
+        if (!await semaphoreLockToUseForCacheKey.WaitAsync(acquireLockTimeout ?? DefaultWaitTimeout))
         {
             throw new TimeoutException("Can't acquire lock in the allocated period.");
         }
@@ -48,7 +48,7 @@ public class InMemoryCacheService(IMemoryCache memoryCache)
         {
             //When the task is ready, release the semaphore. It is vital to ALWAYS release the semaphore when we are ready, or else we will end up with a Semaphore that is forever locked.
             //This is why it is important to do the Release within a try...finally clause; program execution may crash or take a different path, this way you are guaranteed execution
-            asyncLockToUse.Release();
+            semaphoreLockToUseForCacheKey.Release();
         }
     }
 
