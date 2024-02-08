@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace LibraryCore.Caching;
 
-/* Since redis is multi threaded you might run into times outs. With high volume apps
+/* Since redis is not multi threaded you might run into times outs. With high volume apps
    With stack exchange you can allocate x amount of threads for Redis so it doesn't need to wait x number of seconds to spawn more. So first timeout you wait 10 seconds, next timeout you wait 20 seconds, 30 seconds etc. With the change below you have 50 threads before you start to wait when needing threads
 
    In .net core just add 
