@@ -24,7 +24,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     /// <summary>
     /// Holds a lookup for all the cache locks. You can't lock an async method so we use Semaphore. 
     /// </summary>
-    private static ConcurrentDictionary<object, SemaphoreSlim> CacheLocksLookup { get; } = new ConcurrentDictionary<object, SemaphoreSlim>();
+    private static ConcurrentDictionary<string, SemaphoreSlim> CacheLocksLookup { get; } = new();
 
     private static TimeSpan DefaultWaitTimeout { get; } = TimeSpan.FromSeconds(30);
 
@@ -135,7 +135,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     /// </summary>
     private static T DeserializeFromBytes<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes)!; //! = there will be most likely a json exception instead of returning null. Visible in unit tests
 
-    private static SemaphoreSlim AcquireSemaphoreSlimForCacheKey(object key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
+    private static SemaphoreSlim AcquireSemaphoreSlimForCacheKey(string key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 
     #endregion
 
