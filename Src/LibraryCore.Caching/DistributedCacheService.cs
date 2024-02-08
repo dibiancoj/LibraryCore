@@ -32,14 +32,18 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 
     #region Public Methods
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, TimeSpan? acquireLockTimeout = default)
+    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, TimeSpan? acquireLockTimeout = default, CancellationToken cancellationToken = default)
     {
-        return await GetOrCreateAsync(key, factory, new DistributedCacheEntryOptions(), acquireLockTimeout: acquireLockTimeout);
+        return await GetOrCreateAsync(key, factory, new DistributedCacheEntryOptions(), cancellationToken: cancellationToken, acquireLockTimeout: acquireLockTimeout);
     }
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions distributedCacheEntryOptions, TimeSpan? acquireLockTimeout = default)
+    public async Task<TItem> GetOrCreateAsync<TItem>(string key,
+                                                     Func<Task<TItem>> factory,
+                                                     DistributedCacheEntryOptions distributedCacheEntryOptions,
+                                                     TimeSpan? acquireLockTimeout = default,
+                                                     CancellationToken cancellationToken = default)
     {
-        var tryToGrabFromCacheResult = await TryToGetValueFromCache<TItem>(key);
+        var tryToGrabFromCacheResult = await TryToGetValueFromCache<TItem>(key, cancellationToken);
 
         //we have it just return it
         if (tryToGrabFromCacheResult.TryGetItemFromResult(out var tryToGetItemFromCacheResult))
@@ -58,7 +62,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         int i = semaphoreLockToUseForCacheKey.CurrentCount;
 
         //take the lock and wait for it
-        if (!await semaphoreLockToUseForCacheKey.WaitAsync(acquireLockTimeout ?? DefaultWaitTimeout))
+        if (!await semaphoreLockToUseForCacheKey.WaitAsync(acquireLockTimeout ?? DefaultWaitTimeout, cancellationToken))
         {
             throw new TimeoutException("Can't acquire lock in the allocated period.");
         }
@@ -73,7 +77,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
             if (i == 0)
             {
                 //since we took a lock the value might be there from another thread. so try to get it 1 more time. 
-                var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache<TItem>(key);
+                var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache<TItem>(key, cancellationToken);
 
                 //check if we have it
                 if (tryToGrabFromCacheAfterLockResult.TryGetItemFromResult(out var tryToGetItemFromCacheResultAfterLock))
@@ -83,7 +87,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
             }
 
             //didn't find it...go create it, set it in the cache, and return it
-            return await SetAsync(key, await factory(), distributedCacheEntryOptions);
+            return await SetAsync(key, await factory(), distributedCacheEntryOptions, cancellationToken);
         }
         finally
         {
@@ -93,28 +97,28 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         }
     }
 
-    public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd)
+    public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, CancellationToken cancellationToken = default)
     {
-        return await SetAsync(key, itemToAdd, new DistributedCacheEntryOptions());
+        return await SetAsync(key, itemToAdd, new DistributedCacheEntryOptions(), cancellationToken: cancellationToken);
     }
 
-    public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions)
+    public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
         //can't pass null for the distributed options
-        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions);
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions, token: cancellationToken);
 
         return itemToAdd;
     }
 
-    public Task RemoveAsync(string key) => distributedCache.RemoveAsync(key);
+    public Task RemoveAsync(string key, CancellationToken cancellationToken = default) => distributedCache.RemoveAsync(key, token: cancellationToken);
 
     #endregion
 
     #region Private Helper Methods
 
-    private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key)
+    private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key, CancellationToken cancellationToken)
     {
-        var tryToFindInDistributedCache = await distributedCache.GetAsync(key);
+        var tryToFindInDistributedCache = await distributedCache.GetAsync(key, token: cancellationToken);
 
         return tryToFindInDistributedCache == null ?
                             TryToGetInCacheResult<TItem>.IsNotFoundInCache() :
