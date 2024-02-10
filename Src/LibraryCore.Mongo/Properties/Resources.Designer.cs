@@ -63,6 +63,26 @@ namespace LibraryCore.Mongo.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] global_bundlep7b {
+            get {
+                object obj = ResourceManager.GetObject("global-bundlep7b", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] global_bundlepem {
+            get {
+                object obj = ResourceManager.GetObject("global-bundlepem", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] rds_combined_ca_bundlep7b {
             get {
                 object obj = ResourceManager.GetObject("rds-combined-ca-bundlep7b", resourceCulture);
