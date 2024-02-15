@@ -56,7 +56,7 @@ public static class MongoCollectionExtensionMethods
 
         var dataTask = mongoCollection.Find(filterExpression)
             .Sort(sortExpression)
-            .Skip((currentPage - 1) * pageSize)
+            .Skip(Math.Abs((currentPage - 1) * pageSize))
             .Limit(pageSize)
             .ToListAsync();
 
