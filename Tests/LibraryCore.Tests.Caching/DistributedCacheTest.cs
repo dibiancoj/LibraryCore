@@ -1,5 +1,7 @@
 ﻿using LibraryCore.Caching;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace LibraryCore.Tests.Caching;
@@ -9,22 +11,20 @@ public class DistributedCacheTest
 
     public DistributedCacheTest()
     {
-        DistributedCacheServiceToTestWith = new DistributedCacheService(new FullMockIDistributedCache());
+        DistributedCacheServiceToTestWith = new DistributedCacheService(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())));
     }
 
     private DistributedCacheService DistributedCacheServiceToTestWith { get; }
 
     #region Get Or Create
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task GetOrCreateInCache(bool addOptions)
+    [Fact]
+    public async Task GetOrCreateInCache()
     {
         var key = Guid.NewGuid().ToString();
         int callToCreateObject = 0;
 
-        async Task<List<int>> factoryCall()
+        async Task<List<int>> factoryCall(DistributedCacheEntryOptions options)
         {
             callToCreateObject += 1;
 
@@ -33,11 +33,6 @@ public class DistributedCacheTest
 
         async Task<List<int>> goToCacheToTestAsync()
         {
-            if (addOptions)
-            {
-                return await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, factoryCall, new DistributedCacheEntryOptions());
-            }
-
             return await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, factoryCall);
         }
 
@@ -61,23 +56,51 @@ public class DistributedCacheTest
         Assert.Equal(1, callToCreateObject);
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task GetOrCreateIsInCache(bool addOptions)
+    [Fact]
+    public async Task GetOrCreateIsInCache()
     {
         var key = Guid.NewGuid().ToString();
 
         await DistributedCacheServiceToTestWith.SetAsync(key, new List<int> { 1, 2, 3 });
 
-        var result = addOptions ?
-                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"), new DistributedCacheEntryOptions()) :
-                            await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"));
+        var result = await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, (options) => throw new Exception("Should Grab From Cache"));
 
         Assert.Equal(3, result.Count);
         Assert.Contains(result, x => x == 1);
         Assert.Contains(result, x => x == 2);
         Assert.Contains(result, x => x == 3);
+    }
+
+    [Fact]
+    public async Task GetOrCreateInCacheWithOptions()
+    {
+        async Task<Guid> factoryCall(DistributedCacheEntryOptions distributedCacheEntryOptions)
+        {
+            distributedCacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3);
+
+            return await Task.FromResult(Guid.NewGuid());
+        }
+
+        async Task<Guid> goToCacheToTestAsync()
+        {
+            return await DistributedCacheServiceToTestWith.GetOrCreateAsync(nameof(GetOrCreateInCacheWithOptions), factoryCall);
+        }
+
+        //should go to source
+        var firstCall = await goToCacheToTestAsync();
+
+        //should pull the same value that we pulled in the previous
+        var secondCall = await goToCacheToTestAsync();
+
+        //wait for the options to expire in 3 seconds happen
+        await Task.Delay(TimeSpan.FromSeconds(5));
+
+        //should be a new guid
+        var thirdCall = await goToCacheToTestAsync();
+
+        Assert.Equal(firstCall, secondCall);
+        Assert.NotEqual(firstCall, thirdCall);
+        Assert.NotEqual(secondCall, thirdCall);
     }
 
     #endregion
@@ -102,7 +125,7 @@ public class DistributedCacheTest
             await DistributedCacheServiceToTestWith.SetAsync(key, data);
         }
 
-        var grabItemFromCache = await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, () => throw new Exception("Should Grab From Cache"));
+        var grabItemFromCache = await DistributedCacheServiceToTestWith.GetOrCreateAsync<List<int>>(key, (options) => throw new Exception("Should Grab From Cache"));
 
         Assert.Equal(3, grabItemFromCache.Count);
         Assert.Contains(grabItemFromCache, x => x == 1);
@@ -120,7 +143,7 @@ public class DistributedCacheTest
         var key = Guid.NewGuid().ToString();
 
         //start thread 1 without awaiting it
-        var startThread1 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async () =>
+        var startThread1 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async (options) =>
         {
             await Task.Delay(3000);
 
@@ -128,7 +151,7 @@ public class DistributedCacheTest
         });
 
         //kick off thread 2 which goes right away and should pick up the lock within 3 seconds
-        var startThread2 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => Task.FromResult(1111));
+        var startThread2 = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, (options) => Task.FromResult(1111));
 
         //at this point thread 1 should block thread 2. Thread 1 will return it's factory and block thread 2.
         //thread 2 will be blocked until thread 1 completes...because of the check we get after the lock. Thread 1 should win the race and return 9999
@@ -152,7 +175,7 @@ public class DistributedCacheTest
         await DistributedCacheServiceToTestWith.SetAsync("CantDeserializeBytes", "test 123");
 
         //try to deserialize it to a random class
-        await Assert.ThrowsAsync<JsonException>(() => DistributedCacheServiceToTestWith.GetOrCreateAsync<CantDeserializeBytesModel>("CantDeserializeBytes", () => throw new NotImplementedException()));
+        await Assert.ThrowsAsync<JsonException>(() => DistributedCacheServiceToTestWith.GetOrCreateAsync<CantDeserializeBytesModel>("CantDeserializeBytes", (options) => throw new NotImplementedException()));
     }
 
     #endregion
@@ -166,12 +189,12 @@ public class DistributedCacheTest
 
         await DistributedCacheServiceToTestWith.SetAsync(key, "Test 123");
 
-        Assert.Equal("Test 123", await DistributedCacheServiceToTestWith.GetOrCreateAsync<string>(key, () => throw new Exception()));
+        Assert.Equal("Test 123", await DistributedCacheServiceToTestWith.GetOrCreateAsync<string>(key, (options) => throw new Exception()));
 
         await DistributedCacheServiceToTestWith.RemoveAsync(key);
 
         //should be changed now
-        Assert.Equal("ABC", await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async () => await Task.FromResult("ABC")));
+        Assert.Equal("ABC", await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, async (options) => await Task.FromResult("ABC")));
     }
 
     #endregion
@@ -185,8 +208,8 @@ public class DistributedCacheTest
         Guid valueToUse = Guid.NewGuid();
 
         //don't await this...get the 2nd thread in there
-        var firstItemTakingAWhileAtDataSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => GoToDataSourceAsync(TimeSpan.FromSeconds(5), valueToUse));
-        var secondThreadNeedsToWaitButNotGoBackToSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, () => GoToDataSourceAsync(TimeSpan.FromSeconds(5), Guid.NewGuid()));
+        var firstItemTakingAWhileAtDataSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, (options) => GoToDataSourceAsync(TimeSpan.FromSeconds(5), valueToUse));
+        var secondThreadNeedsToWaitButNotGoBackToSource = DistributedCacheServiceToTestWith.GetOrCreateAsync(key, (options) => GoToDataSourceAsync(TimeSpan.FromSeconds(5), Guid.NewGuid()));
 
         var finalResult = await Task.WhenAll(firstItemTakingAWhileAtDataSource, secondThreadNeedsToWaitButNotGoBackToSource);
 
@@ -209,7 +232,7 @@ public class DistributedCacheTest
     public async Task ThrowOnTimeout_GetOrCreateWithLockAsync()
     {
         //kick off a thread
-        var longRunningCache = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async () =>
+        var longRunningCache = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async (options) =>
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
 
@@ -217,7 +240,7 @@ public class DistributedCacheTest
         });
 
         //this should be blocked and throw
-        var shouldFailBecauseOfTimeout = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async () =>
+        var shouldFailBecauseOfTimeout = DistributedCacheServiceToTestWith.GetOrCreateAsync<string>("Test1", async (options) =>
         {
             return await Task.FromResult("def");
         }, acquireLockTimeout: TimeSpan.FromSeconds(1));

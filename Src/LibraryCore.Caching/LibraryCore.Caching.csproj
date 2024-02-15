@@ -11,7 +11,7 @@
 		<Description>.NetCore Common Utilities For Caching</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>8.3.0</Version>
+		<Version>8.4.0</Version>
 		<Title>LibraryCore - Caching</Title>
 	</PropertyGroup>
 

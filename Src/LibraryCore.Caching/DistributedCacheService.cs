@@ -32,14 +32,8 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 
     #region Public Methods
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, TimeSpan? acquireLockTimeout = default, CancellationToken cancellationToken = default)
-    {
-        return await GetOrCreateAsync(key, factory, new DistributedCacheEntryOptions(), cancellationToken: cancellationToken, acquireLockTimeout: acquireLockTimeout);
-    }
-
     public async Task<TItem> GetOrCreateAsync<TItem>(string key,
-                                                     Func<Task<TItem>> factory,
-                                                     DistributedCacheEntryOptions distributedCacheEntryOptions,
+                                                     Func<DistributedCacheEntryOptions, Task<TItem>> factory,
                                                      TimeSpan? acquireLockTimeout = default,
                                                      CancellationToken cancellationToken = default)
     {
@@ -86,8 +80,12 @@ public class DistributedCacheService(IDistributedCache distributedCache)
                 }
             }
 
+            var options = new DistributedCacheEntryOptions();
+
+            var itemToSetInCache = await factory(options);
+
             //didn't find it...go create it, set it in the cache, and return it
-            return await SetAsync(key, await factory(), distributedCacheEntryOptions, cancellationToken);
+            return await SetAsync(key, itemToSetInCache, options, cancellationToken);
         }
         finally
         {
