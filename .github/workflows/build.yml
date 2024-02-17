@@ -62,7 +62,7 @@ jobs:
         CoverletOutputFormat: opencover
 
     - name: Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v3
       with:
         fail_ci_if_error: true # optional (default = false)
 
