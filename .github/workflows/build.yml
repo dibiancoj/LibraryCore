@@ -129,7 +129,7 @@ jobs:
         dotnet-version: 7.x
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v34
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.x
 
