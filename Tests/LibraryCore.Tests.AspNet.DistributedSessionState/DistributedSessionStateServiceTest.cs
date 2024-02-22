@@ -17,11 +17,11 @@ public class DistributedSessionStateServiceTest
     {
         var key = nameof(HasKeyInSessionTest);
 
-        Assert.False(await SessionStateServiceToUse.HasKeyInSessionAsync(key));
+        Assert.False(await SessionStateServiceToUse.HasKeyAsync(key));
 
-        await SessionStateServiceToUse.SetObjectAsync(key, Guid.NewGuid());
+        await SessionStateServiceToUse.SetAsync(key, Guid.NewGuid());
 
-        Assert.True(await SessionStateServiceToUse.HasKeyInSessionAsync(key));
+        Assert.True(await SessionStateServiceToUse.HasKeyAsync(key));
     }
 
     [Fact]
@@ -29,11 +29,11 @@ public class DistributedSessionStateServiceTest
     {
         var key = nameof(RemoveSessionItem);
 
-        await SessionStateServiceToUse.SetObjectAsync(key, Guid.NewGuid());
+        await SessionStateServiceToUse.SetAsync(key, Guid.NewGuid());
 
-        await SessionStateServiceToUse.RemoveObjectAsync(key);
+        await SessionStateServiceToUse.RemoveAsync(key);
 
-        Assert.False((await SessionStateServiceToUse.TryGetObjectAsync<Guid>(key)).GetItemIfFoundInSession(out _));
+        Assert.False((await SessionStateServiceToUse.TryGetAsync<Guid>(key)).GetItemIfFoundInSession(out _));
     }
 
     [Fact]
@@ -41,13 +41,13 @@ public class DistributedSessionStateServiceTest
     {
         var key = nameof(ClearAllSessionObjectsForThisUser);
 
-        await SessionStateServiceToUse.SetObjectAsync(key, Guid.NewGuid());
+        await SessionStateServiceToUse.SetAsync(key, Guid.NewGuid());
 
-        Assert.True(await SessionStateServiceToUse.HasKeyInSessionAsync(key));
+        Assert.True(await SessionStateServiceToUse.HasKeyAsync(key));
 
-        await SessionStateServiceToUse.ClearAllSessionObjectsForThisUserAsync();
+        await SessionStateServiceToUse.ClearAllForUserAsync();
 
-        Assert.False(await SessionStateServiceToUse.HasKeyInSessionAsync(key));
+        Assert.False(await SessionStateServiceToUse.HasKeyAsync(key));
     }
 
     [Fact]
@@ -67,13 +67,13 @@ public class DistributedSessionStateServiceTest
         var key = nameof(SerializeAndDeserializeAbstractClasses);
         var model = new DerivedClass { Id = 24 };
 
-        await SessionStateServiceToUse.SetObjectAsync(key, model, true);
+        await SessionStateServiceToUse.SetAsync(key, model, true);
 
-        var result = await SessionStateServiceToUse.TryGetObjectAsync<BaseClass>(key, true);
+        var result = await SessionStateServiceToUse.TryGetAsync<BaseClass>(key, true);
 
         Assert.True(result.GetItemIfFoundInSession(out var itemFoundInSession));
         Assert.Equal(24, itemFoundInSession!.Id);
-        Assert.Equal(24, (await SessionStateServiceToUse.GetObjectAsync<BaseClass>(key, true))!.Id);
+        Assert.Equal(24, (await SessionStateServiceToUse.GetAsync<BaseClass>(key, true))!.Id);
     }
 
     [Fact]
@@ -84,11 +84,11 @@ public class DistributedSessionStateServiceTest
         var aModel = new SessionTestA();
         var bModel = new SessionTestB();
 
-        await SessionStateServiceToUse.SetObjectAsync(keyA, aModel, true);
-        await SessionStateServiceToUse.SetObjectAsync(keyB, bModel, true);
+        await SessionStateServiceToUse.SetAsync(keyA, aModel, true);
+        await SessionStateServiceToUse.SetAsync(keyB, bModel, true);
 
-        var resultA = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(keyA, true);
-        var resultB = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(keyB, true);
+        var resultA = await SessionStateServiceToUse.TryGetAsync<ISessionTest>(keyA, true);
+        var resultB = await SessionStateServiceToUse.TryGetAsync<ISessionTest>(keyB, true);
 
         Assert.True(resultA.FoundInSession);
         Assert.True(resultB.FoundInSession);
@@ -103,9 +103,9 @@ public class DistributedSessionStateServiceTest
 
         SessionTestA? model = null;
 
-        await SessionStateServiceToUse.SetObjectAsync(key, model, true);
+        await SessionStateServiceToUse.SetAsync(key, model, true);
 
-        var result = await SessionStateServiceToUse.TryGetObjectAsync<ISessionTest>(key, true);
+        var result = await SessionStateServiceToUse.TryGetAsync<ISessionTest>(key, true);
 
         Assert.True(result.FoundInSession);
         Assert.Null(result.ItemInSessionIfFound);
@@ -139,16 +139,16 @@ public class DistributedSessionStateServiceTest
     [Fact]
     public async Task KeysIsCorrect()
     {
-        Assert.Empty(await SessionStateServiceToUse.SessionItemKeysAsync());
+        Assert.Empty(await SessionStateServiceToUse.AllKeysAsync());
 
-        await SessionStateServiceToUse.SetObjectAsync("key1", "test1");
+        await SessionStateServiceToUse.SetAsync("key1", "test1");
 
-        Assert.Single(await SessionStateServiceToUse.SessionItemKeysAsync());
-        Assert.Equal("key1", (await SessionStateServiceToUse.SessionItemKeysAsync()).Single());
+        Assert.Single(await SessionStateServiceToUse.AllKeysAsync());
+        Assert.Equal("key1", (await SessionStateServiceToUse.AllKeysAsync()).Single());
 
-        await SessionStateServiceToUse.SetObjectAsync("key2", "test2");
+        await SessionStateServiceToUse.SetAsync("key2", "test2");
 
-        var keys = await SessionStateServiceToUse.SessionItemKeysAsync();
+        var keys = await SessionStateServiceToUse.AllKeysAsync();
 
         Assert.Equal(2, keys.Count());
         Assert.Contains(keys, x => x == "key1");

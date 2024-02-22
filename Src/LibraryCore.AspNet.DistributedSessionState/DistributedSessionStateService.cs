@@ -12,7 +12,7 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
 
     private ConcurrentDictionary<string, Type> CachedAutoTypeLookup { get; } = new ConcurrentDictionary<string, Type>();
 
-    public async ValueTask<TryToGetResult<T>> TryGetObjectAsync<T>(string key, bool useAutoTypeHandling = false)
+    public async ValueTask<TryToGetResult<T>> TryGetAsync<T>(string key, bool useAutoTypeHandling = false)
     {
         await ResolveHttpContextOrThrow().Session.LoadAsync();
 
@@ -25,16 +25,16 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
         return new TryToGetResult<T>(foundInSession, objectFound);
     }
 
-    public async ValueTask<T?> GetObjectAsync<T>(string key, bool useAutoTypeHandling = false)
+    public async ValueTask<T?> GetAsync<T>(string key, bool useAutoTypeHandling = false)
     {
-        var result = await TryGetObjectAsync<T>(key, useAutoTypeHandling);
+        var result = await TryGetAsync<T>(key, useAutoTypeHandling);
 
         _ = result.GetItemIfFoundInSession(out var itemInSession);
 
         return itemInSession;
     }
 
-    public async ValueTask SetObjectAsync<T>(string key, T objectToPutInSession, bool useAutoTypeHandling = false)
+    public async ValueTask SetAsync<T>(string key, T objectToPutInSession, bool useAutoTypeHandling = false)
     {
         await ResolveHttpContextOrThrow().Session.LoadAsync();
 
@@ -44,7 +44,7 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
 
     public async ValueTask<T> GetOrSetAsync<T>(string key, Func<Task<T>> creator, bool useAutoTypeHandling = false)
     {
-        var result = await TryGetObjectAsync<T>(key, useAutoTypeHandling);
+        var result = await TryGetAsync<T>(key, useAutoTypeHandling);
 
         if (result.GetItemIfFoundInSession(out var itemInSession))
         {
@@ -56,12 +56,12 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
         var objectToPutInSession = await creator();
 
         //set the object
-        await SetObjectAsync(key, objectToPutInSession, useAutoTypeHandling);
+        await SetAsync(key, objectToPutInSession, useAutoTypeHandling);
 
         return objectToPutInSession;
     }
 
-    public async ValueTask RemoveObjectAsync(string key)
+    public async ValueTask RemoveAsync(string key)
     {
         await ResolveHttpContextOrThrow().Session.LoadAsync();
 
@@ -69,7 +69,7 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
         await ResolveHttpContextOrThrow().Session.CommitAsync();
     }
 
-    public async ValueTask ClearAllSessionObjectsForThisUserAsync()
+    public async ValueTask ClearAllForUserAsync()
     {
         await ResolveHttpContextOrThrow().Session.LoadAsync();
 
@@ -77,9 +77,9 @@ public class DistributedSessionStateService(IHttpContextAccessor httpContextAcce
         await ResolveHttpContextOrThrow().Session.CommitAsync();
     }
 
-    public async ValueTask<bool> HasKeyInSessionAsync(string key) => (await SessionItemKeysAsync()).Contains(key);
+    public async ValueTask<bool> HasKeyAsync(string key) => (await AllKeysAsync()).Contains(key);
 
-    public async ValueTask<IEnumerable<string>> SessionItemKeysAsync()
+    public async ValueTask<IEnumerable<string>> AllKeysAsync()
     {
         await ResolveHttpContextOrThrow().Session.LoadAsync();
 
