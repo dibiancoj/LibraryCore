@@ -27,7 +27,7 @@ public class DistributedSessionStateServiceTest
     [Fact]
     public async Task RemoveSessionItem()
     {
-        var key = nameof(HasKeyInSessionTest);
+        var key = nameof(RemoveSessionItem);
 
         await SessionStateServiceToUse.SetObjectAsync(key, Guid.NewGuid());
 
