@@ -2,12 +2,12 @@
 
 public interface ISessionStateService
 {
-    ValueTask<T?> GetObjectAsync<T>(string key, bool useJsonNetSerializer = false);
-    ValueTask<bool> HasKeyInSessionAsync(string key);
-    ValueTask<TryToGetResult<T>> TryGetObjectAsync<T>(string key, bool useJsonNetSerializer = false);
+    ValueTask<T?> GetAsync<T>(string key, bool useJsonNetSerializer = false);
+    ValueTask<bool> HasKeyAsync(string key);
+    ValueTask<TryToGetResult<T>> TryGetAsync<T>(string key, bool useJsonNetSerializer = false);
     ValueTask<T> GetOrSetAsync<T>(string key, Func<Task<T>> creator, bool useJsonNetSerializer = false);
-    ValueTask SetObjectAsync<T>(string key, T objectToPutInSession, bool useJsonNetSerializer = false);
-    ValueTask RemoveObjectAsync(string key);
-    ValueTask ClearAllSessionObjectsForThisUserAsync();
-    ValueTask<IEnumerable<string>> SessionItemKeysAsync();
+    ValueTask SetAsync<T>(string key, T objectToPutInSession, bool useJsonNetSerializer = false);
+    ValueTask RemoveAsync(string key);
+    ValueTask ClearAllForUserAsync();
+    ValueTask<IEnumerable<string>> AllKeysAsync();
 }

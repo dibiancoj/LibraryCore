@@ -52,7 +52,7 @@ public class DistributedSessionStateServiceCustomTextConverterTest
 
         var sessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, jsonOptions);
 
-        await sessionStateServiceToUse.SetObjectAsync("test", new CustomConverterModel { Id = "Test123" });
+        await sessionStateServiceToUse.SetAsync("test", new CustomConverterModel { Id = "Test123" });
 
         var valueInSession = await sessionStateServiceToUse.GetOrSetAsync<CustomConverterModel>("test", () => throw new NotImplementedException());
 
@@ -64,9 +64,9 @@ public class DistributedSessionStateServiceCustomTextConverterTest
     {
         var sessionStateServiceToUse = new DistributedSessionStateService(FullMockSessionState.BuildContextWithSession().MockContextAccessor.Object, null);
 
-        await sessionStateServiceToUse.SetObjectAsync("test", "test123");
+        await sessionStateServiceToUse.SetAsync("test", "test123");
 
-        Assert.Equal("test123", await sessionStateServiceToUse.GetObjectAsync<string>("test"));
+        Assert.Equal("test123", await sessionStateServiceToUse.GetAsync<string>("test"));
     }
 
 }
