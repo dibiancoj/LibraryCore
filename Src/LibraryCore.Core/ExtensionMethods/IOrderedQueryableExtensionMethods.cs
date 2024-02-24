@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Core.ExtensionMethods;
 
@@ -16,9 +17,9 @@ public static class IOrderedQueryableExtensionMethods
     //[LinqToObjectsCompatible]
     //[EntityFrameworkCompatible]
 
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static IQueryable<T> PaginateResults<T>(this IOrderedQueryable<T> queryToModify, int currentPageNumber, int howManyRecordsPerPage)
     {

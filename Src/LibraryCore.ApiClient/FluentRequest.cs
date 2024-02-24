@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using static LibraryCore.ApiClient.ContentTypeLookup;
+using LibraryCore.Shared;
 
 namespace LibraryCore.ApiClient;
 
@@ -79,7 +80,7 @@ public class FluentRequest(HttpMethod httpMethodType, string url)
         return this;
     }
 
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use overload with JsonTypeInfo For Aot Support")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
     public FluentRequest AddJsonBody<T>(T model, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         Message.Content = JsonContent.Create(model, options: jsonSerializerOptions);

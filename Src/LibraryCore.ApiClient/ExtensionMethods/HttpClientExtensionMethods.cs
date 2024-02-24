@@ -1,14 +1,16 @@
 ﻿using LibraryCore.ApiClient.ExtensionMethods.Models;
+using LibraryCore.Shared;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace LibraryCore.ApiClient.ExtensionMethods;
 
 public static class HttpClientExtensionMethods
 {
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
@@ -20,7 +22,7 @@ public static class HttpClientExtensionMethods
     /// <summary>
     /// Union type response. If 200 Ok = Deserialize To a model. If a 400 bad request = Deserialize a different model. This way we can handle specific items to a different model type
     /// </summary>
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public static async Task<SendRequestToJsonUnionResult<T1Ok, T2BadRequest>> SendRequestToJsonAsync<T1Ok, T2BadRequest>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
@@ -35,6 +37,7 @@ public static class HttpClientExtensionMethods
                 SendRequestToJsonUnionResult<T1Ok, T2BadRequest>.CreateBadRequest(await rawResponse.Content.ReadFromJsonAsync<T2BadRequest>(jsonSerializerOptions, cancellationToken));
     }
 
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public static async Task<T?> SendRequestToXmlAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
@@ -47,24 +50,26 @@ public static class HttpClientExtensionMethods
         return httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
     }
 
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
-    public static async Task<Token> TokenAsync(this HttpClient httpClient, Uri tokenUri, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
+    public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, JsonTypeInfo<Token> jsonTypeInfo, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
-        return await httpClient.TokenAsync(tokenUri.AbsoluteUri, clientId, clientSecret, grantType, scope, cancellationToken);
-    }
-
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
-    public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
-    {
-        var rawResponse = await httpClient.PostAsync(url, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-        {
+        var rawResponse = (await httpClient.PostAsync(url, new FormUrlEncodedContent(
+        [
             new("client_id", clientId),
             new("client_secret", clientSecret),
             new("grant_type", grantType),
-            new("scope", scope),
-        }), cancellationToken).ConfigureAwait(false);
+            new("scope", scope)
+        ]), cancellationToken))
+        .EnsureSuccessStatusCode();
 
-        return await rawResponse.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<Token>(cancellationToken: cancellationToken).ConfigureAwait(false) ?? throw new Exception("Can't Deserialize Token");
+        return await rawResponse.Content.ReadFromJsonAsync(jsonTypeInfo, cancellationToken: cancellationToken) ?? throw new Exception("Can't Deserialize Token");
+    }
+
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
+    public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
+    {
+        var jsonTypeInfoForToken = (JsonTypeInfo<Token>)JsonSerializerOptions.Default.GetTypeInfo(typeof(Token));
+
+        return await httpClient.TokenAsync(url, clientId, clientSecret, jsonTypeInfoForToken, grantType, scope, cancellationToken);
     }
 
     /// <summary>

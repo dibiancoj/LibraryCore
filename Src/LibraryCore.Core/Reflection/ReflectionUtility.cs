@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Core.Reflection;
 
@@ -15,9 +16,9 @@ public static class ReflectionUtility
     /// <typeparam name="TInterface">Interface type for the types that you want to register</typeparam>
     /// <returns>All the types that implement that interface</returns>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     [ExcludeFromCodeCoverage(Justification = "Not valid in a unit test context.")]
     public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>() => ScanForAllInstancesOfType<TInterface>(Assembly.GetEntryAssembly() ?? throw new Exception("No Entry Assembly"));
 
@@ -28,9 +29,9 @@ public static class ReflectionUtility
     /// <param name="rootAssembly">Root rootAssembly. This is mainly used for unit testing where we don't have a real root. Use the other overload in a asp.net core app</param>
     /// <returns>All the types that implement that interface</returns>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public static IEnumerable<TypeInfo> ScanForAllInstancesOfType<TInterface>(Assembly rootAssembly)
     {
         //get all the references Assembies

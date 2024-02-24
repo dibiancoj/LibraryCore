@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using LibraryCore.Shared;
 
 namespace LibraryCore.AspNet.Validation;
 
-[RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+[RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 public class DateOfBirthRangeAttribute : RangeAttribute
 {
     // We are working around a Data Annotation / DateTime limitation so we can establish a reasonable DateTime range.

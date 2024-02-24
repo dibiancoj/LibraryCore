@@ -4,6 +4,7 @@ using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Core.DataTableUtilities;
 
@@ -22,9 +23,9 @@ public static class ToDataTable
     /// <param name="objectToBuildDataTableOffOf">object to build</param>
     /// <param name="tableName">Table Name. Property Off Of The Data Table</param>
     /// <returns>Data Table</returns>
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static DataTable BuildDataTableFromObject<T>(T objectToBuildDataTableOffOf, string tableName)
         where T : class
@@ -49,9 +50,9 @@ public static class ToDataTable
     /// <param name="objectsToBuildDataTableOffOf">List of objects to build</param>
     /// <param name="tableName">Table Name. Property Off Of The Data Table</param>
     /// <returns>Data table</returns>
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static DataTable BuildDataTableFromListOfObjects<T>(IEnumerable<T> objectsToBuildDataTableOffOf, string tableName)
         where T : class
@@ -106,9 +107,9 @@ public static class ToDataTable
     /// </summary>
     /// <typeparam name="T">Type of the object to build</typeparam>
     /// <returns>list of property info to build off of</returns>
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     private static IEnumerable<PropertyInfo> PropertiesToBuildOffOf<T>()
     {

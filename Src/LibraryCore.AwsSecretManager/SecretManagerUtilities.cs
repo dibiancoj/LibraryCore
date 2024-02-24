@@ -1,5 +1,6 @@
 ﻿using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using LibraryCore.Shared;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
@@ -39,17 +40,17 @@ public static class SecretManagerUtilities
                                                                      CancellationToken cancellationToken = default)
            where TKey : notnull
     {
-        return await GetSecretAsyncHelper<Dictionary<TKey, TValue>>(client,
-                                                                   secretArnOrName,
-                                                                   jsonTypeInfo,
-                                                                   versionStage,
-                                                                   cancellationToken);
+        return await GetSecretAsyncHelper(client,
+                                          secretArnOrName,
+                                          jsonTypeInfo,
+                                          versionStage,
+                                          cancellationToken);
     }
 
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccessUseOverload)]
 #endif
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
     public static async Task<IDictionary<TKey, TValue>?> GetSecretKeyValuePairAsync<TKey, TValue>(
                                                                          IAmazonSecretsManager client,
                                                                          string secretArnOrName,
@@ -60,11 +61,11 @@ public static class SecretManagerUtilities
     {
         var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
 
-        return await GetSecretAsyncHelper<Dictionary<TKey, TValue>>(client,
-                                                                    secretArnOrName,
-                                                                    defaultSerialiationOptions.GetTypeInfo(typeof(Dictionary<TKey, TValue>)),
-                                                                    versionStage,
-                                                                    cancellationToken);
+        return await GetSecretAsyncHelper(client,
+                                          secretArnOrName,
+                                          (JsonTypeInfo<Dictionary<TKey, TValue>>)defaultSerialiationOptions.GetTypeInfo(typeof(Dictionary<TKey, TValue>)),
+                                          versionStage,
+                                          cancellationToken);
     }
 
     /// <summary>
@@ -83,9 +84,9 @@ public static class SecretManagerUtilities
     /// Json Object Version
     /// </summary>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccessUseOverload)]
 #endif
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
                                                    string secretArnOrName,
                                                    string versionStage = "AWSCURRENT",
@@ -94,20 +95,20 @@ public static class SecretManagerUtilities
     {
         var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
 
-        return await GetSecretAsyncHelper<T>(client, secretArnOrName, defaultSerialiationOptions.GetTypeInfo(typeof(T)), versionStage, cancellationToken);
+        return await GetSecretAsyncHelper<T>(client, secretArnOrName, (JsonTypeInfo<T>)defaultSerialiationOptions.GetTypeInfo(typeof(T)), versionStage, cancellationToken);
     }
 
     private static async Task<T?> GetSecretAsyncHelper<T>(IAmazonSecretsManager client,
-                                                  string secretArnOrName,
-                                                  JsonTypeInfo jsonTypeInfo,
-                                                  string versionStage = "AWSCURRENT",
-                                                  CancellationToken cancellationToken = default)
+                                                          string secretArnOrName,
+                                                          JsonTypeInfo<T> jsonTypeInfo,
+                                                          string versionStage = "AWSCURRENT",
+                                                          CancellationToken cancellationToken = default)
     {
         var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken).ConfigureAwait(false);
 
         return string.IsNullOrEmpty(temp) ?
                     default :
-                    (T)(JsonSerializer.Deserialize(temp, jsonTypeInfo) ?? throw new Exception("Can't Convert To Type Of T"));
+                    JsonSerializer.Deserialize(temp, jsonTypeInfo) ?? throw new Exception("Can't Convert To Type Of T");
     }
 
     private static string StreamToString(MemoryStream secretBinaryToConvert)

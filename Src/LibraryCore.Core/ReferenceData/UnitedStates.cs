@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Core.ReferenceData;
 
@@ -13,9 +14,9 @@ public static class UnitedStates
     [DebuggerDisplay("Id = {Id} | Description = {Description}")]
     public record UnitedStatesStateModel([property: JsonPropertyName("id")] string Id, [property: JsonPropertyName("description")] string Description);
 
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static IEnumerable<UnitedStatesStateModel> StateListing()
     {

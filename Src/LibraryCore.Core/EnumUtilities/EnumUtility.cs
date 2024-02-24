@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Core.EnumUtilities;
 
@@ -22,7 +23,7 @@ public static class EnumUtility
     /// <typeparam name="T">Type Of The Enum</typeparam>
     /// <returns>IEnumerable of your enum values</returns>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static IEnumerable<T> GetValuesLazy<T>() where T : struct, Enum
     {
@@ -60,7 +61,7 @@ public static class EnumUtility
     /// <typeparam name="T">Type of the enum</typeparam>
     /// <returns>dictionary where the key is the enum value and the description is a DescriptionAttribute string</returns>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static IReadOnlyDictionary<T, string> EnumLookupTable<T>() where T : struct, Enum
     {
@@ -181,7 +182,7 @@ public static class EnumUtility
     /// <param name="workingEnumValue">Working enum value to look in</param>
     /// <returns>list of flags that are selected. Uses yield to chain. Use ToArray() to send the values to an array</returns>
 #if NET7_0_OR_GREATER
-    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming.")]
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
     public static IEnumerable<T> BitMaskSelectedItems<T>(T workingEnumValue) where T : struct, Enum => GetValuesLazy<T>().Where(x => BitMaskContainsValueHelper(workingEnumValue, x));
 
