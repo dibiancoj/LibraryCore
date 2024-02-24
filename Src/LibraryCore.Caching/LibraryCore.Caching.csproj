@@ -13,6 +13,8 @@
 		<RepositoryType>git</RepositoryType>
 		<Version>8.4.0</Version>
 		<Title>LibraryCore - Caching</Title>
+		<IsTrimmable>true</IsTrimmable>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>

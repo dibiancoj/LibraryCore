@@ -32,6 +32,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 
     #region Public Methods
 
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     public async Task<TItem> GetOrCreateAsync<TItem>(string key,
                                                      Func<DistributedCacheEntryOptions, Task<TItem>> factory,
                                                      TimeSpan? acquireLockTimeout = default,
@@ -95,11 +96,13 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         }
     }
 
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, CancellationToken cancellationToken = default)
     {
         return await SetAsync(key, itemToAdd, new DistributedCacheEntryOptions(), cancellationToken: cancellationToken);
     }
 
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
         //can't pass null for the distributed options
@@ -114,6 +117,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 
     #region Private Helper Methods
 
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key, CancellationToken cancellationToken)
     {
         var tryToFindInDistributedCache = await distributedCache.GetAsync(key, token: cancellationToken);
@@ -126,11 +130,13 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     /// <summary>
     /// In a method incase we need to change the default serialization
     /// </summary>
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     private static byte[] SerializeToBytes<T>(T model) => JsonSerializer.SerializeToUtf8Bytes(model);
 
     /// <summary>
     /// In a method incase we need to change the default serialization
     /// </summary>
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming.")]
     private static T DeserializeFromBytes<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes)!; //! = there will be most likely a json exception instead of returning null. Visible in unit tests
 
     private static SemaphoreSlim AcquireSemaphoreSlimForCacheKey(string key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));

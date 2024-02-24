@@ -13,6 +13,7 @@
 		<RepositoryType>git</RepositoryType>
 		<Version>8.4.0</Version>
 		<Title>LibraryCore - Healthcare</Title>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">false</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
