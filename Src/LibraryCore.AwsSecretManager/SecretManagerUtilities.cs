@@ -47,7 +47,7 @@ public static class SecretManagerUtilities
     /// <summary>
     /// Json Object Version
     /// </summary>
-    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo.")]
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
                                                    string secretArnOrName,
                                                    string versionStage = "AWSCURRENT",
