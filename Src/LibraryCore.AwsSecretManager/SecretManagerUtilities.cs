@@ -31,6 +31,38 @@ public static class SecretManagerUtilities
             _ => null //fallback
         };
     }
+    public static async Task<IDictionary<TKey, TValue>?> GetSecretKeyValuePairAsync<TKey, TValue>(
+                                                                     IAmazonSecretsManager client,
+                                                                     string secretArnOrName,
+                                                                     JsonTypeInfo<Dictionary<TKey, TValue>> jsonTypeInfo,
+                                                                     string versionStage = "AWSCURRENT",
+                                                                     CancellationToken cancellationToken = default)
+           where TKey : notnull
+    {
+        return await GetSecretAsyncHelper<Dictionary<TKey, TValue>>(client,
+                                                                   secretArnOrName,
+                                                                   jsonTypeInfo,
+                                                                   versionStage,
+                                                                   cancellationToken);
+    }
+
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    public static async Task<IDictionary<TKey, TValue>?> GetSecretKeyValuePairAsync<TKey, TValue>(
+                                                                         IAmazonSecretsManager client,
+                                                                         string secretArnOrName,
+                                                                         string versionStage = "AWSCURRENT",
+                                                                         JsonSerializerOptions? jsonSerializerOptions = null,
+                                                                         CancellationToken cancellationToken = default)
+        where TKey : notnull
+    {
+        var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
+
+        return await GetSecretAsyncHelper<Dictionary<TKey, TValue>>(client,
+                                                                    secretArnOrName,
+                                                                    defaultSerialiationOptions.GetTypeInfo(typeof(Dictionary<TKey, TValue>)),
+                                                                    versionStage,
+                                                                    cancellationToken);
+    }
 
     /// <summary>
     /// Overload for aot
@@ -55,7 +87,7 @@ public static class SecretManagerUtilities
                                                    CancellationToken cancellationToken = default)
     {
         var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
-        
+
         return await GetSecretAsyncHelper<T>(client, secretArnOrName, defaultSerialiationOptions.GetTypeInfo(typeof(T)), versionStage, cancellationToken);
     }
 
