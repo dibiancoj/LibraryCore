@@ -46,6 +46,7 @@ public static class SecretManagerUtilities
                                                                    cancellationToken);
     }
 
+    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
     [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
     public static async Task<IDictionary<TKey, TValue>?> GetSecretKeyValuePairAsync<TKey, TValue>(
                                                                          IAmazonSecretsManager client,
@@ -80,6 +81,7 @@ public static class SecretManagerUtilities
     /// Json Object Version
     /// </summary>
     [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
+    [RequiresDynamicCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo for aot support.")]
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
                                                    string secretArnOrName,
                                                    string versionStage = "AWSCURRENT",
