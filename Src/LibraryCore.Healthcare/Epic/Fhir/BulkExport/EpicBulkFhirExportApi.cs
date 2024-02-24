@@ -102,6 +102,9 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
     /// </summary>
     /// <typeparam name="T">Resource type to return</typeparam>
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async IAsyncEnumerable<T> KickOffAndWaitForCompletionAsync<T>(string kickOffRequestUrl,
                                                                          bool deleteAfterGrabbingData = false,
                                                                          TimeSpan? pollForCompletion = null,

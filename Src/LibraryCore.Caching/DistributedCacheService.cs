@@ -112,6 +112,9 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         return await GetOrCreateAsync(key, factory, (JsonTypeInfo<TItem>)defaultSerialiationOptions.GetTypeInfo(typeof(TItem)), acquireLockTimeout, cancellationToken);
     }
 
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, CancellationToken cancellationToken = default)
     {
