@@ -7,7 +7,7 @@
 		<Description>.NetCore Common Utilities For Healthcare</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>9.0.0</Version>
+		<Version>9.0.1</Version>
 		<Title>LibraryCore - Healthcare</Title>
 		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">false</IsAotCompatible>
 		<IsTrimmable>true</IsTrimmable>
