@@ -3,8 +3,15 @@ using Amazon.SecretsManager.Model;
 using LibraryCore.AwsSecretManager;
 using LibraryCore.Core.ExtensionMethods;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LibraryCore.Tests.AwsSecretManager;
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(SecretManagerUtilityTests.TestSecretWithJson))]
+internal partial class AwsSecretJsonContext : JsonSerializerContext
+{
+}
 
 public class SecretManagerUtilityTests
 {
@@ -119,4 +126,30 @@ public class SecretManagerUtilityTests
 
         mockIAmazonSecretsManager.VerifyAll();
     }
+
+#if NET8_0_OR_GREATER
+
+    [Fact]
+    public async Task SuccessOnJsonSecretWithAotOverload()
+    {
+        var mockIAmazonSecretsManager = new Mock<IAmazonSecretsManager>();
+
+        mockIAmazonSecretsManager.Setup(x => x.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(new GetSecretValueResponse
+            {
+                HttpStatusCode = System.Net.HttpStatusCode.OK,
+                SecretString = JsonSerializer.Serialize(new TestSecretWithJson("DbKey", "123", 9999))
+            }));
+
+        var result = await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName", AwsSecretJsonContext.Default.TestSecretWithJson);
+
+        Assert.NotNull(result);
+        Assert.Equal("DbKey", result.Key);
+        Assert.Equal("123", result.Value);
+        Assert.Equal(9999, result.Id);
+
+        mockIAmazonSecretsManager.VerifyAll();
+    }
+
+#endif
 }

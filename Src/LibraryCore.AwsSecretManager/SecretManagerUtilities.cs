@@ -1,7 +1,9 @@
 ﻿using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace LibraryCore.AwsSecretManager;
 
@@ -31,8 +33,25 @@ public static class SecretManagerUtilities
     }
 
     /// <summary>
+    /// Overload for aot
+    /// </summary>
+    public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
+                                               string secretArnOrName,
+                                               JsonTypeInfo<T> jsonTypeInfo,
+                                               string versionStage = "AWSCURRENT",
+                                               CancellationToken cancellationToken = default)
+    {
+        var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken).ConfigureAwait(false);
+
+        return string.IsNullOrEmpty(temp) ?
+                    default :
+                    JsonSerializer.Deserialize(temp, jsonTypeInfo);
+    }
+
+    /// <summary>
     /// Json Object Version
     /// </summary>
+    [RequiresUnreferencedCode("DynamicBehavior is incompatible with trimming. Use Overload with JsonTypeInfo.")]
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
                                                    string secretArnOrName,
                                                    string versionStage = "AWSCURRENT",
