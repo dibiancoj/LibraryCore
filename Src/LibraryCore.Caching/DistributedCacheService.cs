@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using LibraryCore.Shared;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace LibraryCore.Caching;
 
@@ -33,11 +35,12 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     #region Public Methods
 
     public async Task<TItem> GetOrCreateAsync<TItem>(string key,
-                                                     Func<DistributedCacheEntryOptions, Task<TItem>> factory,
-                                                     TimeSpan? acquireLockTimeout = default,
-                                                     CancellationToken cancellationToken = default)
+                                                    Func<DistributedCacheEntryOptions, Task<TItem>> factory,
+                                                    JsonTypeInfo<TItem> jsonTypeInfo,
+                                                    TimeSpan? acquireLockTimeout = default,
+                                                    CancellationToken cancellationToken = default)
     {
-        var tryToGrabFromCacheResult = await TryToGetValueFromCache<TItem>(key, cancellationToken);
+        var tryToGrabFromCacheResult = await TryToGetValueFromCache(key, jsonTypeInfo, cancellationToken);
 
         //we have it just return it
         if (tryToGrabFromCacheResult.TryGetItemFromResult(out var tryToGetItemFromCacheResult))
@@ -71,7 +74,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
             if (i == 0)
             {
                 //since we took a lock the value might be there from another thread. so try to get it 1 more time. 
-                var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache<TItem>(key, cancellationToken);
+                var tryToGrabFromCacheAfterLockResult = await TryToGetValueFromCache(key, jsonTypeInfo, cancellationToken);
 
                 //check if we have it
                 if (tryToGrabFromCacheAfterLockResult.TryGetItemFromResult(out var tryToGetItemFromCacheResultAfterLock))
@@ -85,7 +88,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
             var itemToSetInCache = await factory(options);
 
             //didn't find it...go create it, set it in the cache, and return it
-            return await SetAsync(key, itemToSetInCache, options, cancellationToken);
+            return await SetAsync(key, itemToSetInCache, jsonTypeInfo, options, cancellationToken);
         }
         finally
         {
@@ -95,15 +98,47 @@ public class DistributedCacheService(IDistributedCache distributedCache)
         }
     }
 
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
+    public async Task<TItem> GetOrCreateAsync<TItem>(string key,
+                                                    Func<DistributedCacheEntryOptions, Task<TItem>> factory,
+                                                    TimeSpan? acquireLockTimeout = default,
+                                                    CancellationToken cancellationToken = default)
+    {
+        var defaultSerialiationOptions = JsonSerializerOptions.Default;
+
+        return await GetOrCreateAsync(key, factory, (JsonTypeInfo<TItem>)defaultSerialiationOptions.GetTypeInfo(typeof(TItem)), acquireLockTimeout, cancellationToken);
+    }
+
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, CancellationToken cancellationToken = default)
     {
         return await SetAsync(key, itemToAdd, new DistributedCacheEntryOptions(), cancellationToken: cancellationToken);
     }
 
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
+        var jsonTypeInfo = (JsonTypeInfo<TItem>)JsonSerializerOptions.Default.GetTypeInfo(typeof(TItem));
+
         //can't pass null for the distributed options
-        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd), distributedCacheEntryOptions, token: cancellationToken);
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, jsonTypeInfo), distributedCacheEntryOptions, token: cancellationToken);
+
+        return itemToAdd;
+    }
+
+    public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, JsonTypeInfo<TItem> jsonTypeInfo, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
+    {
+        //can't pass null for the distributed options
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, jsonTypeInfo), distributedCacheEntryOptions, token: cancellationToken);
 
         return itemToAdd;
     }
@@ -114,24 +149,24 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 
     #region Private Helper Methods
 
-    private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key, CancellationToken cancellationToken)
+    private async Task<TryToGetInCacheResult<TItem>> TryToGetValueFromCache<TItem>(string key, JsonTypeInfo<TItem> jsonTypeInfo, CancellationToken cancellationToken)
     {
         var tryToFindInDistributedCache = await distributedCache.GetAsync(key, token: cancellationToken);
 
         return tryToFindInDistributedCache == null ?
                             TryToGetInCacheResult<TItem>.IsNotFoundInCache() :
-                            TryToGetInCacheResult<TItem>.IsFoundInCache(DeserializeFromBytes<TItem>(tryToFindInDistributedCache));
+                            TryToGetInCacheResult<TItem>.IsFoundInCache(DeserializeFromBytes(tryToFindInDistributedCache, jsonTypeInfo));
     }
 
     /// <summary>
     /// In a method incase we need to change the default serialization
     /// </summary>
-    private static byte[] SerializeToBytes<T>(T model) => JsonSerializer.SerializeToUtf8Bytes(model);
+    private static byte[] SerializeToBytes<T>(T model, JsonTypeInfo<T> jsonTypeInfo) => JsonSerializer.SerializeToUtf8Bytes(model, jsonTypeInfo);
 
     /// <summary>
     /// In a method incase we need to change the default serialization
     /// </summary>
-    private static T DeserializeFromBytes<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes)!; //! = there will be most likely a json exception instead of returning null. Visible in unit tests
+    private static T DeserializeFromBytes<T>(byte[] bytes, JsonTypeInfo<T> jsonTypeInfo) => JsonSerializer.Deserialize<T>(bytes, jsonTypeInfo)!; //! = there will be most likely a json exception instead of returning null. Visible in unit tests
 
     private static SemaphoreSlim AcquireSemaphoreSlimForCacheKey(string key) => CacheLocksLookup.GetOrAdd(key, (x) => new SemaphoreSlim(1, 1));
 

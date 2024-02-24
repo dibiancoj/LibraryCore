@@ -3,8 +3,9 @@ using LibraryCore.ApiClient;
 using LibraryCore.Core.Json.Converters;
 using LibraryCore.Healthcare.Epic.Fhir.BulkExport.Models;
 using LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders;
+using LibraryCore.Shared;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -45,6 +46,10 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
         return new KickOffBulkRequestResponse(rawResponse.EnsureSuccessStatusCode().Content.Headers.GetValues("Content-Location").First());
     }
 
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async Task<IBulkFhirStatus> CheckStatusOfBulkRequestAsync(string contentLocationFromKickOff)
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Get, contentLocationFromKickOff);
@@ -96,6 +101,10 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
     /// Use this if you are only returning 1 type. Otherwise, you can write the few lines of code to combine all the steps
     /// </summary>
     /// <typeparam name="T">Resource type to return</typeparam>
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async IAsyncEnumerable<T> KickOffAndWaitForCompletionAsync<T>(string kickOffRequestUrl,
                                                                          bool deleteAfterGrabbingData = false,
                                                                          TimeSpan? pollForCompletion = null,

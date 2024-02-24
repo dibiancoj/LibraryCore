@@ -1,4 +1,7 @@
-﻿namespace LibraryCore.Core.ExtensionMethods;
+﻿using System.Diagnostics.CodeAnalysis;
+using LibraryCore.Shared;
+
+namespace LibraryCore.Core.ExtensionMethods;
 
 public static class IOrderedQueryableExtensionMethods
 {
@@ -13,6 +16,11 @@ public static class IOrderedQueryableExtensionMethods
     /// <returns>IQueryable Of T</returns>
     //[LinqToObjectsCompatible]
     //[EntityFrameworkCompatible]
+
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public static IQueryable<T> PaginateResults<T>(this IOrderedQueryable<T> queryToModify, int currentPageNumber, int howManyRecordsPerPage)
     {
         //if you have a list of <T>...you can use the order by overload and pass in an expression<func... that will give you back an IOrderedQueryable

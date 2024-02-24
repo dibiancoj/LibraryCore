@@ -1,10 +1,18 @@
 ﻿using LibraryCore.ApiClient;
 using LibraryCore.ApiClient.ExtensionMethods;
 using System.Net;
+using System.Text.Json.Serialization;
 using static LibraryCore.ApiClient.ExtensionMethods.HttpClientExtensionMethods;
 using static LibraryCore.Tests.ApiClient.HttpRequestSetup;
 
 namespace LibraryCore.Tests.ApiClient;
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Token))]
+internal partial class ApiJsonContext : JsonSerializerContext
+{
+}
+
 
 public class HttpClientExtensionMethodTest
 {
@@ -31,7 +39,7 @@ public class HttpClientExtensionMethodTest
     {
         var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
             {
-                new WeatherForecast(1, 10, "Weather 1")
+                new(1, 10, "Weather 1")
             });
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
@@ -79,7 +87,7 @@ public class HttpClientExtensionMethodTest
     {
         var mockResponse = isSuccessfulApiCall ? CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
                                                     {
-                                                        new WeatherForecast(1, 10, "Weather 1")
+                                                        new(1, 10, "Weather 1")
                                                     }) :
                                                     CreateJsonMockResponse(HttpStatusCode.BadRequest, new Dictionary<string, string>
                                                                             {
@@ -157,12 +165,42 @@ public class HttpClientExtensionMethodTest
 
 
         HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Post &&
-                                                           req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
+                                                           req.RequestUri!.AbsoluteUri == "https://mygateway/token");
 
 
-        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync(new Uri("https://mygateway/token"),
+        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync("https://mygateway/token",
                                                                            "MyToken",
                                                                            "MySecret",
+                                                                           grantType: "test_credentials",
+                                                                           scope: "test_scope"))!;
+
+        Assert.Equal("my_token_type", result.TokenType);
+        Assert.Equal("Abcdef", result.AccessToken);
+        Assert.Equal("test_scope", result.Scope);
+        Assert.Equal(3600, result.ExpiresIn);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(now).ToLocalTime().AddSeconds(3600), result.ExpiresLocalTime);
+
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Post &&
+                                                                 req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
+    }
+
+    [Trait("CompileMode", "Aot")]
+    [Fact]
+    public async Task TokenFetch_Aot()
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new Token("my_token_type", "Abcdef", "test_scope", 3600, now));
+
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Post &&
+                                                           req.RequestUri!.AbsoluteUri == "https://mygateway/token");
+
+
+        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync("https://mygateway/token",
+                                                                           "MyToken",
+                                                                           "MySecret",
+                                                                           ApiJsonContext.Default.Token,
                                                                            grantType: "test_credentials",
                                                                            scope: "test_scope"))!;
 

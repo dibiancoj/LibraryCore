@@ -133,6 +133,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Healthcare", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCore.Tests.Healthcare", "Tests\LibraryCore.Tests.Healthcare\LibraryCore.Tests.Healthcare.csproj", "{91298FDE-F27D-49F1-9267-4BF12C1BE225}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedCode", "SharedCode", "{43270FFA-B5A6-4F20-AE0B-C7C3F9DBD957}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -331,6 +333,7 @@ Global
 		{79CA404C-D0CC-42C6-B52A-7EDDD5FACCF7} = {75C64940-5413-442D-B876-AEAA8DC20FC0}
 		{351E6679-5A08-4B2C-A903-1FED1BA6136A} = {79CA404C-D0CC-42C6-B52A-7EDDD5FACCF7}
 		{91298FDE-F27D-49F1-9267-4BF12C1BE225} = {79CA404C-D0CC-42C6-B52A-7EDDD5FACCF7}
+		{43270FFA-B5A6-4F20-AE0B-C7C3F9DBD957} = {EC8F3521-E377-420D-B5A1-82D2B29FB611}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61C7767-7D12-4313-8DA2-56AE8FC5AAD5}

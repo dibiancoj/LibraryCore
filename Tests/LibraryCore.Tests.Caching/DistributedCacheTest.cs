@@ -3,12 +3,18 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LibraryCore.Tests.Caching;
 
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(List<int>))]
+internal partial class DistributedCacheJsonContext : JsonSerializerContext
+{
+}
+
 public class DistributedCacheTest
 {
-
     public DistributedCacheTest()
     {
         DistributedCacheServiceToTestWith = new DistributedCacheService(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())));
@@ -69,6 +75,45 @@ public class DistributedCacheTest
         Assert.Contains(result, x => x == 1);
         Assert.Contains(result, x => x == 2);
         Assert.Contains(result, x => x == 3);
+    }
+
+    [Trait("CompileMode", "Aot")]
+    [Fact]
+    public async Task GetOrCreateInCache_Aot()
+    {
+        var key = Guid.NewGuid().ToString();
+        int callToCreateObject = 0;
+
+        async Task<List<int>> factoryCall(DistributedCacheEntryOptions options)
+        {
+            callToCreateObject += 1;
+
+            return await Task.FromResult(new List<int> { 1, 2, 3 });
+        }
+
+        async Task<List<int>> goToCacheToTestAsync()
+        {
+            return await DistributedCacheServiceToTestWith.GetOrCreateAsync(key, factoryCall, DistributedCacheJsonContext.Default.ListInt32);
+        }
+
+        var result = await goToCacheToTestAsync();
+
+        Assert.Equal(3, result.Count);
+        Assert.Contains(result, x => x == 1);
+        Assert.Contains(result, x => x == 2);
+        Assert.Contains(result, x => x == 3);
+        Assert.Equal(1, callToCreateObject);
+
+        //go try again to make sure it pulls from the cache
+        var result2 = await goToCacheToTestAsync();
+
+        Assert.Equal(3, result2.Count);
+        Assert.Contains(result2, x => x == 1);
+        Assert.Contains(result2, x => x == 2);
+        Assert.Contains(result2, x => x == 3);
+
+        //shouldn't go back to the source on the 2nd call. Should be pulled from the cache
+        Assert.Equal(1, callToCreateObject);
     }
 
     [Fact]

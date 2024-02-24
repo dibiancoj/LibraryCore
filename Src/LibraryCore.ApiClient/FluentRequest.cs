@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using LibraryCore.Shared;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using static LibraryCore.ApiClient.ContentTypeLookup;
 
 namespace LibraryCore.ApiClient;
@@ -77,9 +80,19 @@ public class FluentRequest(HttpMethod httpMethodType, string url)
         return this;
     }
 
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public FluentRequest AddJsonBody<T>(T model, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         Message.Content = JsonContent.Create(model, options: jsonSerializerOptions);
+        return this;
+    }
+
+    public FluentRequest AddJsonBody<T>(T model, JsonTypeInfo<T> jsonSerializerOptions)
+    {
+        Message.Content = JsonContent.Create(model, jsonSerializerOptions);
         return this;
     }
 

@@ -1,4 +1,7 @@
-﻿namespace LibraryCore.Core.EnumUtilities;
+﻿using System.Diagnostics.CodeAnalysis;
+using LibraryCore.Shared;
+
+namespace LibraryCore.Core.EnumUtilities;
 
 public class BitMaskBuilder<T>(T initialValue) where T : struct, Enum
 {
@@ -18,5 +21,8 @@ public class BitMaskBuilder<T>(T initialValue) where T : struct, Enum
 
     public bool ContainsValue(T valueToCheckFor) => EnumUtility.BitMaskContainsValue(Value, valueToCheckFor);
 
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public IEnumerable<T> SelectedItems() => EnumUtility.BitMaskSelectedItems(Value);
 }

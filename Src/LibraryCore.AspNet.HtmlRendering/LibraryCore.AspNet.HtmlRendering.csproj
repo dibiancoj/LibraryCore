@@ -2,17 +2,14 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Company>Jason DiBianco</Company>
 		<Description>Html View Rendering</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>8.0.0</Version>
+		<Version>9.0.0</Version>
 		<Title>LibraryCore - Html Rendering</Title>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">false</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
