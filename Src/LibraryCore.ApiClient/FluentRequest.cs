@@ -81,6 +81,7 @@ public class FluentRequest(HttpMethod httpMethodType, string url)
     }
 
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
+    [RequiresDynamicCode()]
     public FluentRequest AddJsonBody<T>(T model, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         Message.Content = JsonContent.Create(model, options: jsonSerializerOptions);
