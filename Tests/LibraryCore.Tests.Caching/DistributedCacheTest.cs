@@ -77,6 +77,7 @@ public class DistributedCacheTest
         Assert.Contains(result, x => x == 3);
     }
 
+    [Trait("CompileMode", "Aot")]
     [Fact]
     public async Task GetOrCreateInCache_Aot()
     {

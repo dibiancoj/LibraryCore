@@ -161,6 +161,7 @@ public class SecretManagerUtilityTests
 
 #if NET8_0_OR_GREATER
 
+    [Trait("CompileMode", "Aot")]
     [Fact]
     public async Task SuccessOnKeyValuePair_string_string_Secret_AOT()
     {
@@ -192,6 +193,7 @@ public class SecretManagerUtilityTests
         mockSecretService.VerifyAll();
     }
 
+    [Trait("CompileMode", "Aot")]
     [Fact]
     public async Task SuccessOnJsonSecretWithAotOverload()
     {

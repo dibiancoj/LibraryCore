@@ -136,6 +136,7 @@ public class FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webAp
         Assert.Equal("5_Result", result.Text);
     }
 
+    [Trait("CompileMode", "Aot")]
     [Fact]
     public async Task SimpleJsonPayloadWithJsonRequestParameters_WithAot()
     {

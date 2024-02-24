@@ -184,6 +184,7 @@ public class HttpClientExtensionMethodTest
                                                                  req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
     }
 
+    [Trait("CompileMode", "Aot")]
     [Fact]
     public async Task TokenFetch_Aot()
     {
