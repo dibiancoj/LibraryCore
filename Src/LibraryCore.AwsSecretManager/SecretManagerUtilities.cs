@@ -30,6 +30,19 @@ public static class SecretManagerUtilities
         };
     }
 
+    public static async Task<IDictionary<TKey, TValue>> GetSecretKeyValuePairAsync<TKey, TValue>(
+                                                                         IAmazonSecretsManager client,
+                                                                         string secretArnOrName,
+                                                                         string versionStage = "AWSCURRENT",
+                                                                         JsonSerializerOptions? jsonSerializerOptions = null,
+                                                                         CancellationToken cancellationToken = default)
+        where TKey : notnull
+    {
+        var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken) ?? throw new Exception("Secret Content Is Null From Secret Store");
+
+        return JsonSerializer.Deserialize<Dictionary<TKey, TValue>>(temp, jsonSerializerOptions) ?? throw new Exception("Can't Deserialize To Dictionary");
+    }
+
     /// <summary>
     /// Json Object Version
     /// </summary>

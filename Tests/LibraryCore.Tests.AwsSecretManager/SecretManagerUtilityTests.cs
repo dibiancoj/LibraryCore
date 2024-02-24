@@ -119,4 +119,35 @@ public class SecretManagerUtilityTests
 
         mockIAmazonSecretsManager.VerifyAll();
     }
+
+    [Fact]
+    public async Task SuccessOnKeyValuePair_string_string_Secret()
+    {
+        var mockSecretService = new Mock<IAmazonSecretsManager>();
+        var arn = Guid.NewGuid().ToString();
+
+        //using raw json ..to simulate as best as possible as we grab the json directly from aws
+        const string jsonFromSecretManager = """
+                                               {
+                                                  "a": "aaaaa",
+                                                  "b": "bbbbb"
+                                               }
+                                             """;
+
+        mockSecretService.Setup(x => x.GetSecretValueAsync(It.Is<GetSecretValueRequest>(t => t.SecretId == arn && t.VersionStage == "AWSCURRENT"), default))
+            .Returns(Task.FromResult(new GetSecretValueResponse
+            {
+                ARN = arn,
+                SecretString = jsonFromSecretManager,
+                HttpStatusCode = System.Net.HttpStatusCode.OK
+            }));
+
+        var secretFromService = await SecretManagerUtilities.GetSecretKeyValuePairAsync<string, string>(mockSecretService.Object, arn);
+
+        Assert.Equal(2, secretFromService.Count);
+        Assert.Contains(secretFromService, x => x.Key == "a" && x.Value == "aaaaa");
+        Assert.Contains(secretFromService, x => x.Key == "b" && x.Value == "bbbbb");
+
+        mockSecretService.VerifyAll();
+    }
 }
