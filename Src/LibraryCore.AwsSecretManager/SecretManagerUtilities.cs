@@ -36,16 +36,12 @@ public static class SecretManagerUtilities
     /// Overload for aot
     /// </summary>
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
-                                               string secretArnOrName,
-                                               JsonTypeInfo<T> jsonTypeInfo,
-                                               string versionStage = "AWSCURRENT",
-                                               CancellationToken cancellationToken = default)
+                                                   string secretArnOrName,
+                                                   JsonTypeInfo<T> jsonTypeInfo,
+                                                   string versionStage = "AWSCURRENT",
+                                                   CancellationToken cancellationToken = default)
     {
-        var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken).ConfigureAwait(false);
-
-        return string.IsNullOrEmpty(temp) ?
-                    default :
-                    JsonSerializer.Deserialize(temp, jsonTypeInfo);
+        return await GetSecretAsyncHelper<T>(client, secretArnOrName, jsonTypeInfo, versionStage, cancellationToken);
     }
 
     /// <summary>
@@ -58,11 +54,22 @@ public static class SecretManagerUtilities
                                                    JsonSerializerOptions? jsonSerializerOptions = null,
                                                    CancellationToken cancellationToken = default)
     {
+        var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
+        
+        return await GetSecretAsyncHelper<T>(client, secretArnOrName, defaultSerialiationOptions.GetTypeInfo(typeof(T)), versionStage, cancellationToken);
+    }
+
+    private static async Task<T?> GetSecretAsyncHelper<T>(IAmazonSecretsManager client,
+                                                  string secretArnOrName,
+                                                  JsonTypeInfo jsonTypeInfo,
+                                                  string versionStage = "AWSCURRENT",
+                                                  CancellationToken cancellationToken = default)
+    {
         var temp = await GetSecretAsync(client, secretArnOrName, versionStage, cancellationToken).ConfigureAwait(false);
 
         return string.IsNullOrEmpty(temp) ?
                     default :
-                    JsonSerializer.Deserialize<T>(temp, jsonSerializerOptions);
+                    (T)(JsonSerializer.Deserialize(temp, jsonTypeInfo) ?? throw new Exception("Can't Convert To Type Of T"));
     }
 
     private static string StreamToString(MemoryStream secretBinaryToConvert)
