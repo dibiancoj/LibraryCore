@@ -2,10 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Jason DiBianco</Authors>
 		<Company>Jason DiBianco</Company>
 		<Description>Simplified library to make api calls using http client</Description>
@@ -13,8 +9,6 @@
 		<RepositoryType>git</RepositoryType>
 		<Version>9.0.0</Version>
 		<Title>LibraryCore - Api Client</Title>
-		<IsTrimmable>true</IsTrimmable>
-		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
