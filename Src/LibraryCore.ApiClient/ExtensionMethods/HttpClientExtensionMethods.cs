@@ -11,7 +11,9 @@ namespace LibraryCore.ApiClient.ExtensionMethods;
 public static class HttpClientExtensionMethods
 {
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
@@ -24,7 +26,9 @@ public static class HttpClientExtensionMethods
     /// Union type response. If 200 Ok = Deserialize To a model. If a 400 bad request = Deserialize a different model. This way we can handle specific items to a different model type
     /// </summary>
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public static async Task<SendRequestToJsonUnionResult<T1Ok, T2BadRequest>> SendRequestToJsonAsync<T1Ok, T2BadRequest>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
@@ -67,7 +71,9 @@ public static class HttpClientExtensionMethods
     }
 
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccessUseOverload)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
         var jsonTypeInfoForToken = (JsonTypeInfo<Token>)JsonSerializerOptions.Default.GetTypeInfo(typeof(Token));

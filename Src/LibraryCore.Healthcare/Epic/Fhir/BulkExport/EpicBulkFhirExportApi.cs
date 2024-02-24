@@ -47,7 +47,9 @@ public class EpicBulkFhirExportApi(HttpClient httpClient, IFhirBearerTokenProvid
     }
 
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async Task<IBulkFhirStatus> CheckStatusOfBulkRequestAsync(string contentLocationFromKickOff)
     {
         var request = await CreateBaseRequestAsync(HttpMethod.Get, contentLocationFromKickOff);

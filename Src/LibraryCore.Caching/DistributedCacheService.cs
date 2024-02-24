@@ -99,7 +99,9 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     }
 
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async Task<TItem> GetOrCreateAsync<TItem>(string key,
                                                     Func<DistributedCacheEntryOptions, Task<TItem>> factory,
                                                     TimeSpan? acquireLockTimeout = default,
@@ -117,7 +119,9 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     }
 
     [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
-    [RequiresDynamicCode()]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
         var jsonTypeInfo = (JsonTypeInfo<TItem>)JsonSerializerOptions.Default.GetTypeInfo(typeof(TItem));
