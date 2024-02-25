@@ -3,6 +3,7 @@ using LibraryCore.Healthcare.Epic.Authentication;
 using LibraryCore.Shared;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization.Metadata;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders.Implementations;
 
@@ -14,8 +15,18 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
                                                      HttpClient httpClient,
                                                      string tokenEndPointUrl,
                                                      string rawPrivateKeyContentInPemFile,
-                                                     string clientId) : IFhirBearerTokenProvider
+                                                     string clientId,
+                                                     JsonTypeInfo<EpicClientCredentialsAuthorizationToken> jsonTypeInfo) : IFhirBearerTokenProvider
 {
+    public EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
+                                                    HttpClient httpClient,
+                                                    string tokenEndPointUrl,
+                                                    string rawPrivateKeyContentInPemFile,
+                                                    string clientId)
+        : this(memoryCache, httpClient, tokenEndPointUrl, rawPrivateKeyContentInPemFile, clientId, Aot.Json.ResolveJsonType.ResolveJsonTypeInfo<EpicClientCredentialsAuthorizationToken>())
+    {
+    }
+
     private static TimeSpan CacheBufferTimePeriod { get; } = new TimeSpan(0, 1, 0);
 
     public async ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default)
@@ -24,7 +35,7 @@ public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
         {
             var clientAssertion = ClientCredentialsAuthentication.CreateEpicClientAssertionJwtToken(rawPrivateKeyContentInPemFile, clientId, tokenEndPointUrl);
 
-            var tokenResult = await ClientCredentialsAuthentication.TokenAsync(httpClient, tokenEndPointUrl, clientAssertion, cancellationToken);
+            var tokenResult = await ClientCredentialsAuthentication.TokenAsync(httpClient, tokenEndPointUrl, clientAssertion, jsonTypeInfo, cancellationToken);
 
             //giving it a minute buffer so we don't get too close to the expiration
             var buffer = tokenResult.ExpiresIn <= CacheBufferTimePeriod.TotalSeconds ?
