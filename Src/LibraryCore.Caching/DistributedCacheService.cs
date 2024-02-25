@@ -107,9 +107,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
                                                     TimeSpan? acquireLockTimeout = default,
                                                     CancellationToken cancellationToken = default)
     {
-        var defaultSerialiationOptions = JsonSerializerOptions.Default;
-
-        return await GetOrCreateAsync(key, factory, (JsonTypeInfo<TItem>)defaultSerialiationOptions.GetTypeInfo(typeof(TItem)), acquireLockTimeout, cancellationToken);
+        return await GetOrCreateAsync(key, factory, AotUtilities.ResolveJsonTypeInfo<TItem>(), acquireLockTimeout, cancellationToken);
     }
 
 #if NET7_0_OR_GREATER
@@ -127,10 +125,8 @@ public class DistributedCacheService(IDistributedCache distributedCache)
 #endif
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
-        var jsonTypeInfo = (JsonTypeInfo<TItem>)JsonSerializerOptions.Default.GetTypeInfo(typeof(TItem));
-
         //can't pass null for the distributed options
-        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, jsonTypeInfo), distributedCacheEntryOptions, token: cancellationToken);
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, AotUtilities.ResolveJsonTypeInfo<TItem>()), distributedCacheEntryOptions, token: cancellationToken);
 
         return itemToAdd;
     }

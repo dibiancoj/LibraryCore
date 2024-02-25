@@ -76,9 +76,7 @@ public static class HttpClientExtensionMethods
 #endif
     public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
-        var jsonTypeInfoForToken = (JsonTypeInfo<Token>)JsonSerializerOptions.Default.GetTypeInfo(typeof(Token));
-
-        return await httpClient.TokenAsync(url, clientId, clientSecret, jsonTypeInfoForToken, grantType, scope, cancellationToken);
+        return await httpClient.TokenAsync(url, clientId, clientSecret, AotUtilities.ResolveJsonTypeInfo<Token>(), grantType, scope, cancellationToken);
     }
 
     /// <summary>

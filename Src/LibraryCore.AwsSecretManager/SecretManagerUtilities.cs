@@ -59,11 +59,9 @@ public static class SecretManagerUtilities
                                                                          CancellationToken cancellationToken = default)
         where TKey : notnull
     {
-        var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
-
         return await GetSecretAsyncHelper(client,
                                           secretArnOrName,
-                                          (JsonTypeInfo<Dictionary<TKey, TValue>>)defaultSerialiationOptions.GetTypeInfo(typeof(Dictionary<TKey, TValue>)),
+                                          AotUtilities.ResolveJsonTypeInfo<Dictionary<TKey, TValue>>(),
                                           versionStage,
                                           cancellationToken);
     }
@@ -93,9 +91,7 @@ public static class SecretManagerUtilities
                                                    JsonSerializerOptions? jsonSerializerOptions = null,
                                                    CancellationToken cancellationToken = default)
     {
-        var defaultSerialiationOptions = jsonSerializerOptions ?? JsonSerializerOptions.Default;
-
-        return await GetSecretAsyncHelper<T>(client, secretArnOrName, (JsonTypeInfo<T>)defaultSerialiationOptions.GetTypeInfo(typeof(T)), versionStage, cancellationToken);
+        return await GetSecretAsyncHelper<T>(client, secretArnOrName, AotUtilities.ResolveJsonTypeInfo<T>(), versionStage, cancellationToken);
     }
 
     private static async Task<T?> GetSecretAsyncHelper<T>(IAmazonSecretsManager client,
