@@ -1,5 +1,6 @@
 ﻿using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using LibraryCore.Aot.Json;
 using LibraryCore.Shared;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -55,13 +56,12 @@ public static class SecretManagerUtilities
                                                                          IAmazonSecretsManager client,
                                                                          string secretArnOrName,
                                                                          string versionStage = "AWSCURRENT",
-                                                                         JsonSerializerOptions? jsonSerializerOptions = null,
                                                                          CancellationToken cancellationToken = default)
         where TKey : notnull
     {
         return await GetSecretAsyncHelper(client,
                                           secretArnOrName,
-                                          AotUtilities.ResolveJsonTypeInfo<Dictionary<TKey, TValue>>(),
+                                          ResolveJsonType.ResolveJsonTypeInfo<Dictionary<TKey, TValue>>(),
                                           versionStage,
                                           cancellationToken);
     }
@@ -88,10 +88,9 @@ public static class SecretManagerUtilities
     public static async Task<T?> GetSecretAsync<T>(IAmazonSecretsManager client,
                                                    string secretArnOrName,
                                                    string versionStage = "AWSCURRENT",
-                                                   JsonSerializerOptions? jsonSerializerOptions = null,
                                                    CancellationToken cancellationToken = default)
     {
-        return await GetSecretAsyncHelper<T>(client, secretArnOrName, AotUtilities.ResolveJsonTypeInfo<T>(), versionStage, cancellationToken);
+        return await GetSecretAsyncHelper<T>(client, secretArnOrName, ResolveJsonType.ResolveJsonTypeInfo<T>(), versionStage, cancellationToken);
     }
 
     private static async Task<T?> GetSecretAsyncHelper<T>(IAmazonSecretsManager client,

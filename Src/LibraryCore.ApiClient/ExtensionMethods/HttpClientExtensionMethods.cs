@@ -1,4 +1,5 @@
-﻿using LibraryCore.ApiClient.ExtensionMethods.Models;
+﻿using LibraryCore.Aot.Json;
+using LibraryCore.ApiClient.ExtensionMethods.Models;
 using LibraryCore.Shared;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
@@ -76,7 +77,7 @@ public static class HttpClientExtensionMethods
 #endif
     public static async Task<Token> TokenAsync(this HttpClient httpClient, string url, string clientId, string clientSecret, string grantType = "client_credentials", string scope = "Read", CancellationToken cancellationToken = default)
     {
-        return await httpClient.TokenAsync(url, clientId, clientSecret, AotUtilities.ResolveJsonTypeInfo<Token>(), grantType, scope, cancellationToken);
+        return await httpClient.TokenAsync(url, clientId, clientSecret, ResolveJsonType.ResolveJsonTypeInfo<Token>(), grantType, scope, cancellationToken);
     }
 
     /// <summary>

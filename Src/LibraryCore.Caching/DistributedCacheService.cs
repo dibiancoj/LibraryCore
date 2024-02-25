@@ -1,4 +1,5 @@
-﻿using LibraryCore.Shared;
+﻿using LibraryCore.Aot.Json;
+using LibraryCore.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
@@ -107,7 +108,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
                                                     TimeSpan? acquireLockTimeout = default,
                                                     CancellationToken cancellationToken = default)
     {
-        return await GetOrCreateAsync(key, factory, AotUtilities.ResolveJsonTypeInfo<TItem>(), acquireLockTimeout, cancellationToken);
+        return await GetOrCreateAsync(key, factory, ResolveJsonType.ResolveJsonTypeInfo<TItem>(), acquireLockTimeout, cancellationToken);
     }
 
 #if NET7_0_OR_GREATER
@@ -126,7 +127,7 @@ public class DistributedCacheService(IDistributedCache distributedCache)
     public async Task<TItem> SetAsync<TItem>(string key, TItem itemToAdd, DistributedCacheEntryOptions distributedCacheEntryOptions, CancellationToken cancellationToken = default)
     {
         //can't pass null for the distributed options
-        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, AotUtilities.ResolveJsonTypeInfo<TItem>()), distributedCacheEntryOptions, token: cancellationToken);
+        await distributedCache.SetAsync(key, SerializeToBytes(itemToAdd, ResolveJsonType.ResolveJsonTypeInfo<TItem>()), distributedCacheEntryOptions, token: cancellationToken);
 
         return itemToAdd;
     }
