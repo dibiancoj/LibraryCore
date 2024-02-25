@@ -15,9 +15,9 @@ public static class HttpClientExtensionMethods
 #if NET7_0_OR_GREATER
     [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
 #endif
-    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
+    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)
     {
-        return await httpClient.SendRequestToJsonAsync<T>(requestMessage, ResolveJsonType.ResolveJsonTypeInfo<T>(), cancellationToken);
+        return await httpClient.SendRequestToJsonAsync(requestMessage, ResolveJsonType.ResolveJsonTypeInfo<T>(), cancellationToken);
     }
 
     public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonTypeInfo<T> jsonTypeInfo, CancellationToken cancellationToken = default)
@@ -25,7 +25,7 @@ public static class HttpClientExtensionMethods
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
 
         return await rawResponse.EnsureSuccessStatusCode()
-                .Content.ReadFromJsonAsync(jsonTypeInfo, cancellationToken: cancellationToken);
+                .Content.ReadFromJsonAsync<T>(jsonTypeInfo, cancellationToken: cancellationToken);
     }
 
     /// <summary>

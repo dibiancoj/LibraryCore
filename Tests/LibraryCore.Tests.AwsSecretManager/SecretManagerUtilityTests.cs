@@ -207,7 +207,7 @@ public class SecretManagerUtilityTests
                 SecretString = JsonSerializer.Serialize(new TestSecretWithJson("DbKey", "123", 9999))
             }));
 
-        var result = await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName", AwsSecretJsonContext.Default.TestSecretWithJson);
+        var result = await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", AwsSecretJsonContext.Default.TestSecretWithJson);
 
         Assert.NotNull(result);
         Assert.Equal("DbKey", result.Key);
