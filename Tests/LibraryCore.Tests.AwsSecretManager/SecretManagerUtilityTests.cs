@@ -4,6 +4,7 @@ using LibraryCore.AwsSecretManager;
 using LibraryCore.Core.ExtensionMethods;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LibraryCore.Shared;
 
 namespace LibraryCore.Tests.AwsSecretManager;
 
@@ -161,7 +162,7 @@ public class SecretManagerUtilityTests
 
 #if NET8_0_OR_GREATER
 
-    [Trait("CompileMode", "Aot")]
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
     [Fact]
     public async Task SuccessOnKeyValuePair_string_string_Secret_AOT()
     {
@@ -193,7 +194,7 @@ public class SecretManagerUtilityTests
         mockSecretService.VerifyAll();
     }
 
-    [Trait("CompileMode", "Aot")]
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
     [Fact]
     public async Task SuccessOnJsonSecretWithAotOverload()
     {

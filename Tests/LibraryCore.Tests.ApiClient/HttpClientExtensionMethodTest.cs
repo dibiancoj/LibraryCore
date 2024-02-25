@@ -1,5 +1,6 @@
 ﻿using LibraryCore.ApiClient;
 using LibraryCore.ApiClient.ExtensionMethods;
+using LibraryCore.Shared;
 using System.Net;
 using System.Text.Json.Serialization;
 using static LibraryCore.ApiClient.ExtensionMethods.HttpClientExtensionMethods;
@@ -9,6 +10,7 @@ namespace LibraryCore.Tests.ApiClient;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(Token))]
+[JsonSerializable(typeof(IEnumerable<WeatherForecast>))]
 internal partial class ApiJsonContext : JsonSerializerContext
 {
 }
@@ -55,6 +57,37 @@ public class HttpClientExtensionMethodTest
                                                 .AddJsonBody(jsonParameters);
 
         var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>>(request, cancellationToken: includeCancelToken ? new CancellationToken() : default) ?? throw new Exception("Can't deserialize result");
+
+        Assert.Single(result);
+        Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
+
+        HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+    }
+
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task HttpClientSendRequestToJsonTestAot(bool includeCancelToken)
+    {
+        var mockResponse = CreateJsonMockResponse(HttpStatusCode.OK, new List<WeatherForecast>
+            {
+                new(1, 10, "Weather 1")
+            });
+
+        HttpRequestMockSetup.MockHttpRequest(mockResponse, req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Header1" && t.Value.First() == "Header1Value"));
+
+        var jsonParameters = new
+        {
+            Id = 10,
+            Name = "Test"
+        };
+
+        var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
+                                                .AddHeader("Header1", "Header1Value")
+                                                .AddJsonBody(jsonParameters);
+
+        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync(request, ApiJsonContext.Default.IEnumerableWeatherForecast, cancellationToken: includeCancelToken ? new CancellationToken() : default) ?? throw new Exception("Can't deserialize result");
 
         Assert.Single(result);
         Assert.Contains(result, x => x.Id == 1 && x.TemperatureF == 10 && x.Summary == "Weather 1");
@@ -184,7 +217,7 @@ public class HttpClientExtensionMethodTest
                                                                  req.RequestUri!.AbsoluteUri == new Uri("https://mygateway/token").AbsoluteUri);
     }
 
-    [Trait("CompileMode", "Aot")]
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
     [Fact]
     public async Task TokenFetch_Aot()
     {

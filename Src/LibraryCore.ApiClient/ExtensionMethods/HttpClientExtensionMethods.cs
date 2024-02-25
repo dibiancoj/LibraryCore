@@ -17,10 +17,15 @@ public static class HttpClientExtensionMethods
 #endif
     public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
+        return await httpClient.SendRequestToJsonAsync<T>(requestMessage, ResolveJsonType.ResolveJsonTypeInfo<T>(), cancellationToken);
+    }
+
+    public static async Task<T?> SendRequestToJsonAsync<T>(this HttpClient httpClient, HttpRequestMessage requestMessage, JsonTypeInfo<T> jsonTypeInfo, CancellationToken cancellationToken = default)
+    {
         var rawResponse = await SendMessageHelper(httpClient, requestMessage, cancellationToken);
 
         return await rawResponse.EnsureSuccessStatusCode()
-                .Content.ReadFromJsonAsync<T>(options: jsonSerializerOptions, cancellationToken: cancellationToken);
+                .Content.ReadFromJsonAsync(jsonTypeInfo, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -86,10 +91,10 @@ public static class HttpClientExtensionMethods
     /// <param name="ExpiresIn">The remaining time in seconds that the consent remains valid</param>
     /// <param name="ConsentedOn">The time in seconds since the epoch when the resource owner gave consent to the client</param>
     public record Token([property: JsonPropertyName("token_type")] string TokenType,
-                        [property: JsonPropertyName("access_token")] string AccessToken,
-                        [property: JsonPropertyName("scope")] string Scope,
-                        [property: JsonPropertyName("expires_in")] int ExpiresIn,
-                        [property: JsonPropertyName("consented_on")] long ConsentedOn)
+                    [property: JsonPropertyName("access_token")] string AccessToken,
+                    [property: JsonPropertyName("scope")] string Scope,
+                    [property: JsonPropertyName("expires_in")] int ExpiresIn,
+                    [property: JsonPropertyName("consented_on")] long ConsentedOn)
     {
         public DateTimeOffset ExpiresLocalTime { get; } = DateTimeOffset.FromUnixTimeSeconds(ConsentedOn).ToLocalTime().AddSeconds(ExpiresIn);
         public bool IsExpired(TimeSpan TimeBuffer) => DateTime.Now.Add(-TimeBuffer) >= ExpiresLocalTime;

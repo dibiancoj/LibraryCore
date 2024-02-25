@@ -1,6 +1,7 @@
 ﻿using LibraryCore.ApiClient;
 using LibraryCore.ApiClient.ExtensionMethods;
 using LibraryCore.IntegrationTests.Fixtures;
+using LibraryCore.Shared;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -136,7 +137,7 @@ public class FluentHttpRequestIntegrationTest(WebApplicationFactoryFixture webAp
         Assert.Equal("5_Result", result.Text);
     }
 
-    [Trait("CompileMode", "Aot")]
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
     [Fact]
     public async Task SimpleJsonPayloadWithJsonRequestParameters_WithAot()
     {

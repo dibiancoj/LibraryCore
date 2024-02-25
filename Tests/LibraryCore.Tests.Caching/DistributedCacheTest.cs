@@ -1,4 +1,5 @@
 ﻿using LibraryCore.Caching;
+using LibraryCore.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -77,7 +78,7 @@ public class DistributedCacheTest
         Assert.Contains(result, x => x == 3);
     }
 
-    [Trait("CompileMode", "Aot")]
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
     [Fact]
     public async Task GetOrCreateInCache_Aot()
     {
