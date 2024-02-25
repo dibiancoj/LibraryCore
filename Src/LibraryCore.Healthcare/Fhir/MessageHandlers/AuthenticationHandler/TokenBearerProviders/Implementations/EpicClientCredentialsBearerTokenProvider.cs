@@ -1,9 +1,15 @@
 ﻿using LibraryCore.Caching;
 using LibraryCore.Healthcare.Epic.Authentication;
+using LibraryCore.Shared;
 using Microsoft.Extensions.Caching.Memory;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.Healthcare.Fhir.MessageHandlers.AuthenticationHandler.TokenBearerProviders.Implementations;
 
+[RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+[RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
 public class EpicClientCredentialsBearerTokenProvider(IMemoryCache memoryCache,
                                                      HttpClient httpClient,
                                                      string tokenEndPointUrl,
