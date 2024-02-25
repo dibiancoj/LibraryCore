@@ -7,7 +7,7 @@
 		<Description>.NetCore Common Utilities For Caching</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>9.0.1</Version>
+		<Version>9.0.2</Version>
 		<Title>LibraryCore - Caching</Title>
 		<IsTrimmable>true</IsTrimmable>
 		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
@@ -17,6 +17,10 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\LibraryCore.Shared\LibraryCore.Aot.Json\LibraryCore.Aot.Json.csproj" />
 	</ItemGroup>
 
 </Project>
