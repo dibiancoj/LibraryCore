@@ -7,7 +7,7 @@
 		<Description>Simplified library to make api calls using http client</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>9.0.1</Version>
+		<Version>9.0.2</Version>
 		<Title>LibraryCore - Api Client</Title>
 		<IsTrimmable>true</IsTrimmable>
 		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Text.Json" Version="8.0.2" />
-		<PackageReference Include="LibraryCore.XmlSerialization" Version="8.0.0" />
+		<PackageReference Include="LibraryCore.XmlSerialization" Version="9.0.1" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 	</ItemGroup>
 
