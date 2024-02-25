@@ -1,10 +1,18 @@
 ﻿using LibraryCore.Healthcare.Epic.Authentication;
+using LibraryCore.Shared;
 using Moq.Protected;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LibraryCore.Tests.Healthcare.Epic.Authentication;
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(EpicClientCredentialsAuthorizationToken))]
+internal partial class JsonContext : JsonSerializerContext
+{
+}
 
 public class ClientCredentialsAuthenticationTest
 {
@@ -64,6 +72,44 @@ public class ClientCredentialsAuthenticationTest
              .ReturnsAsync(mockResponse);
 
         var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion);
+
+        mockHttpHandler
+            .Protected()
+            .Verify(
+                nameof(HttpClient.SendAsync),
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(msg => CheckBodyExpression(msg)),
+                ItExpr.IsAny<CancellationToken>());
+
+        Assert.Equal(2, result.Scopes.Count);
+        Assert.Contains(result.Scopes, x => x == "abc");
+        Assert.Contains(result.Scopes, x => x == "def");
+    }
+
+    [Trait(ErrorMessages.AotUnitTestTraitName, ErrorMessages.AotUnitTestTraitValue)]
+    [Fact]
+    public async Task ClientCredentialsTokenAsync_Aot()
+    {
+        const string clientAssertion = "abc";
+        var mockHttpHandler = new Mock<HttpMessageHandler>();
+        var httpClient = new HttpClient(mockHttpHandler.Object);
+
+        var mockResponse = new HttpResponseMessage
+        {
+            StatusCode = System.Net.HttpStatusCode.OK,
+
+            Content = new StringContent(JsonSerializer.Serialize(new EpicClientCredentialsAuthorizationToken("Bearer", "Abcdef", "abc def", 90)), Encoding.UTF8, "application/json")
+        };
+
+        mockHttpHandler
+          .Protected()
+          .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(msg => CheckBodyExpression(msg)),
+                ItExpr.IsAny<CancellationToken>())
+             .ReturnsAsync(mockResponse);
+
+        var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion, JsonContext.Default.EpicClientCredentialsAuthorizationToken);
 
         mockHttpHandler
             .Protected()
