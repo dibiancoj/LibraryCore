@@ -1,11 +1,12 @@
 ﻿using LibraryCore.ApiClient;
 using LibraryCore.ApiClient.ExtensionMethods;
+using LibraryCore.Shared;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace LibraryCore.Healthcare.Epic.Authentication;
@@ -17,6 +18,10 @@ public static class ClientCredentialsAuthentication
     /// </summary>
     /// <param name="tokenEndPointUrl">Token endpoint. Sandbox = https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token</param>
     /// <param name="clientAssertion">This is the created jwt token you generate from the private key</param>
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(ErrorMessages.AotDynamicAccess)]
+#endif
     public static async Task<EpicClientCredentialsAuthorizationToken> TokenAsync(HttpClient httpClient,
                                                                                  string tokenEndPointUrl,
                                                                                  string clientAssertion,
