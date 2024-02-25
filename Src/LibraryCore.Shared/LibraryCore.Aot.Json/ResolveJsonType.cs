@@ -18,9 +18,24 @@ public static class ResolveJsonType
 #endif
     public static JsonTypeInfo<T> ResolveJsonTypeInfo<T>(JsonSerializerDefaults serializationDefault = JsonSerializerDefaults.Web)
     {
+        return (JsonTypeInfo<T>)ResolveOptionsToUse(null, serializationDefault).GetTypeInfo(typeof(T));
+    }
+
+    public static JsonTypeInfo<T> ResolveJsonTypeInfo<T>(JsonSerializerOptions? jsonSerializerOptions)
+    {
+        return (JsonTypeInfo<T>)ResolveOptionsToUse(jsonSerializerOptions, JsonSerializerDefaults.Web).GetTypeInfo(typeof(T));
+    }
+
+    private static JsonSerializerOptions ResolveOptionsToUse(JsonSerializerOptions? jsonSerializerOptions, JsonSerializerDefaults serializationDefault)
+    {
+        if (jsonSerializerOptions is not null)
+        {
+            return jsonSerializerOptions;
+        }
+
         return serializationDefault == JsonSerializerDefaults.Web ?
-            (JsonTypeInfo<T>)(WebDefaultSerializerOptions ??= CreateWebSerializer()).GetTypeInfo(typeof(T)) :
-            (JsonTypeInfo<T>)JsonSerializerOptions.Default.GetTypeInfo(typeof(T));
+                                            (WebDefaultSerializerOptions ??= CreateWebSerializer()) :
+                                            JsonSerializerOptions.Default;
     }
 
     private static JsonSerializerOptions CreateWebSerializer() => new(JsonSerializerDefaults.Web)
