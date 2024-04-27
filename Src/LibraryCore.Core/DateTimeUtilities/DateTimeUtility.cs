@@ -1,6 +1,4 @@
-﻿using LibraryCore.Core.DateTimeUtilities.MockableDates;
-
-namespace LibraryCore.Core.DateTimeUtilities;
+﻿namespace LibraryCore.Core.DateTimeUtilities;
 
 public static class DateTimeUtility
 {
@@ -27,9 +25,15 @@ public static class DateTimeUtility
         return age;
     }
 
-    public static int DaysUntilNextBday(IDateTimeProvider dateTimeProvider, DateTime dateOfBirth)
+    /// <summary>
+    /// Days until next bday
+    /// </summary>
+    /// <param name="dateTimeProvider">Date time provider. Call TimeProvider.System to pass in for normal runtime code</param>
+    /// <param name="dateOfBirth">Date of birth</param>
+    /// <returns>Days until next bday</returns>
+    public static int DaysUntilNextBday(TimeProvider dateTimeProvider, DateTime dateOfBirth)
     {
-        var today = dateTimeProvider.GetNow().Date;
+        var today = dateTimeProvider.GetLocalNow().Date;
         var nextBday = new DateTime(today.Year, dateOfBirth.Month, dateOfBirth.Day);
 
         if (nextBday < today)

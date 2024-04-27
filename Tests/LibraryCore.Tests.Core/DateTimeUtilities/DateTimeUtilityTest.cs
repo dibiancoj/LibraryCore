@@ -1,5 +1,4 @@
 ﻿using LibraryCore.Core.DateTimeUtilities;
-using LibraryCore.Core.DateTimeUtilities.MockableDates;
 
 namespace LibraryCore.Tests.Core.DateTimeUtilities;
 
@@ -39,31 +38,59 @@ public class DateTimeUtilityTest
     [Fact]
     public void DaysUntilBdayTomorrow()
     {
-        Assert.Equal(1, DateTimeUtility.DaysUntilNextBday(new FixedDateTimeProvider(DateTime.Today), DateTime.Today.AddDays(1)));
+        var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(DateTime.UtcNow);
+
+        Assert.Equal(1, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.Today.AddDays(1)));
     }
 
     [Fact]
     public void DaysUntilBdayToday()
     {
-        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(new FixedDateTimeProvider(DateTime.Today), DateTime.Today));
+        var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(DateTime.UtcNow);
+
+        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.Today));
     }
 
     [Fact]
     public void DaysUntilBdayInThirtyDays()
     {
-        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(new FixedDateTimeProvider(DateTime.Today), DateTime.Today.AddYears(30)));
+        var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(TimeZoneInfo.ConvertTime(DateTime.UtcNow, eastern));
+
+        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.Today.AddYears(30)));
     }
 
     [Fact]
     public void DaysUntilBdayAlreadyPastInCurrentYear()
     {
-        Assert.Equal(336, DateTimeUtility.DaysUntilNextBday(new FixedDateTimeProvider(new DateTime(2023, 5, 1)), new DateTime(2023, 4, 1)));
+        var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(TimeZoneInfo.ConvertTimeToUtc(new DateTime(2023, 5, 1), eastern));
+
+        Assert.Equal(336, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, new DateTime(2023, 4, 1)));
     }
 
     [Fact]
     public void DaysUntilBdayDidntPassInCurrentYear()
     {
-        Assert.Equal(92, DateTimeUtility.DaysUntilNextBday(new FixedDateTimeProvider(new DateTime(2023, 8, 1)), new DateTime(2023, 11, 1)));
+        var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(TimeZoneInfo.ConvertTimeToUtc(new DateTime(2023, 8, 1), eastern));
+
+        Assert.Equal(92, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, new DateTime(2023, 11, 1)));
     }
 
     #endregion
