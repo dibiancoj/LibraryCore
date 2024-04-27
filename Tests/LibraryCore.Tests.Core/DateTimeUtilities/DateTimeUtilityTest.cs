@@ -60,13 +60,12 @@ public class DateTimeUtilityTest
     [Fact]
     public void DaysUntilBdayInThirtyDays()
     {
-        var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
         var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
 
         mockTimeProvider.Setup(x => x.GetUtcNow())
-            .Returns(TimeZoneInfo.ConvertTime(DateTime.Now, eastern));
+            .Returns(DateTime.UtcNow);
 
-        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.Today.AddYears(30)));
+        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.UtcNow.AddYears(30)));
     }
 
     [Fact]
