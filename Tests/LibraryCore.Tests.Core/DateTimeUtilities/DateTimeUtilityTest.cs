@@ -64,7 +64,7 @@ public class DateTimeUtilityTest
         var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
 
         mockTimeProvider.Setup(x => x.GetUtcNow())
-            .Returns(TimeZoneInfo.ConvertTime(DateTime.UtcNow, eastern));
+            .Returns(TimeZoneInfo.ConvertTime(DateTime.Now, eastern));
 
         Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.Today.AddYears(30)));
     }
