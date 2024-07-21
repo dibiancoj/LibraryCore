@@ -153,7 +153,7 @@ public static class StringExtensionMethods
         }
 
         //grab just the digits
-        var justDigitsInSpan = new string(zipCode.PullDigitsFromString().ToArray()).AsSpan();
+        var justDigitsInSpan = zipCode.PullDigitsFromString().ToArray().AsSpan();
 
         //we check for 9 which is the 2 segment zip
         if (justDigitsInSpan.Length == 5 || justDigitsInSpan.Length != 9)
@@ -186,7 +186,7 @@ public static class StringExtensionMethods
         }
 
         //clense it and just grab all the digits
-        var phoneNumberJustDigits = new string(phoneNumber.PullDigitsFromString().ToArray()).AsSpan();
+        var phoneNumberJustDigits = phoneNumber.PullDigitsFromString().ToArray().AsSpan();
 
         //is not 10 digits?
         if (phoneNumberJustDigits.Length != 10)
