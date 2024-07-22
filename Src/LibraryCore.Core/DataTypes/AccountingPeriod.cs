@@ -60,8 +60,8 @@ public class AccountingPeriod
 
         var temp = fullAccountingPeriod.ToString().AsSpan();
 
-        int tempMonth = Convert.ToInt32(new string(temp.Slice(4, 2)));
-        int tempYear = Convert.ToInt32(new string(temp[..4]));
+        int tempMonth = int.Parse(temp.Slice(4, 2));
+        int tempYear = int.Parse(temp[..4]);
 
         if (!IsValidMonth(tempMonth) || !IsValidYear(tempYear))
         {
