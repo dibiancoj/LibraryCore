@@ -90,7 +90,7 @@ jobs:
 
     - name: Docker Compose Up
       working-directory: ./IntegrationTests
-      run: docker-compose up -d --remove-orphans
+      run: docker compose up -d --remove-orphans
       env:
          DB_PW: ${{secrets.IntegrationTestSqlPw}}
 
@@ -109,7 +109,7 @@ jobs:
 
     - name: Docker Compose Down
       working-directory: ./IntegrationTests
-      run: docker-compose down
+      run: docker compose down
 
   publish-nuget-package:
 
