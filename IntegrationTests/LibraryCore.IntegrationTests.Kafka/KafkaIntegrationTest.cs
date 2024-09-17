@@ -9,8 +9,8 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
 {
     private WebApplicationFactoryFixture WebApplicationFactoryFixture { get; } = webApplicationFactoryFixture;
 
-    public record ResponseProcessedItem(string Topic, Guid TestId, int NodeId, string KeyId, string Message);
-    public record RequestPublishModel(string Topic, Guid TestId, string KeyId, string Message);
+    public record ResponseProcessedItem(Guid Id, Guid TestId, string Topic, int? NodeId, string Message);
+    public record RequestPublishModel(string Topic, Guid TestId, Guid KeyId, string Message);
 
     [Fact(Skip = WebApplicationFactoryFixture.SkipReason)]
     public async Task FullIntegrationTest()
@@ -19,12 +19,9 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         var testId = Guid.NewGuid();
         var topicsToTestWith = KafkaRegistration.TopicsToUse.Single();
 
-        var messagesToPublish = new List<RequestPublishModel>();
-
-        for (int i = 0; i < howManyRecordsToInsert; i++)
-        {
-            messagesToPublish.Add(new RequestPublishModel(topicsToTestWith, testId, i.ToString(), $"message{i}"));
-        }
+        var messagesToPublish = Enumerable.Range(0, howManyRecordsToInsert)
+                                .Select(i => new RequestPublishModel(topicsToTestWith, testId, Guid.NewGuid(), $"message{i}"))
+                                .ToList();
 
         _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish)).EnsureSuccessStatusCode();
 
@@ -52,7 +49,7 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         //make sure we have the right messages
         foreach (var toPublish in messagesToPublish)
         {
-            Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.TestId == testId && x.KeyId == toPublish.KeyId && x.Message == toPublish.Message);
+            Assert.Contains(recordsFound, x => x.Topic == toPublish.Topic && x.TestId == testId && x.Id == toPublish.KeyId && x.Message == toPublish.Message);
         }
 
         //let it hang out for a few seconds to ensure the threads keep going and processes more.
@@ -63,8 +60,8 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         //push 2 more records
         (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", new List<RequestPublishModel>
         {
-            new RequestPublishModel(topicsToTestWith,newTestId,"Key100", "Message100"),
-            new RequestPublishModel(topicsToTestWith,newTestId,"Key101", "Message101")
+            new(topicsToTestWith,newTestId, Guid.NewGuid(), "Message100"),
+            new(topicsToTestWith,newTestId, Guid.NewGuid(), "Message101")
         })).EnsureSuccessStatusCode();
 
         var spinWaitResult2 = await DiagnosticUtility.SpinUntilAsync(async () =>
