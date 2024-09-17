@@ -1,3 +1,3 @@
 ﻿namespace LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
 
-public record RequestPublishModel(string Topic, Guid TestId, string KeyId, string Message);
+public record RequestPublishModel(string Topic, Guid TestId, Guid KeyId, string Message);

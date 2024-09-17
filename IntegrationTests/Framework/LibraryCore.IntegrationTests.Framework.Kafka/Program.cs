@@ -1,17 +1,16 @@
 using Confluent.Kafka;
-using Confluent.Kafka.Admin;
 using LibraryCore.IntegrationTests.Framework.Kafka.Api;
-using LibraryCore.IntegrationTests.Framework.Kafka.KafkaProcessor;
+using LibraryCore.IntegrationTests.Framework.Kafka.HostedAgents;
 using LibraryCore.IntegrationTests.Framework.Kafka.Registration;
-using LibraryCore.Kafka;
+using LibraryCore.IntegrationTests.Framework.Kafka.Services;
+using LibraryCore.IntegrationTests.Framework.Kafka.Settings;
+using LibraryCore.Kafka.Registration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.RegisterKakfa();
-builder.Services.AddSingleton<MyIntegrationHostedAgentMockDatabase>();
-
 //need both readers to be from the same group so its split equally
-const string consumerGroupToUse = "integrationTest";
+builder.RegisterKakfa();
+
 const int numberOfNodesOrPartitions = 5;
 
 //if you need multiple hosted agents running (with the same class) - this way you end up with 2 runners (i reader isn't enough to keep up). This is needed for kafka to save the correct order (multiple consumers).
@@ -26,14 +25,12 @@ const int numberOfNodesOrPartitions = 5;
 //                                                                                                   new MyIntegrationHostedAgent(KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
 //                                                                                                   sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>())));
 
-builder.Services.AddSingleton(sp => new KafkaNodeManager()
-    .RegisterJob(MyHostedAgent.KakfaJobName, numberOfNodesOrPartitions, () => new MyKafkaJob1(sp.GetRequiredService<ILogger<MyKafkaJob1>>(),
-                                                                      KafkaRegistration.TopicsToUse,
-                                                                      KafkaRegistration.BuildConsumerGroup(consumerGroupToUse),
-                                                                      sp.GetRequiredService<MyIntegrationHostedAgentMockDatabase>())));
-
-builder.Services.AddSingleton<IHostedService>(sp => new MyHostedAgent(sp.GetRequiredService<KafkaNodeManager>()));
 //or builder.AddHostedService<MyHostedAgent>()
+
+builder.Services.AddSingleton<MockDatabase>();
+
+builder.Services.AddKafkaConsumer<KafkaTopic1MessagePayload, SampleKafkaSettings>(builder.Configuration);
+builder.Services.AddHostedService<Topic1HostedService>();
 
 var app = builder.Build();
 
@@ -48,7 +45,7 @@ var adminClient = app.Services.GetRequiredService<IAdminClient>();
 //this admin api is unstable and will change. Can't find a good way to check if a topic exists. Will run it this way.
 try
 {
-    await adminClient.DeleteTopicsAsync(KafkaRegistration.TopicsToUse);
+    await adminClient.DeleteTopicsAsync(LibraryCore.IntegrationTests.Framework.Kafka.Registration.KafkaRegistration.TopicsToUse);
 }
 catch (Exception ex)
 {
@@ -58,7 +55,7 @@ catch (Exception ex)
 try
 {
     //add 10 just to make sure we have ample slots when the old test hasn't been killed off yet.
-    await adminClient.CreateTopicsAsync([new() { Name = KafkaRegistration.TopicsToUse.Single(), NumPartitions = numberOfNodesOrPartitions + 10 }]);
+    await adminClient.CreateTopicsAsync([new() { Name = LibraryCore.IntegrationTests.Framework.Kafka.Registration.KafkaRegistration.TopicsToUse.Single(), NumPartitions = numberOfNodesOrPartitions + 10 }]);
 }
 catch (Exception ex)
 {

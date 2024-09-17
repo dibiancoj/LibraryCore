@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using LibraryCore.IntegrationTests.Framework.Kafka.Api.Models;
+using LibraryCore.IntegrationTests.Framework.Kafka.Services;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -8,7 +8,7 @@ namespace LibraryCore.IntegrationTests.Framework.Kafka.Registration;
 public static class KafkaRegistration
 {
     private const string bootstrapServer = "localhost:9093";
-    public static IImmutableList<string> TopicsToUse { get; } = new List<string> { "topic-123" }.ToImmutableList();
+    public static IImmutableList<string> TopicsToUse { get; } = new List<string> { "my-topic-1" }.ToImmutableList();
 
     public static void RegisterKakfa(this WebApplicationBuilder builder)
     {
@@ -34,26 +34,9 @@ public static class KafkaRegistration
         };
     }
 
-    public static IConsumer<string, KafkaMessageModel> BuildConsumerGroup(string consumerGroup)
+    private static IProducer<string, KafkaTopic1MessagePayload> BuildProducerGroup()
     {
-        return new ConsumerBuilder<string, KafkaMessageModel>(new ConsumerConfig(BuildClientConfig())
-        {
-            GroupId = consumerGroup,
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            EnableAutoOffsetStore = false,
-            EnableAutoCommit = true
-            //AllowAutoCreateTopics = true not working KafkaMessagePayloadSerializer latest version based on threads (docker compose is set)
-        })
-        .SetValueDeserializer(new KafkaMessagePayloadSerializer())
-        .SetErrorHandler((t, err) =>
-        {
-            throw new Exception(err.Reason);
-        }).Build();
-    }
-
-    private static IProducer<string, KafkaMessageModel> BuildProducerGroup()
-    {
-        return new ProducerBuilder<string, KafkaMessageModel>(new ProducerConfig(BuildClientConfig()))
+        return new ProducerBuilder<string, KafkaTopic1MessagePayload>(new ProducerConfig(BuildClientConfig()))
         .SetErrorHandler((t, err) =>
         {
             throw new Exception(err.Reason);
@@ -62,14 +45,14 @@ public static class KafkaRegistration
         .Build();
     }
 
-    public class KafkaMessagePayloadSerializer : IDeserializer<KafkaMessageModel>, ISerializer<KafkaMessageModel>
+    public class KafkaMessagePayloadSerializer : IDeserializer<KafkaTopic1MessagePayload>, ISerializer<KafkaTopic1MessagePayload>
     {
-        public KafkaMessageModel Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
+        public KafkaTopic1MessagePayload Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
         {
-            return JsonSerializer.Deserialize<KafkaMessageModel>(data) ?? throw new Exception("Can't Deserialize The Kafka Message To PublishModel");
+            return JsonSerializer.Deserialize<KafkaTopic1MessagePayload>(data) ?? throw new Exception("Can't Deserialize The Kafka Message To PublishModel");
         }
 
-        public byte[] Serialize(KafkaMessageModel data, SerializationContext context)
+        public byte[] Serialize(KafkaTopic1MessagePayload data, SerializationContext context)
         {
             return JsonSerializer.SerializeToUtf8Bytes(data);
         }
