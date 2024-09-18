@@ -25,7 +25,7 @@ public abstract class KafkaConsumerService<T>(ILogger<KafkaConsumerService<T>> l
     /// Minimum nodes you want to run to look for and process messages. Currently, the threads is a static value. Future functionailty might include dynamic scaling.
     /// The default value is 1 if you don't override this property
     /// </summary>
-    public virtual int MinimumNumberOfNodes => 1;
+    public virtual int MinimumNumberOfNodes { get; } = 1;
 
     /// <summary>
     /// Topic to consume from for this service
@@ -40,7 +40,7 @@ public abstract class KafkaConsumerService<T>(ILogger<KafkaConsumerService<T>> l
     /// <summary>
     /// If there are no messages consumed, we will back off for this time period. The default is 15 seconds.
     /// </summary>
-    public virtual TimeSpan NoMessageBackOffPeriod => TimeSpan.FromSeconds(15);
+    public virtual TimeSpan NoMessageBackOffPeriod { get; } = TimeSpan.FromSeconds(15);
 
     /// <summary>
     /// Which offset to use. Earliest is the default value
