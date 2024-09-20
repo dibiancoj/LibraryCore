@@ -46,8 +46,8 @@
 //    [Fact]
 //    public void MultipleParameter()
 //    {
-//        Assert.Equal("Save Request - Drug Name Id = 25 | Msk Provider Id = 9876", RuleParserFixture.ResolveRuleParserEngine()
-//                                                                                   .ParseString("'Save Request - Drug Name Id = {@ExtractFromDictionary($Request$, 'SaveRequest.Id')} | Msk Provider Id = {@ExtractFromDictionary($Request$, 'SaveRequest.ProviderId')}'")
+//        Assert.Equal("Save Request - Drug Name Id = 25 | Provider Id = 9876", RuleParserFixture.ResolveRuleParserEngine()
+//                                                                                   .ParseString("'Save Request - Drug Name Id = {@ExtractFromDictionary($Request$, 'SaveRequest.Id')} | Provider Id = {@ExtractFromDictionary($Request$, 'SaveRequest.ProviderId')}'")
 //                                                                                   .BuildStringExpression<Dictionary<string, object>>("Request")
 //                                                                                   .Compile()
 //                                                                                   .Invoke(new Dictionary<string, object> { { "SaveRequest", new MockSaveRequest(25, 9876) } }));

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<Authors>Jason DiBianco</Authors>
+		<Description>Shared Package For Smb File Share Functionality</Description>
+		<Version>1.0.0</Version>
+		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Title>LibraryCore - SmbFileShare</Title>
+		<IsTrimmable>true</IsTrimmable>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+		<PackageReference Include="SMBLibrary" Version="1.5.3.5" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+	</ItemGroup>
+
+</Project>
