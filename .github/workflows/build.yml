@@ -90,7 +90,7 @@ jobs:
 
     - name: Docker Compose Up
       working-directory: ./IntegrationTests
-      run: docker compose up -d --remove-orphans
+      run: docker compose up -d --remove-orphans --wait --wait-timeout 60
       env:
          DB_PW: ${{secrets.IntegrationTestSqlPw}}
 
