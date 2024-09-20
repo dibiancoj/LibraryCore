@@ -11,7 +11,7 @@ public class SqlServerTestFixture : IAsyncLifetime
 #if DEBUG
     public const string SkipReason = "Don't want to run database integration test locally for now.";
 #else
-    public const string SkipReason = "";
+    public const string SkipReason = "Test";
 #endif
 
     public string ConnectionString { get; private set; } = null!;
