@@ -1,4 +1,5 @@
-﻿using LibraryCore.Shared;
+﻿using LibraryCore.Core.Authentication;
+using LibraryCore.Shared;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -116,11 +117,9 @@ public class FluentRequest(HttpMethod httpMethodType, string url)
 
     public FluentRequest AddBasicAuthentication(string userName, string password)
     {
-        Message.Headers.Authorization = new AuthenticationHeaderValue("Basic", BasicAuthenticationHeaderValue(userName, password));
+        Message.Headers.Authorization = new AuthenticationHeaderValue("Basic", BasicAuthentication.ToBasicAuthenticationValue(userName, password));
         return this;
     }
-
-    public static string BasicAuthenticationHeaderValue(string userName, string password) => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
 
     /// <summary>
     /// Add an authenticated token like "bearer" or "token"
