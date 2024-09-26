@@ -5,7 +5,7 @@ namespace LibraryCore.Kafka.Settings;
 
 /// <summary>
 /// This class is used to hold the settings necessary to connect to a Kafka server.
-/// The UserName and UserPassword are optional and only needed if you are connecting to the MSK Kafka Servers
+/// The UserName and UserPassword are optional and only needed if you are connecting to the Kafka Servers
 /// </summary>
 /// <remarks>This is a partial class which allows you to add extra parameters you need</remarks>
 [ExcludeFromCodeCoverage]
