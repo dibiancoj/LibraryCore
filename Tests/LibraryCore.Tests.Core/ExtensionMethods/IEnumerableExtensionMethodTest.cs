@@ -187,7 +187,7 @@ public class IEnumerableExtensionMethodTest
         List<string>? originalEnumerable = null;
 
         //go grab the result. (pass in empty enumerable...because the result should be empty)
-        Assert.Equal(Enumerable.Empty<string>(), originalEnumerable.EmptyIfNull());
+        Assert.Equal([], originalEnumerable.EmptyIfNull());
     }
 
     #endregion
@@ -297,16 +297,30 @@ public class IEnumerableExtensionMethodTest
 
     #region Median
 
+#if NET7_0_OR_GREATER
+
+    #region Median
+
     [Fact]
     public void MedianWithNullSource()
     {
-        Assert.Throws<ArgumentNullException>(() => ((List<int>)null!).Median());
+        List<int> lst = null!;
+
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => lst.Median<int, double>());
     }
 
     [Fact]
     public void MedianWithEmptySource()
     {
-        Assert.Throws<InvalidOperationException>(() => Array.Empty<int>().Median());
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => Array.Empty<int>().Median<int, double>());
+    }
+
+    [InlineData(new[] { 1, 2, 3, 4 }, 2.5)] //even item
+    [InlineData(new[] { 3, 2, 1 }, 2)] //odd item
+    [Theory]
+    public void Median_With_Ints(IEnumerable<int> source, double expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median<int,double>());
     }
 
     [InlineData(new[] { 1D, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
@@ -314,10 +328,44 @@ public class IEnumerableExtensionMethodTest
     [InlineData(new[] { 3D, 2, 1 }, 2)] //odd item
     [InlineData(new[] { 3D, 25, 16 }, 16)] //odd item
     [Theory]
-    public void MedianMultipleChecksSource(IEnumerable<double> source, double expectedResult)
+    public void Median_With_Doubles(IEnumerable<double> source, double expectedResult)
     {
-        Assert.Equal(expectedResult, source.Median());
+        Assert.Equal(expectedResult, source.Median<double, double>());
     }
+
+    [InlineData(new[] { 1D, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
+    [InlineData(new[] { 1D, 15, 25, 5, 6, 7, 2.5, 9 }, 6.5)] //even item
+    [InlineData(new[] { 3D, 2, 1 }, 2)] //odd item
+    [InlineData(new[] { 3D, 25, 16 }, 16)] //odd item
+    [Theory]
+    public void Median_With_DoubleToFloat(IEnumerable<double> source, float expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median<double, float>());
+    }
+
+    [InlineData(new[] { 1F, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
+    [InlineData(new[] { 1F, 15, 25, 5, 6, 7, 2.5F, 9 }, 6.5)] //even item
+    [InlineData(new[] { 3F, 2, 1 }, 2)] //odd item
+    [InlineData(new[] { 3F, 25, 16 }, 16)] //odd item
+    [Theory]
+    public void Median_With_Floats(IEnumerable<float> source, double expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median<float, double>());
+    }
+
+    [InlineData(new[] { 1F, 1, 1, 5, 6, 7, 8, 9 }, 5.5)] //even item
+    [InlineData(new[] { 1F, 15, 25, 5, 6, 7, 2.5F, 9 }, 6.5)] //even item
+    [InlineData(new[] { 3F, 2, 1 }, 2)] //odd item
+    [InlineData(new[] { 3F, 25, 16 }, 16)] //odd item
+    [Theory]
+    public void Median_With_Float_Float(IEnumerable<float> source, float expectedResult)
+    {
+        Assert.Equal(expectedResult, source.Median<float, float>());
+    }
+
+    #endregion
+
+#endif
 
     #endregion
 

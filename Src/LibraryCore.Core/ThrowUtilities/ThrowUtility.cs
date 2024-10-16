@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using LibraryCore.Core.ExtensionMethods;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace LibraryCore.Core.ThrowUtilities;
@@ -29,6 +30,22 @@ public static class ThrowUtility
         if (value)
         {
             ThrowIfTrueException(expression);
+        }
+    }
+
+    [DoesNotReturn]
+    private static void ThrowEnumerableIsNullOrEmpty(string? expression) => throw new ArgumentOutOfRangeException(expression, "The enumerable is null or empty");
+
+    /// <summary>
+    /// Throw if the array is null or empty
+    /// </summary>
+    /// <param name="value">Source array to check</param>
+    /// <param name="expression">expression to set if it results in an error</param>
+    public static void ThrowIfNullOrEmpty<T>(IEnumerable<T> value, [CallerArgumentExpression(nameof(value))] string? expression = null)
+    {
+        if (value.IsNullOrEmpty())
+        {
+            ThrowEnumerableIsNullOrEmpty(expression);
         }
     }
 
