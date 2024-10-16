@@ -39,4 +39,42 @@ public class ThrowUtilityTest
         }
     }
 
+    #region Array Guards
+
+    [Fact]
+    public void ThrowIfEnumerableIsNullOrEmpty_WithNull()
+    {
+        var exceptionThrown = Assert.Throws<ArgumentOutOfRangeException>(() => ThrowUtility.ThrowIfNullOrEmpty<int>(null!));
+
+        Assert.Equal("The enumerable is null or empty (Parameter 'null')", exceptionThrown.Message);
+    }
+
+    [Fact]
+    public void ThrowIfEnumerableIsNullOrEmpty_WithEmpty()
+    {
+        var exceptionThrown = Assert.Throws<ArgumentOutOfRangeException>(() => ThrowUtility.ThrowIfNullOrEmpty(Array.Empty<int>()));
+
+        Assert.Equal("The enumerable is null or empty (Parameter 'Array.Empty<int>()')", exceptionThrown.Message);
+    }
+
+    [Fact]
+    public void ErrorMessageIsCorrectWithVariable()
+    {
+        List<int> emptyArray = [];
+
+        var exceptionThrown = Assert.Throws<ArgumentOutOfRangeException>(() => ThrowUtility.ThrowIfNullOrEmpty<int>(emptyArray));
+
+        Assert.Equal("The enumerable is null or empty (Parameter 'emptyArray')", exceptionThrown.Message);
+    }
+
+    [Fact]
+    public void DontThrowIfEnumerableHasElements()
+    {
+        ThrowUtility.ThrowIfNullOrEmpty([1, 2, 3]);
+
+        Assert.True(true);
+    }
+
+    #endregion
+
 }
