@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LibraryCore.Core.ThrowUtilities;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Numerics;
 
 namespace LibraryCore.Core.ExtensionMethods;
 
@@ -83,7 +85,7 @@ public static class IEnumerableExtensionMethods
     /// <param name="enumerableToCheck">Enumerable to check and return the value off of</param>
     /// <returns>The original IEnumerable (if not null). Or an empty enumerable with 0 elements if the enumerable passed is null</returns>
     /// <remarks>Please note this is slower then checking for null. Multiple reasons including the foreach still allocated the enumerator 'GetEnumerator'</remarks>
-    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? enumerableToCheck) => enumerableToCheck ?? Enumerable.Empty<T>();
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? enumerableToCheck) => enumerableToCheck ?? [];
 
     #endregion
 
@@ -157,34 +159,43 @@ public static class IEnumerableExtensionMethods
 
     #region Median
 
+#if NET7_0_OR_GREATER
+
     /// <summary>
     /// The median is the middle number in a sorted asc or desc, list of numbers and can be more descriptive then the average
     /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
-    public static double Median<T>(this IEnumerable<T> source)
-        where T : IConvertible
+    /// <typeparam name="TInput">Input type of the source array</typeparam>
+    /// <typeparam name="TResult">The result value which needs to be a floating point data type. ie: double, float, decimal, etc.</typeparam>
+    /// <param name="source">The source array to grab the median from</param>
+    /// <returns>The median value</returns>
+    /// <exception cref="ArgumentNullException">Thrown if the source array is null</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if there are no elements in the array</exception>
+    public static TResult Median<TInput, TResult>(this IEnumerable<TInput> source)
+        where TInput : INumber<TInput>
+        where TResult : INumber<TResult>, IFloatingPoint<TResult>, IDivisionOperators<TResult, TResult, TResult>
     {
-        ArgumentNullException.ThrowIfNull(source);
+        ThrowUtility.ThrowIfNullOrEmpty(source);
 
         var sortedList = source
-            .Select(x => x.ToDouble(CultureInfo.InvariantCulture))
             .OrderBy(x => x)
             .ToList();
 
         var count = sortedList.Count;
 
-        if (count == 0)
-        {
-            throw new InvalidOperationException("The source sequence is empty");
-        }
-
         if (count % 2 == 0)
         {
-            return (sortedList[count / 2 - 1] + sortedList[count / 2]) / 2;
+            TInput halfBefore = sortedList[count / 2 - 1];
+            TInput half = sortedList[count / 2];
+
+            TResult sum = TResult.CreateChecked(halfBefore + half);
+
+            return sum / TResult.CreateChecked(2);
         }
 
-        return sortedList[count / 2];
+        return TResult.CreateChecked(sortedList[count / 2]);
     }
+
+#endif
 
     #endregion
 
