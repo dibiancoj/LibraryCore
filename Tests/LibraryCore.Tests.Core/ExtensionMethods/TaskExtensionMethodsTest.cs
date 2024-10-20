@@ -5,7 +5,7 @@ namespace LibraryCore.Tests.Core.ExtensionMethods;
 /// <summary>
 /// Task based extension methods
 /// </summary>
-public static class TaskExtensionMethods
+public static class TaskExtensionMethodsTest
 {
 
     /// <summary>
