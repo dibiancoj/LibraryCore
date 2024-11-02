@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace LibraryCore.Core.DataProviders;
 
-public interface IDataProvider
+public interface IDataProvider : IDisposable, IAsyncDisposable
 {
     Task<bool> CanConnectToDatabaseAsync();
     Task CloseConnectionAsync();

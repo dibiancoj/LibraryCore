@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace LibraryCore.Core.DataProviders;
 
 [ExcludeFromCodeCoverage(Justification = "Tested In Integration Project. Using this as a 1 off")]
-public class SqlDataProvider : IDataProvider, IAsyncDisposable
+public class SqlDataProvider : IDataProvider, IAsyncDisposable, IDisposable
 {
 
     #region Constructor
@@ -255,6 +255,27 @@ public class SqlDataProvider : IDataProvider, IAsyncDisposable
         {
             await ConnSql.CloseAsync();
             await ConnSql.DisposeAsync();
+            Disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (Disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            ConnSql.Close();
+            ConnSql.Dispose();
             Disposed = true;
         }
     }
