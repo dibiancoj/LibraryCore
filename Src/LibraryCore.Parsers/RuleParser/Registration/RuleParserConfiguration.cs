@@ -8,7 +8,7 @@ namespace LibraryCore.Parsers.RuleParser.Registration;
 public class RuleParserConfiguration(IServiceCollection serviceDescriptors)
 {
     private IServiceCollection ServiceDescriptors { get; } = serviceDescriptors;
-    private Dictionary<string, MethodInfo> RegisteredMethods { get; } = new Dictionary<string, MethodInfo>();
+    private Dictionary<string, MethodInfo> RegisteredMethods { get; } = [];
 
     public RuleParserConfiguration WithRegisteredMethod(string key, MethodInfo methodInfo)
     {

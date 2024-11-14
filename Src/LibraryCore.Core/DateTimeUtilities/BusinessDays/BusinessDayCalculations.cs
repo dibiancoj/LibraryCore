@@ -2,7 +2,7 @@
 
 public static class BusinessDayCalculations
 {
-    public static int NumberOfBusinessDaysBetweenDates(DateTime startDate, DateTime endDate) => NumberOfBusinessDaysBetweenDates(startDate, endDate, Enumerable.Empty<DateTime>());
+    public static int NumberOfBusinessDaysBetweenDates(DateTime startDate, DateTime endDate) => NumberOfBusinessDaysBetweenDates(startDate, endDate, []);
 
     public static int NumberOfBusinessDaysBetweenDates(DateTime startDate, DateTime endDate, IEnumerable<DateTime> holidaysToExclude) => DaysBetween2Dates(startDate, endDate, holidaysToExclude).Count();
 

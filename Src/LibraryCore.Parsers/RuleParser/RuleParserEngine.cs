@@ -66,7 +66,7 @@ public class RuleParserEngine(TokenFactoryProvider tokenFactoryProvider)
             var nextPeekedCharacter = reader.PeekCharacter();
 
             //alot of the tokens are looking for words or the first 2 characters. Combine it here so each rule doesn't need to create a string
-            var readAndPeeked = new string(new[] { characterRead, nextPeekedCharacter });
+            var readAndPeeked = new string([characterRead, nextPeekedCharacter]);
 
             var tokenFactoryFound = tokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeeked);
 

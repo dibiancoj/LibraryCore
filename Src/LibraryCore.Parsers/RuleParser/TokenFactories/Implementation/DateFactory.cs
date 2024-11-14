@@ -26,7 +26,7 @@ public class DateFactory : ITokenFactory
         }
 
         //eat the closing ^
-        RuleParsingUtility.EatOrThrowCharacters(stringReader, new string(new[] { DateTimeIdentifier }));
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, new string([DateTimeIdentifier]));
 
         //we need to handle if this is nullable ('?')
         var typeToUse = IsNullableDate(stringReader) ? typeof(DateTime?) : typeof(DateTime);

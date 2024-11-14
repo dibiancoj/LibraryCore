@@ -56,7 +56,7 @@ public static class ObjectExtensionMethods
     /// <typeparam name="T">Type Of The Item Passed In</typeparam>
     /// <param name="itemToPutInArray">Item To Push Into The IEnumerable</param>
     /// <returns>IList Of That Object Type, With The Item In The IList</returns>
-    public static IList<T> ToIList<T>(this T itemToPutInArray) => new List<T> { itemToPutInArray };
+    public static IList<T> ToIList<T>(this T itemToPutInArray) => [itemToPutInArray];
 
     #endregion
 

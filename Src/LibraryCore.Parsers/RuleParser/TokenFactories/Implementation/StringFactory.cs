@@ -65,7 +65,7 @@ public class StringFactory : ITokenFactory
             var characterRead = stringReader.ReadCharacter();
             var characterPeeked = stringReader.PeekCharacter();
 
-            var factoryFound = createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, characterPeeked, new string(new[] { characterRead, characterPeeked }));
+            var factoryFound = createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, characterPeeked, new string([characterRead, characterPeeked]));
 
             var token = factoryFound.CreateToken(characterRead, stringReader, createTokenParameters);
 
@@ -100,9 +100,7 @@ public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToke
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();
 
         //grab the format with the correct number of items
-        var stringFormat = typeof(string).GetMethod(nameof(string.Format), new[] { typeof(string) }
-                                                        .Concat(stringFormatObjectTypes)
-                                                        .ToArray()) ?? throw new Exception("Can't Find String.Format Method Info");
+        var stringFormat = typeof(string).GetMethod(nameof(string.Format), [typeof(string), .. stringFormatObjectTypes]) ?? throw new Exception("Can't Find String.Format Method Info");
 
         //create all the parameters
         IEnumerable<Expression> tokens = InnerTokens.Select(x => Expression.Convert(x.CreateExpression(parameters), typeof(object)));
