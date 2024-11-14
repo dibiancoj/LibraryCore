@@ -1,5 +1,4 @@
-﻿using LibraryCore.Shared;
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
