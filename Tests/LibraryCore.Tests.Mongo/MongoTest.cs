@@ -10,7 +10,7 @@ public class MongoTest
     {
         public ObjectId Id { get; set; }
         public string Name { get; set; } = null!;
-        public IEnumerable<string> States { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<string> States { get; set; } = [];
         public DateTime CreatedDate { get; set; } = new DateTime(2020, 1, 1);
 
         public static IEnumerable<Countries> MockData(int howMany) => Enumerable.Range(1, howMany).Select(x => new Countries
