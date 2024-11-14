@@ -7,7 +7,7 @@
 		<Description>.NetCore Common Utilities For Healthcare</Description>
 		<RepositoryUrl>https://github.com/dibiancoj/LibraryCore</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>9.4.0</Version>
+		<Version>9.5.0</Version>
 		<Title>LibraryCore - Healthcare</Title>
 		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">false</IsAotCompatible>
 		<IsTrimmable>true</IsTrimmable>
@@ -31,10 +31,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hl7.Fhir.R4" Version="5.6.1" />
-		<PackageReference Include="LibraryCore.ApiClient" Version="9.3.0" />
-		<PackageReference Include="LibraryCore.Caching" Version="9.1.0" />
-		<PackageReference Include="LibraryCore.Core" Version="9.0.1" />
+		<PackageReference Include="Hl7.Fhir.R4" Version="5.11.0" />
+		<PackageReference Include="LibraryCore.ApiClient" Version="9.4.0" />
+		<PackageReference Include="LibraryCore.Caching" Version="9.2.0" />
+		<PackageReference Include="LibraryCore.Core" Version="9.5.0" />
+		<PackageReference Include="librarycore.xmlserialization" Version="9.1.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 

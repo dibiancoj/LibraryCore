@@ -54,7 +54,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LibraryCore.Core" Version="9.0.1" />
+		<PackageReference Include="LibraryCore.Core" Version="9.5.0" />
 	</ItemGroup>
 
 </Project>
