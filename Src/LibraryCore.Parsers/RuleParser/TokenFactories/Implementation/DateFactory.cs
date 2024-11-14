@@ -53,7 +53,7 @@ public class DateFactory : ITokenFactory
         return false;
     }
 
-    private static IToken CreateDateToken(Type typeToUse, StringBuilder textFound)
+    private static DateToken CreateDateToken(Type typeToUse, StringBuilder textFound)
     {
         if (!DateTime.TryParse(textFound.ToString(), out DateTime tryToParseDateTime))
         {

@@ -62,7 +62,7 @@ public static class ObjectExtensionMethods
 
     #region Throw If Null
 
-    public static T ThrowIfNull<T>(this T? objectToVerify, [CallerArgumentExpression("objectToVerify")] string? expression = null)
+    public static T ThrowIfNull<T>(this T? objectToVerify, [CallerArgumentExpression(nameof(objectToVerify))] string? expression = null)
     {
         if (objectToVerify == null)
         {

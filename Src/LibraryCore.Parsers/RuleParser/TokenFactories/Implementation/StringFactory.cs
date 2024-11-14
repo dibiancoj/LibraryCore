@@ -94,7 +94,7 @@ public record StringToken(string Value, IEnumerable<IToken> InnerTokens) : IToke
             CreateExpressionWithInnerFormats(parameters);
     }
 
-    private Expression CreateExpressionWithInnerFormats(IReadOnlyList<ParameterExpression> parameters)
+    private MethodCallExpression CreateExpressionWithInnerFormats(IReadOnlyList<ParameterExpression> parameters)
     {
         //create an object[] with the correct number of parameters. ie: {0}  {1}...we would end up with object[1]
         var stringFormatObjectTypes = Enumerable.Range(0, InnerTokens.Count()).Select(x => typeof(object)).ToArray();

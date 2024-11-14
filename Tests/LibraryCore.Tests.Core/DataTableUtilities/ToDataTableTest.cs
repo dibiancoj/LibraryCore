@@ -12,7 +12,7 @@ public class ToDataTableTest
         public static IEnumerable<DataTableTestClass> BuildListOfTLazy(int howManyRecords)
         {
             return Enumerable.Range(0, howManyRecords)
-                      .Select(x => new DataTableTestClass(x, x.ToString(), x == 0 ? null : x, new List<DataTableTestClass> { new DataTableTestClass(x, x.ToString(), null, Enumerable.Empty<DataTableTestClass>()) }));
+                      .Select(x => new DataTableTestClass(x, x.ToString(), x == 0 ? null : x, new List<DataTableTestClass> { new(x, x.ToString(), null, []) }));
         }
     }
 
