@@ -70,7 +70,7 @@ public static class RuleParsingUtility
             }
             else
             {
-                var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
+                var readAndPeaked = new string([characterRead, nextPeekedCharacter]);
 
                 tokenList.Add(createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
                                                   .CreateToken(characterRead, parameterReader, createTokenParameters));
@@ -120,7 +120,7 @@ public static class RuleParsingUtility
 
             var characterRead = parameterReader.ReadCharacter();
             var nextPeekedCharacter = parameterReader.PeekCharacter();
-            var readAndPeaked = new string(new[] { characterRead, nextPeekedCharacter });
+            var readAndPeaked = new string([characterRead, nextPeekedCharacter]);
 
             yield return createTokenParameters.TokenFactoryProvider.ResolveTokenFactory(characterRead, nextPeekedCharacter, readAndPeaked)
                                     .CreateToken(characterRead, parameterReader, createTokenParameters);
@@ -138,7 +138,7 @@ public static class RuleParsingUtility
 
         if (eatCharacterToStop)
         {
-            EatOrThrowCharacters(reader, new string(new[] { characterToStop }));
+            EatOrThrowCharacters(reader, new string([characterToStop]));
         }
 
         return text.ToString();

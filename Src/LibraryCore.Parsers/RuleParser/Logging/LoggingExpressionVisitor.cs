@@ -41,7 +41,7 @@ internal class LoggingExpressionVisitor<TReturnSignature>(bool addParameterDebug
     {
         //we essentially want to output each parameter passed in and serialize it to json
 
-        var serializeMethod = typeof(JsonSerializer).GetMethod(nameof(JsonSerializer.Serialize), new Type[] { typeof(object), typeof(Type), typeof(JsonSerializerOptions) }) ?? throw new Exception("Can't Find Json Serialize MethodInfo");
+        var serializeMethod = typeof(JsonSerializer).GetMethod(nameof(JsonSerializer.Serialize), [typeof(object), typeof(Type), typeof(JsonSerializerOptions)]) ?? throw new Exception("Can't Find Json Serialize MethodInfo");
         var serializerToUse = Expression.Constant(new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true });
         var loggerAddParametersMethod = typeof(IExpressionLogger).GetMethod(nameof(IExpressionLogger.AddParameter)) ?? throw new Exception("Can't Find Logger Add Parameter MethodInfo");
 
@@ -70,12 +70,11 @@ internal class LoggingExpressionVisitor<TReturnSignature>(bool addParameterDebug
             Expression.Call(
                 LoggerParameter,
                 LoggerParameter.Type.GetMethod(nameof(IExpressionLogger.AddLogRecord)) ?? throw new Exception("Can't Find Add Method On ExpressionLogger"),
-                new Expression[]
-                {
+                [
                     //call method with the 2 parameters (expression description ie: 1 == 1, expression result ie: true)
                     Expression.Call(Expression.Constant(exp), exp.GetType().GetMethod("ToString") ?? throw new Exception("Can't Find ToString Method")),
                     Expression.Convert(exp,typeof(bool))
-                }
+                ]
             ),
             base.VisitBinary(exp)
         );

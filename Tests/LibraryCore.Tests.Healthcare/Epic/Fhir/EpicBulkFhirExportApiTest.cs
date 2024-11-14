@@ -164,8 +164,8 @@ public class EpicBulkFhirExportApiTest
         var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
         var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
 
-        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
-        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient1, mockPatient2]));
+        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient3]));
 
         Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
                                                                        msg.Headers.Authorization!.Parameter == "abc";
@@ -209,8 +209,8 @@ public class EpicBulkFhirExportApiTest
         var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
         var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
 
-        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
-        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+        var mockResponse1 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient1, mockPatient2]));
+        var mockResponse2 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient3]));
 
         Expression<Func<HttpRequestMessage, bool>> msgChecker = msg => msg.Headers.Authorization!.Scheme == "Bearer" &&
                                                                        msg.Headers.Authorization!.Parameter == "abc";
@@ -289,8 +289,8 @@ public class EpicBulkFhirExportApiTest
         var mockPatient2 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "22222222" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
         var mockPatient3 = JsonSerializer.Serialize(new Hl7.Fhir.Model.Patient { Id = "33333333" }, new JsonSerializerOptions().ForFhir(Hl7.Fhir.Model.ModelInfo.ModelInspector));
 
-        var mockGetDetailsWhenDone1 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient1, mockPatient2 }));
-        var mockGetDetailsWhenDone2 = CreateMockedResponse(string.Join(Environment.NewLine, new[] { mockPatient3 }));
+        var mockGetDetailsWhenDone1 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient1, mockPatient2]));
+        var mockGetDetailsWhenDone2 = CreateMockedResponse(string.Join(Environment.NewLine, [mockPatient3]));
 
         MockHttpHandler
          .Protected()

@@ -6,7 +6,7 @@ public class MockAsyncCursor<T>(IEnumerable<T> items) : IAsyncCursor<T>
 {
     private bool called = false;
 
-    public IEnumerable<T> Current { get; } = items ?? Enumerable.Empty<T>();
+    public IEnumerable<T> Current { get; } = items ?? [];
 
     public bool MoveNext(CancellationToken cancellationToken = new CancellationToken())
     {

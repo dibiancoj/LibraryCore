@@ -98,7 +98,7 @@ public static class WithStructSpan
 
     private static string WalkColumnWordWithoutQuotes(ref StringSpanReader reader, char currentCharacterRead, char delimiter)
     {
-        return string.Concat(currentCharacterRead, reader.ReadUntilCharacter(new string(new[] { delimiter }), StringComparison.OrdinalIgnoreCase));
+        return string.Concat(currentCharacterRead, reader.ReadUntilCharacter(new string([delimiter]), StringComparison.OrdinalIgnoreCase));
         //var columnBuilder = new StringBuilder().Append(currentCharacterRead);
 
         //while (reader.PeekCharacter() != delimiter && reader.HasMoreCharacters())

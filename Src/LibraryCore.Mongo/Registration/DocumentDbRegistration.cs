@@ -22,11 +22,21 @@ public static class DocumentDbRegistration
     //to ssh with port forwarding
     //ssh -i "my-dev-ssh-key.pem" -L 27017:mycluster.us-east-1.docdb.amazonaws.com:27017 ec2-user@10.1.1.1 -N
 
+#if NET9_0_OR_GREATER
+    private static Dictionary<DocumentDbCertIdentifier, X509Certificate[]> CachedDocumentDbCertIdentifierLookup { get; } = new()
+    {
+        { DocumentDbCertIdentifier.rds_ca_2019, new X509Certificate[] { X509CertificateLoader.LoadCertificate(CaCertIdentifierFromResource(DocumentDbCertIdentifier.rds_ca_2019, true)) } },
+        { DocumentDbCertIdentifier.rds_ca_rsa2048_g1, new X509Certificate[] {  X509CertificateLoader.LoadCertificate(CaCertIdentifierFromResource(DocumentDbCertIdentifier.rds_ca_rsa2048_g1, true)) } }
+    };
+#else
     private static Dictionary<DocumentDbCertIdentifier, X509Certificate[]> CachedDocumentDbCertIdentifierLookup { get; } = new()
     {
         { DocumentDbCertIdentifier.rds_ca_2019, new X509Certificate[] { new (CaCertIdentifierFromResource(DocumentDbCertIdentifier.rds_ca_2019, true)) } },
         { DocumentDbCertIdentifier.rds_ca_rsa2048_g1, new X509Certificate[] { new (CaCertIdentifierFromResource(DocumentDbCertIdentifier.rds_ca_rsa2048_g1, true)) } }
     };
+#endif
+
+
 
     /// <summary>
     /// Create a mongo client with encryption at rest. Use this overload if the cert attached to the database is not specified in the overload
@@ -38,7 +48,12 @@ public static class DocumentDbRegistration
     [ExcludeFromCodeCoverage]
     public static IMongoClient CreateMongoClient(string mongoConnectionString, byte[] caPublicCertIdentifierContent, bool allowInsecureTls = false)
     {
-        return CreateMongoClient(mongoConnectionString, [new X509Certificate(caPublicCertIdentifierContent)], allowInsecureTls);
+#if NET9_0_OR_GREATER
+        X509Certificate[] certs = [X509CertificateLoader.LoadCertificate(caPublicCertIdentifierContent)];
+#else
+        X509Certificate[] certs = [new X509Certificate(caPublicCertIdentifierContent)];
+#endif
+        return CreateMongoClient(mongoConnectionString, certs, allowInsecureTls);
     }
 
     /// <summary>
@@ -54,7 +69,7 @@ public static class DocumentDbRegistration
         return CreateMongoClient(mongoConnectionString, CachedDocumentDbCertIdentifierLookup[documentDbCertIdentifier], allowInsecureTls);
     }
 
-    private static IMongoClient CreateMongoClient(string mongoConnectionString, X509Certificate[] x509CertContent, bool allowInsecureTls = false)
+    private static MongoClient CreateMongoClient(string mongoConnectionString, X509Certificate[] x509CertContent, bool allowInsecureTls = false)
     {
         var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
 

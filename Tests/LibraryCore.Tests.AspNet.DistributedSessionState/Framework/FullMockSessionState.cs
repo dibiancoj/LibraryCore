@@ -6,7 +6,7 @@ public record MockWithSessionResult(Mock<IHttpContextAccessor> MockContextAccess
 
 public class FullMockSessionState : ISession
 {
-    private Dictionary<string, byte[]> InternalSessionStateStorage { get; } = new Dictionary<string, byte[]>();
+    private Dictionary<string, byte[]> InternalSessionStateStorage { get; } = [];
 
     public bool IsAvailable => true;
 

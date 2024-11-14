@@ -13,7 +13,7 @@ public interface IExpressionLogger
 
 public class ExpressionLogger : IExpressionLogger
 {
-    private List<LogResult> Records { get; } = new();
+    private List<LogResult> Records { get; } = [];
     private Lazy<List<ParameterResult>> Parameters { get; } = new();
 
     public void AddLogRecord(string message, bool result) => Records.Add(new LogResult(message, result));

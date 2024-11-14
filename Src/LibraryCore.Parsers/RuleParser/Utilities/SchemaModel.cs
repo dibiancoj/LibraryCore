@@ -50,9 +50,9 @@ public record SchemaModel(JsonElement? Schema)
         //in an effort not to have specific types array, int, string, datetime...just going to deserialize the property.
         //Can cache this is performance becomes a problem with the basic types
         var temp = typeof(JsonSerializer).GetMethod(nameof(JsonSerializer.Deserialize),
-                                                new[] { typeof(JsonElement),
+                                                [ typeof(JsonElement),
                                                         typeof(JsonSerializerOptions)
-                                                }) ?? throw new Exception("Can't Find Method To Convert Dynamic Type");
+                                                ]) ?? throw new Exception("Can't Find Method To Convert Dynamic Type");
 
         foreach (var enumValue in EnumUtility.GetValuesLazy<SchemaDataType>())
         {

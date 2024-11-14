@@ -1,5 +1,6 @@
 ﻿using LibraryCore.Parsers.RuleParser.TokenFactories.Implementation;
 using LibraryCore.Tests.Parsers.RuleParser.Fixtures;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.Tests.Parsers.RuleParser.Tokens;
 
@@ -133,6 +134,7 @@ public class StringParserTest(RuleParserFixture ruleParserFixture) : IClassFixtu
         Assert.Equal(expectedResult, expression.Invoke(new SurveyModelBuilder().Value));
     }
 
+    [SuppressMessage("Assertions", "xUnit2031:Do not use Where clause with Assert.Single", Justification = "Doesn't work with expressions. Test fails")]
     [Fact]
     public void ExpressionInLinq()
     {

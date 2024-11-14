@@ -26,7 +26,7 @@ public class DateFactory : ITokenFactory
         }
 
         //eat the closing ^
-        RuleParsingUtility.EatOrThrowCharacters(stringReader, new string(new[] { DateTimeIdentifier }));
+        RuleParsingUtility.EatOrThrowCharacters(stringReader, new string([DateTimeIdentifier]));
 
         //we need to handle if this is nullable ('?')
         var typeToUse = IsNullableDate(stringReader) ? typeof(DateTime?) : typeof(DateTime);
@@ -53,7 +53,7 @@ public class DateFactory : ITokenFactory
         return false;
     }
 
-    private static IToken CreateDateToken(Type typeToUse, StringBuilder textFound)
+    private static DateToken CreateDateToken(Type typeToUse, StringBuilder textFound)
     {
         if (!DateTime.TryParse(textFound.ToString(), out DateTime tryToParseDateTime))
         {
