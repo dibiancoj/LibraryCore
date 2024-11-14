@@ -10,7 +10,6 @@ namespace LibraryCore.AspNet.Validation;
 
 public class RequiredIfContainsAttribute(string propertyName, object requiredIfValue) : ValidationAttribute
 {
-    [RequiresUnreferencedCode($"{nameof(IsValid)} It Not Trimmer Safe")]
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         //try to short circuit without reflection. Do we have a value then we can ignore everything
@@ -19,7 +18,9 @@ public class RequiredIfContainsAttribute(string propertyName, object requiredIfV
             return ValidationResult.Success;
         }
 
+#pragma warning disable IL2075
         var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(propertyName) ?? throw new MissingFieldException($"Property Name = {propertyName} not found in object");
+#pragma warning restore IL2075
 
         var triggerPropertyValue = triggerPropertyInfo.GetValue(validationContext.ObjectInstance, null);
 

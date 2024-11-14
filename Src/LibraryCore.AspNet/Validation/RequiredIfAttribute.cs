@@ -11,8 +11,9 @@ public class RequiredIfAttribute(string propertyName, params object[] requiredIf
         {
             return ValidationResult.Success;
         }
-
+#pragma warning disable IL2075
         var triggerPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(propertyName) ?? throw new MissingFieldException($"Property Name = {propertyName} not found in object");
+#pragma warning restore IL2075
 
         var triggerPropertyValue = triggerPropertyInfo.GetValue(validationContext.ObjectInstance, null);
 
