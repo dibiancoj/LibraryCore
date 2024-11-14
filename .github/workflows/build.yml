@@ -130,20 +130,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup .NET
+    - name: Setup .NET 6
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 6.x
 
-    - name: Setup .NET
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 7.x
 
-    - name: Setup .NET
+    - name: Setup .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.x
+
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.x
 
 #broke around 11/16. No changes on my end and after .net 7 came out. This step fixes it which I don't like as much.
     - name: Prep Auth For NuGet
