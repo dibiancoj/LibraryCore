@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿using LibraryCore.Shared;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryCore.AspNet.Validation;
 
 /// <summary>
 /// Field is required if a another property which is ienumerable contains a specific value
 /// </summary>
+
 public class RequiredIfContainsAttribute(string propertyName, object requiredIfValue) : ValidationAttribute
 {
+    [RequiresUnreferencedCode($"{nameof(IsValid)} It Not Trimmer Safe")]
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         //try to short circuit without reflection. Do we have a value then we can ignore everything
