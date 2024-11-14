@@ -84,6 +84,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+  
+    - name: Setup .NET 9.x
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.x
 
     - name: Setup .NET 8.x
       uses: actions/setup-dotnet@v4
