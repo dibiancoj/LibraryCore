@@ -35,7 +35,7 @@
 		<PackageReference Include="LibraryCore.ApiClient" Version="9.3.0" />
 		<PackageReference Include="LibraryCore.Caching" Version="9.1.0" />
 		<PackageReference Include="LibraryCore.Core" Version="9.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

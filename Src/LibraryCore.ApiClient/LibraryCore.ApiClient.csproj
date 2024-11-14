@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="LibraryCore.Core" Version="9.1.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Include="LibraryCore.XmlSerialization" Version="9.0.1" />
 	</ItemGroup>
 
