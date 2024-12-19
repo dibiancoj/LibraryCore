@@ -41,9 +41,23 @@ public static class ReflectionUtility
         //basically do a union on the root assembly and the references assemblies. This way we can unit test this
         return referencesAssemblies
                .Prepend(rootAssembly)
-               .SelectMany(x => x.DefinedTypes)
+               .SelectMany(GetLoadableTypes)
+               .Select(x => x.GetTypeInfo())
                .Where(x => x.ImplementedInterfaces.Contains(typeof(TInterface)))
                .ToList();//don't want to create an iterator with assemblies
+    }
+
+    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException e)
+        {
+            return e.Types.Where(t => t is not null)!;
+        }
     }
 
     #endregion
