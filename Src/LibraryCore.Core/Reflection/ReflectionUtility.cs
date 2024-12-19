@@ -47,7 +47,7 @@ public static class ReflectionUtility
                .ToList();//don't want to create an iterator with assemblies
     }
 
-    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    [RequiresUnreferencedCode(ErrorMessages.AotDynamicAccess)]
     private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
     {
         try
