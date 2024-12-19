@@ -15,7 +15,7 @@ public class EpicHttpContextBearerTokenProviderTest
 
         var result = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
-            _ = await tokenProviderToTest.AccessTokenAsync(default);
+            _ = await tokenProviderToTest.AccessTokenAsync(TestContext.Current.CancellationToken);
         });
 
         Assert.IsType<ArgumentNullException>(result);
@@ -50,7 +50,7 @@ public class EpicHttpContextBearerTokenProviderTest
         mockIAuthenticationService.Setup(x => x.AuthenticateAsync(It.IsAny<HttpContext>(), null))
             .Returns(Task.FromResult(authenticationResult));
 
-        var result = await new EpicHttpContextBearerTokenProvider(mockHttpContextAccessor.Object).AccessTokenAsync(default);
+        var result = await new EpicHttpContextBearerTokenProvider(mockHttpContextAccessor.Object).AccessTokenAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(tokenValueToExpect, result);
 

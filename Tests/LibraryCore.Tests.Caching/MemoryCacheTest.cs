@@ -119,7 +119,7 @@ public class MemoryCacheTest
         //kick off a thread
         var longRunningCache = InMemoryCacheServiceToUse.GetOrCreateWithLockAsync("Test1", async x =>
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
 
             return await Task.FromResult("abc");
         });
@@ -141,16 +141,16 @@ public class MemoryCacheTest
         //kick off a thread
         var longRunningCache = InMemoryCacheServiceToUse.GetOrCreateWithLockAndEvictionAsync("Test2", async x =>
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
 
             return await Task.FromResult("abc");
-        }, default);
+        }, TestContext.Current.CancellationToken);
 
         //this should be blocked and throw
         var shouldFailBecauseOfTimeout = InMemoryCacheServiceToUse.GetOrCreateWithLockAndEvictionAsync("Test2", async x =>
         {
             return await Task.FromResult("def");
-        }, cancellationToken: default, acquireLockTimeout: TimeSpan.FromSeconds(1));
+        }, cancellationToken: TestContext.Current.CancellationToken, acquireLockTimeout: TimeSpan.FromSeconds(1));
 
         Assert.Equal("abc", await longRunningCache);
 

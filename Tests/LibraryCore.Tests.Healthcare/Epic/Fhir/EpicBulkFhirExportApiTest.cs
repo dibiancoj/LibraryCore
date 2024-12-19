@@ -181,7 +181,7 @@ public class EpicBulkFhirExportApiTest
 
         var patientsFromData = new List<Hl7.Fhir.Model.Patient>();
 
-        await foreach (var patientRecord in EpicBulkFhirExportApiToUse.BulkResultRawSectionData<Hl7.Fhir.Model.Patient>(urls))
+        await foreach (var patientRecord in EpicBulkFhirExportApiToUse.BulkResultRawSectionData<Hl7.Fhir.Model.Patient>(urls, TestContext.Current.CancellationToken))
         {
             patientsFromData.Add(patientRecord);
         }
@@ -306,7 +306,7 @@ public class EpicBulkFhirExportApiTest
 
         var results = new List<Hl7.Fhir.Model.Patient>();
 
-        await foreach (var patientResult in EpicBulkFhirExportApiToUse.KickOffAndWaitForCompletionAsync<Hl7.Fhir.Model.Patient>("http://server.fhir/group/zzzzzz/$export", false, TimeSpan.FromSeconds(2)))
+        await foreach (var patientResult in EpicBulkFhirExportApiToUse.KickOffAndWaitForCompletionAsync<Hl7.Fhir.Model.Patient>("http://server.fhir/group/zzzzzz/$export", false, TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken))
         {
             results.Add(patientResult);
         }

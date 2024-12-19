@@ -154,7 +154,7 @@ public class RunAndSuppressTest
 
         Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsAsync(async () =>
         {
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
 
             throw new Exception("Throw Error");
 
@@ -245,7 +245,7 @@ public class RunAndSuppressTest
 
         Assert.False(await RunAndSuppressErrors.RunAndSuppressAnyErrorsValueTaskAsync(async () =>
         {
-            await Task.Delay(5);
+            await Task.Delay(5, TestContext.Current.CancellationToken);
 
             await ValueTask.CompletedTask;
 

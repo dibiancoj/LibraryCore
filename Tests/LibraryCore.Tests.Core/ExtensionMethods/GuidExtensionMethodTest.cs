@@ -9,15 +9,15 @@ public static class GuidExtensionMethodTest
     {
         var baseGuid = Guid.Empty;
 
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
 
         var secondGuid = baseGuid.SequentialGuidCreate();
 
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
 
         var thirdGuid = secondGuid.SequentialGuidCreate();
 
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
 
         var fourthGuid = thirdGuid.SequentialGuidCreate();
 

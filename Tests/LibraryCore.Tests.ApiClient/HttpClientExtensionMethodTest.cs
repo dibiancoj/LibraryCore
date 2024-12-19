@@ -107,7 +107,7 @@ public class HttpClientExtensionMethodTest
 
         var exceptionRaised = await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            _ = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request);
+            _ = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request, cancellationToken: TestContext.Current.CancellationToken);
         });
 
         Assert.NotNull(exceptionRaised);
@@ -132,7 +132,7 @@ public class HttpClientExtensionMethodTest
         var request = new FluentRequest(HttpMethod.Get, "https://test.api/WeatherForecast")
                                                 .AddHeader("Header1", "Header1Value");
 
-        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request);
+        var result = await HttpRequestMockSetup.HttpClientToUse.SendRequestToJsonAsync<IEnumerable<WeatherForecast>, Dictionary<string, string>>(request, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(isSuccessfulApiCall, result.IsSuccessful);
 
@@ -201,11 +201,7 @@ public class HttpClientExtensionMethodTest
                                                            req.RequestUri!.AbsoluteUri == "https://mygateway/token");
 
 
-        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync("https://mygateway/token",
-                                                                           "MyToken",
-                                                                           "MySecret",
-                                                                           grantType: "test_credentials",
-                                                                           scope: "test_scope"))!;
+        var result = (await HttpRequestMockSetup.HttpClientToUse.TokenAsync("https://mygateway/token", "MyToken", "MySecret", grantType: "test_credentials", scope: "test_scope", cancellationToken: TestContext.Current.CancellationToken))!;
 
         Assert.Equal("my_token_type", result.TokenType);
         Assert.Equal("Abcdef", result.AccessToken);
@@ -235,7 +231,8 @@ public class HttpClientExtensionMethodTest
                                                                            "MySecret",
                                                                            ApiJsonContext.Default.Token,
                                                                            grantType: "test_credentials",
-                                                                           scope: "test_scope"))!;
+                                                                           scope: "test_scope",
+                                                                           cancellationToken: TestContext.Current.CancellationToken))!;
 
         Assert.Equal("my_token_type", result.TokenType);
         Assert.Equal("Abcdef", result.AccessToken);

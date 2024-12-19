@@ -126,13 +126,13 @@ public class FluentRequestTest
                                                 .AddJsonBody(jsonParameters)
                                                 .Message;
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
+        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -166,13 +166,13 @@ public class FluentRequestTest
                                        .AddHeader("Header1", "Header1Value")
                                        .AddJsonBody(jsonParameters);
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
+        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -202,13 +202,13 @@ public class FluentRequestTest
                                          .AddJsonBody(jsonParameters)
                                          .Message;
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/json", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync());
+        Assert.Equal(JsonSerializer.Serialize(jsonParameters, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -243,13 +243,13 @@ public class FluentRequestTest
                                                 .AddFormsUrlEncodedBody(parameters)
                                                 .Message;
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("application/x-www-form-urlencoded", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Equal("10=Test10&20=Test20", await request.Content!.ReadAsStringAsync());
+        Assert.Equal("10=Test10&20=Test20", await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -275,13 +275,13 @@ public class FluentRequestTest
                                                 .AddFileStreamBody("formFiles", new KeyValuePair<string, byte[]>("test.jpg", byteArray))
                                                 .Message;
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
+        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -304,13 +304,13 @@ public class FluentRequestTest
                                                 .AddFileStreamBody("formFiles", new KeyValuePair<string, Stream>("test.jpg", byteArrayStream))
                                                 .Message;
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
         Assert.Equal("multipart/form-data", request.Content?.Headers?.ContentType?.MediaType);
-        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync());
+        Assert.Contains("--Upload--", await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var singleResult = Assert.Single(result);
         Assert.True(singleResult.Id == 1 && singleResult.TemperatureF == 10 && singleResult.Summary == "Weather 1");
 
@@ -334,10 +334,10 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
                                          .AddBasicAuthentication("root", "pass@word1");
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(cancellationToken: TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));
@@ -362,10 +362,10 @@ public class FluentRequestTest
         var request = new FluentRequest(HttpMethod.Get, "WeatherForecast")
                                          .AddAuthenticationHeader(scheme, "abcdefg");
 
-        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request);
+        var response = await HttpRequestMockSetup.HttpClientToUse.SendAsync(request, TestContext.Current.CancellationToken);
 
         var result = await response.EnsureSuccessStatusCode()
-                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>() ?? throw new Exception("Can't deserialize result");
+                        .Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>(cancellationToken: TestContext.Current.CancellationToken) ?? throw new Exception("Can't deserialize result");
 
 
         HttpRequestMockSetup.VerifyAndThrow(Times.Once(), req => req.Method == HttpMethod.Get && req.RequestUri!.AbsoluteUri == new Uri("https://test.api/WeatherForecast").AbsoluteUri && req.Headers.Any(t => t.Key == "Authorization" && t.Value.First() == expectedAuthValue));

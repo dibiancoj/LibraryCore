@@ -37,8 +37,8 @@ public class BundleExtensionMethodTest
     [Fact]
     public void BundleAllPagesInBundleWithBlockingCollection()
     {
-        var result = Bundle.AllPagesInBundle(MockFhirClient.Object, default)
-                            .ToBlockingEnumerable()
+        var result = Bundle.AllPagesInBundle(MockFhirClient.Object, TestContext.Current.CancellationToken)
+                            .ToBlockingEnumerable(TestContext.Current.CancellationToken)
                             .ToArray();
 
         Assert.Equal(4, result.Length);
@@ -55,7 +55,7 @@ public class BundleExtensionMethodTest
     {
         var itemsReturned = new List<Bundle.EntryComponent>();
 
-        await foreach (var item in Bundle.AllPagesInBundle(MockFhirClient.Object, default))
+        await foreach (var item in Bundle.AllPagesInBundle(MockFhirClient.Object, TestContext.Current.CancellationToken))
         {
             itemsReturned.Add(item);
         }

@@ -40,7 +40,7 @@ public class ConsumerServiceTest
 
         var tsk = myHostedService.Object.StartAsync(CancellationToken.None);
 
-        await Task.Delay(TimeSpan.FromSeconds(5));
+        await Task.Delay(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
 
         await myHostedService.Object.StopAsync(CancellationToken.None);
 
@@ -83,7 +83,7 @@ public class ConsumerServiceTest
 
         var tsk = myHostedService.Object.StartAsync(CancellationToken.None);
 
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        await Task.Delay(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
 
         await myHostedService.Object.StopAsync(CancellationToken.None);
 
