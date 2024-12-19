@@ -62,6 +62,9 @@ public class DateTimeUtilityTest
     {
         var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
 
+        mockTimeProvider.Setup(x => x.LocalTimeZone)
+            .Returns(TimeZoneInfo.Utc);
+
         var now = DateTime.UtcNow;
 
         mockTimeProvider.Setup(x => x.GetUtcNow())
