@@ -24,7 +24,7 @@ public class HttpContentExtensionMethodTest
 
         var content = new StringContent(serializedObject.ToString(), Encoding.UTF8, "text/xml");
 
-        var result = await content.ReadFromXmlAsync<TestModel>() ?? throw new Exception("Can't Deserialize Model");
+        var result = await content.ReadFromXmlAsync<TestModel>(cancellationToken: TestContext.Current.CancellationToken) ?? throw new Exception("Can't Deserialize Model");
 
         Assert.Equal(100, result.Id); ;
         Assert.Equal("One Hundred", result.Name);

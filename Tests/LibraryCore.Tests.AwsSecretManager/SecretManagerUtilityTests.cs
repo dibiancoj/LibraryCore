@@ -30,7 +30,7 @@ public class SecretManagerUtilityTests
 
         var exception = await Assert.ThrowsAsync<Exception>(() =>
         {
-            return SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName");
+            return SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken);
         });
 
         mockIAmazonSecretsManager.VerifyAll();
@@ -48,7 +48,7 @@ public class SecretManagerUtilityTests
                 SecretString = "test123"
             }));
 
-        Assert.Equal("test123", await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName"));
+        Assert.Equal("test123", await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken));
 
         mockIAmazonSecretsManager.VerifyAll();
     }
@@ -67,7 +67,7 @@ public class SecretManagerUtilityTests
                 SecretBinary = streamToMock
             }));
 
-        Assert.Equal("test12345", await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName"));
+        Assert.Equal("test12345", await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken));
 
         mockIAmazonSecretsManager.VerifyAll();
     }
@@ -83,7 +83,7 @@ public class SecretManagerUtilityTests
                 HttpStatusCode = System.Net.HttpStatusCode.OK
             }));
 
-        Assert.Null(await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName"));
+        Assert.Null(await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken));
 
         mockIAmazonSecretsManager.VerifyAll();
     }
@@ -102,7 +102,7 @@ public class SecretManagerUtilityTests
                 SecretString = JsonSerializer.Serialize(new TestSecretWithJson("DbKey", "123", 9999))
             }));
 
-        var result = await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName");
+        var result = await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal("DbKey", result.Key);
@@ -124,7 +124,7 @@ public class SecretManagerUtilityTests
                 SecretString = string.Empty
             }));
 
-        Assert.Null(await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName"));
+        Assert.Null(await SecretManagerUtilities.GetSecretAsync<TestSecretWithJson>(mockIAmazonSecretsManager.Object, "MySecretName", cancellationToken: TestContext.Current.CancellationToken));
 
         mockIAmazonSecretsManager.VerifyAll();
     }
@@ -143,7 +143,7 @@ public class SecretManagerUtilityTests
                                                }
                                              """;
 
-        mockSecretService.Setup(x => x.GetSecretValueAsync(It.Is<GetSecretValueRequest>(t => t.SecretId == arn && t.VersionStage == "AWSCURRENT"), default))
+        mockSecretService.Setup(x => x.GetSecretValueAsync(It.Is<GetSecretValueRequest>(t => t.SecretId == arn && t.VersionStage == "AWSCURRENT"), It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult(new GetSecretValueResponse
             {
                 ARN = arn,
@@ -151,7 +151,7 @@ public class SecretManagerUtilityTests
                 HttpStatusCode = System.Net.HttpStatusCode.OK
             }));
 
-        var secretFromService = await SecretManagerUtilities.GetSecretKeyValuePairAsync<string, string>(mockSecretService.Object, arn) ?? throw new Exception("Can't Get Value");
+        var secretFromService = await SecretManagerUtilities.GetSecretKeyValuePairAsync<string, string>(mockSecretService.Object, arn, cancellationToken: TestContext.Current.CancellationToken) ?? throw new Exception("Can't Get Value");
 
         Assert.Equal(2, secretFromService.Count);
         Assert.Contains(secretFromService, x => x.Key == "a" && x.Value == "aaaaa");
@@ -177,7 +177,7 @@ public class SecretManagerUtilityTests
                                                }
                                              """;
 
-        mockSecretService.Setup(x => x.GetSecretValueAsync(It.Is<GetSecretValueRequest>(t => t.SecretId == arn && t.VersionStage == "AWSCURRENT"), default))
+        mockSecretService.Setup(x => x.GetSecretValueAsync(It.Is<GetSecretValueRequest>(t => t.SecretId == arn && t.VersionStage == "AWSCURRENT"), It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult(new GetSecretValueResponse
             {
                 ARN = arn,
@@ -185,7 +185,7 @@ public class SecretManagerUtilityTests
                 HttpStatusCode = System.Net.HttpStatusCode.OK
             }));
 
-        var secretFromService = await SecretManagerUtilities.GetSecretKeyValuePairAsync<string, string>(mockSecretService.Object, arn, AwsSecretJsonContext.Default.DictionaryStringString) ?? throw new Exception("Can't Get Value");
+        var secretFromService = await SecretManagerUtilities.GetSecretKeyValuePairAsync<string, string>(mockSecretService.Object, arn, AwsSecretJsonContext.Default.DictionaryStringString, cancellationToken: TestContext.Current.CancellationToken) ?? throw new Exception("Can't Get Value");
 
         Assert.Equal(2, secretFromService.Count);
         Assert.Contains(secretFromService, x => x.Key == "a" && x.Value == "aaaaa");
@@ -207,7 +207,7 @@ public class SecretManagerUtilityTests
                 SecretString = JsonSerializer.Serialize(new TestSecretWithJson("DbKey", "123", 9999))
             }));
 
-        var result = await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", AwsSecretJsonContext.Default.TestSecretWithJson);
+        var result = await SecretManagerUtilities.GetSecretAsync(mockIAmazonSecretsManager.Object, "MySecretName", AwsSecretJsonContext.Default.TestSecretWithJson, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal("DbKey", result.Key);

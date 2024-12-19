@@ -12,7 +12,7 @@ public class DiagnosticUtilityTest
         var result = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
             //force it to delay
-            await Task.Delay(10);
+            await Task.Delay(10, TestContext.Current.CancellationToken);
 
             timesCalled++;
 
@@ -30,7 +30,7 @@ public class DiagnosticUtilityTest
         var result = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
             //force it to delay
-            await Task.Delay(10);
+            await Task.Delay(10, TestContext.Current.CancellationToken);
 
             return timesCalled == int.MaxValue;
         }, TimeSpan.FromMilliseconds(3), TimeSpan.FromSeconds(3));

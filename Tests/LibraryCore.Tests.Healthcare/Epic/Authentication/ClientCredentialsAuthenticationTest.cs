@@ -71,7 +71,7 @@ public class ClientCredentialsAuthenticationTest
                 ItExpr.IsAny<CancellationToken>())
              .ReturnsAsync(mockResponse);
 
-        var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion);
+        var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion, cancellationToken: TestContext.Current.CancellationToken);
 
         mockHttpHandler
             .Protected()
@@ -109,7 +109,7 @@ public class ClientCredentialsAuthenticationTest
                 ItExpr.IsAny<CancellationToken>())
              .ReturnsAsync(mockResponse);
 
-        var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion, JsonContext.Default.EpicClientCredentialsAuthorizationToken);
+        var result = await ClientCredentialsAuthentication.TokenAsync(httpClient, "https://mytokenendpoint", clientAssertion, JsonContext.Default.EpicClientCredentialsAuthorizationToken, TestContext.Current.CancellationToken);
 
         mockHttpHandler
             .Protected()

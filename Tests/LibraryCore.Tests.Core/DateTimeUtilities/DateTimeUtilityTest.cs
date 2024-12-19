@@ -62,10 +62,15 @@ public class DateTimeUtilityTest
     {
         var mockTimeProvider = new Mock<TimeProvider>() { CallBase = true };
 
-        mockTimeProvider.Setup(x => x.GetUtcNow())
-            .Returns(DateTime.UtcNow);
+        mockTimeProvider.Setup(x => x.LocalTimeZone)
+            .Returns(TimeZoneInfo.Utc);
 
-        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, DateTime.UtcNow.AddYears(30)));
+        var now = DateTime.UtcNow;
+
+        mockTimeProvider.Setup(x => x.GetUtcNow())
+            .Returns(now);
+
+        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, now.AddYears(30)));
     }
 
     [Fact]

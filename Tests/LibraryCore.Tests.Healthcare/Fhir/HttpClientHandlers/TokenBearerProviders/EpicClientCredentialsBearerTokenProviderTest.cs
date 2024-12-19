@@ -52,13 +52,13 @@ public class EpicClientCredentialsBearerTokenProviderTest
                                                                          ClientCredentialsAuthenticationTest.PrivateKeyTester,
                                                                          "ClientAbc");
 
-        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync());
-        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync());
+        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
 
-        await Task.Delay(TimeSpan.FromSeconds(6));
+        await Task.Delay(TimeSpan.FromSeconds(6), TestContext.Current.CancellationToken);
 
-        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync());
-        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync());
+        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
 
         mockHttpHandler
          .Protected()
@@ -104,13 +104,13 @@ public class EpicClientCredentialsBearerTokenProviderTest
                                                                          "ClientAbc",
                                                                          JsonContextClientCredentailsTokenProvider.Default.EpicClientCredentialsAuthorizationToken);
 
-        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync());
-        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync());
+        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Abcdef", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
 
-        await Task.Delay(TimeSpan.FromSeconds(6));
+        await Task.Delay(TimeSpan.FromSeconds(6), TestContext.Current.CancellationToken);
 
-        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync());
-        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync());
+        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("zzzzzz", await tokenProvider.AccessTokenAsync(TestContext.Current.CancellationToken));
 
         mockHttpHandler
          .Protected()

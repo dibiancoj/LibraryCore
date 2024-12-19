@@ -23,15 +23,15 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
                                 .Select(i => new RequestPublishModel(topicsToTestWith, testId, Guid.NewGuid(), $"message{i}"))
                                 .ToList();
 
-        _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish)).EnsureSuccessStatusCode();
+        _ = (await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("kafka", messagesToPublish, TestContext.Current.CancellationToken)).EnsureSuccessStatusCode();
 
         //give it some time to get setup
-        await Task.Delay(TimeSpan.FromMinutes(1));
+        await Task.Delay(TimeSpan.FromMinutes(1), TestContext.Current.CancellationToken);
 
         //try to wait until the test passes...Or kill it after x number of seconds
         var spinWaitResult = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
-            return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}");
+            return howManyRecordsToInsert == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={testId}", TestContext.Current.CancellationToken);
 
         }, TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
 
@@ -39,7 +39,7 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         Assert.True(spinWaitResult, "Spin Until Messages Were Received Failed");
 
         //go grab the actual records so we can test with whats inside
-        var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ResponseProcessedItem>>($"kafka?TestId={testId}") ?? throw new Exception("Value Can't Be Deserialized");
+        var recordsFound = await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<IEnumerable<ResponseProcessedItem>>($"kafka?TestId={testId}", TestContext.Current.CancellationToken) ?? throw new Exception("Value Can't Be Deserialized");
 
         Assert.Equal(howManyRecordsToInsert, recordsFound.Count());
 
@@ -53,7 +53,7 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         }
 
         //let it hang out for a few seconds to ensure the threads keep going and processes more.
-        await Task.Delay(TimeSpan.FromSeconds(15));
+        await Task.Delay(TimeSpan.FromSeconds(15), TestContext.Current.CancellationToken);
 
         var newTestId = Guid.NewGuid();
 
@@ -62,11 +62,11 @@ public class KafkaIntegrationTest(WebApplicationFactoryFixture webApplicationFac
         {
             new(topicsToTestWith,newTestId, Guid.NewGuid(), "Message100"),
             new(topicsToTestWith,newTestId, Guid.NewGuid(), "Message101")
-        })).EnsureSuccessStatusCode();
+        }, TestContext.Current.CancellationToken)).EnsureSuccessStatusCode();
 
         var spinWaitResult2 = await DiagnosticUtility.SpinUntilAsync(async () =>
         {
-            return 2 == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={newTestId}");
+            return 2 == await WebApplicationFactoryFixture.HttpClientToUse.GetFromJsonAsync<int>($"kafkaMessageCount?TestId={newTestId}", TestContext.Current.CancellationToken);
 
         }, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30));
 
