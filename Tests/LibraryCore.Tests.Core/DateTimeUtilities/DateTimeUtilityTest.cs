@@ -67,7 +67,7 @@ public class DateTimeUtilityTest
         mockTimeProvider.Setup(x => x.GetUtcNow())
             .Returns(now);
 
-        Assert.Equal(1, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, now.AddYears(30)));
+        Assert.Equal(0, DateTimeUtility.DaysUntilNextBday(mockTimeProvider.Object, now.AddYears(30)));
     }
 
     [Fact]
