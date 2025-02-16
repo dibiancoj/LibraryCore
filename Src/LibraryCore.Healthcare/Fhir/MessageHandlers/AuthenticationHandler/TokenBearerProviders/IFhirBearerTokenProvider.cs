@@ -2,5 +2,5 @@
 
 public interface IFhirBearerTokenProvider
 {
-    ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default);
+    public ValueTask<string> AccessTokenAsync(CancellationToken cancellationToken = default);
 }

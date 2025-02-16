@@ -86,7 +86,7 @@ public class SqlDataProviderIntegrationTest(SqlServerTestFixture sqlServerTestFi
         //data reader
         using var reader = await dataProvider.DataReaderAsync("select * from states where TestId = @TestId", CommandType.Text, CommandBehavior.SingleRow, readTableParmeters);
 
-        await reader.ReadAsync();
+        await reader.ReadAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(nameof(DataReaderTest), reader["Description"]);
         await reader.CloseAsync();

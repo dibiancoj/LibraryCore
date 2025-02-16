@@ -295,7 +295,7 @@ public class StringExtensionMethodTest
     [Theory]
     public void PullDigitsFromString(string stringToTest, string expectedResult)
     {
-        Assert.Equal(expectedResult, new string(stringToTest.PullDigitsFromString().ToArray()));
+        Assert.Equal(expectedResult, new string([.. stringToTest.PullDigitsFromString()]));
     }
 
     #endregion

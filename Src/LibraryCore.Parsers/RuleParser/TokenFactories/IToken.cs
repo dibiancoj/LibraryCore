@@ -5,7 +5,7 @@ namespace LibraryCore.Parsers.RuleParser.TokenFactories;
 
 public interface IToken
 {
-    Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters);
+    public Expression CreateExpression(IReadOnlyList<ParameterExpression> parameters);
 }
 
 /// <summary>
@@ -29,10 +29,10 @@ public interface IInstanceOperator
 
 public interface IBinaryOperator
 {
-    Expression CreateBinaryOperatorExpression(Expression left, Expression right);
+    public Expression CreateBinaryOperatorExpression(Expression left, Expression right);
 }
 
 public interface INumberToken
 {
-    Type NumberType { get; }
+    public Type NumberType { get; }
 }

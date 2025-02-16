@@ -5,10 +5,10 @@ public record ParameterResult(string Name, string Value);
 
 public interface IExpressionLogger
 {
-    void AddLogRecord(string message, bool result);
-    void AddParameter(string parameterName, string parameterValue);
-    IEnumerable<LogResult> LogRecords();
-    IEnumerable<ParameterResult> ParameterRecords();
+    public void AddLogRecord(string message, bool result);
+    public void AddParameter(string parameterName, string parameterValue);
+    public IEnumerable<LogResult> LogRecords();
+    public IEnumerable<ParameterResult> ParameterRecords();
 }
 
 public class ExpressionLogger : IExpressionLogger

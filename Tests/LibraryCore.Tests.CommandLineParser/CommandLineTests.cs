@@ -159,7 +159,8 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         {
             reportIdToRun = parameters.RequiredParameterToValue<int>("ReportName");
             return Task.FromResult(1);
-        };
+        }
+        ;
 
         var optionBuilder = new OptionsBuilder().AddCommand("RunReport", "Run this command to generate the report", RunCommand)
                                                 .WithRequiredArgument("ReportName", "Report name to run")
@@ -184,7 +185,8 @@ Required Parameter Name = JsonPath | Value = jsonpath123
                                                  parameters.RequiredParameterToValue<bool>("OnlyActiveReports"));
 
             return Task.FromResult(1);
-        };
+        }
+        ;
 
         var optionBuilder = new OptionsBuilder().AddCommand("RunReport", "Run this command to generate the report", RunCommand)
                                                 .WithRequiredArgument("ReportId", "Report Id To Run")
@@ -221,7 +223,8 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         {
             connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-c").ValueIfSpecified;
             return Task.FromResult(1);
-        };
+        }
+        ;
 
         var optionBuilder = new OptionsBuilder()
                                     .AddCommand("RunReport", "Run this command to generate the report", RunCommand)
@@ -243,7 +246,8 @@ Required Parameter Name = JsonPath | Value = jsonpath123
         {
             connectionStringPassedIn = parameters.OptionalParameterToValue<string>("-C").ValueIfSpecified;
             return Task.FromResult(1);
-        };
+        }
+        ;
 
         var optionBuilder = new OptionsBuilder()
                                     .AddCommand("RunReport", "Run this command to generate the report", RunCommand)
@@ -299,7 +303,8 @@ Optional Parameter Name = -l | Value = Not Set
             parameterIsSpecified = IsSpecified;
 
             return Task.FromResult(1);
-        };
+        }
+        ;
 
         var optionBuilder = new OptionsBuilder()
                                     .AddCommand("RunReport", "Run this command to generate the report", RunCommand)

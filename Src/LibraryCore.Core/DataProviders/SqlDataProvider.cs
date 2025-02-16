@@ -214,7 +214,7 @@ public class SqlDataProvider : IDataProvider, IAsyncDisposable, IDisposable
 
         if (queryParameters.AnyWithNullCheck())
         {
-            commandToRun.Parameters.AddRange(queryParameters.ToArray());
+            commandToRun.Parameters.AddRange([.. queryParameters]);
         }
 
         if (commandTimeOut.HasValue)

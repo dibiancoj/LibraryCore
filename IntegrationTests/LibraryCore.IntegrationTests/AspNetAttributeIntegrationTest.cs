@@ -22,7 +22,7 @@ public class AspNetAttributeIntegrationTest(WebApplicationFactoryFixture webAppl
 
         foreach (var valueToTest in valuesToTest)
         {
-            var response = await webApplicationFactoryFixture.HttpClientToUse.SendAsync(new HttpRequestMessage(valueToTest.Key, "Simple/AspNetHttpMethodTest"));
+            var response = await webApplicationFactoryFixture.HttpClientToUse.SendAsync(new HttpRequestMessage(valueToTest.Key, "Simple/AspNetHttpMethodTest"), TestContext.Current.CancellationToken);
 
             Assert.Equal(valueToTest.Value, response.IsSuccessStatusCode);
             Assert.Equal(valueToTest.Value ? HttpStatusCode.OK : HttpStatusCode.MethodNotAllowed, response.StatusCode);

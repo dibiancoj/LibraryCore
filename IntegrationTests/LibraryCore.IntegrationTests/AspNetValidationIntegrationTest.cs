@@ -13,7 +13,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     [Theory]
     public async Task DateOfBirthTest(bool expectedToBeSuccessful, int howManyYearsAgoWereTheyBorn)
     {
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { DataOfBirth = DateTime.Now.AddYears(howManyYearsAgoWereTheyBorn) });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { DataOfBirth = DateTime.Now.AddYears(howManyYearsAgoWereTheyBorn) }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -24,7 +24,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     [Theory]
     public async Task MaxValueTest(bool expectedToBeSuccessful, int maxValueToUse)
     {
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { MaximumValue = maxValueToUse });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { MaximumValue = maxValueToUse }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -35,7 +35,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     [Theory]
     public async Task MinimumValueTest(bool expectedToBeSuccessful, int maxValueToUse)
     {
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { MinimumValue = maxValueToUse });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { MinimumValue = maxValueToUse }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -46,7 +46,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     [Theory]
     public async Task PastDateValueTest(bool expectedToBeSuccessful, bool addPastDate)
     {
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { PastDateValue = addPastDate ? DateTime.Now.AddDays(-2) : DateTime.Now.AddDays(2) });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { PastDateValue = addPastDate ? DateTime.Now.AddDays(-2) : DateTime.Now.AddDays(2) }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -60,7 +60,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     {
         var pastDateValue = setPastDate ? DateTime.Now.AddDays(-2) : new DateTime?();
 
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfValue = requiredIfFieldValue, PastDateValue = pastDateValue });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfValue = requiredIfFieldValue, PastDateValue = pastDateValue }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -75,7 +75,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     {
         string? requiredIfContainsTarget = setTargetValue ? "some text" : null;
 
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfContainsValue = new[] { requiredIfFieldValue }, RequiredIfContainsTarget = requiredIfContainsTarget });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { RequiredIfContainsValue = new[] { requiredIfFieldValue }, RequiredIfContainsTarget = requiredIfContainsTarget }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);
@@ -89,7 +89,7 @@ public class AspNetValidationIntegrationTest(WebApplicationFactoryFixture webApp
     [Theory]
     public async Task ZipCodeTest(bool expectedToBeSuccessful, string zipCodeValue)
     {
-        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { ZipCodeValue = zipCodeValue });
+        var response = await WebApplicationFactoryFixture.HttpClientToUse.PostAsJsonAsync("Simple/ValidationTest", new ValidationTest { ZipCodeValue = zipCodeValue }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedToBeSuccessful, response.IsSuccessStatusCode);
         Assert.Equal(expectedToBeSuccessful ? HttpStatusCode.OK : HttpStatusCode.BadRequest, response.StatusCode);

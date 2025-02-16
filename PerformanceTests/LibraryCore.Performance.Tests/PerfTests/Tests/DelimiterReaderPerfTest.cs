@@ -21,13 +21,13 @@ public class DelimiterReaderPerfTest
     [Benchmark(Baseline = true)]
     public List<DelimiterRow> WithStringReader()
     {
-        return DelimiterReader.ParseFromTextLinesLazy(TextToParse, '|').ToList();
+        return [.. DelimiterReader.ParseFromTextLinesLazy(TextToParse, '|')];
     }
 
     [Benchmark]
     public List<DelimiterRow> WithStructSpanReader()
     {
-        return WithStructSpan.ParseFromTextLinesLazyNew(TextToParse, '|').ToList();
+        return [.. WithStructSpan.ParseFromTextLinesLazyNew(TextToParse, '|')];
     }
 }
 

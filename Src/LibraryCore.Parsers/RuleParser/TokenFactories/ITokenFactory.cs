@@ -4,6 +4,6 @@ namespace LibraryCore.Parsers.RuleParser.TokenFactories;
 
 public interface ITokenFactory
 {
-    bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters);
-    IToken CreateToken(char characterRead, StringReader stringReader, CreateTokenParameters createTokenParameters);
+    public bool IsToken(char characterRead, char characterPeeked, string readAndPeakedCharacters);
+    public IToken CreateToken(char characterRead, StringReader stringReader, CreateTokenParameters createTokenParameters);
 }
