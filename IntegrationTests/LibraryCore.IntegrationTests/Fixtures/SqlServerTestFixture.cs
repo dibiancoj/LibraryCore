@@ -20,7 +20,8 @@ public class SqlServerTestFixture : IAsyncLifetime
 
     private static bool RunUnitTest() => string.IsNullOrEmpty(SkipReason);
 
-    public async Task InitializeAsync()
+
+    async ValueTask IAsyncLifetime.InitializeAsync()
     {
         if (!RunUnitTest())
         {
@@ -40,7 +41,7 @@ public class SqlServerTestFixture : IAsyncLifetime
         ConnectionString = dbContext.Database.GetConnectionString() ?? throw new Exception("Null Connection String)");
     }
 
-    public async Task DisposeAsync()
+    async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (!RunUnitTest())
         {
